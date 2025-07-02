@@ -9,5 +9,11 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts',
+    coverage: {
+      exclude: [
+        '**/*config*.{js,ts}',
+        'src/vite-env.d.ts',
+      ],
+    },
   },
 })

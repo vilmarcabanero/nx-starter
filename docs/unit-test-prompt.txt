@@ -1,0 +1,13 @@
+Please help me reach 100% coverage for this file:
+
+src/presentation/components/Todo               
+  TodoForm.tsx     
+
+When running any terminal command like npm run test, npm run test:coverage, npm run test TodoForm.test.tsx, etc, write them to a file so you can check the output in a file without waiting for terminal output because sometimes it takes time to run the test.
+TodoForm.test.tsx
+
+---
+
+ src/presentation/components/Todo   |   95.13 |     87.8 |   93.75 |   95.13 |                   
+  TodoForm.tsx                      |   73.17 |       60 |      50 |   73.17 | 21-32             
+  TodoItem.tsx                      |     100 |    85.71 |     100 |     100 | 26,38,49
