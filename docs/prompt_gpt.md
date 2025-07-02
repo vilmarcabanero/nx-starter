@@ -58,7 +58,7 @@ src/
    - Use `react-hook-form` for managing form state, validation, and submission in a structured way.
 
 6. **Testing**:
-   - Write **unit tests** with Jest (cover view models, logic, services).
+   - Write **unit tests** with Vitest (cover view models, logic, services).
    - Use **React Testing Library** for UI testing.
    - Include tests for:
      - Component rendering
