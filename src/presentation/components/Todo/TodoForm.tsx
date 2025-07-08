@@ -44,15 +44,17 @@ export const TodoForm: React.FC<TodoFormProps> = ({ onSubmit, isLoading = false 
               placeholder="What needs to be done?"
               disabled={isLoading || isSubmitting}
               className={errors.title ? 'border-destructive' : ''}
+              data-testid="todo-input"
             />
             {errors.title && (
-              <p className="text-sm text-destructive mt-1">{errors.title.message}</p>
+              <p className="text-sm text-destructive mt-1" data-testid="todo-input-error">{errors.title.message}</p>
             )}
           </div>
           <Button 
             type="submit" 
             disabled={isLoading || isSubmitting}
             className="shrink-0"
+            data-testid="add-todo-button"
           >
             {isSubmitting ? 'Adding...' : 'Add Todo'}
           </Button>

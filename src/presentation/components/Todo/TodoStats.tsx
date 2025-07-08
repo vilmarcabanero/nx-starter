@@ -22,9 +22,9 @@ export const TodoStats: React.FC<TodoStatsProps> = ({
       <CardContent className="p-4">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            <span>Total: {total}</span>
-            <span>Active: {active}</span>
-            <span>Completed: {completed}</span>
+            <span data-testid="stats-total">Total: {total}</span>
+            <span data-testid="stats-active">Active: {active}</span>
+            <span data-testid="stats-completed">Completed: {completed}</span>
           </div>
           
           <div className="flex gap-1">
@@ -32,6 +32,8 @@ export const TodoStats: React.FC<TodoStatsProps> = ({
               onClick={() => onFilterChange('all')}
               variant={filter === 'all' ? 'default' : 'outline'}
               size="sm"
+              data-testid="filter-all"
+              data-active={filter === 'all'}
             >
               All
             </Button>
@@ -39,6 +41,8 @@ export const TodoStats: React.FC<TodoStatsProps> = ({
               onClick={() => onFilterChange('active')}
               variant={filter === 'active' ? 'default' : 'outline'}
               size="sm"
+              data-testid="filter-active"
+              data-active={filter === 'active'}
             >
               Active
             </Button>
@@ -46,6 +50,8 @@ export const TodoStats: React.FC<TodoStatsProps> = ({
               onClick={() => onFilterChange('completed')}
               variant={filter === 'completed' ? 'default' : 'outline'}
               size="sm"
+              data-testid="filter-completed"
+              data-active={filter === 'completed'}
             >
               Completed
             </Button>
