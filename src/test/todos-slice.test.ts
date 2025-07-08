@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { configureStore } from '@reduxjs/toolkit';
 import todosReducer, { 
   setFilter, 
@@ -16,8 +16,21 @@ import {
 } from '../core/application/todos/thunks';
 import { Todo } from '../core/domain/entities/Todo';
 
-// Create a mock store for testing
-const createMockStore = (initialState?: Partial<TodosState>) => {
+// Mock the TodoRepository
+vi.mock('../core/infrastructure/db/TodoRepository', () => ({
+  TodoRepository: vi.fn().mockImplementation(() => ({
+    getAll: vi.fn(),
+    create: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
+    getById: vi.fn(),
+    getActive: vi.fn(),
+    getCompleted: vi.fn(),
+  }))
+}));
+
+// Create test store factory (Main Version pattern)
+const createTestStore = (initialState?: Partial<TodosState>) => {
   const defaultState: TodosState = {
     todos: [],
     status: 'idle',
@@ -35,29 +48,26 @@ const createMockStore = (initialState?: Partial<TodosState>) => {
   });
 };
 
-describe('TodosSlice', () => {
+describe('todosSlice', () => {
+  const initialState: TodosState = {
+    todos: [],
+    status: 'idle',
+    error: null,
+    filter: 'all',
+  };
   describe('reducers', () => {
-    it('should handle setFilter', () => {
-      const initialState: TodosState = {
-        todos: [],
-        status: 'idle',
-        error: null,
-        filter: 'all',
-      };
+    it('should return the initial state', () => {
+      expect(todosReducer(undefined, { type: 'unknown' })).toEqual(initialState);
+    });
 
+    it('should handle setFilter', () => {
       const state = todosReducer(initialState, setFilter('active'));
       expect(state.filter).toBe('active');
     });
 
     it('should handle clearError', () => {
-      const initialState: TodosState = {
-        todos: [],
-        status: 'failed',
-        error: 'Some error',
-        filter: 'all',
-      };
-
-      const state = todosReducer(initialState, clearError());
+      const stateWithError = { ...initialState, error: 'Some error' };
+      const state = todosReducer(stateWithError, clearError());
       expect(state.error).toBeNull();
     });
   });
@@ -330,7 +340,7 @@ describe('TodosSlice', () => {
 
   describe('selectors', () => {
     it('should select todos state', () => {
-      const store = createMockStore({
+      const store = createTestStore({
         todos: [new Todo('Test Todo', false, new Date(), 1)],
         status: 'succeeded',
         error: null,
@@ -347,7 +357,7 @@ describe('TodosSlice', () => {
         new Todo('Active Todo', false, new Date(), 1),
         new Todo('Completed Todo', true, new Date(), 2),
       ];
-      const store = createMockStore({
+      const store = createTestStore({
         todos,
         filter: 'all',
       });
@@ -361,7 +371,7 @@ describe('TodosSlice', () => {
         new Todo('Active Todo', false, new Date(), 1),
         new Todo('Completed Todo', true, new Date(), 2),
       ];
-      const store = createMockStore({
+      const store = createTestStore({
         todos,
         filter: 'active',
       });
@@ -376,7 +386,7 @@ describe('TodosSlice', () => {
         new Todo('Active Todo', false, new Date(), 1),
         new Todo('Completed Todo', true, new Date(), 2),
       ];
-      const store = createMockStore({
+      const store = createTestStore({
         todos,
         filter: 'completed',
       });

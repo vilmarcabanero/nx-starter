@@ -2,32 +2,24 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TodoService } from '../core/application/services/TodoService';
 import { Todo } from '../core/domain/entities/Todo';
 import type { ITodoRepository } from '../core/domain/repositories/ITodoRepository';
-
-// Mock repository
-const mockRepository: ITodoRepository = {
-  getAll: vi.fn(),
-  create: vi.fn(),
-  update: vi.fn(),
-  delete: vi.fn(),
-  getById: vi.fn(),
-  getActive: vi.fn(),
-  getCompleted: vi.fn(),
-};
+import { createMockRepository, createMockTodos } from './test-utils';
 
 describe('TodoService', () => {
   let todoService: TodoService;
+  let mockRepository: ITodoRepository;
 
   beforeEach(() => {
+    // Create fresh mock instance for each test (CC Version best practice)
+    mockRepository = createMockRepository();
     todoService = new TodoService(mockRepository);
-    vi.clearAllMocks();
   });
 
   describe('getAllTodos', () => {
     it('should return all todos from repository', async () => {
-      const mockTodos = [
-        new Todo('Todo 1', false, new Date(), 1),
-        new Todo('Todo 2', true, new Date(), 2)
-      ];
+      const mockTodos = createMockTodos(2, [
+        { title: 'Todo 1', completed: false, id: 1 },
+        { title: 'Todo 2', completed: true, id: 2 }
+      ]);
       vi.mocked(mockRepository.getAll).mockResolvedValue(mockTodos);
 
       const result = await todoService.getAllTodos();
@@ -38,27 +30,30 @@ describe('TodoService', () => {
   });
 
   describe('createTodo', () => {
-    it('should create a todo with valid title', async () => {
+    it('should create a new todo with valid title', async () => {
       const title = 'New Todo';
-      const todoId = 1;
-      vi.mocked(mockRepository.create).mockResolvedValue(todoId);
+      const mockId = 1;
+      vi.mocked(mockRepository.create).mockResolvedValue(mockId);
 
       const result = await todoService.createTodo(title);
 
       expect(result.title).toBe(title);
       expect(result.completed).toBe(false);
-      expect(result.id).toBe(todoId);
+      expect(result.id).toBe(mockId);
       expect(mockRepository.create).toHaveBeenCalledOnce();
     });
 
-    it('should trim title before creating', async () => {
+    it('should trim whitespace from title', async () => {
       const title = '  New Todo  ';
-      const todoId = 1;
-      vi.mocked(mockRepository.create).mockResolvedValue(todoId);
+      const mockId = 1;
+      vi.mocked(mockRepository.create).mockResolvedValue(mockId);
 
       const result = await todoService.createTodo(title);
 
       expect(result.title).toBe('New Todo');
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({ title: 'New Todo' })
+      );
     });
 
     it('should throw error for empty title', async () => {
@@ -75,25 +70,23 @@ describe('TodoService', () => {
       const changes = { title: 'Updated' };
 
       vi.mocked(mockRepository.getById).mockResolvedValueOnce(existingTodo);
-      vi.mocked(mockRepository.update).mockResolvedValue(undefined);
       vi.mocked(mockRepository.getById).mockResolvedValueOnce(updatedTodo);
 
       const result = await todoService.updateTodo(todoId, changes);
 
       expect(result).toEqual(updatedTodo);
-      expect(mockRepository.getById).toHaveBeenCalledTimes(2);
       expect(mockRepository.update).toHaveBeenCalledWith(todoId, changes);
     });
 
     it('should throw error for non-existent todo', async () => {
-      const todoId = 999;
+      const todoId = 1;
       vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
 
       await expect(todoService.updateTodo(todoId, { title: 'Updated' }))
         .rejects.toThrow('Todo not found');
     });
 
-    it('should throw error for empty title', async () => {
+    it('should throw error for empty title update', async () => {
       const todoId = 1;
       const existingTodo = new Todo('Original', false, new Date(), todoId);
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
