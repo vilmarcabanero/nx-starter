@@ -23,7 +23,7 @@ export const TodoList: React.FC<TodoListProps> = ({
       <Card>
         <CardContent className="p-6">
           <div className="flex items-center justify-center py-8">
-            <div className="text-muted-foreground">Loading todos...</div>
+            <div className="text-muted-foreground" data-testid="loading">Loading todos...</div>
           </div>
         </CardContent>
       </Card>
@@ -35,7 +35,7 @@ export const TodoList: React.FC<TodoListProps> = ({
       <Card>
         <CardContent className="p-6">
           <div className="flex items-center justify-center py-8">
-            <div className="text-center">
+            <div className="text-center" data-testid="empty-state">
               <div className="text-muted-foreground text-lg mb-2">No todos yet</div>
               <div className="text-sm text-muted-foreground">
                 Add your first todo to get started!
@@ -48,7 +48,7 @@ export const TodoList: React.FC<TodoListProps> = ({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" data-testid="todo-list">
       {todos.map((todo) => (
         <TodoItem
           key={todo.id}

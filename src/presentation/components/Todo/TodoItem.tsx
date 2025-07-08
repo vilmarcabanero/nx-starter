@@ -72,7 +72,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
   };
 
   return (
-    <Card className={cn("mb-2 transition-opacity", isLoading && "opacity-50")}>
+    <Card className={cn("mb-2 transition-opacity", isLoading && "opacity-50")} data-testid="todo-item">
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
           <input
@@ -81,6 +81,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
             onChange={handleToggle}
             disabled={isLoading}
             className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+            data-testid="todo-checkbox"
           />
           
           {isEditing ? (
@@ -92,12 +93,14 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                 disabled={isLoading}
                 className="flex-1"
                 autoFocus
+                data-testid="todo-edit-input"
               />
               <Button 
                 onClick={handleSave} 
                 disabled={isLoading || !editTitle.trim()}
                 size="sm"
                 variant="outline"
+                data-testid="save-todo"
               >
                 Save
               </Button>
@@ -106,6 +109,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                 disabled={isLoading}
                 size="sm"
                 variant="ghost"
+                data-testid="cancel-edit"
               >
                 Cancel
               </Button>
@@ -118,6 +122,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                   todo.completed && "line-through text-muted-foreground"
                 )}
                 onClick={() => setIsEditing(true)}
+                data-testid="todo-title"
               >
                 {todo.title}
               </span>
@@ -128,6 +133,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                   disabled={isLoading}
                   size="sm"
                   variant="ghost"
+                  data-testid="edit-todo"
                 >
                   Edit
                 </Button>
@@ -136,6 +142,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                   disabled={isLoading}
                   size="sm"
                   variant="destructive"
+                  data-testid="delete-todo"
                 >
                   Delete
                 </Button>
@@ -147,7 +154,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
         <div className="mt-2 text-xs text-muted-foreground">
           Created: {todo.createdAt.toLocaleDateString()} {todo.createdAt.toLocaleTimeString()}
           {todo.isOverdue() && (
-            <span className="ml-2 text-destructive font-medium">• Overdue</span>
+            <span className="ml-2 text-destructive font-medium" data-testid="todo-overdue">• Overdue</span>
           )}
         </div>
       </CardContent>

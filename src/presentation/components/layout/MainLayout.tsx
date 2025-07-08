@@ -5,9 +5,9 @@ interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+export const MainLayout: React.FC<MainLayoutProps> = ({ children, ...props }) => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" {...props}>
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         <Card className="mb-8">
           <CardHeader className="text-center">

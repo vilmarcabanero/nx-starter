@@ -159,7 +159,7 @@ export const setupMockRepository = (mockRepo: ITodoRepository, scenario: 'succes
 };
 
 // Performance testing helper
-export const measureAsync = async <T>(fn: () => Promise<T>): Promise<{ result: T; duration: number }> => {
+export const measureAsync = async <T,>(fn: () => Promise<T>): Promise<{ result: T; duration: number }> => {
   const start = performance.now();
   const result = await fn();
   const end = performance.now();

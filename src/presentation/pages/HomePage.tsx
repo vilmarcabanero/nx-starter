@@ -24,19 +24,19 @@ export const HomePage: React.FC = () => {
   } = useTodoViewModel();
 
   return (
-    <MainLayout>
+    <MainLayout data-testid="todo-app">
       {hasError && (
         <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-medium text-destructive">Error</h3>
-              <p className="text-sm text-destructive/80">{error}</p>
+              <p className="text-sm text-destructive/80" data-testid="error-message">{error}</p>
             </div>
             <div className="flex gap-2">
-              <Button onClick={refreshTodos} variant="outline" size="sm">
+              <Button onClick={refreshTodos} variant="outline" size="sm" data-testid="error-retry">
                 Retry
               </Button>
-              <Button onClick={dismissError} variant="ghost" size="sm">
+              <Button onClick={dismissError} variant="ghost" size="sm" data-testid="error-dismiss">
                 Dismiss
               </Button>
             </div>

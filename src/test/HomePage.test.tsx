@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { HomePage } from '../presentation/pages/HomePage';
+import { Todo } from '../core/domain/entities/Todo';
 
 // Mock the useTodoViewModel hook
 vi.mock('../presentation/view-models/useTodoViewModel', () => ({
@@ -116,7 +117,10 @@ describe('HomePage', () => {
   it('should pass todos to TodoList', () => {
     mockUseTodoViewModel.mockReturnValue({
       ...defaultViewModel,
-      todos: [{}, {}] // Mock 2 todos
+      todos: [
+        new Todo('First todo', false, new Date(), 1),
+        new Todo('Second todo', false, new Date(), 2)
+      ]
     } as ReturnType<typeof useTodoViewModel>);
 
     render(<HomePage />);

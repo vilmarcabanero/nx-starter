@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npx playwright:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run test:e2e:*)",
+      "Bash(pkill:*)",
+      "Bash(rm:*)",
+      "Bash(npm run test:*)"
+    ],
+    "deny": []
+  }
+}
