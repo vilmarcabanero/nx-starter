@@ -33,11 +33,15 @@ export class TodoPage {
   async addTodo(title: string) {
     await this.addTodoInput.fill(title);
     await this.addTodoButton.click();
-    // Wait for the todo to appear in the list
-    await this.page.waitForFunction(() => {
-      const input = document.querySelector('[data-testid="todo-input"]') as HTMLInputElement;
-      return input && input.value === '';
-    }, { timeout: 5000 });
+    
+    // Only wait for input to be cleared if the todo was actually added (non-empty)
+    if (title.trim()) {
+      // Wait for the todo to appear in the list
+      await this.page.waitForFunction(() => {
+        const input = document.querySelector('[data-testid="todo-input"]') as HTMLInputElement;
+        return input && input.value === '';
+      }, { timeout: 5000 });
+    }
   }
 
   async getTodoItem(index: number) {
@@ -54,14 +58,29 @@ export class TodoPage {
 
   async filterByAll() {
     await this.filterAll.click();
+    // Wait for filter to become active and for DOM to update
+    await this.page.waitForFunction(() => {
+      const allButton = document.querySelector('[data-testid="filter-all"]');
+      return allButton?.getAttribute('data-active') === 'true';
+    }, { timeout: 10000 });
   }
 
   async filterByActive() {
     await this.filterActive.click();
+    // Wait for filter to become active and for DOM to update
+    await this.page.waitForFunction(() => {
+      const activeButton = document.querySelector('[data-testid="filter-active"]');
+      return activeButton?.getAttribute('data-active') === 'true';
+    }, { timeout: 10000 });
   }
 
   async filterByCompleted() {
     await this.filterCompleted.click();
+    // Wait for filter to become active and for DOM to update
+    await this.page.waitForFunction(() => {
+      const completedButton = document.querySelector('[data-testid="filter-completed"]');
+      return completedButton?.getAttribute('data-active') === 'true';
+    }, { timeout: 10000 });
   }
 
   async getActiveFilter() {
@@ -114,11 +133,29 @@ export class TodoItem {
   }
 
   async toggle() {
-    await this.locator.locator('[data-testid="todo-checkbox"]').click();
+    const checkbox = this.locator.locator('[data-testid="todo-checkbox"]');
+    const wasChecked = await checkbox.isChecked();
+    await checkbox.click();
+    // Wait for the toggle to be processed - wait for checkbox state to change
+    if (wasChecked) {
+      await expect(checkbox).not.toBeChecked();
+    } else {
+      await expect(checkbox).toBeChecked();
+    }
   }
 
   async delete() {
+    const initialCount = await this.locator.page().locator('[data-testid="todo-item"]').count();
     await this.locator.locator('[data-testid="delete-todo"]').click();
+    // Wait for the todo count to decrease
+    await this.locator.page().waitForFunction(
+      (expectedCount) => {
+        const currentCount = document.querySelectorAll('[data-testid="todo-item"]').length;
+        return currentCount === expectedCount;
+      },
+      initialCount - 1,
+      { timeout: 5000 }
+    );
   }
 
   async edit() {
@@ -132,6 +169,9 @@ export class TodoItem {
   async saveEdit(newTitle: string) {
     await this.locator.locator('[data-testid="todo-edit-input"]').fill(newTitle);
     await this.locator.locator('[data-testid="save-todo"]').click();
+    // Wait for edit mode to exit and the title to be updated
+    await expect(this.locator.locator('[data-testid="todo-title"]')).toHaveText(newTitle);
+    await expect(this.locator.locator('[data-testid="todo-edit-input"]')).not.toBeVisible();
   }
 
   async cancelEdit() {

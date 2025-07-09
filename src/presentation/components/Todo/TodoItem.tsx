@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Todo } from '../../../core/domain/entities/Todo';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -21,6 +21,13 @@ export const TodoItem: React.FC<TodoItemProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(todo.title);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Sync edit title with todo title when todo changes, but preserve edit state
+  useEffect(() => {
+    if (!isEditing) {
+      setEditTitle(todo.title);
+    }
+  }, [todo.title, isEditing]);
 
   const handleToggle = async () => {
     if (!todo.id) return;
