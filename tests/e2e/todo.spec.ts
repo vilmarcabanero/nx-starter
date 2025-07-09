@@ -244,8 +244,14 @@ test.describe('Todo Application', () => {
       await todoPage.addTodo('Active todo 2');
       await todoPage.addTodo('Completed todo');
       
-      const completedTodo = await todoPage.getTodoItem(2);
+      // Wait for all todos to be added
+      await expect(todoPage.getTodoCount()).resolves.toBe(3);
+      
+      const completedTodo = await todoPage.getTodoItem(0);
       await completedTodo.toggle();
+      
+      // Wait for the toggle to complete
+      await completedTodo.expectCompleted();
     });
 
     test('should filter all todos by default', async () => {

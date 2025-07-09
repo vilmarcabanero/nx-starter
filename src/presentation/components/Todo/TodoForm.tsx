@@ -39,7 +39,12 @@ export const TodoForm: React.FC<TodoFormProps> = ({ onSubmit, isLoading = false 
             <Input
               {...register('title', { 
                 required: 'Title is required',
-                minLength: { value: 1, message: 'Title cannot be empty' }
+                validate: (value) => {
+                  if (!value.trim()) {
+                    return 'Title cannot be empty';
+                  }
+                  return true;
+                }
               })}
               placeholder="What needs to be done?"
               disabled={isLoading || isSubmitting}
