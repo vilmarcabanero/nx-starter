@@ -30,7 +30,7 @@ export const TodoStats: React.FC<TodoStatsProps> = ({
           <div className="flex gap-1">
             <Button
               onClick={() => onFilterChange('all')}
-              variant={filter === 'all' ? 'default' : 'outline'}
+              variant={filter === 'all' ? 'default' : 'outline-solid'}
               size="sm"
               data-testid="filter-all"
               data-active={filter === 'all'}
@@ -39,7 +39,7 @@ export const TodoStats: React.FC<TodoStatsProps> = ({
             </Button>
             <Button
               onClick={() => onFilterChange('active')}
-              variant={filter === 'active' ? 'default' : 'outline'}
+              variant={filter === 'active' ? 'default' : 'outline-solid'}
               size="sm"
               data-testid="filter-active"
               data-active={filter === 'active'}
@@ -48,7 +48,7 @@ export const TodoStats: React.FC<TodoStatsProps> = ({
             </Button>
             <Button
               onClick={() => onFilterChange('completed')}
-              variant={filter === 'completed' ? 'default' : 'outline'}
+              variant={filter === 'completed' ? 'default' : 'outline-solid'}
               size="sm"
               data-testid="filter-completed"
               data-active={filter === 'completed'}
