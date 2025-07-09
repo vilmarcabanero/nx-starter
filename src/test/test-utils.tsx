@@ -1,12 +1,9 @@
 // Test utilities for creating mock data and test helpers
 import { vi } from 'vitest';
-import { configureStore } from '@reduxjs/toolkit';
 import { render } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import React, { type ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import { Todo } from '../core/domain/entities/Todo';
 import type { ITodoRepository } from '../core/domain/repositories/ITodoRepository';
-import todosReducer, { type TodosState } from '../core/application/todos/slice';
 
 // Factory function for creating mock todos
 export const createMockTodo = (overrides?: Partial<Todo>): Todo => {
@@ -42,40 +39,9 @@ export const createMockRepository = (): ITodoRepository => {
   };
 };
 
-// Store factory for testing (combines Main Version pattern with CC Version isolation)
-export const createTestStore = (initialState?: Partial<TodosState>) => {
-  const defaultState: TodosState = {
-    todos: [],
-    status: 'idle',
-    error: null,
-    filter: 'all',
-  };
-  
-  return configureStore({
-    reducer: {
-      todos: todosReducer,
-    },
-    preloadedState: {
-      todos: { ...defaultState, ...initialState },
-    },
-  });
-};
-
-// React Testing Library helper for rendering with Redux store
-export const renderWithRedux = (
-  ui: ReactElement,
-  initialState?: Partial<TodosState>
-) => {
-  const store = createTestStore(initialState);
-  
-  const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-    return <Provider store={store}>{children}</Provider>;
-  };
-
-  return {
-    ...render(ui, { wrapper: AllTheProviders }),
-    store,
-  };
+// Custom render function for components (no Redux needed)
+export const renderWithTestSetup = (ui: ReactElement) => {
+  return render(ui);
 };
 
 // Common test data sets
@@ -96,34 +62,6 @@ export const testTodos = {
   ],
 };
 
-// Test state presets
-export const testStates = {
-  initial: {
-    todos: [],
-    status: 'idle' as const,
-    error: null,
-    filter: 'all' as const,
-  },
-  loading: {
-    todos: [],
-    status: 'loading' as const,
-    error: null,
-    filter: 'all' as const,
-  },
-  withTodos: {
-    todos: testTodos.mixed,
-    status: 'succeeded' as const,
-    error: null,
-    filter: 'all' as const,
-  },
-  withError: {
-    todos: [],
-    status: 'failed' as const,
-    error: 'Something went wrong',
-    filter: 'all' as const,
-  },
-};
-
 // Mock setup helpers
 export const setupMockRepository = (mockRepo: ITodoRepository, scenario: 'success' | 'error' | 'mixed' = 'success') => {
   switch (scenario) {
@@ -136,7 +74,7 @@ export const setupMockRepository = (mockRepo: ITodoRepository, scenario: 'succes
       vi.mocked(mockRepo.getActive).mockResolvedValue(testTodos.active);
       vi.mocked(mockRepo.getCompleted).mockResolvedValue(testTodos.completed);
       break;
-    case 'error':
+    case 'error': {
       const error = new Error('Mock repository error');
       vi.mocked(mockRepo.getAll).mockRejectedValue(error);
       vi.mocked(mockRepo.create).mockRejectedValue(error);
@@ -146,6 +84,7 @@ export const setupMockRepository = (mockRepo: ITodoRepository, scenario: 'succes
       vi.mocked(mockRepo.getActive).mockRejectedValue(error);
       vi.mocked(mockRepo.getCompleted).mockRejectedValue(error);
       break;
+    }
     case 'mixed':
       // Some operations succeed, others fail
       vi.mocked(mockRepo.getAll).mockResolvedValue(testTodos.mixed);

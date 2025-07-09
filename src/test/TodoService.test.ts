@@ -35,7 +35,7 @@ describe('TodoService', () => {
       const mockId = 1;
       vi.mocked(mockRepository.create).mockResolvedValue(mockId);
 
-      const result = await todoService.createTodo(title);
+      const result = await todoService.createTodo({ title });
 
       expect(result.title).toBe(title);
       expect(result.completed).toBe(false);
@@ -48,7 +48,7 @@ describe('TodoService', () => {
       const mockId = 1;
       vi.mocked(mockRepository.create).mockResolvedValue(mockId);
 
-      const result = await todoService.createTodo(title);
+      const result = await todoService.createTodo({ title });
 
       expect(result.title).toBe('New Todo');
       expect(mockRepository.create).toHaveBeenCalledWith(
@@ -57,8 +57,8 @@ describe('TodoService', () => {
     });
 
     it('should throw error for empty title', async () => {
-      await expect(todoService.createTodo('')).rejects.toThrow('Todo title cannot be empty');
-      await expect(todoService.createTodo('   ')).rejects.toThrow('Todo title cannot be empty');
+      await expect(todoService.createTodo({ title: '' })).rejects.toThrow('Todo title cannot be empty');
+      await expect(todoService.createTodo({ title: '   ' })).rejects.toThrow('Todo title cannot be empty');
     });
   });
 
