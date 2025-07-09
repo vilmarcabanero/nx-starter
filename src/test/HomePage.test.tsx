@@ -52,7 +52,7 @@ describe('HomePage', () => {
     todos: [],
     allTodos: [],
     filter: 'all' as const,
-    stats: { total: 0, active: 0, completed: 0 },
+    stats: { total: 0, active: 0, completed: 0, overdue: 0 },
     isLoading: false,
     isIdle: true,
     hasError: false,
@@ -104,7 +104,7 @@ describe('HomePage', () => {
   it('should pass correct stats to TodoStats', () => {
     mockUseTodoViewModel.mockReturnValue({
       ...defaultViewModel,
-      stats: { total: 10, active: 6, completed: 4 },
+      stats: { total: 10, active: 6, completed: 4, overdue: 1 },
       filter: 'active' as const
     } as ReturnType<typeof useTodoViewModel>);
 

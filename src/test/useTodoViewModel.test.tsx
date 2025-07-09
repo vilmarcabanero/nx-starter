@@ -1,247 +1,299 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
 import { useTodoViewModel } from '../presentation/view-models/useTodoViewModel';
 
-// Mock the dispatch functions to prevent actual thunk calls
-const mockDispatch = vi.fn();
+// Mock the Zustand store
+const mockStore = {
+  todos: [],
+  filter: 'all' as const,
+  status: 'idle' as const,
+  error: null,
+  
+  // Function-based getters
+  getFilteredTodos: vi.fn(() => []),
+  getStats: vi.fn(() => ({ total: 0, active: 0, completed: 0 })),
+  getIsLoading: vi.fn(() => false),
+  getIsIdle: vi.fn(() => true),
+  getHasError: vi.fn(() => false),
+  
+  // Actions
+  loadTodos: vi.fn(),
+  createTodo: vi.fn(),
+  updateTodo: vi.fn(),
+  deleteTodo: vi.fn(),
+  toggleTodo: vi.fn(),
+  setFilter: vi.fn(),
+  clearError: vi.fn(),
+};
 
-vi.mock('../presentation/hooks/redux', () => ({
-  useAppDispatch: () => mockDispatch,
-  useAppSelector: (selector: (state: { todos: { todos: unknown[], status: string, error: unknown, filter: string } }) => unknown) => {
-    const mockState = {
-      todos: {
-        todos: [],
-        status: 'idle' as const,
-        error: null,
-        filter: 'all' as const
-      }
-    };
-    return selector(mockState);
-  }
-}));
-
-// Mock the slice actions and selectors
-vi.mock('../core/application/todos/slice', () => ({
-  default: (state = { todos: [], status: 'idle', error: null, filter: 'all' }) => state,
-  setFilter: vi.fn((filter) => ({ type: 'todos/setFilter', payload: filter })),
-  clearError: vi.fn(() => ({ type: 'todos/clearError' })),
-  selectTodos: vi.fn((state) => state.todos),
-  selectFilteredTodos: vi.fn((state) => state.todos.todos)
-}));
-
-// Mock the thunks - they should just return a simple action for our test
-vi.mock('../core/application/todos/thunks', () => ({
-  fetchTodosThunk: vi.fn(() => ({ type: 'todos/fetchTodos' })),
-  createTodoThunk: vi.fn(() => ({ type: 'todos/createTodo' })),
-  updateTodoThunk: vi.fn(() => ({ type: 'todos/updateTodo' })),
-  deleteTodoThunk: vi.fn(() => ({ type: 'todos/deleteTodo' })),
-  toggleTodoThunk: vi.fn(() => ({ type: 'todos/toggleTodo' }))
+vi.mock('../core/application/stores/TodoStore', () => ({
+  useTodoStore: () => mockStore
 }));
 
 describe('useTodoViewModel', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockDispatch.mockReset();
-    // Default to successful dispatch - return a promise-like object with unwrap
-    mockDispatch.mockReturnValue({
-      unwrap: vi.fn().mockResolvedValue({})
-    });
+    // Reset mock store state
+    mockStore.todos = [];
+    mockStore.filter = 'all';
+    mockStore.status = 'idle';
+    mockStore.error = null;
+    
+    // Reset function-based getters
+    mockStore.getFilteredTodos.mockReturnValue([]);
+    mockStore.getStats.mockReturnValue({ total: 0, active: 0, completed: 0 });
+    mockStore.getIsLoading.mockReturnValue(false);
+    mockStore.getIsIdle.mockReturnValue(true);
+    mockStore.getHasError.mockReturnValue(false);
   });
 
-  const createWrapper = () => {
-    // Create a simple reducer for testing
-    const testReducer = (state = { todos: { todos: [], status: 'idle', error: null, filter: 'all' } }) => state;
-    
-    const store = configureStore({
-      reducer: {
-        todos: testReducer
-      }
-    });
-    
-    return ({ children }: { children: React.ReactNode }) => (
-      <Provider store={store}>{children}</Provider>
-    );
-  };
-
-  it('should return initial state correctly', () => {
-    const { result } = renderHook(() => useTodoViewModel(), {
-      wrapper: createWrapper()
-    });
+  it('should return initial state', () => {
+    const { result } = renderHook(() => useTodoViewModel());
 
     expect(result.current.todos).toEqual([]);
-    expect(result.current.allTodos).toEqual([]);
     expect(result.current.filter).toBe('all');
-    expect(result.current.stats).toEqual({
-      total: 0,
-      active: 0,
-      completed: 0
-    });
     expect(result.current.isLoading).toBe(false);
-    expect(result.current.isIdle).toBe(true);
-    expect(result.current.hasError).toBe(false);
-    expect(result.current.error).toBeNull();
+    expect(result.current.error).toBe(null);
+    expect(result.current.stats).toEqual({ total: 0, active: 0, completed: 0, overdue: 0 });
   });
 
-  it('should provide all required functions', () => {
-    const { result } = renderHook(() => useTodoViewModel(), {
-      wrapper: createWrapper()
+  it('should call createTodo with correct data', async () => {
+    const { result } = renderHook(() => useTodoViewModel());
+
+    await act(async () => {
+      await result.current.createTodo('New Todo');
     });
 
-    expect(typeof result.current.createTodo).toBe('function');
-    expect(typeof result.current.updateTodo).toBe('function');
-    expect(typeof result.current.deleteTodo).toBe('function');
-    expect(typeof result.current.toggleTodo).toBe('function');
-    expect(typeof result.current.changeFilter).toBe('function');
-    expect(typeof result.current.dismissError).toBe('function');
-    expect(typeof result.current.refreshTodos).toBe('function');
+    expect(mockStore.createTodo).toHaveBeenCalledWith({ title: 'New Todo' });
   });
 
-  it('should return correct computed properties', () => {
-    const { result } = renderHook(() => useTodoViewModel(), {
-      wrapper: createWrapper()
+  it('should call updateTodo with correct parameters', async () => {
+    const { result } = renderHook(() => useTodoViewModel());
+    const changes = { title: 'Updated Title' };
+
+    await act(async () => {
+      await result.current.updateTodo(1, changes);
     });
 
-    expect(result.current).toHaveProperty('todos');
-    expect(result.current).toHaveProperty('allTodos');
-    expect(result.current).toHaveProperty('filter');
-    expect(result.current).toHaveProperty('stats');
-    expect(result.current).toHaveProperty('isLoading');
-    expect(result.current).toHaveProperty('isIdle');
-    expect(result.current).toHaveProperty('hasError');
-    expect(result.current).toHaveProperty('error');
+    expect(mockStore.updateTodo).toHaveBeenCalledWith(1, changes);
   });
 
-  it('should handle function calls without errors', async () => {
-    const { result } = renderHook(() => useTodoViewModel(), {
-      wrapper: createWrapper()
+  it('should call deleteTodo with correct id', async () => {
+    const { result } = renderHook(() => useTodoViewModel());
+
+    await act(async () => {
+      await result.current.deleteTodo(1);
     });
 
-    // These should not throw errors even if they don't do much in test
-    expect(() => result.current.changeFilter('active')).not.toThrow();
-    expect(() => result.current.dismissError()).not.toThrow();
-    expect(() => result.current.refreshTodos()).not.toThrow();
+    expect(mockStore.deleteTodo).toHaveBeenCalledWith(1);
   });
 
-  describe('Error handling branches', () => {
-    it('should handle createTodo error', async () => {
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      const testError = new Error('Create failed');
+  it('should call toggleTodo with correct id', async () => {
+    const { result } = renderHook(() => useTodoViewModel());
+
+    await act(async () => {
+      await result.current.toggleTodo(1);
+    });
+
+    expect(mockStore.toggleTodo).toHaveBeenCalledWith(1);
+  });
+
+  it('should call changeFilter with correct filter', () => {
+    const { result } = renderHook(() => useTodoViewModel());
+
+    act(() => {
+      result.current.changeFilter('active');
+    });
+
+    expect(mockStore.setFilter).toHaveBeenCalledWith('active');
+  });
+
+  it('should call clearError', () => {
+    const { result } = renderHook(() => useTodoViewModel());
+
+    act(() => {
+      result.current.dismissError();
+    });
+
+    expect(mockStore.clearError).toHaveBeenCalled();
+  });
+
+  it('should call loadTodos on refresh', () => {
+    const { result } = renderHook(() => useTodoViewModel());
+
+    act(() => {
+      result.current.refreshTodos();
+    });
+
+    expect(mockStore.loadTodos).toHaveBeenCalled();
+  });
+
+  it('should handle empty title error', async () => {
+    const { result } = renderHook(() => useTodoViewModel());
+
+    await expect(result.current.createTodo('')).rejects.toThrow('Todo title cannot be empty');
+    await expect(result.current.createTodo('   ')).rejects.toThrow('Todo title cannot be empty');
+  });
+
+  describe('overdue calculation', () => {
+    it('should calculate overdue todos correctly', () => {
+      const now = new Date();
+      const eightDaysAgo = new Date();
+      eightDaysAgo.setDate(now.getDate() - 8);
+      const fiveDaysAgo = new Date();
+      fiveDaysAgo.setDate(now.getDate() - 5);
       
-      // Mock dispatch to return correct structure with failing unwrap
-      mockDispatch.mockReturnValue({
-        unwrap: vi.fn().mockRejectedValue(testError)
-      });
+      const todos = [
+        { id: 1, title: 'Old incomplete todo', completed: false, createdAt: eightDaysAgo },
+        { id: 2, title: 'Old completed todo', completed: true, createdAt: eightDaysAgo },
+        { id: 3, title: 'Recent todo', completed: false, createdAt: fiveDaysAgo },
+      ];
 
-      const { result } = renderHook(() => useTodoViewModel(), {
-        wrapper: createWrapper()
-      });
+      mockStore.todos = todos;
+      mockStore.getStats.mockReturnValue({ total: 3, active: 2, completed: 1 });
 
-      await act(async () => {
-        try {
-          await result.current.createTodo('Test todo');
-          // Should not reach here
-          expect(true).toBe(false);
-        } catch (error) {
-          expect(error).toBe(testError);
-        }
-      });
+      const { result } = renderHook(() => useTodoViewModel());
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to create todo:', testError);
+      // Only the old incomplete todo should be overdue
+      expect(result.current.stats.overdue).toBe(1);
+      expect(result.current.stats.total).toBe(3);
+      expect(result.current.stats.active).toBe(2);
+      expect(result.current.stats.completed).toBe(1);
+    });
+
+    it('should exclude completed todos from overdue calculation', () => {
+      const eightDaysAgo = new Date();
+      eightDaysAgo.setDate(eightDaysAgo.getDate() - 8);
+      
+      const todos = [
+        { id: 1, title: 'Old completed todo', completed: true, createdAt: eightDaysAgo },
+        { id: 2, title: 'Another old completed todo', completed: true, createdAt: eightDaysAgo },
+      ];
+
+      mockStore.todos = todos;
+      mockStore.getStats.mockReturnValue({ total: 2, active: 0, completed: 2 });
+
+      const { result } = renderHook(() => useTodoViewModel());
+
+      // No todos should be overdue since all are completed
+      expect(result.current.stats.overdue).toBe(0);
+    });
+
+    it('should include todos older than 7 days in overdue calculation', () => {
+      const tenDaysAgo = new Date();
+      tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+      const eightDaysAgo = new Date();
+      eightDaysAgo.setDate(eightDaysAgo.getDate() - 8);
+      
+      const todos = [
+        { id: 1, title: 'Very old todo', completed: false, createdAt: tenDaysAgo },
+        { id: 2, title: 'Old todo', completed: false, createdAt: eightDaysAgo },
+      ];
+
+      mockStore.todos = todos;
+      mockStore.getStats.mockReturnValue({ total: 2, active: 2, completed: 0 });
+
+      const { result } = renderHook(() => useTodoViewModel());
+
+      // Both todos should be overdue
+      expect(result.current.stats.overdue).toBe(2);
+    });
+  });
+
+  describe('error handling', () => {
+    it('should handle createTodo errors and log them', async () => {
+      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const error = new Error('Network error');
+      mockStore.createTodo.mockRejectedValue(error);
+
+      const { result } = renderHook(() => useTodoViewModel());
+
+      await expect(result.current.createTodo('Test Todo')).rejects.toThrow('Network error');
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to create todo:', error);
+      
       consoleErrorSpy.mockRestore();
     });
 
-    it('should handle updateTodo error', async () => {
+    it('should handle updateTodo errors and log them', async () => {
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      const testError = new Error('Update failed');
+      const error = new Error('Update failed');
+      mockStore.updateTodo.mockRejectedValue(error);
+
+      const { result } = renderHook(() => useTodoViewModel());
+
+      await expect(result.current.updateTodo(1, { title: 'Updated' })).rejects.toThrow('Update failed');
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to update todo:', error);
       
-      mockDispatch.mockReturnValue({
-        unwrap: vi.fn().mockRejectedValue(testError)
-      });
-
-      const { result } = renderHook(() => useTodoViewModel(), {
-        wrapper: createWrapper()
-      });
-
-      await act(async () => {
-        try {
-          await result.current.updateTodo(1, { title: 'Updated' });
-          expect(true).toBe(false);
-        } catch (error) {
-          expect(error).toBe(testError);
-        }
-      });
-
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to update todo:', testError);
       consoleErrorSpy.mockRestore();
     });
 
-    it('should handle deleteTodo error', async () => {
+    it('should handle deleteTodo errors and log them', async () => {
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      const testError = new Error('Delete failed');
+      const error = new Error('Delete failed');
+      mockStore.deleteTodo.mockRejectedValue(error);
+
+      const { result } = renderHook(() => useTodoViewModel());
+
+      await expect(result.current.deleteTodo(1)).rejects.toThrow('Delete failed');
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to delete todo:', error);
       
-      mockDispatch.mockReturnValue({
-        unwrap: vi.fn().mockRejectedValue(testError)
-      });
-
-      const { result } = renderHook(() => useTodoViewModel(), {
-        wrapper: createWrapper()
-      });
-
-      await act(async () => {
-        try {
-          await result.current.deleteTodo(1);
-          expect(true).toBe(false);
-        } catch (error) {
-          expect(error).toBe(testError);
-        }
-      });
-
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to delete todo:', testError);
       consoleErrorSpy.mockRestore();
     });
 
-    it('should handle toggleTodo error', async () => {
+    it('should handle toggleTodo errors and log them', async () => {
       const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      const testError = new Error('Toggle failed');
+      const error = new Error('Toggle failed');
+      mockStore.toggleTodo.mockRejectedValue(error);
+
+      const { result } = renderHook(() => useTodoViewModel());
+
+      await expect(result.current.toggleTodo(1)).rejects.toThrow('Toggle failed');
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to toggle todo:', error);
       
-      mockDispatch.mockReturnValue({
-        unwrap: vi.fn().mockRejectedValue(testError)
-      });
-
-      const { result } = renderHook(() => useTodoViewModel(), {
-        wrapper: createWrapper()
-      });
-
-      await act(async () => {
-        try {
-          await result.current.toggleTodo(1);
-          expect(true).toBe(false);
-        } catch (error) {
-          expect(error).toBe(testError);
-        }
-      });
-
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to toggle todo:', testError);
       consoleErrorSpy.mockRestore();
     });
   });
 
-  describe('Success paths', () => {
-    it('should handle successful async operations', async () => {
-      const { result } = renderHook(() => useTodoViewModel(), {
-        wrapper: createWrapper()
-      });
+  describe('initial loading', () => {
+    it('should load todos only once on mount', () => {
+      const { rerender } = renderHook(() => useTodoViewModel());
+      
+      expect(mockStore.loadTodos).toHaveBeenCalledTimes(1);
+      
+      // Rerender the hook
+      rerender();
+      
+      // Should still only be called once
+      expect(mockStore.loadTodos).toHaveBeenCalledTimes(1);
+    });
+  });
 
-      await act(async () => {
-        await expect(result.current.createTodo('Test')).resolves.not.toThrow();
-        await expect(result.current.updateTodo(1, { title: 'Updated' })).resolves.not.toThrow();
-        await expect(result.current.deleteTodo(1)).resolves.not.toThrow();
-        await expect(result.current.toggleTodo(1)).resolves.not.toThrow();
-      });
+  describe('isIdle state', () => {
+    it('should be true when not loading and no todos exist', () => {
+      mockStore.getIsLoading.mockReturnValue(false);
+      mockStore.todos = [];
 
-      expect(mockDispatch).toHaveBeenCalled();
+      const { result } = renderHook(() => useTodoViewModel());
+
+      expect(result.current.isIdle).toBe(true);
+    });
+
+    it('should be false when not loading but todos exist', () => {
+      mockStore.getIsLoading.mockReturnValue(false);
+      mockStore.todos = [{ id: 1, title: 'Test', completed: false, createdAt: new Date() }];
+
+      const { result } = renderHook(() => useTodoViewModel());
+
+      expect(result.current.isIdle).toBe(false);
+    });
+
+    it('should be false when loading regardless of todos', () => {
+      mockStore.getIsLoading.mockReturnValue(true);
+      mockStore.todos = [];
+
+      const { result } = renderHook(() => useTodoViewModel());
+
+      expect(result.current.isIdle).toBe(false);
     });
   });
 });
