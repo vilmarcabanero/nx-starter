@@ -3,7 +3,9 @@ import { Todo } from '../../../core/domain/entities/Todo';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card, CardContent } from '../ui/card';
-import { cn } from '../../../lib/utils';
+import { Checkbox } from '../ui/checkbox';
+import { cn } from '@/lib/utils';
+import { Edit, Trash2, Save, X } from 'lucide-react';
 
 interface TodoItemProps {
   todo: Todo;
@@ -82,12 +84,10 @@ export const TodoItem: React.FC<TodoItemProps> = ({
     <Card className={cn("mb-2 transition-opacity", isLoading && "opacity-50")} data-testid="todo-item">
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
-          <input
-            type="checkbox"
+          <Checkbox
             checked={todo.completed}
-            onChange={handleToggle}
+            onCheckedChange={handleToggle}
             disabled={isLoading}
-            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
             data-testid="todo-checkbox"
           />
           
@@ -109,6 +109,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                 variant="outline"
                 data-testid="save-todo"
               >
+                <Save className="h-4 w-4" />
                 Save
               </Button>
               <Button 
@@ -118,6 +119,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                 variant="ghost"
                 data-testid="cancel-edit"
               >
+                <X className="h-4 w-4" />
                 Cancel
               </Button>
             </div>
@@ -142,6 +144,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                   variant="ghost"
                   data-testid="edit-todo"
                 >
+                  <Edit className="h-4 w-4" />
                   Edit
                 </Button>
                 <Button
@@ -151,6 +154,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                   variant="destructive"
                   data-testid="delete-todo"
                 >
+                  <Trash2 className="h-4 w-4" />
                   Delete
                 </Button>
               </div>
