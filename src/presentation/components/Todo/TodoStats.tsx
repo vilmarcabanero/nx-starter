@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 
 interface TodoStatsProps {
   total: number;
@@ -17,45 +18,41 @@ export const TodoStats: React.FC<TodoStatsProps> = ({
   filter,
   onFilterChange
 }) => {
+  const handleFilterChange = (value: string) => {
+    if (value === 'all' || value === 'active' || value === 'completed') {
+      onFilterChange(value);
+    }
+  };
+
   return (
     <Card className="mb-6">
       <CardContent className="p-4">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            <span data-testid="stats-total">Total: {total}</span>
-            <span data-testid="stats-active">Active: {active}</span>
-            <span data-testid="stats-completed">Completed: {completed}</span>
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="secondary" data-testid="stats-total">
+              Total: {total}
+            </Badge>
+            <Badge variant="outline" data-testid="stats-active">
+              Active: {active}
+            </Badge>
+            <Badge variant="outline" data-testid="stats-completed">
+              Completed: {completed}
+            </Badge>
           </div>
           
-          <div className="flex gap-1">
-            <Button
-              onClick={() => onFilterChange('all')}
-              variant={filter === 'all' ? 'default' : 'outline'}
-              size="sm"
-              data-testid="filter-all"
-              data-active={filter === 'all'}
-            >
-              All
-            </Button>
-            <Button
-              onClick={() => onFilterChange('active')}
-              variant={filter === 'active' ? 'default' : 'outline'}
-              size="sm"
-              data-testid="filter-active"
-              data-active={filter === 'active'}
-            >
-              Active
-            </Button>
-            <Button
-              onClick={() => onFilterChange('completed')}
-              variant={filter === 'completed' ? 'default' : 'outline'}
-              size="sm"
-              data-testid="filter-completed"
-              data-active={filter === 'completed'}
-            >
-              Completed
-            </Button>
-          </div>
+          <Tabs value={filter} onValueChange={handleFilterChange}>
+            <TabsList>
+              <TabsTrigger value="all" data-testid="filter-all">
+                All
+              </TabsTrigger>
+              <TabsTrigger value="active" data-testid="filter-active">
+                Active
+              </TabsTrigger>
+              <TabsTrigger value="completed" data-testid="filter-completed">
+                Completed
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
       </CardContent>
     </Card>

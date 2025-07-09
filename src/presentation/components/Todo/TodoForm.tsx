@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Card, CardContent } from '../ui/card';
+import { Plus } from 'lucide-react';
 
 interface TodoFormProps {
   onSubmit: (title: string) => Promise<void>;
@@ -61,6 +62,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({ onSubmit, isLoading = false 
             className="shrink-0"
             data-testid="add-todo-button"
           >
+            <Plus className="h-4 w-4" />
             {isSubmitting ? 'Adding...' : 'Add Todo'}
           </Button>
         </form>
