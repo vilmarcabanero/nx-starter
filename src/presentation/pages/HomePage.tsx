@@ -23,6 +23,8 @@ export const HomePage: React.FC = () => {
     refreshTodos,
   } = useTodoViewModel();
 
+  console.log('HomePage renders')
+
   return (
     <MainLayout data-testid="todo-app">
       {hasError && (

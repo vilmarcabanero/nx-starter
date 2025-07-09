@@ -8,7 +8,11 @@
       "Bash(npm run test:e2e:*)",
       "Bash(pkill:*)",
       "Bash(rm:*)",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run:*)",
+      "Bash(npm test)",
+      "Bash(npm test:*)"
     ],
     "deny": []
   }

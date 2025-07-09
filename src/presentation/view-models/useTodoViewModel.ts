@@ -1,100 +1,106 @@
-import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { 
-  fetchTodosThunk, 
-  createTodoThunk, 
-  updateTodoThunk, 
-  deleteTodoThunk,
-  toggleTodoThunk
-} from '../../core/application/todos/thunks';
-import { 
-  selectTodos, 
-  selectFilteredTodos, 
-  setFilter, 
-  clearError 
-} from '../../core/application/todos/slice';
-import { Todo } from '../../core/domain/entities/Todo';
+import { useEffect, useMemo, useCallback, useRef } from 'react';
+import { useTodoStore } from '../../core/application/stores/TodoStore';
+import type { Todo } from '../../core/domain/entities/Todo';
 
 export const useTodoViewModel = () => {
-  const dispatch = useAppDispatch();
-  const { todos, status, error, filter } = useAppSelector(selectTodos);
-  const filteredTodos = useAppSelector(selectFilteredTodos);
+  const store = useTodoStore();
+  const hasLoadedInitially = useRef(false);
 
-  // Load todos on mount
-  useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchTodosThunk());
+  // Get computed stats from store plus additional overdue calculation
+  const stats = useMemo(() => {
+    const basicStats = store.getStats();
+    const overdue = store.todos.filter(todo => {
+      if (todo.completed) return false;
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      return todo.createdAt < sevenDaysAgo;
+    }).length;
+    
+    return {
+      ...basicStats,
+      overdue,
+    };
+  }, [store]);
+
+  // Action handlers with error handling
+  const createTodo = useCallback(async (title: string) => {
+    if (!title.trim()) {
+      throw new Error('Todo title cannot be empty');
     }
-  }, [dispatch, status]);
 
-  const createTodo = async (title: string) => {
     try {
-      await dispatch(createTodoThunk(title)).unwrap();
+      await store.createTodo({ title: title.trim() });
     } catch (error) {
       console.error('Failed to create todo:', error);
       throw error;
     }
-  };
+  }, [store]);
 
-  const updateTodo = async (id: number, changes: Partial<Todo>) => {
+  const updateTodo = useCallback(async (id: number, changes: Partial<Todo>) => {
     try {
-      await dispatch(updateTodoThunk({ id, changes })).unwrap();
+      await store.updateTodo(id, changes);
     } catch (error) {
       console.error('Failed to update todo:', error);
       throw error;
     }
-  };
+  }, [store]);
 
-  const deleteTodo = async (id: number) => {
+  const deleteTodo = useCallback(async (id: number) => {
     try {
-      await dispatch(deleteTodoThunk(id)).unwrap();
+      await store.deleteTodo(id);
     } catch (error) {
       console.error('Failed to delete todo:', error);
       throw error;
     }
-  };
+  }, [store]);
 
-  const toggleTodo = async (id: number) => {
+  const toggleTodo = useCallback(async (id: number) => {
     try {
-      await dispatch(toggleTodoThunk(id)).unwrap();
+      await store.toggleTodo(id);
     } catch (error) {
       console.error('Failed to toggle todo:', error);
       throw error;
     }
-  };
+  }, [store]);
 
-  const changeFilter = (newFilter: 'all' | 'active' | 'completed') => {
-    dispatch(setFilter(newFilter));
-  };
+  const changeFilter = useCallback((newFilter: 'all' | 'active' | 'completed') => {
+    store.setFilter(newFilter);
+  }, [store]);
 
-  const dismissError = () => {
-    dispatch(clearError());
-  };
+  const dismissError = useCallback(() => {
+    store.clearError();
+  }, [store]);
 
-  const refreshTodos = () => {
-    dispatch(fetchTodosThunk());
-  };
+  const refreshTodos = useCallback(() => {
+    store.loadTodos();
+  }, [store]);
 
-  // Computed values
-  const stats = {
-    total: todos.length,
-    active: todos.filter(todo => !todo.completed).length,
-    completed: todos.filter(todo => todo.completed).length,
-  };
+  // Load todos on mount
+  useEffect(() => {
+    if (!hasLoadedInitially.current) {
+      hasLoadedInitially.current = true;
+      store.loadTodos();
+    }
+  }, [store]);
+
+  // Calculate filtered todos based on current filter
+  const filteredTodos = useMemo(() => {
+    return store.getFilteredTodos();
+  }, [store]);
 
   return {
     // Data
     todos: filteredTodos,
-    allTodos: todos,
-    filter,
+    allTodos: store.todos,
+    filter: store.filter,
     stats,
-    
+
     // State
-    isLoading: status === 'loading',
-    isIdle: status === 'idle',
-    hasError: !!error,
-    error,
-    
+    isLoading: store.getIsLoading(),
+    isIdle: !store.getIsLoading() && store.todos.length === 0,
+    hasError: !!store.error,
+    error: store.error,
+
     // Actions
     createTodo,
     updateTodo,

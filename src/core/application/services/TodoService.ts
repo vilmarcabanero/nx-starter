@@ -1,24 +1,27 @@
+import { injectable, inject } from 'tsyringe';
 import { Todo } from '../../domain/entities/Todo';
 import type { ITodoRepository } from '../../domain/repositories/ITodoRepository';
+import type { ITodoService, CreateTodoData, UpdateTodoData } from '../interfaces/ITodoService';
 
-export class TodoService {
-  constructor(private repository: ITodoRepository) {}
+@injectable()
+export class TodoService implements ITodoService {
+  constructor(@inject('ITodoRepository') private repository: ITodoRepository) {}
 
   async getAllTodos(): Promise<Todo[]> {
     return await this.repository.getAll();
   }
 
-  async createTodo(title: string): Promise<Todo> {
-    if (!title.trim()) {
+  async createTodo(data: CreateTodoData): Promise<Todo> {
+    if (!data.title.trim()) {
       throw new Error('Todo title cannot be empty');
     }
     
-    const todo = new Todo(title.trim());
+    const todo = new Todo(data.title.trim());
     const id = await this.repository.create(todo);
     return new Todo(todo.title, todo.completed, todo.createdAt, id);
   }
 
-  async updateTodo(id: number, changes: Partial<Todo>): Promise<Todo> {
+  async updateTodo(id: number, changes: UpdateTodoData): Promise<Todo> {
     const existingTodo = await this.repository.getById(id);
     if (!existingTodo) {
       throw new Error('Todo not found');

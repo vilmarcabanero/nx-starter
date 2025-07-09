@@ -1,7 +1,9 @@
+import { injectable } from 'tsyringe';
 import { Todo } from '../../domain/entities/Todo';
 import type { ITodoRepository } from '../../domain/repositories/ITodoRepository';
 import { db } from './TodoDB';
 
+@injectable()
 export class TodoRepository implements ITodoRepository {
   async getAll(): Promise<Todo[]> {
     return await db.todos.orderBy('createdAt').reverse().toArray();
