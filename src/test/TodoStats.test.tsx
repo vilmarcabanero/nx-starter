@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { TodoStats } from '../presentation/components/Todo/TodoStats';
 
 describe('TodoStats', () => {
@@ -36,9 +37,9 @@ describe('TodoStats', () => {
       />
     );
 
-    const allButton = screen.getByRole('button', { name: 'All' });
-    const activeButton = screen.getByRole('button', { name: 'Active' });
-    const completedButton = screen.getByRole('button', { name: 'Completed' });
+    const allButton = screen.getByRole('tab', { name: 'All' });
+    const activeButton = screen.getByRole('tab', { name: 'Active' });
+    const completedButton = screen.getByRole('tab', { name: 'Completed' });
 
     // The All button should have the default variant (highlighted)
     expect(allButton).toBeInTheDocument();
@@ -57,9 +58,9 @@ describe('TodoStats', () => {
       />
     );
 
-    const allButton = screen.getByRole('button', { name: 'All' });
-    const activeButton = screen.getByRole('button', { name: 'Active' });
-    const completedButton = screen.getByRole('button', { name: 'Completed' });
+    const allButton = screen.getByRole('tab', { name: 'All' });
+    const activeButton = screen.getByRole('tab', { name: 'Active' });
+    const completedButton = screen.getByRole('tab', { name: 'Completed' });
 
     expect(allButton).toBeInTheDocument();
     expect(activeButton).toBeInTheDocument();
@@ -77,16 +78,17 @@ describe('TodoStats', () => {
       />
     );
 
-    const allButton = screen.getByRole('button', { name: 'All' });
-    const activeButton = screen.getByRole('button', { name: 'Active' });
-    const completedButton = screen.getByRole('button', { name: 'Completed' });
+    const allButton = screen.getByRole('tab', { name: 'All' });
+    const activeButton = screen.getByRole('tab', { name: 'Active' });
+    const completedButton = screen.getByRole('tab', { name: 'Completed' });
 
     expect(allButton).toBeInTheDocument();
     expect(activeButton).toBeInTheDocument();
     expect(completedButton).toBeInTheDocument();
   });
 
-  it('should call onFilterChange with "all" when All button is clicked', () => {
+  it('should call onFilterChange with "all" when All button is clicked', async () => {
+    const user = userEvent.setup();
     render(
       <TodoStats
         total={5}
@@ -97,13 +99,14 @@ describe('TodoStats', () => {
       />
     );
 
-    const allButton = screen.getByRole('button', { name: 'All' });
-    fireEvent.click(allButton);
+    const allButton = screen.getByRole('tab', { name: 'All' });
+    await user.click(allButton);
 
     expect(mockOnFilterChange).toHaveBeenCalledWith('all');
   });
 
-  it('should call onFilterChange with "active" when Active button is clicked', () => {
+  it('should call onFilterChange with "active" when Active button is clicked', async () => {
+    const user = userEvent.setup();
     render(
       <TodoStats
         total={5}
@@ -114,13 +117,14 @@ describe('TodoStats', () => {
       />
     );
 
-    const activeButton = screen.getByRole('button', { name: 'Active' });
-    fireEvent.click(activeButton);
+    const activeButton = screen.getByRole('tab', { name: 'Active' });
+    await user.click(activeButton);
 
     expect(mockOnFilterChange).toHaveBeenCalledWith('active');
   });
 
-  it('should call onFilterChange with "completed" when Completed button is clicked', () => {
+  it('should call onFilterChange with "completed" when Completed button is clicked', async () => {
+    const user = userEvent.setup();
     render(
       <TodoStats
         total={5}
@@ -131,8 +135,8 @@ describe('TodoStats', () => {
       />
     );
 
-    const completedButton = screen.getByRole('button', { name: 'Completed' });
-    fireEvent.click(completedButton);
+    const completedButton = screen.getByRole('tab', { name: 'Completed' });
+    await user.click(completedButton);
 
     expect(mockOnFilterChange).toHaveBeenCalledWith('completed');
   });
@@ -164,9 +168,9 @@ describe('TodoStats', () => {
       />
     );
 
-    expect(screen.getByRole('button', { name: 'All' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Active' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Completed' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'All' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Active' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Completed' })).toBeInTheDocument();
   });
 
   it('should handle large numbers correctly', () => {

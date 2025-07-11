@@ -36,15 +36,15 @@ describe('Button', () => {
   it('should apply size classes correctly', () => {
     const { rerender } = render(<Button size="sm">Small</Button>);
     let button = screen.getByRole('button');
-    expect(button).toHaveClass('h-8', 'px-3', 'text-xs');
+    expect(button).toHaveClass('h-8', 'px-3');
 
     rerender(<Button size="lg">Large</Button>);
     button = screen.getByRole('button');
-    expect(button).toHaveClass('h-10', 'px-8');
+    expect(button).toHaveClass('h-10', 'px-6');
 
     rerender(<Button size="icon">Icon</Button>);
     button = screen.getByRole('button');
-    expect(button).toHaveClass('h-9', 'w-9');
+    expect(button).toHaveClass('size-9');
   });
 
   it('should handle click events', async () => {

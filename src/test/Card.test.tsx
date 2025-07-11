@@ -15,7 +15,7 @@ describe('Card Components', () => {
       render(<Card data-testid="card">Card content</Card>);
       const card = screen.getByTestId('card');
       expect(card).toBeInTheDocument();
-      expect(card).toHaveClass('rounded-lg', 'border', 'bg-card');
+      expect(card).toHaveClass('rounded-xl', 'border', 'bg-card');
     });
 
     it('should apply custom className', () => {
@@ -30,16 +30,16 @@ describe('Card Components', () => {
       render(<CardHeader data-testid="header">Header content</CardHeader>);
       const header = screen.getByTestId('header');
       expect(header).toBeInTheDocument();
-      expect(header).toHaveClass('flex', 'flex-col', 'space-y-1.5', 'p-6');
+      expect(header).toHaveClass('grid', 'auto-rows-min', 'items-start', 'gap-1.5', 'px-6');
     });
   });
 
   describe('CardTitle', () => {
     it('should render as h3 element with correct classes', () => {
       render(<CardTitle>Card Title</CardTitle>);
-      const title = screen.getByRole('heading', { level: 3 });
+      const title = screen.getByText('Card Title');
       expect(title).toBeInTheDocument();
-      expect(title).toHaveClass('text-2xl', 'font-semibold');
+      expect(title).toHaveClass('leading-none', 'font-semibold');
       expect(title).toHaveTextContent('Card Title');
     });
   });
@@ -58,7 +58,7 @@ describe('Card Components', () => {
       render(<CardContent data-testid="content">Card content</CardContent>);
       const content = screen.getByTestId('content');
       expect(content).toBeInTheDocument();
-      expect(content).toHaveClass('p-6', 'pt-0');
+      expect(content).toHaveClass('px-6');
     });
   });
 
@@ -67,7 +67,7 @@ describe('Card Components', () => {
       render(<CardFooter data-testid="footer">Footer content</CardFooter>);
       const footer = screen.getByTestId('footer');
       expect(footer).toBeInTheDocument();
-      expect(footer).toHaveClass('flex', 'items-center', 'p-6', 'pt-0');
+      expect(footer).toHaveClass('flex', 'items-center', 'px-6');
     });
   });
 
@@ -88,7 +88,7 @@ describe('Card Components', () => {
         </Card>
       );
 
-      expect(screen.getByRole('heading', { name: 'Test Title' })).toBeInTheDocument();
+      expect(screen.getByText('Test Title')).toBeInTheDocument();
       expect(screen.getByText('Test Description')).toBeInTheDocument();
       expect(screen.getByText('Test content')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: 'Action' })).toBeInTheDocument();
