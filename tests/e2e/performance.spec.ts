@@ -22,7 +22,7 @@ test.describe('Performance', () => {
     });
 
     test('should have reasonable bundle size', async ({ page }) => {
-      const response = await page.goto('/');
+      await page.goto('/');
       const resourceSizes = await page.evaluate(() => {
         return performance.getEntriesByType('resource').map(entry => ({
           name: entry.name,
@@ -42,7 +42,7 @@ test.describe('Performance', () => {
   });
 
   test.describe('Runtime Performance', () => {
-    test('should handle adding many todos efficiently', async ({ page }) => {
+    test('should handle adding many todos efficiently', async () => {
       const startTime = Date.now();
       
       // Add 100 todos
@@ -98,7 +98,7 @@ test.describe('Performance', () => {
       expect(filterTime).toBeLessThan(10000);
     });
 
-    test('should handle rapid interactions without blocking', async ({ page }) => {
+    test('should handle rapid interactions without blocking', async () => {
       // Add several todos
       for (let i = 0; i < 10; i++) {
         await todoPage.addTodo(`Rapid Todo ${i + 1}`);
@@ -127,7 +127,7 @@ test.describe('Performance', () => {
     test('should not have memory leaks with repeated operations', async ({ page }) => {
       // Get initial memory usage
       const initialMemory = await page.evaluate(() => {
-        return (performance as any).memory ? (performance as any).memory.usedJSHeapSize : 0;
+        return (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory ? (performance as unknown as { memory: { usedJSHeapSize: number } }).memory.usedJSHeapSize : 0;
       });
       
       // Perform many operations
@@ -149,14 +149,14 @@ test.describe('Performance', () => {
       
       // Force garbage collection if available
       await page.evaluate(() => {
-        if ((window as any).gc) {
-          (window as any).gc();
+        if ((window as unknown as { gc?: () => void }).gc) {
+          (window as unknown as { gc: () => void }).gc();
         }
       });
       
       // Check memory usage after operations
       const finalMemory = await page.evaluate(() => {
-        return (performance as any).memory ? (performance as any).memory.usedJSHeapSize : 0;
+        return (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory ? (performance as unknown as { memory: { usedJSHeapSize: number } }).memory.usedJSHeapSize : 0;
       });
       
       // Memory should not grow excessively (allow 10MB growth)
@@ -198,7 +198,7 @@ test.describe('Performance', () => {
   // });
 
   test.describe('Rendering Performance', () => {
-    test('should render updates quickly', async ({ page }) => {
+    test('should render updates quickly', async () => {
       await todoPage.addTodo('Render test todo');
       
       // Measure time for toggle operation

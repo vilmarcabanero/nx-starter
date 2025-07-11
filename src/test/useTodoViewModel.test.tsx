@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useTodoViewModel } from '../presentation/view-models/useTodoViewModel';
+import { Todo } from '../core/domain/entities/Todo';
 
 // Mock the Zustand store
 const mockStore = {
-  todos: [],
+  todos: [] as Todo[],
   filter: 'all' as const,
   status: 'idle' as const,
   error: null,
@@ -144,9 +145,9 @@ describe('useTodoViewModel', () => {
       fiveDaysAgo.setDate(now.getDate() - 5);
       
       const todos = [
-        { id: 1, title: 'Old incomplete todo', completed: false, createdAt: eightDaysAgo },
-        { id: 2, title: 'Old completed todo', completed: true, createdAt: eightDaysAgo },
-        { id: 3, title: 'Recent todo', completed: false, createdAt: fiveDaysAgo },
+        new Todo('Old incomplete todo', false, eightDaysAgo, 1),
+        new Todo('Old completed todo', true, eightDaysAgo, 2),
+        new Todo('Recent todo', false, fiveDaysAgo, 3),
       ];
 
       mockStore.todos = todos;
@@ -166,8 +167,8 @@ describe('useTodoViewModel', () => {
       eightDaysAgo.setDate(eightDaysAgo.getDate() - 8);
       
       const todos = [
-        { id: 1, title: 'Old completed todo', completed: true, createdAt: eightDaysAgo },
-        { id: 2, title: 'Another old completed todo', completed: true, createdAt: eightDaysAgo },
+        new Todo('Old completed todo', true, eightDaysAgo, 1),
+        new Todo('Another old completed todo', true, eightDaysAgo, 2),
       ];
 
       mockStore.todos = todos;
@@ -186,8 +187,8 @@ describe('useTodoViewModel', () => {
       eightDaysAgo.setDate(eightDaysAgo.getDate() - 8);
       
       const todos = [
-        { id: 1, title: 'Very old todo', completed: false, createdAt: tenDaysAgo },
-        { id: 2, title: 'Old todo', completed: false, createdAt: eightDaysAgo },
+        new Todo('Very old todo', false, tenDaysAgo, 1),
+        new Todo('Old todo', false, eightDaysAgo, 2),
       ];
 
       mockStore.todos = todos;
@@ -280,7 +281,7 @@ describe('useTodoViewModel', () => {
 
     it('should be false when not loading but todos exist', () => {
       mockStore.getIsLoading.mockReturnValue(false);
-      mockStore.todos = [{ id: 1, title: 'Test', completed: false, createdAt: new Date() }];
+      mockStore.todos = [new Todo('Test', false, new Date(), 1)];
 
       const { result } = renderHook(() => useTodoViewModel());
 

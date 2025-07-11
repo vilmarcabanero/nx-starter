@@ -3,6 +3,7 @@ import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { container, TOKENS } from '../../infrastructure/di/container';
+import { Todo } from '../../domain/entities/Todo';
 import type { TodoStore } from './interfaces/TodoStore';
 import type { ITodoService, CreateTodoData, UpdateTodoData } from '../interfaces/ITodoService';
 
@@ -98,7 +99,7 @@ export const useTodoStore = create<TodoStore>()(
 
           async updateTodo(id: number, updates: UpdateTodoData) {
             // Optimistic update - create deep copy of todos
-            const originalTodos = get().todos.map(todo => ({ ...todo }));
+            const originalTodos = get().todos.map(todo => new Todo(todo.title, todo.completed, todo.createdAt, todo.id));
             
             set((state) => {
               const index = state.todos.findIndex(todo => todo.id === id);
@@ -130,7 +131,7 @@ export const useTodoStore = create<TodoStore>()(
 
           async deleteTodo(id: number) {
             // Optimistic update - create deep copy of todos
-            const originalTodos = get().todos.map(todo => ({ ...todo }));
+            const originalTodos = get().todos.map(todo => new Todo(todo.title, todo.completed, todo.createdAt, todo.id));
             
             set((state) => {
               state.todos = state.todos.filter(todo => todo.id !== id);
@@ -155,7 +156,7 @@ export const useTodoStore = create<TodoStore>()(
 
           async toggleTodo(id: number) {
             // Optimistic update - create deep copy of todos
-            const originalTodos = get().todos.map(todo => ({ ...todo }));
+            const originalTodos = get().todos.map(todo => new Todo(todo.title, todo.completed, todo.createdAt, todo.id));
             
             set((state) => {
               const index = state.todos.findIndex(todo => todo.id === id);

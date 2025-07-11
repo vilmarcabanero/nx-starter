@@ -57,7 +57,7 @@ test.describe('Todo Application', () => {
       await todoItem.expectTitle('Spaced todo');
     });
 
-    test('should not add empty todos', async ({ page }) => {
+    test('should not add empty todos', async () => {
       await todoPage.addTodo('');
       await todoPage.expectEmptyState();
       
