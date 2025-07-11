@@ -107,7 +107,7 @@ test.describe('Error Handling', () => {
       await todoPage.addTodo('Test todo');
       
       const checkbox = page.locator('[data-testid="todo-checkbox"]').first();
-      await expect(checkbox).toHaveAttribute('type', 'checkbox');
+      await expect(checkbox).toHaveAttribute('role', 'checkbox');
     });
 
     test('should support keyboard navigation', async ({ page }) => {

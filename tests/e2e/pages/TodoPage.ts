@@ -61,7 +61,7 @@ export class TodoPage {
     // Wait for filter to become active and for DOM to update
     await this.page.waitForFunction(() => {
       const allButton = document.querySelector('[data-testid="filter-all"]');
-      return allButton?.getAttribute('data-active') === 'true';
+      return allButton?.getAttribute('data-state') === 'active';
     }, { timeout: 10000 });
   }
 
@@ -70,7 +70,7 @@ export class TodoPage {
     // Wait for filter to become active and for DOM to update
     await this.page.waitForFunction(() => {
       const activeButton = document.querySelector('[data-testid="filter-active"]');
-      return activeButton?.getAttribute('data-active') === 'true';
+      return activeButton?.getAttribute('data-state') === 'active';
     }, { timeout: 10000 });
   }
 
@@ -79,14 +79,14 @@ export class TodoPage {
     // Wait for filter to become active and for DOM to update
     await this.page.waitForFunction(() => {
       const completedButton = document.querySelector('[data-testid="filter-completed"]');
-      return completedButton?.getAttribute('data-active') === 'true';
+      return completedButton?.getAttribute('data-state') === 'active';
     }, { timeout: 10000 });
   }
 
   async getActiveFilter() {
-    if (await this.filterAll.getAttribute('data-active') === 'true') return 'all';
-    if (await this.filterActive.getAttribute('data-active') === 'true') return 'active';
-    if (await this.filterCompleted.getAttribute('data-active') === 'true') return 'completed';
+    if (await this.filterAll.getAttribute('data-state') === 'active') return 'all';
+    if (await this.filterActive.getAttribute('data-state') === 'active') return 'active';
+    if (await this.filterCompleted.getAttribute('data-state') === 'active') return 'completed';
     return 'unknown';
   }
 
