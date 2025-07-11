@@ -78,7 +78,6 @@ export const useTodoStore = create<TodoStore>()(
 
           async createTodo(data: CreateTodoData) {
             set((state) => {
-              state.status = 'loading';
               state.error = null;
             });
 
@@ -106,7 +105,7 @@ export const useTodoStore = create<TodoStore>()(
               if (index !== -1) {
                 Object.assign(state.todos[index], updates);
               }
-              state.status = 'loading';
+              state.error = null;
             });
 
             try {
@@ -135,7 +134,7 @@ export const useTodoStore = create<TodoStore>()(
             
             set((state) => {
               state.todos = state.todos.filter(todo => todo.id !== id);
-              state.status = 'loading';
+              state.error = null;
             });
 
             try {
@@ -163,7 +162,7 @@ export const useTodoStore = create<TodoStore>()(
               if (index !== -1) {
                 state.todos[index].completed = !state.todos[index].completed;
               }
-              state.status = 'loading';
+              state.error = null;
             });
 
             try {

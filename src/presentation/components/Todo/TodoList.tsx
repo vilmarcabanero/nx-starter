@@ -18,16 +18,29 @@ export const TodoList: React.FC<TodoListProps> = ({
   onUpdate,
   isLoading = false 
 }) => {
+  // if (isLoading) {
+  //   // Note: This loading state is kept for initial data fetching from IndexedDB
+  //   // which might take a moment on first load. Individual CRUD operations
+  //   // don't trigger this since they're optimistic updates in the store.
+
+  //   // This loading message only appears during initial app load from IndexedDB.
+  //   // Fast local CRUD operations use optimistic updates without loading states.
+  //   return (
+  //     <Card>
+  //       <CardContent className="p-6">
+  //         <div className="flex items-center justify-center py-8">
+  //           <div className="text-muted-foreground" data-testid="loading">
+  //             Loading todos...
+  //           </div>
+  //         </div>
+  //       </CardContent>
+  //     </Card>
+  //   );
+  // }
+
+  // Show blank space during initial loading to avoid briefly showing "No todos yet"
   if (isLoading) {
-    return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center justify-center py-8">
-            <div className="text-muted-foreground" data-testid="loading">Loading todos...</div>
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <div className="min-h-[200px]" data-testid="loading-blank" />;
   }
 
   if (todos.length === 0) {

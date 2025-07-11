@@ -106,6 +106,7 @@ export const measureAsync = async <T,>(fn: () => Promise<T>): Promise<{ result: 
 };
 
 // Wait helper for testing loading states
+// Note: Loading states are only used for initial data fetch, not individual CRUD operations
 export const waitForNextTick = () => new Promise(resolve => setTimeout(resolve, 0));
 
 // Cleanup helper for tests

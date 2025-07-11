@@ -72,18 +72,22 @@ test.describe('Error Handling', () => {
 
   test.describe('Loading States', () => {
     test('should show loading state when appropriate', async ({ page }) => {
-      // This test depends on the implementation showing loading states
-      // For now, we'll test that the loading element can be found when it exists
+      // NOTE: Loading states have been optimized for fast local IndexedDB operations
+      // Loading only occurs during initial app load, not during individual CRUD operations
+      // This test verifies that loading states don't interfere with UX for fast local operations
       await todoPage.addTodo('Test todo');
       
       // The loading state might be very brief, so we'll check for the absence of loading
-      await expect(page.locator('[data-testid="loading"]')).not.toBeVisible({ timeout: 5000 });
+      // Updated: Now checks for blank loading space instead of loading message
+      // Individual operations use optimistic updates and don't show loading indicators
+      await expect(page.locator('[data-testid="loading-blank"]')).not.toBeVisible({ timeout: 5000 });
     });
 
     test('should disable buttons during loading', async ({ page }) => {
       await todoPage.addTodo('Test todo');
       
       // Check that buttons are not disabled after loading completes
+      // Individual operations don't disable buttons since IndexedDB operations are fast
       const addButton = page.locator('[data-testid="add-todo-button"]');
       const deleteButton = page.locator('[data-testid="delete-todo"]').first();
       const editButton = page.locator('[data-testid="edit-todo"]').first();

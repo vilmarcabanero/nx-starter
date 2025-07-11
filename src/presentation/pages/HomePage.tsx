@@ -45,6 +45,7 @@ export const HomePage: React.FC = () => {
       )}
 
       <TodoForm onSubmit={createTodo} isLoading={isLoading} />
+      {/* isLoading prop only disables form during initial data fetch, not individual CRUD operations */}
       
       <TodoStats
         total={stats.total}
@@ -61,6 +62,7 @@ export const HomePage: React.FC = () => {
         onUpdate={updateTodo}
         isLoading={isLoading}
       />
+      {/* isLoading prop prevents showing "No todos yet" during initial data fetch, but no loading indicator is shown */}
     </MainLayout>
   );
 };

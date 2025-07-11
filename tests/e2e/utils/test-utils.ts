@@ -32,7 +32,10 @@ export class TestUtils {
   }
 
   async waitForLoadingToFinish() {
-    await this.page.waitForSelector('[data-testid="loading"]', { state: 'detached', timeout: 5000 });
+    // Updated: Now waits for blank loading space to disappear instead of loading message
+    // This waits for initial IndexedDB data loading to complete
+    // Individual CRUD operations don't show loading states due to optimistic updates
+    await this.page.waitForSelector('[data-testid="loading-blank"]', { state: 'detached', timeout: 5000 });
   }
 
   async waitForErrorToDisappear() {

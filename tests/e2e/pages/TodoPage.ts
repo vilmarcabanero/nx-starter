@@ -107,7 +107,10 @@ export class TodoPage {
   }
 
   async expectLoadingState() {
-    await expect(this.page.locator('[data-testid="loading"]')).toBeVisible();
+    // Updated: Now expects blank loading space instead of loading message
+    // This loading state only occurs during initial app load from IndexedDB
+    // Individual CRUD operations use optimistic updates and don't show loading
+    await expect(this.page.locator('[data-testid="loading-blank"]')).toBeVisible();
   }
 
   async expectStats(total: number, active: number, completed: number) {
@@ -121,6 +124,7 @@ export class TodoPage {
   }
 
   async expectAddButtonDisabled() {
+    // Button is only disabled during initial data loading, not during individual operations
     await expect(this.addTodoButton).toBeDisabled();
   }
 }

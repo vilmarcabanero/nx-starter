@@ -22,7 +22,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(todo.title);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false); // Commented out for fast local DB operations
 
   // Sync edit title with todo title when todo changes, but preserve edit state
   useEffect(() => {
@@ -33,37 +33,37 @@ export const TodoItem: React.FC<TodoItemProps> = ({
 
   const handleToggle = async () => {
     if (!todo.id) return;
-    setIsLoading(true);
+    // setIsLoading(true); // Commented out for fast local DB operations
     try {
       await onToggle(todo.id);
     } catch (error) {
       console.error('Failed to toggle todo:', error);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false); // Commented out for fast local DB operations
     }
   };
 
   const handleDelete = async () => {
     if (!todo.id) return;
-    setIsLoading(true);
+    // setIsLoading(true); // Commented out for fast local DB operations
     try {
       await onDelete(todo.id);
     } catch (error) {
       console.error('Failed to delete todo:', error);
-      setIsLoading(false);
+      // setIsLoading(false); // Commented out for fast local DB operations
     }
   };
 
   const handleSave = async () => {
     if (!todo.id || !editTitle.trim()) return;
-    setIsLoading(true);
+    // setIsLoading(true); // Commented out for fast local DB operations
     try {
       await onUpdate(todo.id, { title: editTitle.trim() });
       setIsEditing(false);
     } catch (error) {
       console.error('Failed to update todo:', error);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false); // Commented out for fast local DB operations
     }
   };
 
@@ -81,13 +81,14 @@ export const TodoItem: React.FC<TodoItemProps> = ({
   };
 
   return (
-    <Card className={cn("mb-2 transition-opacity", isLoading && "opacity-50")} data-testid="todo-item">
+    <Card className={cn("mb-2 transition-opacity")} data-testid="todo-item">
+      {/* isLoading && "opacity-50" - Removed opacity change for fast local DB operations */}
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
           <Checkbox
             checked={todo.completed}
             onCheckedChange={handleToggle}
-            disabled={isLoading}
+            // disabled={isLoading} // Commented out for fast local DB operations
             data-testid="todo-checkbox"
           />
           
@@ -97,14 +98,14 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                 value={editTitle}
                 onChange={(e) => setEditTitle(e.target.value)}
                 onKeyDown={handleKeyDown}
-                disabled={isLoading}
+                // disabled={isLoading} // Commented out for fast local DB operations
                 className="flex-1"
                 autoFocus
                 data-testid="todo-edit-input"
               />
               <Button 
                 onClick={handleSave} 
-                disabled={isLoading || !editTitle.trim()}
+                disabled={!editTitle.trim()} // Only disable if empty, removed isLoading for fast local DB operations
                 size="sm"
                 variant="outline"
                 data-testid="save-todo"
@@ -114,7 +115,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
               </Button>
               <Button 
                 onClick={handleCancel} 
-                disabled={isLoading}
+                // disabled={isLoading} // Commented out for fast local DB operations
                 size="sm"
                 variant="ghost"
                 data-testid="cancel-edit"
@@ -139,7 +140,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
               <div className="flex gap-1">
                 <Button
                   onClick={() => setIsEditing(true)}
-                  disabled={isLoading}
+                  // disabled={isLoading} // Commented out for fast local DB operations
                   size="sm"
                   variant="ghost"
                   data-testid="edit-todo"
@@ -149,7 +150,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({
                 </Button>
                 <Button
                   onClick={handleDelete}
-                  disabled={isLoading}
+                  // disabled={isLoading} // Commented out for fast local DB operations
                   size="sm"
                   variant="destructive"
                   data-testid="delete-todo"

@@ -18,6 +18,8 @@ describe('TodoForm', () => {
   });
 
   it('should show loading state when isLoading prop is true', () => {
+    // This tests the external loading prop (e.g., initial data fetch)
+    // Individual form submissions don't use loading states for fast local DB operations
     render(<TodoForm onSubmit={mockOnSubmit} isLoading={true} />);
     
     const input = screen.getByPlaceholderText('What needs to be done?');
@@ -108,6 +110,9 @@ describe('TodoForm', () => {
     });
   });
 
+  // Test commented out as we removed submitting state for fast local DB operations
+  // Fast IndexedDB operations don't need loading states in individual forms
+  /*
   it('should show submitting state during form submission', async () => {
     const user = userEvent.setup();
     // Mock a delayed submission
@@ -131,6 +136,7 @@ describe('TodoForm', () => {
       expect(screen.getByRole('button', { name: 'Add Todo' })).toBeInTheDocument();
     });
   });
+  */
 
   it('should handle submission errors gracefully', async () => {
     const user = userEvent.setup();
@@ -189,6 +195,8 @@ describe('TodoForm', () => {
   });
 
   it('should disable form during external loading', () => {
+    // This tests external loading (e.g., initial app load)
+    // Form submissions themselves don't use loading states for fast IndexedDB operations
     render(<TodoForm onSubmit={mockOnSubmit} isLoading={true} />);
     
     const input = screen.getByPlaceholderText('What needs to be done?');

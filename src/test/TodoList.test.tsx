@@ -21,6 +21,7 @@ describe('TodoList', () => {
   });
 
   it('should render loading state when isLoading is true', () => {
+    // Updated: Now shows blank space instead of loading message for fast IndexedDB operations
     render(
       <TodoList
         todos={[]}
@@ -31,7 +32,9 @@ describe('TodoList', () => {
       />
     );
 
-    expect(screen.getByText('Loading todos...')).toBeInTheDocument();
+    expect(screen.getByTestId('loading-blank')).toBeInTheDocument();
+    expect(screen.queryByText('Loading todos...')).not.toBeInTheDocument();
+    expect(screen.queryByText('No todos yet')).not.toBeInTheDocument();
   });
 
   it('should render empty state when no todos are provided', () => {
@@ -105,6 +108,7 @@ describe('TodoList', () => {
   });
 
   it('should not render empty state when loading is true even with empty todos', () => {
+    // Updated: Now shows blank space instead of loading message
     render(
       <TodoList
         todos={[]}
@@ -116,7 +120,8 @@ describe('TodoList', () => {
     );
 
     expect(screen.queryByText('No todos yet')).not.toBeInTheDocument();
-    expect(screen.getByText('Loading todos...')).toBeInTheDocument();
+    expect(screen.queryByText('Loading todos...')).not.toBeInTheDocument();
+    expect(screen.getByTestId('loading-blank')).toBeInTheDocument();
   });
 
   it('should render todos with proper spacing', () => {

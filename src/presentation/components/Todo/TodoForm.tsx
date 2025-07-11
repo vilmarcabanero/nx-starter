@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -15,20 +15,20 @@ interface FormData {
 }
 
 export const TodoForm: React.FC<TodoFormProps> = ({ onSubmit, isLoading = false }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  // const [isSubmitting, setIsSubmitting] = useState(false); // Commented out for fast local DB operations
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
 
   const handleFormSubmit = async (data: FormData) => {
     if (!data.title.trim()) return;
     
-    setIsSubmitting(true);
+    // setIsSubmitting(true); // Commented out for fast local DB operations
     try {
       await onSubmit(data.title.trim());
       reset();
     } catch (error) {
       console.error('Failed to create todo:', error);
     } finally {
-      setIsSubmitting(false);
+      // setIsSubmitting(false); // Commented out for fast local DB operations
     }
   };
 
@@ -48,7 +48,7 @@ export const TodoForm: React.FC<TodoFormProps> = ({ onSubmit, isLoading = false 
                 }
               })}
               placeholder="What needs to be done?"
-              disabled={isLoading || isSubmitting}
+              disabled={isLoading} // Only disable on global loading (e.g., initial data fetch)
               className={errors.title ? 'border-destructive' : ''}
               data-testid="todo-input"
             />
@@ -58,12 +58,14 @@ export const TodoForm: React.FC<TodoFormProps> = ({ onSubmit, isLoading = false 
           </div>
           <Button 
             type="submit" 
-            disabled={isLoading || isSubmitting}
+            disabled={isLoading} // Only disable on global loading (e.g., initial data fetch)
             className="shrink-0"
             data-testid="add-todo-button"
           >
             <Plus className="h-4 w-4" />
-            {isSubmitting ? 'Adding...' : 'Add Todo'}
+            Add Todo
+            {/* {isSubmitting ? 'Adding...' : 'Add Todo'} - Removed for fast local DB operations. 
+                 Use similar pattern for Login/API buttons where network latency matters */}
           </Button>
         </form>
       </CardContent>

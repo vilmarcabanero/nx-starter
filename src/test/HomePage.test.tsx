@@ -87,6 +87,8 @@ describe('HomePage', () => {
   });
 
   it('should pass loading state to components', () => {
+    // This tests that the external loading state (initial data fetch) is properly passed
+    // Individual CRUD operations don't use loading states due to optimistic updates
     mockUseTodoViewModel.mockReturnValue({
       ...defaultViewModel,
       isLoading: true
