@@ -129,33 +129,17 @@ describe('TodoStore Status Management', () => {
   });
 
   describe('createTodo status management', () => {
-    it('should set loading status when createTodo starts', async () => {
+    it('should create todo successfully without loading state', async () => {
       const mockTodo = new Todo('New Todo', false, new Date(), 1);
+      mockTodoService.createTodo = vi.fn().mockResolvedValue(mockTodo);
       
-      let resolvePromise: (value: Todo) => void = () => {};
-      const promise = new Promise<Todo>((resolve) => {
-        resolvePromise = resolve;
-      });
+      await useTodoStore.getState().createTodo({ title: 'New Todo' });
       
-      mockTodoService.createTodo = vi.fn().mockReturnValue(promise);
-      
-      // Start the async operation
-      const createPromise = useTodoStore.getState().createTodo({ title: 'New Todo' });
-      
-      // Check that status is loading
-      expect(useTodoStore.getState().status).toBe('loading');
-      expect(useTodoStore.getState().getIsLoading()).toBe(true);
-      expect(useTodoStore.getState().error).toBeNull();
-      
-      // Resolve the promise
-      resolvePromise(mockTodo);
-      await createPromise;
-      
-      // Check that status is succeeded
       const finalState = useTodoStore.getState();
       expect(finalState.status).toBe('succeeded');
       expect(finalState.getIsLoading()).toBe(false);
       expect(finalState.todos).toContain(mockTodo);
+      expect(finalState.error).toBeNull();
     });
 
     it('should set failed status when createTodo fails', async () => {
@@ -177,7 +161,7 @@ describe('TodoStore Status Management', () => {
   });
 
   describe('updateTodo status management', () => {
-    it('should set loading status when updateTodo starts', async () => {
+    it('should update todo successfully without loading state', async () => {
       const mockTodo = new Todo('Updated Todo', true, new Date(), 1);
       
       // Set initial state with a todo
@@ -187,30 +171,15 @@ describe('TodoStore Status Management', () => {
         error: null,
       });
       
-      let resolvePromise: (value: Todo) => void = () => {};
-      const promise = new Promise<Todo>((resolve) => {
-        resolvePromise = resolve;
-      });
+      mockTodoService.updateTodo = vi.fn().mockResolvedValue(mockTodo);
       
-      mockTodoService.updateTodo = vi.fn().mockReturnValue(promise);
+      await useTodoStore.getState().updateTodo(1, { completed: true });
       
-      // Start the async operation
-      const updatePromise = useTodoStore.getState().updateTodo(1, { completed: true });
-      
-      // Check that status is loading
-      expect(useTodoStore.getState().status).toBe('loading');
-      expect(useTodoStore.getState().getIsLoading()).toBe(true);
-      expect(useTodoStore.getState().error).toBeNull();
-      
-      // Resolve the promise
-      resolvePromise(mockTodo);
-      await updatePromise;
-      
-      // Check that status is succeeded
       const finalState = useTodoStore.getState();
       expect(finalState.status).toBe('succeeded');
       expect(finalState.getIsLoading()).toBe(false);
       expect(finalState.todos[0].completed).toBe(true);
+      expect(finalState.error).toBeNull();
     });
 
     it('should set failed status when updateTodo fails', async () => {
@@ -239,7 +208,7 @@ describe('TodoStore Status Management', () => {
   });
 
   describe('deleteTodo status management', () => {
-    it('should set loading status when deleteTodo starts', async () => {
+    it('should delete todo successfully without loading state', async () => {
       // Set initial state with a todo
       useTodoStore.setState({
         todos: [new Todo('Test Todo', false, new Date(), 1)],
@@ -247,30 +216,15 @@ describe('TodoStore Status Management', () => {
         error: null,
       });
       
-      let resolvePromise: (value: void) => void = () => {};
-      const promise = new Promise<void>((resolve) => {
-        resolvePromise = resolve;
-      });
+      mockTodoService.deleteTodo = vi.fn().mockResolvedValue(undefined);
       
-      mockTodoService.deleteTodo = vi.fn().mockReturnValue(promise);
+      await useTodoStore.getState().deleteTodo(1);
       
-      // Start the async operation
-      const deletePromise = useTodoStore.getState().deleteTodo(1);
-      
-      // Check that status is loading
-      expect(useTodoStore.getState().status).toBe('loading');
-      expect(useTodoStore.getState().getIsLoading()).toBe(true);
-      expect(useTodoStore.getState().error).toBeNull();
-      
-      // Resolve the promise
-      resolvePromise();
-      await deletePromise;
-      
-      // Check that status is succeeded
       const finalState = useTodoStore.getState();
       expect(finalState.status).toBe('succeeded');
       expect(finalState.getIsLoading()).toBe(false);
       expect(finalState.todos).toHaveLength(0);
+      expect(finalState.error).toBeNull();
     });
 
     it('should set failed status when deleteTodo fails', async () => {
