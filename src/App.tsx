@@ -1,8 +1,8 @@
-import { HomePage } from './presentation/pages/HomePage';
-import './index.css';
+import { TodoPage } from '@/presentation/features/todo';
+import '@/index.css';
 
 function App() {
-  return <HomePage />;
+  return <TodoPage />;
 }
 
 export default App;

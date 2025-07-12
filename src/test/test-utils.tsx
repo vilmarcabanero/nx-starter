@@ -2,16 +2,28 @@
 import { vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { type ReactElement } from 'react';
-import { Todo } from '../core/domain/entities/Todo';
-import type { ITodoRepository } from '../core/domain/repositories/ITodoRepository';
+import { Todo } from '@/core/domain/todo/entities/Todo';
+import { TodoId } from '@/core/domain/todo/value-objects/TodoId';
+import { TodoTitle } from '@/core/domain/todo/value-objects/TodoTitle';
+import { type TodoPriorityLevel } from '@/core/domain/todo/value-objects/TodoPriority';
+import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 
 // Factory function for creating mock todos
-export const createMockTodo = (overrides?: Partial<Todo>): Todo => {
+export const createMockTodo = (overrides?: {
+  id?: number | TodoId;
+  title?: string | TodoTitle;
+  completed?: boolean;
+  priority?: TodoPriorityLevel;
+  createdAt?: Date;
+  dueDate?: Date;
+}): Todo => {
   return new Todo(
     overrides?.title || 'Test Todo',
     overrides?.completed || false,
     overrides?.createdAt || new Date(),
-    overrides?.id || 1
+    overrides?.id || 1,
+    overrides?.priority || 'medium',
+    overrides?.dueDate
   );
 };
 
@@ -36,6 +48,7 @@ export const createMockRepository = (): ITodoRepository => {
     getById: vi.fn(),
     getActive: vi.fn(),
     getCompleted: vi.fn(),
+    findBySpecification: vi.fn(),
   };
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardHeader, CardTitle } from '@/presentation/components/ui/card';
 
 interface MainLayoutProps {
   children: React.ReactNode;

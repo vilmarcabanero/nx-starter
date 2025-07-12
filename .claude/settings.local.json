@@ -16,7 +16,10 @@
       "Bash(pnpm:*)",
       "Bash(ls:*)",
       "Bash(cat:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vite:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }
