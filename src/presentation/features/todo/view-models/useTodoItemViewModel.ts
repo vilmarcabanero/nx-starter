@@ -28,7 +28,7 @@ export const useTodoItemViewModel = (todo: Todo): TodoItemViewModel => {
       await store.toggleTodo(todo.numericId);
     } catch (error) {
       console.error('Failed to toggle todo:', error);
-      throw error;
+      // Don't throw to UI - error is handled by logging
     } finally {
       setIsUpdating(false);
     }
@@ -59,7 +59,7 @@ export const useTodoItemViewModel = (todo: Todo): TodoItemViewModel => {
       await store.deleteTodo(todo.numericId);
     } catch (error) {
       console.error('Failed to delete todo:', error);
-      throw error;
+      // Don't throw to UI - error is handled by logging
     } finally {
       setIsUpdating(false);
     }

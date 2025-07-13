@@ -33,20 +33,24 @@ describe('Tabs Component Snapshots', () => {
   describe('TabsList', () => {
     it('renders basic tabs list', () => {
       const { container } = render(
-        <TabsList>
-          <TabsTrigger value="tab1">Tab 1</TabsTrigger>
-          <TabsTrigger value="tab2">Tab 2</TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="tab1">
+          <TabsList>
+            <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+            <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+          </TabsList>
+        </Tabs>
       );
       expect(container.firstChild).toMatchSnapshot();
     });
 
     it('renders tabs list with custom className', () => {
       const { container } = render(
-        <TabsList className="custom-tabs-list">
-          <TabsTrigger value="tab1">Tab 1</TabsTrigger>
-          <TabsTrigger value="tab2">Tab 2</TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="tab1">
+          <TabsList className="custom-tabs-list">
+            <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+            <TabsTrigger value="tab2">Tab 2</TabsTrigger>
+          </TabsList>
+        </Tabs>
       );
       expect(container.firstChild).toMatchSnapshot();
     });
@@ -54,34 +58,52 @@ describe('Tabs Component Snapshots', () => {
 
   describe('TabsTrigger', () => {
     it('renders basic tab trigger', () => {
-      const { container } = render(<TabsTrigger value="tab1">Tab 1</TabsTrigger>);
+      const { container } = render(
+        <Tabs defaultValue="tab1">
+          <TabsList>
+            <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      );
       expect(container.firstChild).toMatchSnapshot();
     });
 
     it('renders tab trigger with custom className', () => {
       const { container } = render(
-        <TabsTrigger value="tab1" className="custom-trigger">
-          Custom Tab
-        </TabsTrigger>
+        <Tabs defaultValue="tab1">
+          <TabsList>
+            <TabsTrigger value="tab1" className="custom-trigger">
+              Custom Tab
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       );
       expect(container.firstChild).toMatchSnapshot();
     });
 
     it('renders disabled tab trigger', () => {
       const { container } = render(
-        <TabsTrigger value="tab1" disabled>
-          Disabled Tab
-        </TabsTrigger>
+        <Tabs defaultValue="tab1">
+          <TabsList>
+            <TabsTrigger value="tab1" disabled>
+              Disabled Tab
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       );
       expect(container.firstChild).toMatchSnapshot();
     });
 
     it('renders tab trigger with icon', () => {
       const { container } = render(
-        <TabsTrigger value="settings">
-          <Settings />
-          Settings
-        </TabsTrigger>
+        <Tabs defaultValue="settings">
+          <TabsList>
+            <TabsTrigger value="settings">
+              <Settings />
+              Settings
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       );
       expect(container.firstChild).toMatchSnapshot();
     });
@@ -90,18 +112,22 @@ describe('Tabs Component Snapshots', () => {
   describe('TabsContent', () => {
     it('renders basic tab content', () => {
       const { container } = render(
-        <TabsContent value="tab1">
-          <p>This is tab content.</p>
-        </TabsContent>
+        <Tabs defaultValue="tab1">
+          <TabsContent value="tab1">
+            <p>This is tab content.</p>
+          </TabsContent>
+        </Tabs>
       );
       expect(container.firstChild).toMatchSnapshot();
     });
 
     it('renders tab content with custom className', () => {
       const { container } = render(
-        <TabsContent value="tab1" className="custom-content">
-          <p>Custom tab content.</p>
-        </TabsContent>
+        <Tabs defaultValue="tab1">
+          <TabsContent value="tab1" className="custom-content">
+            <p>Custom tab content.</p>
+          </TabsContent>
+        </Tabs>
       );
       expect(container.firstChild).toMatchSnapshot();
     });
