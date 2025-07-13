@@ -28,7 +28,7 @@ export class TodoRepository implements ITodoRepository {
         : changes.title;
     }
     if (changes.completed !== undefined) {
-      updateData.completed = changes.completed;
+      updateData.completed = changes.completed ? 1 : 0; // Convert boolean to 0/1
     }
     if (changes.priority) {
       updateData.priority = changes.priority instanceof Object && 'level' in changes.priority
@@ -72,7 +72,7 @@ export class TodoRepository implements ITodoRepository {
   private mapToTodoEntity(rawTodo: TodoRecord): Todo {
     return new Todo(
       rawTodo.title,
-      rawTodo.completed || false,
+      Boolean(rawTodo.completed), // Convert 0/1 back to boolean
       rawTodo.createdAt ? new Date(rawTodo.createdAt) : new Date(),
       rawTodo.id,
       (rawTodo.priority || 'medium') as TodoPriorityLevel,
@@ -86,7 +86,7 @@ export class TodoRepository implements ITodoRepository {
   private mapToPlainObject(todo: Todo): TodoRecord {
     return {
       title: todo.titleValue,
-      completed: todo.completed,
+      completed: todo.completed ? 1 : 0, // Convert boolean to 0/1 for IndexedDB
       createdAt: todo.createdAt,
       priority: todo.priority.level,
       dueDate: todo.dueDate

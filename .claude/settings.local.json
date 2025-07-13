@@ -19,7 +19,8 @@
       "Bash(find:*)",
       "Bash(npx tsc:*)",
       "Bash(npx vite:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(npm test:*)"
     ],
     "deny": []
   }

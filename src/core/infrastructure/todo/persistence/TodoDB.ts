@@ -1,10 +1,11 @@
 import Dexie, { type Table } from 'dexie';
 
 // Interface for the raw data stored in IndexedDB
+// Note: completed is stored as 0/1 due to IndexedDB indexing requirements
 export interface TodoRecord {
   id?: number;
   title: string;
-  completed: boolean;
+  completed: number; // 0 for false, 1 for true (IndexedDB indexing requirement)
   createdAt: Date;
   priority: string;
   dueDate?: Date;
