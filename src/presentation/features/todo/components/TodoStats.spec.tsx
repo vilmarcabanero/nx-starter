@@ -3,23 +3,46 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TodoStats } from './TodoStats';
 
-describe('TodoStats', () => {
-  const mockOnFilterChange = vi.fn();
+// Mock the view model
+const mockViewModel = {
+  stats: {
+    total: 0,
+    active: 0,
+    completed: 0,
+    overdue: 0,
+    highPriority: 0,
+  },
+  currentFilter: 'all' as 'all' | 'active' | 'completed',
+  handleFilterChange: vi.fn(),
+};
 
+vi.mock('../view-models/useTodoStatsViewModel', () => ({
+  useTodoStatsViewModel: () => mockViewModel
+}));
+
+describe('TodoStats', () => {
   beforeEach(() => {
-    mockOnFilterChange.mockClear();
+    vi.clearAllMocks();
+    mockViewModel.stats = {
+      total: 0,
+      active: 0,
+      completed: 0,
+      overdue: 0,
+      highPriority: 0,
+    };
+    mockViewModel.currentFilter = 'all';
   });
 
   it('should render stats with correct counts', () => {
-    render(
-      <TodoStats
-        total={10}
-        active={6}
-        completed={4}
-        filter="all"
-        onFilterChange={mockOnFilterChange}
-      />
-    );
+    mockViewModel.stats = {
+      total: 10,
+      active: 6,
+      completed: 4,
+      overdue: 0,
+      highPriority: 0,
+    };
+    
+    render(<TodoStats />);
 
     expect(screen.getByText('Total: 10')).toBeInTheDocument();
     expect(screen.getByText('Active: 6')).toBeInTheDocument();
@@ -27,15 +50,10 @@ describe('TodoStats', () => {
   });
 
   it('should highlight the All filter when filter is "all"', () => {
-    render(
-      <TodoStats
-        total={5}
-        active={3}
-        completed={2}
-        filter="all"
-        onFilterChange={mockOnFilterChange}
-      />
-    );
+    mockViewModel.stats = { total: 5, active: 3, completed: 2, overdue: 0, highPriority: 0 };
+    mockViewModel.currentFilter = 'all';
+    
+    render(<TodoStats />);
 
     const allButton = screen.getByRole('tab', { name: 'All' });
     const activeButton = screen.getByRole('tab', { name: 'Active' });
@@ -48,15 +66,10 @@ describe('TodoStats', () => {
   });
 
   it('should highlight the Active filter when filter is "active"', () => {
-    render(
-      <TodoStats
-        total={5}
-        active={3}
-        completed={2}
-        filter="active"
-        onFilterChange={mockOnFilterChange}
-      />
-    );
+    mockViewModel.stats = { total: 5, active: 3, completed: 2, overdue: 0, highPriority: 0 };
+    mockViewModel.currentFilter = 'active';
+    
+    render(<TodoStats />);
 
     const allButton = screen.getByRole('tab', { name: 'All' });
     const activeButton = screen.getByRole('tab', { name: 'Active' });
@@ -68,15 +81,10 @@ describe('TodoStats', () => {
   });
 
   it('should highlight the Completed filter when filter is "completed"', () => {
-    render(
-      <TodoStats
-        total={5}
-        active={3}
-        completed={2}
-        filter="completed"
-        onFilterChange={mockOnFilterChange}
-      />
-    );
+    mockViewModel.stats = { total: 5, active: 3, completed: 2, overdue: 0, highPriority: 0 };
+    mockViewModel.currentFilter = 'completed';
+    
+    render(<TodoStats />);
 
     const allButton = screen.getByRole('tab', { name: 'All' });
     const activeButton = screen.getByRole('tab', { name: 'Active' });
@@ -87,70 +95,50 @@ describe('TodoStats', () => {
     expect(completedButton).toBeInTheDocument();
   });
 
-  it('should call onFilterChange with "all" when All button is clicked', async () => {
+  it('should call handleFilterChange with "all" when All button is clicked', async () => {
     const user = userEvent.setup();
-    render(
-      <TodoStats
-        total={5}
-        active={3}
-        completed={2}
-        filter="active"
-        onFilterChange={mockOnFilterChange}
-      />
-    );
+    mockViewModel.stats = { total: 5, active: 3, completed: 2, overdue: 0, highPriority: 0 };
+    mockViewModel.currentFilter = 'active';
+    
+    render(<TodoStats />);
 
     const allButton = screen.getByRole('tab', { name: 'All' });
     await user.click(allButton);
 
-    expect(mockOnFilterChange).toHaveBeenCalledWith('all');
+    expect(mockViewModel.handleFilterChange).toHaveBeenCalledWith('all');
   });
 
-  it('should call onFilterChange with "active" when Active button is clicked', async () => {
+  it('should call handleFilterChange with "active" when Active button is clicked', async () => {
     const user = userEvent.setup();
-    render(
-      <TodoStats
-        total={5}
-        active={3}
-        completed={2}
-        filter="all"
-        onFilterChange={mockOnFilterChange}
-      />
-    );
+    mockViewModel.stats = { total: 5, active: 3, completed: 2, overdue: 0, highPriority: 0 };
+    mockViewModel.currentFilter = 'all';
+    
+    render(<TodoStats />);
 
     const activeButton = screen.getByRole('tab', { name: 'Active' });
     await user.click(activeButton);
 
-    expect(mockOnFilterChange).toHaveBeenCalledWith('active');
+    expect(mockViewModel.handleFilterChange).toHaveBeenCalledWith('active');
   });
 
-  it('should call onFilterChange with "completed" when Completed button is clicked', async () => {
+  it('should call handleFilterChange with "completed" when Completed button is clicked', async () => {
     const user = userEvent.setup();
-    render(
-      <TodoStats
-        total={5}
-        active={3}
-        completed={2}
-        filter="all"
-        onFilterChange={mockOnFilterChange}
-      />
-    );
+    mockViewModel.stats = { total: 5, active: 3, completed: 2, overdue: 0, highPriority: 0 };
+    mockViewModel.currentFilter = 'all';
+    
+    render(<TodoStats />);
 
     const completedButton = screen.getByRole('tab', { name: 'Completed' });
     await user.click(completedButton);
 
-    expect(mockOnFilterChange).toHaveBeenCalledWith('completed');
+    expect(mockViewModel.handleFilterChange).toHaveBeenCalledWith('completed');
   });
 
   it('should render with zero counts', () => {
-    render(
-      <TodoStats
-        total={0}
-        active={0}
-        completed={0}
-        filter="all"
-        onFilterChange={mockOnFilterChange}
-      />
-    );
+    mockViewModel.stats = { total: 0, active: 0, completed: 0, overdue: 0, highPriority: 0 };
+    mockViewModel.currentFilter = 'all';
+    
+    render(<TodoStats />);
 
     expect(screen.getByText('Total: 0')).toBeInTheDocument();
     expect(screen.getByText('Active: 0')).toBeInTheDocument();
@@ -158,15 +146,10 @@ describe('TodoStats', () => {
   });
 
   it('should render all filter buttons', () => {
-    render(
-      <TodoStats
-        total={5}
-        active={3}
-        completed={2}
-        filter="all"
-        onFilterChange={mockOnFilterChange}
-      />
-    );
+    mockViewModel.stats = { total: 5, active: 3, completed: 2, overdue: 0, highPriority: 0 };
+    mockViewModel.currentFilter = 'all';
+    
+    render(<TodoStats />);
 
     expect(screen.getByRole('tab', { name: 'All' })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Active' })).toBeInTheDocument();
@@ -174,15 +157,10 @@ describe('TodoStats', () => {
   });
 
   it('should handle large numbers correctly', () => {
-    render(
-      <TodoStats
-        total={1000}
-        active={999}
-        completed={1}
-        filter="all"
-        onFilterChange={mockOnFilterChange}
-      />
-    );
+    mockViewModel.stats = { total: 1000, active: 999, completed: 1, overdue: 0, highPriority: 0 };
+    mockViewModel.currentFilter = 'all';
+    
+    render(<TodoStats />);
 
     expect(screen.getByText('Total: 1000')).toBeInTheDocument();
     expect(screen.getByText('Active: 999')).toBeInTheDocument();

@@ -144,7 +144,7 @@ test.describe('Error Handling', () => {
 
   test.describe('Edge Cases', () => {
     test('should handle very long todo titles', async () => {
-      const longTitle = 'A'.repeat(1000);
+      const longTitle = 'A'.repeat(250); // Within the 255-character limit
       await todoPage.addTodo(longTitle);
       
       const todoItem = await todoPage.getTodoItem(0);

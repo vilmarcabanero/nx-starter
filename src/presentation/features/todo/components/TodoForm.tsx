@@ -29,7 +29,10 @@ export const TodoForm: React.FC = () => {
             <Input
               {...register('title', { 
                 required: 'Title is required',
-                validate: (value) => viewModel.validateTitle(value) || viewModel.validationErrors.title || 'Invalid title'
+                validate: (value) => {
+                  viewModel.validateTitle(value);
+                  return viewModel.validationErrors.title ? viewModel.validationErrors.title : true;
+                }
               })}
               placeholder="What needs to be done?"
               disabled={viewModel.isGlobalLoading || viewModel.isSubmitting}

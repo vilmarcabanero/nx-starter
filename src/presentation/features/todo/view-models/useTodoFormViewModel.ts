@@ -14,8 +14,10 @@ export const useTodoFormViewModel = (): TodoFormViewModel => {
   const validateTitle = useCallback((title: string): boolean => {
     const errors: Record<string, string> = {};
 
-    if (!title || !title.trim()) {
+    if (!title) {
       errors.title = 'Title is required';
+    } else if (title && !title.trim()) {
+      errors.title = 'Title cannot be empty';
     } else if (title.trim().length < 2) {
       errors.title = 'Title must be at least 2 characters long';
     } else if (title.trim().length > 255) {

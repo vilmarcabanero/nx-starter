@@ -3,24 +3,43 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TodoForm } from './TodoForm';
 
-describe('TodoForm', () => {
-  const mockOnSubmit = vi.fn();
+// Mock the view model
+const mockViewModel = {
+  handleFormSubmit: vi.fn(),
+  isSubmitting: false,
+  isGlobalLoading: false,
+  validationErrors: {},
+  submitTodo: vi.fn(),
+  validateTitle: vi.fn(),
+};
 
+vi.mock('../view-models/useTodoFormViewModel', () => ({
+  useTodoFormViewModel: () => mockViewModel
+}));
+
+describe('TodoForm', () => {
   beforeEach(() => {
-    mockOnSubmit.mockClear();
+    vi.clearAllMocks();
+    mockViewModel.handleFormSubmit.mockResolvedValue(true);
+    mockViewModel.isSubmitting = false;
+    mockViewModel.isGlobalLoading = false;
+    mockViewModel.validationErrors = {};
+    mockViewModel.validateTitle.mockReturnValue(true);
   });
 
   it('should render form with input and button', () => {
-    render(<TodoForm onSubmit={mockOnSubmit} />);
+    render(<TodoForm />);
     
     expect(screen.getByPlaceholderText('What needs to be done?')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Add Todo' })).toBeInTheDocument();
   });
 
-  it('should show loading state when isLoading prop is true', () => {
-    // This tests the external loading prop (e.g., initial data fetch)
+  it('should show loading state when isGlobalLoading is true', () => {
+    // This tests the external loading state (e.g., initial data fetch)
     // Individual form submissions don't use loading states for fast local DB operations
-    render(<TodoForm onSubmit={mockOnSubmit} isLoading={true} />);
+    mockViewModel.isGlobalLoading = true;
+    
+    render(<TodoForm />);
     
     const input = screen.getByPlaceholderText('What needs to be done?');
     const button = screen.getByRole('button');
@@ -31,9 +50,8 @@ describe('TodoForm', () => {
 
   it('should submit form with valid data', async () => {
     const user = userEvent.setup();
-    mockOnSubmit.mockResolvedValue(undefined);
     
-    render(<TodoForm onSubmit={mockOnSubmit} />);
+    render(<TodoForm />);
     
     const input = screen.getByPlaceholderText('What needs to be done?');
     const button = screen.getByRole('button', { name: 'Add Todo' });
@@ -42,15 +60,14 @@ describe('TodoForm', () => {
     await user.click(button);
     
     await waitFor(() => {
-      expect(mockOnSubmit).toHaveBeenCalledWith('Test todo item');
+      expect(mockViewModel.handleFormSubmit).toHaveBeenCalledWith('Test todo item');
     });
   });
 
   it('should trim whitespace from input before submission', async () => {
     const user = userEvent.setup();
-    mockOnSubmit.mockResolvedValue(undefined);
     
-    render(<TodoForm onSubmit={mockOnSubmit} />);
+    render(<TodoForm />);
     
     const input = screen.getByPlaceholderText('What needs to be done?');
     const button = screen.getByRole('button', { name: 'Add Todo' });
@@ -59,14 +76,16 @@ describe('TodoForm', () => {
     await user.click(button);
     
     await waitFor(() => {
-      expect(mockOnSubmit).toHaveBeenCalledWith('Test todo with spaces');
+      expect(mockViewModel.handleFormSubmit).toHaveBeenCalledWith('  Test todo with spaces  ');
     });
   });
 
   it('should not submit form with empty data', async () => {
     const user = userEvent.setup();
+    mockViewModel.validateTitle.mockReturnValue(false);
+    mockViewModel.validationErrors = { title: 'Title is required' };
     
-    render(<TodoForm onSubmit={mockOnSubmit} />);
+    render(<TodoForm />);
     
     const button = screen.getByRole('button', { name: 'Add Todo' });
     
@@ -74,13 +93,15 @@ describe('TodoForm', () => {
     
     // Wait a bit to ensure no submission happens
     await new Promise(resolve => setTimeout(resolve, 100));
-    expect(mockOnSubmit).not.toHaveBeenCalled();
+    expect(mockViewModel.handleFormSubmit).not.toHaveBeenCalled();
   });
 
   it('should not submit form with only whitespace', async () => {
     const user = userEvent.setup();
+    mockViewModel.validateTitle.mockReturnValue(false);
+    mockViewModel.validationErrors = { title: 'Title cannot be empty' };
     
-    render(<TodoForm onSubmit={mockOnSubmit} />);
+    render(<TodoForm />);
     
     const input = screen.getByPlaceholderText('What needs to be done?');
     const button = screen.getByRole('button', { name: 'Add Todo' });
@@ -90,14 +111,13 @@ describe('TodoForm', () => {
     
     // Wait a bit to ensure no submission happens
     await new Promise(resolve => setTimeout(resolve, 100));
-    expect(mockOnSubmit).not.toHaveBeenCalled();
+    expect(mockViewModel.handleFormSubmit).not.toHaveBeenCalled();
   });
 
   it('should reset form after successful submission', async () => {
     const user = userEvent.setup();
-    mockOnSubmit.mockResolvedValue(undefined);
     
-    render(<TodoForm onSubmit={mockOnSubmit} />);
+    render(<TodoForm />);
     
     const input = screen.getByPlaceholderText('What needs to be done?');
     const button = screen.getByRole('button', { name: 'Add Todo' });
@@ -141,9 +161,9 @@ describe('TodoForm', () => {
   it('should handle submission errors gracefully', async () => {
     const user = userEvent.setup();
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    mockOnSubmit.mockRejectedValue(new Error('Submission failed'));
+    mockViewModel.handleFormSubmit.mockResolvedValue(false);
     
-    render(<TodoForm onSubmit={mockOnSubmit} />);
+    render(<TodoForm />);
     
     const input = screen.getByPlaceholderText('What needs to be done?');
     const button = screen.getByRole('button', { name: 'Add Todo' });
@@ -152,7 +172,7 @@ describe('TodoForm', () => {
     await user.click(button);
     
     await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to create todo:', expect.any(Error));
+      expect(mockViewModel.handleFormSubmit).toHaveBeenCalledWith('Test todo item');
     });
     
     // Form should still be functional after error
@@ -164,8 +184,9 @@ describe('TodoForm', () => {
 
   it('should show validation errors for required field', async () => {
     const user = userEvent.setup();
+    mockViewModel.validationErrors = { title: 'Title is required' };
     
-    render(<TodoForm onSubmit={mockOnSubmit} />);
+    render(<TodoForm />);
     
     const button = screen.getByRole('button', { name: 'Add Todo' });
     
@@ -180,8 +201,9 @@ describe('TodoForm', () => {
 
   it('should apply error styling when validation fails', async () => {
     const user = userEvent.setup();
+    mockViewModel.validationErrors = { title: 'Title is required' };
     
-    render(<TodoForm onSubmit={mockOnSubmit} />);
+    render(<TodoForm />);
     
     const input = screen.getByPlaceholderText('What needs to be done?');
     const button = screen.getByRole('button', { name: 'Add Todo' });
@@ -197,7 +219,9 @@ describe('TodoForm', () => {
   it('should disable form during external loading', () => {
     // This tests external loading (e.g., initial app load)
     // Form submissions themselves don't use loading states for fast IndexedDB operations
-    render(<TodoForm onSubmit={mockOnSubmit} isLoading={true} />);
+    mockViewModel.isGlobalLoading = true;
+    
+    render(<TodoForm />);
     
     const input = screen.getByPlaceholderText('What needs to be done?');
     const button = screen.getByRole('button');

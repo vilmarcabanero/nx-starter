@@ -39,7 +39,7 @@ export const TodoItem: React.FC<TodoItemProps> = ({ todo }) => {
               />
               <Button 
                 onClick={viewModel.saveEdit} 
-                // disabled={!editTitle.trim() || viewModel.isUpdating} // Only disable if empty, removed isLoading for fast local DB operations
+                disabled={!viewModel.editTitle.trim() || viewModel.isUpdating}
                 size="sm"
                 variant="outline"
                 data-testid="save-todo"

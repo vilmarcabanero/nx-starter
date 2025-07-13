@@ -1,175 +1,124 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Todo } from '@/core/domain/todo/entities/Todo';
+import { TodoPage } from './TodoPage';
 
 // Mock the useTodoViewModel hook
-vi.mock('../presentation/view-models/useTodoViewModel', () => ({
+vi.mock('../view-models/useTodoViewModel', () => ({
   useTodoViewModel: vi.fn()
 }));
 
 // Mock the components
-vi.mock('../presentation/components/layout/MainLayout', () => ({
-  MainLayout: ({ children }: { children: React.ReactNode }) => <div data-testid="main-layout">{children}</div>
+vi.mock('@/presentation/components/layout/MainLayout', () => ({
+  MainLayout: ({ children, ...props }: { children: React.ReactNode }) => <div data-testid="main-layout" {...props}>{children}</div>
 }));
 
-vi.mock('../presentation/components/Todo/TodoForm', () => ({
-  TodoForm: ({ isLoading }: { isLoading: boolean }) => (
-    <div data-testid="todo-form" data-loading={isLoading}>TodoForm</div>
-  )
+vi.mock('../components/TodoForm', () => ({
+  TodoForm: () => <div data-testid="todo-form">TodoForm</div>
 }));
 
-vi.mock('../presentation/components/Todo/TodoList', () => ({
-  TodoList: ({ todos, isLoading }: { todos: unknown[]; isLoading: boolean }) => (
-    <div data-testid="todo-list" data-loading={isLoading}>
-      TodoList: {todos.length} todos
-    </div>
-  )
+vi.mock('../components/TodoList', () => ({
+  TodoList: () => <div data-testid="todo-list">TodoList</div>
 }));
 
-vi.mock('../presentation/components/Todo/TodoStats', () => ({
-  TodoStats: ({ total, active, completed, filter }: { total: number; active: number; completed: number; filter: string }) => (
-    <div data-testid="todo-stats">
-      Stats: {total} total, {active} active, {completed} completed, filter: {filter}
-    </div>
-  )
+vi.mock('../components/TodoStats', () => ({
+  TodoStats: () => <div data-testid="todo-stats">TodoStats</div>
 }));
 
-vi.mock('../presentation/components/ui/button', () => ({
-  Button: ({ onClick, children, ...props }: { onClick?: () => void; children: React.ReactNode }) => (
-    <button onClick={onClick} {...props}>{children}</button>
-  )
+vi.mock('@/presentation/components/common/ErrorBanner', () => ({
+  ErrorBanner: () => <div data-testid="error-banner">ErrorBanner</div>
 }));
 
 // Import the mock after the vi.mock calls
-import { useTodoViewModel } from '@/presentation/features/todo/view-models/useTodoViewModel';
+import { useTodoViewModel } from '../view-models/useTodoViewModel';
 
 // Get the mocked function
 const mockUseTodoViewModel = vi.mocked(useTodoViewModel);
 
-describe('HomePage', () => {
-  const defaultViewModel = {
-    todos: [],
-    allTodos: [],
-    filter: 'all' as const,
-    stats: { total: 0, active: 0, completed: 0, overdue: 0 },
-    isLoading: false,
-    isIdle: true,
-    hasError: false,
-    error: null,
-    createTodo: vi.fn(),
-    updateTodo: vi.fn(),
-    deleteTodo: vi.fn(),
-    toggleTodo: vi.fn(),
-    changeFilter: vi.fn(),
-    dismissError: vi.fn(),
-    refreshTodos: vi.fn(),
-  };
-
+describe('TodoPage', () => {
   beforeEach(() => {
-    mockUseTodoViewModel.mockReturnValue(defaultViewModel as ReturnType<typeof useTodoViewModel>);
+    vi.clearAllMocks();
+    mockUseTodoViewModel.mockReturnValue(undefined as any); // useTodoViewModel just initializes data loading
   });
 
   it('should render all main components', () => {
-    render(<HomePage />);
+    render(<TodoPage />);
 
-    expect(screen.getByTestId('main-layout')).toBeInTheDocument();
+    expect(screen.getByTestId('todo-app')).toBeInTheDocument();
+    expect(screen.getByTestId('error-banner')).toBeInTheDocument();
     expect(screen.getByTestId('todo-form')).toBeInTheDocument();
     expect(screen.getByTestId('todo-stats')).toBeInTheDocument();
     expect(screen.getByTestId('todo-list')).toBeInTheDocument();
   });
 
-  it('should pass correct props to TodoForm', () => {
-    render(<HomePage />);
+  it('should render TodoForm without props', () => {
+    render(<TodoPage />);
 
     const todoForm = screen.getByTestId('todo-form');
-    expect(todoForm).toHaveAttribute('data-loading', 'false');
+    expect(todoForm).toBeInTheDocument();
+    expect(todoForm).toHaveTextContent('TodoForm');
   });
 
-  it('should pass loading state to components', () => {
-    // This tests that the external loading state (initial data fetch) is properly passed
-    // Individual CRUD operations don't use loading states due to optimistic updates
-    mockUseTodoViewModel.mockReturnValue({
-      ...defaultViewModel,
-      isLoading: true
-    } as ReturnType<typeof useTodoViewModel>);
-
-    render(<HomePage />);
+  it('should render self-contained components', () => {
+    // Components now manage their own state via view models
+    render(<TodoPage />);
 
     const todoForm = screen.getByTestId('todo-form');
     const todoList = screen.getByTestId('todo-list');
+    const todoStats = screen.getByTestId('todo-stats');
     
-    expect(todoForm).toHaveAttribute('data-loading', 'true');
-    expect(todoList).toHaveAttribute('data-loading', 'true');
+    expect(todoForm).toBeInTheDocument();
+    expect(todoList).toBeInTheDocument();
+    expect(todoStats).toBeInTheDocument();
   });
 
-  it('should pass correct stats to TodoStats', () => {
-    mockUseTodoViewModel.mockReturnValue({
-      ...defaultViewModel,
-      stats: { total: 10, active: 6, completed: 4, overdue: 1 },
-      filter: 'active' as const
-    } as ReturnType<typeof useTodoViewModel>);
-
-    render(<HomePage />);
+  it('should render TodoStats component', () => {
+    render(<TodoPage />);
 
     const todoStats = screen.getByTestId('todo-stats');
-    expect(todoStats).toHaveTextContent('Stats: 10 total, 6 active, 4 completed, filter: active');
+    expect(todoStats).toBeInTheDocument();
+    expect(todoStats).toHaveTextContent('TodoStats');
   });
 
-  it('should pass todos to TodoList', () => {
-    mockUseTodoViewModel.mockReturnValue({
-      ...defaultViewModel,
-      todos: [
-        new Todo('First todo', false, new Date(), 1),
-        new Todo('Second todo', false, new Date(), 2)
-      ]
-    } as ReturnType<typeof useTodoViewModel>);
-
-    render(<HomePage />);
+  it('should render TodoList component', () => {
+    render(<TodoPage />);
 
     const todoList = screen.getByTestId('todo-list');
-    expect(todoList).toHaveTextContent('TodoList: 2 todos');
+    expect(todoList).toBeInTheDocument();
+    expect(todoList).toHaveTextContent('TodoList');
   });
 
-  it('should show error banner when hasError is true', () => {
-    mockUseTodoViewModel.mockReturnValue({
-      ...defaultViewModel,
-      hasError: true,
-      error: 'Something went wrong'
-    } as ReturnType<typeof useTodoViewModel>);
+  it('should render ErrorBanner component', () => {
+    render(<TodoPage />);
 
-    render(<HomePage />);
-
-    expect(screen.getByText('Error')).toBeInTheDocument();
-    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
-    expect(screen.getByText('Retry')).toBeInTheDocument();
-    expect(screen.getByText('Dismiss')).toBeInTheDocument();
+    const errorBanner = screen.getByTestId('error-banner');
+    expect(errorBanner).toBeInTheDocument();
+    expect(errorBanner).toHaveTextContent('ErrorBanner');
   });
 
-  it('should not show error banner when hasError is false', () => {
-    render(<HomePage />);
+  it('should have proper layout structure', () => {
+    render(<TodoPage />);
 
-    expect(screen.queryByText('Error')).not.toBeInTheDocument();
-    expect(screen.queryByText('Retry')).not.toBeInTheDocument();
-    expect(screen.queryByText('Dismiss')).not.toBeInTheDocument();
+    const todoApp = screen.getByTestId('todo-app');
+    expect(todoApp).toBeInTheDocument();
   });
 
-  it('should render without errors when no todos', () => {
-    render(<HomePage />);
+  it('should render all components in correct order', () => {
+    render(<TodoPage />);
 
-    expect(screen.getByTestId('todo-list')).toHaveTextContent('TodoList: 0 todos');
-    expect(screen.getByTestId('todo-stats')).toHaveTextContent('Stats: 0 total, 0 active, 0 completed, filter: all');
+    const container = screen.getByTestId('todo-app');
+    expect(container).toBeInTheDocument();
+    
+    // Check that all main components are present
+    expect(screen.getByTestId('error-banner')).toBeInTheDocument();
+    expect(screen.getByTestId('todo-form')).toBeInTheDocument();
+    expect(screen.getByTestId('todo-stats')).toBeInTheDocument();
+    expect(screen.getByTestId('todo-list')).toBeInTheDocument();
   });
 
-  it('should handle null error gracefully', () => {
-    mockUseTodoViewModel.mockReturnValue({
-      ...defaultViewModel,
-      hasError: true,
-      error: null
-    } as ReturnType<typeof useTodoViewModel>);
+  it('should initialize view model on mount', () => {
+    render(<TodoPage />);
 
-    render(<HomePage />);
-
-    expect(screen.getByText('Error')).toBeInTheDocument();
-    // Should handle null error without crashing
+    // Should call useTodoViewModel to initialize data loading
+    expect(mockUseTodoViewModel).toHaveBeenCalledTimes(1);
   });
 });

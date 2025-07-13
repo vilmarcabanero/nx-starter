@@ -3,11 +3,29 @@ import { render, screen } from '@testing-library/react';
 import { TodoList } from './TodoList';
 import { Todo } from '../../../../core/domain/todo/entities/Todo';
 
-describe('TodoList', () => {
-  const mockOnToggle = vi.fn();
-  const mockOnDelete = vi.fn();
-  const mockOnUpdate = vi.fn();
+// Mock the view model
+const mockViewModel = {
+  todos: [],
+  isLoading: false,
+};
 
+vi.mock('../view-models/useTodoListViewModel', () => ({
+  useTodoListViewModel: () => mockViewModel
+}));
+
+// Mock TodoItem component to avoid complex dependencies
+vi.mock('./TodoItem', () => ({
+  TodoItem: ({ todo }: { todo: Todo }) => (
+    <div data-testid="todo-item">
+      <span>{todo.titleValue}</span>
+      <input type="checkbox" checked={todo.completed} readOnly />
+      <button>Edit</button>
+      <button>Delete</button>
+    </div>
+  )
+}));
+
+describe('TodoList', () => {
   const mockTodos: Todo[] = [
     new Todo('First Todo', false, new Date('2024-01-01T10:00:00Z'), 1),
     new Todo('Second Todo', true, new Date('2024-01-02T10:00:00Z'), 2),
@@ -15,22 +33,17 @@ describe('TodoList', () => {
   ];
 
   beforeEach(() => {
-    mockOnToggle.mockClear();
-    mockOnDelete.mockClear();
-    mockOnUpdate.mockClear();
+    vi.clearAllMocks();
+    mockViewModel.todos = [];
+    mockViewModel.isLoading = false;
   });
 
   it('should render loading state when isLoading is true', () => {
     // Updated: Now shows blank space instead of loading message for fast IndexedDB operations
-    render(
-      <TodoList
-        todos={[]}
-        onToggle={mockOnToggle}
-        onDelete={mockOnDelete}
-        onUpdate={mockOnUpdate}
-        isLoading={true}
-      />
-    );
+    mockViewModel.isLoading = true;
+    mockViewModel.todos = [];
+    
+    render(<TodoList />);
 
     expect(screen.getByTestId('loading-blank')).toBeInTheDocument();
     expect(screen.queryByText('Loading todos...')).not.toBeInTheDocument();
@@ -38,43 +51,30 @@ describe('TodoList', () => {
   });
 
   it('should render empty state when no todos are provided', () => {
-    render(
-      <TodoList
-        todos={[]}
-        onToggle={mockOnToggle}
-        onDelete={mockOnDelete}
-        onUpdate={mockOnUpdate}
-        isLoading={false}
-      />
-    );
+    mockViewModel.isLoading = false;
+    mockViewModel.todos = [];
+    
+    render(<TodoList />);
 
     expect(screen.getByText('No todos yet')).toBeInTheDocument();
     expect(screen.getByText('Add your first todo to get started!')).toBeInTheDocument();
   });
 
   it('should render empty state when todos array is empty and isLoading is false by default', () => {
-    render(
-      <TodoList
-        todos={[]}
-        onToggle={mockOnToggle}
-        onDelete={mockOnDelete}
-        onUpdate={mockOnUpdate}
-      />
-    );
+    mockViewModel.isLoading = false;
+    mockViewModel.todos = [];
+    
+    render(<TodoList />);
 
     expect(screen.getByText('No todos yet')).toBeInTheDocument();
     expect(screen.getByText('Add your first todo to get started!')).toBeInTheDocument();
   });
 
   it('should render all todos when todos are provided', () => {
-    render(
-      <TodoList
-        todos={mockTodos}
-        onToggle={mockOnToggle}
-        onDelete={mockOnDelete}
-        onUpdate={mockOnUpdate}
-      />
-    );
+    mockViewModel.isLoading = false;
+    mockViewModel.todos = mockTodos;
+    
+    render(<TodoList />);
 
     expect(screen.getByText('First Todo')).toBeInTheDocument();
     expect(screen.getByText('Second Todo')).toBeInTheDocument();
@@ -82,18 +82,14 @@ describe('TodoList', () => {
   });
 
   it('should render TodoItem for each todo with correct props', () => {
-    render(
-      <TodoList
-        todos={mockTodos}
-        onToggle={mockOnToggle}
-        onDelete={mockOnDelete}
-        onUpdate={mockOnUpdate}
-      />
-    );
+    mockViewModel.isLoading = false;
+    mockViewModel.todos = mockTodos;
+    
+    render(<TodoList />);
 
     // Check that all todo titles are rendered
     mockTodos.forEach(todo => {
-      expect(screen.getByText(todo.title)).toBeInTheDocument();
+      expect(screen.getByText(todo.titleValue)).toBeInTheDocument();
     });
 
     // Check that we have the correct number of checkboxes (one per todo)
@@ -109,15 +105,10 @@ describe('TodoList', () => {
 
   it('should not render empty state when loading is true even with empty todos', () => {
     // Updated: Now shows blank space instead of loading message
-    render(
-      <TodoList
-        todos={[]}
-        onToggle={mockOnToggle}
-        onDelete={mockOnDelete}
-        onUpdate={mockOnUpdate}
-        isLoading={true}
-      />
-    );
+    mockViewModel.isLoading = true;
+    mockViewModel.todos = [];
+    
+    render(<TodoList />);
 
     expect(screen.queryByText('No todos yet')).not.toBeInTheDocument();
     expect(screen.queryByText('Loading todos...')).not.toBeInTheDocument();
@@ -125,29 +116,21 @@ describe('TodoList', () => {
   });
 
   it('should render todos with proper spacing', () => {
-    render(
-      <TodoList
-        todos={mockTodos}
-        onToggle={mockOnToggle}
-        onDelete={mockOnDelete}
-        onUpdate={mockOnUpdate}
-      />
-    );
+    mockViewModel.isLoading = false;
+    mockViewModel.todos = mockTodos;
+    
+    render(<TodoList />);
 
-    const container = screen.getByText('First Todo').closest('.space-y-2');
-    expect(container).toBeInTheDocument();
+    const container = screen.getByTestId('todo-list');
+    expect(container).toHaveClass('space-y-2');
   });
 
   it('should render a single todo correctly', () => {
     const singleTodo = [mockTodos[0]];
-    render(
-      <TodoList
-        todos={singleTodo}
-        onToggle={mockOnToggle}
-        onDelete={mockOnDelete}
-        onUpdate={mockOnUpdate}
-      />
-    );
+    mockViewModel.isLoading = false;
+    mockViewModel.todos = singleTodo;
+    
+    render(<TodoList />);
 
     expect(screen.getByText('First Todo')).toBeInTheDocument();
     expect(screen.getAllByRole('checkbox')).toHaveLength(1);

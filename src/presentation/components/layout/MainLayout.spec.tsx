@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { MainLayout } from '../presentation/components/layout/MainLayout';
+import { MainLayout } from './MainLayout';
 
 describe('MainLayout', () => {
   it('should render children', () => {
