@@ -18,11 +18,12 @@ export class TodoMapper {
   }
 
   static toDomain(dto: TodoDto): Todo {
+    const numericId = dto.id ? parseInt(dto.id) : undefined;
     return new Todo(
       dto.title,
       dto.completed,
       new Date(dto.createdAt),
-      parseInt(dto.id),
+      numericId,
       dto.priority as any // Will need proper mapping based on TodoPriority
     );
   }

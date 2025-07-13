@@ -49,6 +49,7 @@ export default defineConfig({
         'src/test/test-utils.tsx',
         '**/dist/**',
         '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+        'get-coverage-json.js',
       ],
     },
   },

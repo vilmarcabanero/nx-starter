@@ -1,21 +1,30 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useTodoStore } from '@/core/infrastructure/todo/state/TodoStore';
-import { configureDI, container } from '@/core/infrastructure/di/container';
-import type { ITodoService } from '@/core/application/shared/interfaces/ITodoService';
+import { configureDI, container, TOKENS } from '@/core/infrastructure/shared/container';
+import type { ITodoService, ITodoCommandService, ITodoQueryService } from '@/core/application/shared/interfaces/ITodoService';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 
-// Mock the dependencies
-const mockTodoService: ITodoService = {
-  getAllTodos: vi.fn(),
+// Mock the CQRS services separately to test clean architecture
+const mockTodoCommandService: ITodoCommandService = {
   createTodo: vi.fn(),
   updateTodo: vi.fn(),
   deleteTodo: vi.fn(),
   toggleTodo: vi.fn(),
+};
+
+const mockTodoQueryService: ITodoQueryService = {
+  getAllTodos: vi.fn(),
   getActiveTodos: vi.fn(),
   getCompletedTodos: vi.fn(),
   getTodoById: vi.fn(),
   getFilteredTodos: vi.fn(),
   getTodoStats: vi.fn(),
+};
+
+// Combined service for backward compatibility
+const mockTodoService: ITodoService = {
+  ...mockTodoCommandService,
+  ...mockTodoQueryService,
 };
 
 describe('TodoStore Status Management', () => {
@@ -30,8 +39,16 @@ describe('TodoStore Status Management', () => {
 
     configureDI();
     
-    // Override the resolved service with our mock
-    vi.spyOn(container, 'resolve').mockReturnValue(mockTodoService);
+    // Override the resolved services with our mocks following CQRS pattern
+    vi.spyOn(container, 'resolve').mockImplementation((token) => {
+      if (token === TOKENS.TodoCommandService) {
+        return mockTodoCommandService;
+      }
+      if (token === TOKENS.TodoQueryService) {
+        return mockTodoQueryService;
+      }
+      return mockTodoService;
+    });
     
     // Reset all mocks
     vi.clearAllMocks();
@@ -95,7 +112,7 @@ describe('TodoStore Status Management', () => {
         resolvePromise = resolve;
       });
       
-      mockTodoService.getAllTodos = vi.fn().mockReturnValue(promise);
+      mockTodoQueryService.getAllTodos = vi.fn().mockReturnValue(promise);
       
       // Start the async operation
       const loadPromise = useTodoStore.getState().loadTodos();
@@ -118,7 +135,7 @@ describe('TodoStore Status Management', () => {
 
     it('should set failed status when loadTodos fails', async () => {
       const errorMessage = 'Failed to load todos';
-      mockTodoService.getAllTodos = vi.fn().mockRejectedValue(new Error(errorMessage));
+      mockTodoQueryService.getAllTodos = vi.fn().mockRejectedValue(new Error(errorMessage));
       
       await useTodoStore.getState().loadTodos();
       
@@ -133,7 +150,7 @@ describe('TodoStore Status Management', () => {
   describe('createTodo status management', () => {
     it('should create todo successfully without loading state', async () => {
       const mockTodo = new Todo('New Todo', false, new Date(), 1);
-      mockTodoService.createTodo = vi.fn().mockResolvedValue(mockTodo);
+      mockTodoCommandService.createTodo = vi.fn().mockResolvedValue(mockTodo);
       
       await useTodoStore.getState().createTodo({ title: 'New Todo' });
       
@@ -146,7 +163,7 @@ describe('TodoStore Status Management', () => {
 
     it('should set failed status when createTodo fails', async () => {
       const errorMessage = 'Failed to create todo';
-      mockTodoService.createTodo = vi.fn().mockRejectedValue(new Error(errorMessage));
+      mockTodoCommandService.createTodo = vi.fn().mockRejectedValue(new Error(errorMessage));
       
       try {
         await useTodoStore.getState().createTodo({ title: 'New Todo' });
@@ -173,7 +190,7 @@ describe('TodoStore Status Management', () => {
         error: null,
       });
       
-      mockTodoService.updateTodo = vi.fn().mockResolvedValue(mockTodo);
+      mockTodoCommandService.updateTodo = vi.fn().mockResolvedValue(mockTodo);
       
       await useTodoStore.getState().updateTodo(1, { completed: true });
       
@@ -186,7 +203,7 @@ describe('TodoStore Status Management', () => {
 
     it('should set failed status when updateTodo fails', async () => {
       const errorMessage = 'Failed to update todo';
-      mockTodoService.updateTodo = vi.fn().mockRejectedValue(new Error(errorMessage));
+      mockTodoCommandService.updateTodo = vi.fn().mockRejectedValue(new Error(errorMessage));
       
       // Set initial state with a todo
       useTodoStore.setState({
@@ -218,7 +235,7 @@ describe('TodoStore Status Management', () => {
         error: null,
       });
       
-      mockTodoService.deleteTodo = vi.fn().mockResolvedValue(undefined);
+      mockTodoCommandService.deleteTodo = vi.fn().mockResolvedValue(undefined);
       
       await useTodoStore.getState().deleteTodo(1);
       
@@ -231,7 +248,7 @@ describe('TodoStore Status Management', () => {
 
     it('should set failed status when deleteTodo fails', async () => {
       const errorMessage = 'Failed to delete todo';
-      mockTodoService.deleteTodo = vi.fn().mockRejectedValue(new Error(errorMessage));
+      mockTodoCommandService.deleteTodo = vi.fn().mockRejectedValue(new Error(errorMessage));
       
       // Set initial state with a todo
       useTodoStore.setState({
@@ -483,19 +500,19 @@ describe('TodoStore Status Management', () => {
 
     it('should toggle todo completion status successfully', async () => {
       const updatedTodo = new Todo('Test Todo 1', true, new Date(), 1);
-      mockTodoService.toggleTodo = vi.fn().mockResolvedValue(updatedTodo);
+      mockTodoCommandService.toggleTodo = vi.fn().mockResolvedValue(updatedTodo);
 
       await useTodoStore.getState().toggleTodo(1);
 
       const state = useTodoStore.getState();
       expect(state.status).toBe('succeeded');
       expect(state.todos[0].completed).toBe(true);
-      expect(mockTodoService.toggleTodo).toHaveBeenCalledWith(1);
+      expect(mockTodoCommandService.toggleTodo).toHaveBeenCalledWith(1);
     });
 
     it('should handle toggle todo failure with error revert', async () => {
       const errorMessage = 'Failed to toggle todo';
-      mockTodoService.toggleTodo = vi.fn().mockRejectedValue(new Error(errorMessage));
+      mockTodoCommandService.toggleTodo = vi.fn().mockRejectedValue(new Error(errorMessage));
       
       // Test todo 1 starts as false (not completed)
       expect(useTodoStore.getState().todos[0].completed).toBe(false);
@@ -514,7 +531,7 @@ describe('TodoStore Status Management', () => {
 
     it('should handle toggle todo when todo is not found', async () => {
       const updatedTodo = new Todo('Test Todo 999', false, new Date(), 999);
-      mockTodoService.toggleTodo = vi.fn().mockResolvedValue(updatedTodo);
+      mockTodoCommandService.toggleTodo = vi.fn().mockResolvedValue(updatedTodo);
 
       await useTodoStore.getState().toggleTodo(999);
 
@@ -525,7 +542,7 @@ describe('TodoStore Status Management', () => {
     });
 
     it('should handle non-Error objects in catch block', async () => {
-      mockTodoService.toggleTodo = vi.fn().mockRejectedValue('String error');
+      mockTodoCommandService.toggleTodo = vi.fn().mockRejectedValue('String error');
 
       try {
         await useTodoStore.getState().toggleTodo(1);
@@ -541,7 +558,7 @@ describe('TodoStore Status Management', () => {
 
   describe('error handling with non-Error objects', () => {
     it('should handle non-Error objects in loadTodos', async () => {
-      mockTodoService.getAllTodos = vi.fn().mockRejectedValue('String error');
+      mockTodoQueryService.getAllTodos = vi.fn().mockRejectedValue('String error');
       
       await useTodoStore.getState().loadTodos();
       
@@ -551,7 +568,7 @@ describe('TodoStore Status Management', () => {
     });
 
     it('should handle non-Error objects in createTodo', async () => {
-      mockTodoService.createTodo = vi.fn().mockRejectedValue('String error');
+      mockTodoCommandService.createTodo = vi.fn().mockRejectedValue('String error');
       
       try {
         await useTodoStore.getState().createTodo({ title: 'New Todo' });
@@ -571,7 +588,7 @@ describe('TodoStore Status Management', () => {
         error: null,
       });
 
-      mockTodoService.updateTodo = vi.fn().mockRejectedValue('String error');
+      mockTodoCommandService.updateTodo = vi.fn().mockRejectedValue('String error');
       
       try {
         await useTodoStore.getState().updateTodo(1, { completed: true });
@@ -591,7 +608,7 @@ describe('TodoStore Status Management', () => {
         error: null,
       });
 
-      mockTodoService.deleteTodo = vi.fn().mockRejectedValue('String error');
+      mockTodoCommandService.deleteTodo = vi.fn().mockRejectedValue('String error');
       
       try {
         await useTodoStore.getState().deleteTodo(1);
@@ -608,7 +625,7 @@ describe('TodoStore Status Management', () => {
   describe('edge cases for updateTodo and deleteTodo', () => {
     it('should handle updateTodo when todo is not found', async () => {
       const updatedTodo = new Todo('Updated Todo', true, new Date(), 999);
-      mockTodoService.updateTodo = vi.fn().mockResolvedValue(updatedTodo);
+      mockTodoCommandService.updateTodo = vi.fn().mockResolvedValue(updatedTodo);
 
       useTodoStore.setState({
         todos: [new Todo('Test Todo', false, new Date(), 1)],
@@ -634,6 +651,196 @@ describe('TodoStore Status Management', () => {
       const state = useTodoStore.getState();
       expect(state.error).toBeNull();
       expect(state.status).toBe('succeeded'); // Should remain unchanged
+    });
+  });
+
+  describe('updateTodo edge cases to achieve 100% branch coverage', () => {
+    beforeEach(() => {
+      const testTodo = new Todo('Test Todo', false, new Date(), 1, 'medium');
+      useTodoStore.setState({
+        todos: [testTodo],
+        status: 'idle',
+        error: null,
+      });
+    });
+
+    it('should handle updateTodo with undefined title, priority, and dueDate (missing branch coverage)', async () => {
+      // This test covers the missing branches in lines 110-115 where title, priority, and dueDate are undefined
+      const originalTodo = useTodoStore.getState().todos[0];
+      const updatedTodo = new Todo('Test Todo', true, originalTodo.createdAt, 1, 'medium');
+      
+      mockTodoCommandService.updateTodo = vi.fn().mockResolvedValue(updatedTodo);
+      
+      // Only update completed field, leaving title, priority, and dueDate undefined
+      await useTodoStore.getState().updateTodo(1, { completed: true });
+      
+      const state = useTodoStore.getState();
+      expect(state.status).toBe('succeeded');
+      expect(state.todos[0].completed).toBe(true);
+      expect(state.todos[0].titleValue).toBe(originalTodo.titleValue); // Should use fallback
+      expect(state.todos[0].priority.level).toBe(originalTodo.priority.level); // Should use fallback
+      expect(state.error).toBeNull();
+    });
+
+    it('should handle updateTodo with partial updates (testing all undefined branches)', async () => {
+      const originalTodo = useTodoStore.getState().todos[0];
+      const updatedTodo = new Todo('Updated Title', false, originalTodo.createdAt, 1, 'high', new Date());
+      
+      mockTodoCommandService.updateTodo = vi.fn().mockResolvedValue(updatedTodo);
+      
+      // Test case where only title is provided, completed and priority are undefined
+      await useTodoStore.getState().updateTodo(1, { title: 'Updated Title' });
+      
+      // Verify the fallback logic worked during optimistic update
+      const state = useTodoStore.getState();
+      expect(state.status).toBe('succeeded');
+      expect(mockTodoCommandService.updateTodo).toHaveBeenCalledWith(1, { title: 'Updated Title' });
+    });
+
+    it('should handle updateTodo with dueDate undefined to cover remaining branch (line 115)', async () => {
+      // Set up a todo with an existing dueDate
+      const existingDueDate = new Date('2024-12-31');
+      const testTodo = new Todo('Test Todo', false, new Date(), 1, 'medium', existingDueDate);
+      useTodoStore.setState({
+        todos: [testTodo],
+        status: 'idle',
+        error: null,
+      });
+
+      const originalTodo = useTodoStore.getState().todos[0];
+      const updatedTodo = new Todo('Test Todo', true, originalTodo.createdAt, 1, 'medium', existingDueDate);
+      
+      mockTodoCommandService.updateTodo = vi.fn().mockResolvedValue(updatedTodo);
+      
+      // Explicitly test both branches of the dueDate condition (line 115) 
+      // First, test with dueDate explicitly undefined
+      await useTodoStore.getState().updateTodo(1, { 
+        completed: true, 
+        dueDate: undefined  // This should trigger the fallback: currentTodo.dueDate
+      });
+      
+      const state = useTodoStore.getState();
+      expect(state.status).toBe('succeeded');
+      expect(state.todos[0].completed).toBe(true);
+      expect(state.todos[0].dueDate).toBe(existingDueDate); // Should preserve original dueDate
+      expect(state.error).toBeNull();
+    });
+
+    it('should handle updateTodo with dueDate provided (covering the other branch of line 115)', async () => {
+      const existingDueDate = new Date('2024-12-31');
+      const newDueDate = new Date('2025-01-15');
+      const testTodo = new Todo('Test Todo', false, new Date(), 1, 'medium', existingDueDate);
+      
+      useTodoStore.setState({
+        todos: [testTodo],
+        status: 'idle',
+        error: null,
+      });
+
+      const originalTodo = useTodoStore.getState().todos[0];
+      const updatedTodo = new Todo('Test Todo', true, originalTodo.createdAt, 1, 'medium', newDueDate);
+      
+      mockTodoCommandService.updateTodo = vi.fn().mockResolvedValue(updatedTodo);
+      
+      // Test with dueDate provided (not undefined) - this should use the provided value
+      await useTodoStore.getState().updateTodo(1, { 
+        completed: true, 
+        dueDate: newDueDate  // This should use the new date, not the fallback
+      });
+      
+      const state = useTodoStore.getState();
+      expect(state.status).toBe('succeeded');
+      expect(state.todos[0].completed).toBe(true);
+      expect(state.todos[0].dueDate).toBe(newDueDate); // Should use the new dueDate
+      expect(state.error).toBeNull();
+    });
+  });
+
+  describe('CQRS pattern validation', () => {
+    it('should use separate command and query services following CQRS principles', async () => {
+      const mockTodos = [new Todo('Test Todo', false, new Date(), 1)];
+      const mockTodo = new Todo('New Todo', false, new Date(), 2);
+      
+      // Test that query operations use query service
+      mockTodoQueryService.getAllTodos = vi.fn().mockResolvedValue(mockTodos);
+      await useTodoStore.getState().loadTodos();
+      expect(mockTodoQueryService.getAllTodos).toHaveBeenCalled();
+      
+      // Test that command operations use command service
+      mockTodoCommandService.createTodo = vi.fn().mockResolvedValue(mockTodo);
+      await useTodoStore.getState().createTodo({ title: 'New Todo' });
+      expect(mockTodoCommandService.createTodo).toHaveBeenCalledWith({ title: 'New Todo' });
+      
+      // Verify services are called independently
+      expect(mockTodoQueryService.getAllTodos).toHaveBeenCalledTimes(1);
+      expect(mockTodoCommandService.createTodo).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('optimistic updates comprehensive coverage', () => {
+    beforeEach(() => {
+      const todos = [
+        new Todo('Test Todo 1', false, new Date(), 1, 'low'),
+        new Todo('Test Todo 2', true, new Date(), 2, 'high'),
+      ];
+      useTodoStore.setState({
+        todos,
+        status: 'idle',
+        error: null,
+      });
+    });
+
+    it('should create deep copies for optimistic updates in updateTodo', async () => {
+      const originalTodos = useTodoStore.getState().todos;
+      const updatedTodo = new Todo('Updated', true, new Date(), 1, 'medium');
+      
+      mockTodoCommandService.updateTodo = vi.fn().mockRejectedValue(new Error('Update failed'));
+      
+      try {
+        await useTodoStore.getState().updateTodo(1, { title: 'Updated', completed: true, priority: 'medium' });
+      } catch {
+        // Expected to fail
+      }
+      
+      const finalState = useTodoStore.getState();
+      // Verify original todos are restored
+      expect(finalState.todos).toHaveLength(2);
+      expect(finalState.todos[0].titleValue).toBe(originalTodos[0].titleValue);
+      expect(finalState.todos[0].completed).toBe(originalTodos[0].completed);
+    });
+
+    it('should create deep copies for optimistic updates in deleteTodo', async () => {
+      const originalLength = useTodoStore.getState().todos.length;
+      
+      mockTodoCommandService.deleteTodo = vi.fn().mockRejectedValue(new Error('Delete failed'));
+      
+      try {
+        await useTodoStore.getState().deleteTodo(1);
+      } catch {
+        // Expected to fail
+      }
+      
+      const finalState = useTodoStore.getState();
+      // Verify todos are restored
+      expect(finalState.todos).toHaveLength(originalLength);
+      expect(finalState.status).toBe('failed');
+    });
+
+    it('should create deep copies for optimistic updates in toggleTodo', async () => {
+      const originalCompleted = useTodoStore.getState().todos[0].completed;
+      
+      mockTodoCommandService.toggleTodo = vi.fn().mockRejectedValue(new Error('Toggle failed'));
+      
+      try {
+        await useTodoStore.getState().toggleTodo(1);
+      } catch {
+        // Expected to fail
+      }
+      
+      const finalState = useTodoStore.getState();
+      // Verify original state is restored
+      expect(finalState.todos[0].completed).toBe(originalCompleted);
+      expect(finalState.status).toBe('failed');
     });
   });
 });

@@ -27,3 +27,5 @@ coverage
 docs
 test-results
 playwright-report
+
+*.iml

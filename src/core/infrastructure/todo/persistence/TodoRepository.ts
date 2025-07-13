@@ -35,7 +35,7 @@ export class TodoRepository implements ITodoRepository {
         ? changes.priority.level
         : changes.priority;
     }
-    if (changes.dueDate !== undefined) {
+    if ('dueDate' in changes) {
       updateData.dueDate = changes.dueDate;
     }
     

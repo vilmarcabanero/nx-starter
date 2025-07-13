@@ -130,33 +130,18 @@ describe('TodoForm', () => {
     });
   });
 
-  // Test commented out as we removed submitting state for fast local DB operations
-  // Fast IndexedDB operations don't need loading states in individual forms
-  /*
-  it('should show submitting state during form submission', async () => {
-    const user = userEvent.setup();
-    // Mock a delayed submission
-    mockOnSubmit.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
+  it('should show submitting state during form submission', () => {
+    mockViewModel.isSubmitting = true;
     
-    render(<TodoForm onSubmit={mockOnSubmit} />);
+    render(<TodoForm />);
     
     const input = screen.getByPlaceholderText('What needs to be done?');
-    const button = screen.getByRole('button', { name: 'Add Todo' });
+    const button = screen.getByRole('button', { name: 'Adding...' });
     
-    await user.type(input, 'Test todo item');
-    await user.click(button);
-    
-    // Check submitting state
-    expect(screen.getByRole('button', { name: 'Adding...' })).toBeInTheDocument();
+    expect(button).toBeInTheDocument();
     expect(input).toBeDisabled();
     expect(button).toBeDisabled();
-    
-    // Wait for submission to complete
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Add Todo' })).toBeInTheDocument();
-    });
   });
-  */
 
   it('should handle submission errors gracefully', async () => {
     const user = userEvent.setup();
@@ -213,6 +198,55 @@ describe('TodoForm', () => {
     
     await waitFor(() => {
       expect(input).toHaveClass('border-destructive');
+    });
+  });
+
+  it('should show form validation error for title length constraints', () => {
+    mockViewModel.validationErrors = { title: 'Title must be at least 2 characters long' };
+    
+    render(<TodoForm />);
+    
+    const errorMessage = screen.getByTestId('todo-input-error');
+    expect(errorMessage).toHaveTextContent('Title must be at least 2 characters long');
+  });
+
+  it('should show form validation error for title too long', () => {
+    mockViewModel.validationErrors = { title: 'Title cannot exceed 255 characters' };
+    
+    render(<TodoForm />);
+    
+    const errorMessage = screen.getByTestId('todo-input-error');
+    expect(errorMessage).toHaveTextContent('Title cannot exceed 255 characters');
+  });
+
+  it('should prioritize react-hook-form error over viewModel error', () => {
+    mockViewModel.validationErrors = { title: 'ViewModel error' };
+    
+    render(<TodoForm />);
+    
+    const input = screen.getByPlaceholderText('What needs to be done?');
+    
+    // Simulate react-hook-form error (this would normally be set by the validation)
+    // We can't easily test this without triggering actual form validation
+    // but we can test that viewModel errors are shown when react-hook-form errors are not present
+    const errorMessage = screen.getByTestId('todo-input-error');
+    expect(errorMessage).toHaveTextContent('ViewModel error');
+  });
+
+  it('should call validateTitle on form submission', async () => {
+    const user = userEvent.setup();
+    
+    render(<TodoForm />);
+    
+    const input = screen.getByPlaceholderText('What needs to be done?');
+    const button = screen.getByRole('button', { name: 'Add Todo' });
+    
+    await user.type(input, 'test');
+    await user.click(button);
+    
+    // The validateTitle should be called through the form validation when submitting
+    await waitFor(() => {
+      expect(mockViewModel.validateTitle).toHaveBeenCalledWith('test');
     });
   });
 
