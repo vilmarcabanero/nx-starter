@@ -2,6 +2,7 @@ import { injectable, inject } from 'tsyringe';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 import type { UpdateTodoCommand } from '@/core/application/todo/dto/TodoCommands';
+import { TOKENS } from '@/core/infrastructure/di/tokens';
 
 /**
  * Use case for updating an existing todo
@@ -10,7 +11,7 @@ import type { UpdateTodoCommand } from '@/core/application/todo/dto/TodoCommands
 @injectable()
 export class UpdateTodoUseCase {
   constructor(
-    @inject('ITodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async execute(command: UpdateTodoCommand): Promise<Todo> {

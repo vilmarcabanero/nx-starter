@@ -13,6 +13,7 @@ import type {
   GetTodoByIdQuery,
   TodoStatsQueryResult
 } from '@/core/application/todo/dto/TodoQueries';
+import { TOKENS } from '@/core/infrastructure/di/tokens';
 
 /**
  * Query handler for getting all todos
@@ -20,7 +21,7 @@ import type {
 @injectable()
 export class GetAllTodosQueryHandler {
   constructor(
-    @inject('ITodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async handle(): Promise<Todo[]> {
@@ -34,7 +35,7 @@ export class GetAllTodosQueryHandler {
 @injectable()
 export class GetFilteredTodosQueryHandler {
   constructor(
-    @inject('ITodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async handle(query: GetFilteredTodosQuery): Promise<Todo[]> {
@@ -81,7 +82,7 @@ export class GetFilteredTodosQueryHandler {
 @injectable()
 export class GetTodoStatsQueryHandler {
   constructor(
-    @inject('ITodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async handle(): Promise<TodoStatsQueryResult> {
@@ -108,7 +109,7 @@ export class GetTodoStatsQueryHandler {
 @injectable()
 export class GetTodoByIdQueryHandler {
   constructor(
-    @inject('ITodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async handle(query: GetTodoByIdQuery): Promise<Todo | null> {

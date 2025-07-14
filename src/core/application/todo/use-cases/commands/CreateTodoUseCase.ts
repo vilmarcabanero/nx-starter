@@ -3,6 +3,7 @@ import { Todo } from '@/core/domain/todo/entities/Todo';
 import { TodoTitle } from '@/core/domain/todo/value-objects/TodoTitle';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 import type { CreateTodoCommand } from '@/core/application/todo/dto/TodoCommands';
+import { TOKENS } from '@/core/infrastructure/di/tokens';
 
 /**
  * Use case for creating a new todo
@@ -11,7 +12,7 @@ import type { CreateTodoCommand } from '@/core/application/todo/dto/TodoCommands
 @injectable()
 export class CreateTodoUseCase {
   constructor(
-    @inject('ITodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async execute(command: CreateTodoCommand): Promise<Todo> {
