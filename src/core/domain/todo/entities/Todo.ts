@@ -24,7 +24,7 @@ export class Todo implements ITodo {
     title: string | TodoTitle,
     completed = false,
     createdAt = new Date(),
-    id?: number | TodoId,
+    id?: string | TodoId,
     priority: TodoPriorityLevel = 'medium',
     dueDate?: Date
   ) {
@@ -60,8 +60,13 @@ export class Todo implements ITodo {
     return this._dueDate;
   }
 
-  // For backwards compatibility with existing code that expects numeric ID
-  get numericId(): number | undefined {
+  // For backwards compatibility with existing code that expects string ID
+  get stringId(): string | undefined {
+    return this._id?.value;
+  }
+
+  // Deprecated: Use stringId instead
+  get numericId(): string | undefined {
     return this._id?.value;
   }
 

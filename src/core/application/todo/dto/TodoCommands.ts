@@ -11,7 +11,7 @@ export interface CreateTodoCommand {
  * Command for updating an existing todo
  */
 export interface UpdateTodoCommand {
-  id: number;
+  id: string;
   title?: string;
   completed?: boolean;
   priority?: 'low' | 'medium' | 'high';
@@ -22,12 +22,12 @@ export interface UpdateTodoCommand {
  * Command for deleting a todo
  */
 export interface DeleteTodoCommand {
-  id: number;
+  id: string;
 }
 
 /**
  * Command for toggling todo completion status
  */
 export interface ToggleTodoCommand {
-  id: number;
+  id: string;
 }

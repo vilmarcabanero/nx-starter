@@ -15,7 +15,7 @@ describe('TodoEvents', () => {
   let testDate: Date;
 
   beforeEach(() => {
-    todoId = new TodoId(123);
+    todoId = new TodoId('a1b2c3d4e5f6789012345678901234ab');
     todoTitle = new TodoTitle('Test Todo');
     testDate = new Date('2024-01-15T10:30:00Z');
   });
@@ -38,7 +38,7 @@ describe('TodoEvents', () => {
     it('should preserve value object properties', () => {
       const event = new TodoCreatedEvent(todoId, todoTitle);
       
-      expect(event.todoId.value).toBe(123);
+      expect(event.todoId.value).toBe('a1b2c3d4e5f6789012345678901234ab');
       expect(event.title.value).toBe('Test Todo');
     });
 
@@ -64,7 +64,7 @@ describe('TodoEvents', () => {
     it('should preserve todo id value', () => {
       const event = new TodoCompletedEvent(todoId, testDate);
       
-      expect(event.todoId.value).toBe(123);
+      expect(event.todoId.value).toBe('a1b2c3d4e5f6789012345678901234ab');
     });
 
     it('should store completion date accurately', () => {
@@ -96,7 +96,7 @@ describe('TodoEvents', () => {
     it('should preserve todo id value', () => {
       const event = new TodoUncompletedEvent(todoId, testDate);
       
-      expect(event.todoId.value).toBe(123);
+      expect(event.todoId.value).toBe('a1b2c3d4e5f6789012345678901234ab');
     });
 
     it('should store uncompletion date accurately', () => {
@@ -123,7 +123,7 @@ describe('TodoEvents', () => {
       const newTitle = new TodoTitle('New Title');
       const event = new TodoUpdatedEvent(todoId, newTitle, testDate);
       
-      expect(event.todoId.value).toBe(123);
+      expect(event.todoId.value).toBe('a1b2c3d4e5f6789012345678901234ab');
       expect(event.newTitle.value).toBe('New Title');
     });
 
@@ -159,7 +159,7 @@ describe('TodoEvents', () => {
     it('should preserve todo id value', () => {
       const event = new TodoDeletedEvent(todoId, testDate);
       
-      expect(event.todoId.value).toBe(123);
+      expect(event.todoId.value).toBe('a1b2c3d4e5f6789012345678901234ab');
     });
 
     it('should store deletion date accurately', () => {
@@ -217,7 +217,7 @@ describe('TodoEvents', () => {
       
       // Properties should be readonly - TypeScript enforces this at compile time
       // Runtime behavior preserves the original values
-      expect(event.todoId.value).toBe(123);
+      expect(event.todoId.value).toBe('a1b2c3d4e5f6789012345678901234ab');
       expect(event.title.value).toBe('Test Todo');
     });
 
@@ -225,7 +225,7 @@ describe('TodoEvents', () => {
       const event = new TodoCreatedEvent(todoId, todoTitle);
       
       // Even if we try to modify the value objects, they should remain unchanged
-      expect(event.todoId.value).toBe(123);
+      expect(event.todoId.value).toBe('a1b2c3d4e5f6789012345678901234ab');
       expect(event.title.value).toBe('Test Todo');
     });
   });

@@ -21,49 +21,49 @@ export const useTodoItemViewModel = (todo: Todo): TodoItemViewModel => {
   }, [todo.titleValue, isEditing]);
 
   const toggleComplete = useCallback(async () => {
-    if (!todo.numericId) return;
+    if (!todo.stringId) return;
     
     setIsUpdating(true);
     try {
-      await store.toggleTodo(todo.numericId);
+      await store.toggleTodo(todo.stringId);
     } catch (error) {
       console.error('Failed to toggle todo:', error);
       // Don't throw to UI - error is handled by logging
     } finally {
       setIsUpdating(false);
     }
-  }, [store, todo.numericId]);
+  }, [store, todo.stringId]);
 
   const updateTitle = useCallback(async (newTitle: string) => {
-    if (!todo.numericId) return;
+    if (!todo.stringId) return;
     if (!newTitle.trim()) {
       throw new Error('Title cannot be empty');
     }
 
     setIsUpdating(true);
     try {
-      await store.updateTodo(todo.numericId, { title: newTitle.trim() });
+      await store.updateTodo(todo.stringId, { title: newTitle.trim() });
     } catch (error) {
       console.error('Failed to update todo title:', error);
       throw error;
     } finally {
       setIsUpdating(false);
     }
-  }, [store, todo.numericId]);
+  }, [store, todo.stringId]);
 
   const deleteTodo = useCallback(async () => {
-    if (!todo.numericId) return;
+    if (!todo.stringId) return;
 
     setIsUpdating(true);
     try {
-      await store.deleteTodo(todo.numericId);
+      await store.deleteTodo(todo.stringId);
     } catch (error) {
       console.error('Failed to delete todo:', error);
       // Don't throw to UI - error is handled by logging
     } finally {
       setIsUpdating(false);
     }
-  }, [store, todo.numericId]);
+  }, [store, todo.stringId]);
 
   // Edit mode handlers
   const startEditing = useCallback(() => {
@@ -76,7 +76,7 @@ export const useTodoItemViewModel = (todo: Todo): TodoItemViewModel => {
   }, [todo.titleValue]);
 
   const saveEdit = useCallback(async () => {
-    if (!todo.numericId || !editTitle.trim()) return;
+    if (!todo.stringId || !editTitle.trim()) return;
     
     try {
       await updateTitle(editTitle.trim());
@@ -84,7 +84,7 @@ export const useTodoItemViewModel = (todo: Todo): TodoItemViewModel => {
     } catch (error) {
       console.error('Failed to save edit:', error);
     }
-  }, [todo.numericId, editTitle, updateTitle]);
+  }, [todo.stringId, editTitle, updateTitle]);
 
   const handleEditTitleChange = useCallback((newTitle: string) => {
     setEditTitle(newTitle);
@@ -99,18 +99,18 @@ export const useTodoItemViewModel = (todo: Todo): TodoItemViewModel => {
   }, [saveEdit, cancelEditing]);
 
   const updatePriority = useCallback(async (priority: 'low' | 'medium' | 'high') => {
-    if (!todo.numericId) return;
+    if (!todo.stringId) return;
 
     setIsUpdating(true);
     try {
-      await store.updateTodo(todo.numericId, { priority });
+      await store.updateTodo(todo.stringId, { priority });
     } catch (error) {
       console.error('Failed to update todo priority:', error);
       throw error;
     } finally {
       setIsUpdating(false);
     }
-  }, [store, todo.numericId]);
+  }, [store, todo.stringId]);
 
   return {
     todo,

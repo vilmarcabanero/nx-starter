@@ -44,14 +44,14 @@ describe('TodoCommands DTO', () => {
   describe('UpdateTodoCommand', () => {
     it('should define correct interface structure', () => {
       const command: UpdateTodoCommand = {
-        id: 123,
+        id: 'a1b2c3d4e5f6789012345678901234ab',
         title: 'Updated Title',
         completed: true,
         priority: 'medium',
         dueDate: new Date(),
       };
 
-      expect(command.id).toBe(123);
+      expect(command.id).toBe('a1b2c3d4e5f6789012345678901234ab');
       expect(command.title).toBe('Updated Title');
       expect(command.completed).toBe(true);
       expect(command.priority).toBe('medium');
@@ -60,10 +60,10 @@ describe('TodoCommands DTO', () => {
 
     it('should allow partial updates with just id', () => {
       const command: UpdateTodoCommand = {
-        id: 456,
+        id: 'b2c3d4e5f6789012345678901234abcd',
       };
 
-      expect(command.id).toBe(456);
+      expect(command.id).toBe('b2c3d4e5f6789012345678901234abcd');
       expect(command.title).toBeUndefined();
       expect(command.completed).toBeUndefined();
       expect(command.priority).toBeUndefined();
@@ -71,9 +71,9 @@ describe('TodoCommands DTO', () => {
     });
 
     it('should allow updating individual fields', () => {
-      const titleOnlyCommand: UpdateTodoCommand = { id: 1, title: 'New Title' };
-      const completedOnlyCommand: UpdateTodoCommand = { id: 2, completed: false };
-      const priorityOnlyCommand: UpdateTodoCommand = { id: 3, priority: 'high' };
+      const titleOnlyCommand: UpdateTodoCommand = { id: 'c3d4e5f6789012345678901234abcdef', title: 'New Title' };
+      const completedOnlyCommand: UpdateTodoCommand = { id: 'd4e5f6789012345678901234abcdef01', completed: false };
+      const priorityOnlyCommand: UpdateTodoCommand = { id: 'e5f6789012345678901234abcdef0123', priority: 'high' };
 
       expect(titleOnlyCommand.title).toBe('New Title');
       expect(completedOnlyCommand.completed).toBe(false);
@@ -84,36 +84,36 @@ describe('TodoCommands DTO', () => {
   describe('DeleteTodoCommand', () => {
     it('should define correct interface structure', () => {
       const command: DeleteTodoCommand = {
-        id: 789,
+        id: 'f6789012345678901234abcdef0123456',
       };
 
-      expect(command.id).toBe(789);
+      expect(command.id).toBe('f6789012345678901234abcdef0123456');
     });
 
     it('should work with different id types', () => {
-      const command1: DeleteTodoCommand = { id: 0 };
-      const command2: DeleteTodoCommand = { id: 999999 };
+      const command1: DeleteTodoCommand = { id: '789012345678901234abcdef01234567' };
+      const command2: DeleteTodoCommand = { id: '89012345678901234abcdef0123456789' };
 
-      expect(command1.id).toBe(0);
-      expect(command2.id).toBe(999999);
+      expect(command1.id).toBe('789012345678901234abcdef01234567');
+      expect(command2.id).toBe('89012345678901234abcdef0123456789');
     });
   });
 
   describe('ToggleTodoCommand', () => {
     it('should define correct interface structure', () => {
       const command: ToggleTodoCommand = {
-        id: 101,
+        id: '9012345678901234abcdef0123456789a',
       };
 
-      expect(command.id).toBe(101);
+      expect(command.id).toBe('9012345678901234abcdef0123456789a');
     });
 
     it('should work with different id values', () => {
-      const command1: ToggleTodoCommand = { id: 1 };
-      const command2: ToggleTodoCommand = { id: 42 };
+      const command1: ToggleTodoCommand = { id: '012345678901234abcdef0123456789ab' };
+      const command2: ToggleTodoCommand = { id: '12345678901234abcdef0123456789abc' };
 
-      expect(command1.id).toBe(1);
-      expect(command2.id).toBe(42);
+      expect(command1.id).toBe('012345678901234abcdef0123456789ab');
+      expect(command2.id).toBe('12345678901234abcdef0123456789abc');
     });
   });
 
@@ -121,15 +121,15 @@ describe('TodoCommands DTO', () => {
     it('should maintain type safety for command interfaces', () => {
       // This test ensures TypeScript compilation and type checking
       const createCommand: CreateTodoCommand = { title: 'Test' };
-      const updateCommand: UpdateTodoCommand = { id: 1 };
-      const deleteCommand: DeleteTodoCommand = { id: 2 };
-      const toggleCommand: ToggleTodoCommand = { id: 3 };
+      const updateCommand: UpdateTodoCommand = { id: '2345678901234abcdef0123456789abcd' };
+      const deleteCommand: DeleteTodoCommand = { id: '345678901234abcdef0123456789abcde' };
+      const toggleCommand: ToggleTodoCommand = { id: '45678901234abcdef0123456789abcdef' };
 
       // All commands should be properly typed
       expect(typeof createCommand.title).toBe('string');
-      expect(typeof updateCommand.id).toBe('number');
-      expect(typeof deleteCommand.id).toBe('number');
-      expect(typeof toggleCommand.id).toBe('number');
+      expect(typeof updateCommand.id).toBe('string');
+      expect(typeof deleteCommand.id).toBe('string');
+      expect(typeof toggleCommand.id).toBe('string');
     });
 
     it('should prevent invalid priority values through TypeScript', () => {

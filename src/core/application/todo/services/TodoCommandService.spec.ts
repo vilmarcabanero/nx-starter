@@ -45,7 +45,7 @@ describe('TodoCommandService', () => {
         dueDate: new Date('2024-12-31'),
       };
       
-      const expectedTodo = new Todo('New Todo', false, new Date(), 1, 'high');
+      const expectedTodo = new Todo('New Todo', false, new Date(), 'a1b2c3d4e5f6789012345678901234ab', 'high');
       vi.mocked(mockCreateUseCase.execute).mockResolvedValue(expectedTodo);
 
       // Act
@@ -67,7 +67,7 @@ describe('TodoCommandService', () => {
         title: 'Simple Todo',
       };
       
-      const expectedTodo = new Todo('Simple Todo', false, new Date(), 1);
+      const expectedTodo = new Todo('Simple Todo', false, new Date(), 'b2c3d4e5f6789012345678901234abcd');
       vi.mocked(mockCreateUseCase.execute).mockResolvedValue(expectedTodo);
 
       // Act
@@ -100,7 +100,7 @@ describe('TodoCommandService', () => {
   describe('updateTodo', () => {
     it('should update a todo with complete data', async () => {
       // Arrange
-      const id = 1;
+      const id = 'c3d4e5f6789012345678901234abcdef';
       const updates: UpdateTodoData = {
         title: 'Updated Todo',
         completed: true,
@@ -117,7 +117,7 @@ describe('TodoCommandService', () => {
       // Assert
       expect(result).toBe(expectedTodo);
       expect(mockUpdateUseCase.execute).toHaveBeenCalledWith({
-        id: 1,
+        id: 'c3d4e5f6789012345678901234abcdef',
         title: 'Updated Todo',
         completed: true,
         priority: 'low',
@@ -128,7 +128,7 @@ describe('TodoCommandService', () => {
 
     it('should update a todo with partial data', async () => {
       // Arrange
-      const id = 2;
+      const id = 'd4e5f6789012345678901234abcdef01';
       const updates: UpdateTodoData = {
         completed: true,
       };
@@ -142,7 +142,7 @@ describe('TodoCommandService', () => {
       // Assert
       expect(result).toBe(expectedTodo);
       expect(mockUpdateUseCase.execute).toHaveBeenCalledWith({
-        id: 2,
+        id: 'd4e5f6789012345678901234abcdef01',
         title: undefined,
         completed: true,
         priority: undefined,
@@ -152,7 +152,7 @@ describe('TodoCommandService', () => {
 
     it('should propagate errors from use case', async () => {
       // Arrange
-      const id = 999;
+      const id = 'e5f6789012345678901234abcdef0123';
       const updates: UpdateTodoData = { title: 'New Title' };
       
       const error = new Error('Todo not found');
@@ -167,20 +167,20 @@ describe('TodoCommandService', () => {
   describe('deleteTodo', () => {
     it('should delete a todo by id', async () => {
       // Arrange
-      const id = 1;
+      const id = 'f6789012345678901234abcdef0123456';
       vi.mocked(mockDeleteUseCase.execute).mockResolvedValue(undefined);
 
       // Act
       await service.deleteTodo(id);
 
       // Assert
-      expect(mockDeleteUseCase.execute).toHaveBeenCalledWith({ id: 1 });
+      expect(mockDeleteUseCase.execute).toHaveBeenCalledWith({ id: 'f6789012345678901234abcdef0123456' });
       expect(mockDeleteUseCase.execute).toHaveBeenCalledTimes(1);
     });
 
     it('should propagate errors from use case', async () => {
       // Arrange
-      const id = 999;
+      const id = '789012345678901234abcdef01234567';
       const error = new Error('Todo not found');
       vi.mocked(mockDeleteUseCase.execute).mockRejectedValue(error);
 
@@ -193,7 +193,7 @@ describe('TodoCommandService', () => {
   describe('toggleTodo', () => {
     it('should toggle a todo by id', async () => {
       // Arrange
-      const id = 1;
+      const id = '89012345678901234abcdef0123456789';
       const expectedTodo = new Todo('Toggled Todo', true, new Date(), id);
       vi.mocked(mockToggleUseCase.execute).mockResolvedValue(expectedTodo);
 
@@ -202,13 +202,13 @@ describe('TodoCommandService', () => {
 
       // Assert
       expect(result).toBe(expectedTodo);
-      expect(mockToggleUseCase.execute).toHaveBeenCalledWith({ id: 1 });
+      expect(mockToggleUseCase.execute).toHaveBeenCalledWith({ id: '89012345678901234abcdef0123456789' });
       expect(mockToggleUseCase.execute).toHaveBeenCalledTimes(1);
     });
 
     it('should propagate errors from use case', async () => {
       // Arrange
-      const id = 999;
+      const id = '9012345678901234abcdef0123456789a';
       const error = new Error('Todo not found');
       vi.mocked(mockToggleUseCase.execute).mockRejectedValue(error);
 
@@ -224,8 +224,8 @@ describe('TodoCommandService', () => {
       const createData: CreateTodoData = { title: 'Test Todo' };
       const updateData: UpdateTodoData = { completed: true };
       
-      const createdTodo = new Todo('Test Todo', false, new Date(), 1);
-      const updatedTodo = new Todo('Test Todo', true, new Date(), 1);
+      const createdTodo = new Todo('Test Todo', false, new Date(), '012345678901234abcdef0123456789ab');
+      const updatedTodo = new Todo('Test Todo', true, new Date(), '012345678901234abcdef0123456789ab');
       
       vi.mocked(mockCreateUseCase.execute).mockResolvedValue(createdTodo);
       vi.mocked(mockUpdateUseCase.execute).mockResolvedValue(updatedTodo);
@@ -233,8 +233,8 @@ describe('TodoCommandService', () => {
 
       // Act
       const created = await service.createTodo(createData);
-      const updated = await service.updateTodo(1, updateData);
-      await service.deleteTodo(1);
+      const updated = await service.updateTodo('012345678901234abcdef0123456789ab', updateData);
+      await service.deleteTodo('012345678901234abcdef0123456789ab');
 
       // Assert
       expect(created).toBe(createdTodo);

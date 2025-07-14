@@ -31,7 +31,7 @@ export class TodoCommandService implements ITodoCommandService {
     return await this.createTodoUseCase.execute(command);
   }
 
-  async updateTodo(id: number, updates: UpdateTodoData): Promise<Todo> {
+  async updateTodo(id: string, updates: UpdateTodoData): Promise<Todo> {
     const command: UpdateTodoCommand = {
       id,
       title: updates.title,
@@ -42,12 +42,12 @@ export class TodoCommandService implements ITodoCommandService {
     return await this.updateTodoUseCase.execute(command);
   }
 
-  async deleteTodo(id: number): Promise<void> {
+  async deleteTodo(id: string): Promise<void> {
     const command: DeleteTodoCommand = { id };
     return await this.deleteTodoUseCase.execute(command);
   }
 
-  async toggleTodo(id: number): Promise<Todo> {
+  async toggleTodo(id: string): Promise<Todo> {
     const command: ToggleTodoCommand = { id };
     return await this.toggleTodoUseCase.execute(command);
   }

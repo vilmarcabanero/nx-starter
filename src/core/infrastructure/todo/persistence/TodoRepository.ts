@@ -4,6 +4,7 @@ import { type TodoPriorityLevel } from '@/core/domain/todo/value-objects/TodoPri
 import { type Specification } from '@/core/domain/shared/specifications/Specification';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 import { db, type TodoRecord } from './TodoDB';
+import { generateId } from '@/core/utils/uuid';
 
 @injectable()
 export class TodoRepository implements ITodoRepository {
@@ -12,14 +13,22 @@ export class TodoRepository implements ITodoRepository {
     return rawTodos.map(raw => this.mapToTodoEntity(raw));
   }
 
-  async create(todo: Todo): Promise<number> {
+  async create(todo: Todo): Promise<string> {
+    // Generate UUID for the todo
+    const id = generateId();
+    
     // Convert Todo entity to plain object for storage
     const todoData = this.mapToPlainObject(todo);
-    const id = await db.todos.add(todoData);
-    return id as number;
+    const todoRecord: TodoRecord = {
+      ...todoData,
+      id
+    };
+    
+    await db.todos.add(todoRecord);
+    return id;
   }
 
-  async update(id: number, changes: Partial<Todo>): Promise<void> {
+  async update(id: string, changes: Partial<Todo>): Promise<void> {
     // Convert any value objects to plain objects for storage
     const updateData: Partial<TodoRecord> = {};
     if (changes.title) {
@@ -42,11 +51,11 @@ export class TodoRepository implements ITodoRepository {
     await db.todos.update(id, updateData);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await db.todos.delete(id);
   }
 
-  async getById(id: number): Promise<Todo | undefined> {
+  async getById(id: string): Promise<Todo | undefined> {
     const rawTodo = await db.todos.get(id);
     return rawTodo ? this.mapToTodoEntity(rawTodo) : undefined;
   }
@@ -83,7 +92,7 @@ export class TodoRepository implements ITodoRepository {
   /**
    * Maps a Todo entity to a plain object for storage
    */
-  private mapToPlainObject(todo: Todo): TodoRecord {
+  private mapToPlainObject(todo: Todo): Omit<TodoRecord, 'id'> {
     return {
       title: todo.titleValue,
       completed: todo.completed ? 1 : 0, // Convert boolean to 0/1 for IndexedDB

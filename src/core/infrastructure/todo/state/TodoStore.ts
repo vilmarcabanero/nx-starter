@@ -97,12 +97,12 @@ export const useTodoStore = create<TodoStore>()(
             }
           },
 
-          async updateTodo(id: number, updates: UpdateTodoData) {
+          async updateTodo(id: string, updates: UpdateTodoData) {
             // Optimistic update - create deep copy of todos
-            const originalTodos = get().todos.map(todo => new Todo(todo.titleValue, todo.completed, todo.createdAt, todo.numericId, todo.priority.level));
+            const originalTodos = get().todos.map(todo => new Todo(todo.titleValue, todo.completed, todo.createdAt, todo.stringId, todo.priority.level));
             
             set((state) => {
-              const index = state.todos.findIndex(todo => todo.numericId === id);
+              const index = state.todos.findIndex(todo => todo.stringId === id);
               if (index !== -1) {
                 // Create a new Todo entity with the updates instead of mutating
                 const currentTodo = state.todos[index];
@@ -110,7 +110,7 @@ export const useTodoStore = create<TodoStore>()(
                   updates.title !== undefined ? updates.title : currentTodo.titleValue,
                   updates.completed !== undefined ? updates.completed : currentTodo.completed,
                   currentTodo.createdAt,
-                  currentTodo.numericId,
+                  currentTodo.stringId,
                   updates.priority !== undefined ? updates.priority : currentTodo.priority.level,
                   updates.dueDate !== undefined ? updates.dueDate : currentTodo.dueDate
                 );
@@ -121,7 +121,7 @@ export const useTodoStore = create<TodoStore>()(
             try {
               const updatedTodo = await getCommandService().updateTodo(id, updates);
               set((state) => {
-                const index = state.todos.findIndex(todo => todo.numericId === id);
+                const index = state.todos.findIndex(todo => todo.stringId === id);
                 if (index !== -1) {
                   state.todos[index] = updatedTodo;
                 }
@@ -138,12 +138,12 @@ export const useTodoStore = create<TodoStore>()(
             }
           },
 
-          async deleteTodo(id: number) {
+          async deleteTodo(id: string) {
             // Optimistic update - create deep copy of todos
-            const originalTodos = get().todos.map(todo => new Todo(todo.titleValue, todo.completed, todo.createdAt, todo.numericId, todo.priority.level));
+            const originalTodos = get().todos.map(todo => new Todo(todo.titleValue, todo.completed, todo.createdAt, todo.stringId, todo.priority.level));
             
             set((state) => {
-              state.todos = state.todos.filter(todo => todo.numericId !== id);
+              state.todos = state.todos.filter(todo => todo.stringId !== id);
               state.error = null;
             });
 
@@ -163,12 +163,12 @@ export const useTodoStore = create<TodoStore>()(
             }
           },
 
-          async toggleTodo(id: number) {
+          async toggleTodo(id: string) {
             // Optimistic update - create deep copy of todos
-            const originalTodos = get().todos.map(todo => new Todo(todo.titleValue, todo.completed, todo.createdAt, todo.numericId, todo.priority.level));
+            const originalTodos = get().todos.map(todo => new Todo(todo.titleValue, todo.completed, todo.createdAt, todo.stringId, todo.priority.level));
             
             set((state) => {
-              const index = state.todos.findIndex(todo => todo.numericId === id);
+              const index = state.todos.findIndex(todo => todo.stringId === id);
               if (index !== -1) {
                 // Create a new Todo entity with toggled completed status instead of mutating
                 const currentTodo = state.todos[index];
@@ -176,7 +176,7 @@ export const useTodoStore = create<TodoStore>()(
                   currentTodo.titleValue,
                   !currentTodo.completed,
                   currentTodo.createdAt,
-                  currentTodo.numericId,
+                  currentTodo.stringId,
                   currentTodo.priority.level,
                   currentTodo.dueDate
                 );
@@ -187,7 +187,7 @@ export const useTodoStore = create<TodoStore>()(
             try {
               const updatedTodo = await getCommandService().toggleTodo(id);
               set((state) => {
-                const index = state.todos.findIndex(todo => todo.numericId === id);
+                const index = state.todos.findIndex(todo => todo.stringId === id);
                 if (index !== -1) {
                   state.todos[index] = updatedTodo;
                 }

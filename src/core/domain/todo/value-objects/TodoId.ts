@@ -3,20 +3,26 @@
  * Ensures type safety and validation for todo identifiers
  */
 export class TodoId {
-  private readonly _value: number;
+  private readonly _value: string;
 
-  constructor(value: number) {
+  constructor(value: string) {
     this.validateId(value);
     this._value = value;
   }
 
-  get value(): number {
+  get value(): string {
     return this._value;
   }
 
-  private validateId(id: number): void {
-    if (!Number.isInteger(id) || id <= 0) {
-      throw new Error('Todo ID must be a positive integer');
+  private validateId(id: string): void {
+    if (typeof id !== 'string' || id.trim().length === 0) {
+      throw new Error('Todo ID must be a non-empty string');
+    }
+    
+    // Validate UUID format without dashes (32 hex characters)
+    const uuidRegex = /^[0-9a-f]{32}$/i;
+    if (!uuidRegex.test(id)) {
+      throw new Error('Todo ID must be a valid UUID without dashes (32 hex characters)');
     }
   }
 
@@ -25,14 +31,10 @@ export class TodoId {
   }
 
   toString(): string {
-    return this._value.toString();
+    return this._value;
   }
 
   static fromString(value: string): TodoId {
-    const numValue = parseInt(value, 10);
-    if (isNaN(numValue)) {
-      throw new Error('Invalid Todo ID format');
-    }
-    return new TodoId(numValue);
+    return new TodoId(value);
   }
 }

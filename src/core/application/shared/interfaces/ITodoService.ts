@@ -16,16 +16,16 @@ export interface UpdateTodoData {
 // Interface Segregation Principle - Separate read and write operations
 export interface ITodoCommandService {
   createTodo(data: CreateTodoData): Promise<Todo>;
-  updateTodo(id: number, updates: UpdateTodoData): Promise<Todo>;
-  deleteTodo(id: number): Promise<void>;
-  toggleTodo(id: number): Promise<Todo>;
+  updateTodo(id: string, updates: UpdateTodoData): Promise<Todo>;
+  deleteTodo(id: string): Promise<void>;
+  toggleTodo(id: string): Promise<Todo>;
 }
 
 export interface ITodoQueryService {
   getAllTodos(): Promise<Todo[]>;
   getActiveTodos(): Promise<Todo[]>;
   getCompletedTodos(): Promise<Todo[]>;
-  getTodoById(id: number): Promise<Todo | null>;
+  getTodoById(id: string): Promise<Todo | null>;
   getFilteredTodos(filter: 'all' | 'active' | 'completed', sortBy?: 'priority' | 'createdAt' | 'urgency'): Promise<Todo[]>;
   getTodoStats(): Promise<{ total: number; active: number; completed: number }>;
 }

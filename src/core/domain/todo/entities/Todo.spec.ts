@@ -20,12 +20,12 @@ describe('Todo Entity', () => {
     it('should create a todo with all parameters', () => {
       const createdAt = new Date('2023-01-01');
       const dueDate = new Date('2023-01-02');
-      const todo = new Todo('Test todo', true, createdAt, 1, 'high', dueDate);
+      const todo = new Todo('Test todo', true, createdAt, 'a1b2c3d4e5f6789012345678901234ab', 'high', dueDate);
       
       expect(todo.title.value).toBe('Test todo');
       expect(todo.completed).toBe(true);
       expect(todo.createdAt).toBe(createdAt);
-      expect(todo.id?.value).toBe(1);
+      expect(todo.id?.value).toBe('a1b2c3d4e5f6789012345678901234ab');
       expect(todo.priority.level).toBe('high');
       expect(todo.dueDate).toBe(dueDate);
     });
@@ -38,7 +38,7 @@ describe('Todo Entity', () => {
     });
 
     it('should accept TodoId instance as id', () => {
-      const id = new TodoId(42);
+      const id = new TodoId('b2c3d4e5f6789012345678901234abcd');
       const todo = new Todo('Test todo', false, new Date(), id);
       
       expect(todo.id).toBe(id);
@@ -47,8 +47,8 @@ describe('Todo Entity', () => {
 
   describe('Getters', () => {
     it('should return numeric id', () => {
-      const todo = new Todo('Test todo', false, new Date(), 123);
-      expect(todo.numericId).toBe(123);
+      const todo = new Todo('Test todo', false, new Date(), 'c3d4e5f6789012345678901234abcdef');
+      expect(todo.numericId).toBe('c3d4e5f6789012345678901234abcdef');
     });
 
     it('should return undefined for numeric id when no id', () => {
@@ -149,21 +149,21 @@ describe('Todo Entity', () => {
 
     describe('equals', () => {
       it('should return true for todos with same id', () => {
-        const todo1 = new Todo('Test todo 1', false, new Date(), 1);
-        const todo2 = new Todo('Test todo 2', true, new Date(), 1);
+        const todo1 = new Todo('Test todo 1', false, new Date(), 'd4e5f6789012345678901234abcdef01');
+        const todo2 = new Todo('Test todo 2', true, new Date(), 'd4e5f6789012345678901234abcdef01');
         
         expect(todo1.equals(todo2)).toBe(true);
       });
 
       it('should return false for todos with different ids', () => {
-        const todo1 = new Todo('Test todo', false, new Date(), 1);
-        const todo2 = new Todo('Test todo', false, new Date(), 2);
+        const todo1 = new Todo('Test todo', false, new Date(), 'e5f6789012345678901234abcdef0123');
+        const todo2 = new Todo('Test todo', false, new Date(), 'f6789012345678901234abcdef0123456');
         
         expect(todo1.equals(todo2)).toBe(false);
       });
 
       it('should return false when one todo has no id', () => {
-        const todo1 = new Todo('Test todo', false, new Date(), 1);
+        const todo1 = new Todo('Test todo', false, new Date(), '789012345678901234abcdef01234567');
         const todo2 = new Todo('Test todo', false, new Date());
         
         expect(todo1.equals(todo2)).toBe(false);

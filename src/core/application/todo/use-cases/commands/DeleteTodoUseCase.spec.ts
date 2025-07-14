@@ -26,8 +26,8 @@ describe('DeleteTodoUseCase', () => {
   describe('execute', () => {
     it('should delete an existing todo', async () => {
       // Arrange
-      const command: DeleteTodoCommand = { id: 1 };
-      const existingTodo = new Todo('Existing Todo', false, new Date(), 1);
+      const command: DeleteTodoCommand = { id: 'a1b2c3d4e5f6789012345678901234ab' };
+      const existingTodo = new Todo('Existing Todo', false, new Date(), 'a1b2c3d4e5f6789012345678901234ab');
       
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
       vi.mocked(mockRepository.delete).mockResolvedValue();
@@ -36,20 +36,20 @@ describe('DeleteTodoUseCase', () => {
       await useCase.execute(command);
 
       // Assert
-      expect(mockRepository.getById).toHaveBeenCalledWith(1);
-      expect(mockRepository.delete).toHaveBeenCalledWith(1);
+      expect(mockRepository.getById).toHaveBeenCalledWith('a1b2c3d4e5f6789012345678901234ab');
+      expect(mockRepository.delete).toHaveBeenCalledWith('a1b2c3d4e5f6789012345678901234ab');
       expect(mockRepository.getById).toHaveBeenCalledTimes(1);
       expect(mockRepository.delete).toHaveBeenCalledTimes(1);
     });
 
     it('should throw error when todo does not exist', async () => {
       // Arrange
-      const command: DeleteTodoCommand = { id: 999 };
+      const command: DeleteTodoCommand = { id: 'b2c3d4e5f6789012345678901234abcd' };
       vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
 
       // Act & Assert
       await expect(useCase.execute(command)).rejects.toThrow('Todo not found');
-      expect(mockRepository.getById).toHaveBeenCalledWith(999);
+      expect(mockRepository.getById).toHaveBeenCalledWith('b2c3d4e5f6789012345678901234abcd');
       expect(mockRepository.delete).not.toHaveBeenCalled();
     });
 
@@ -66,8 +66,8 @@ describe('DeleteTodoUseCase', () => {
 
     it('should propagate repository delete errors', async () => {
       // Arrange
-      const command: DeleteTodoCommand = { id: 1 };
-      const existingTodo = new Todo('Existing Todo', false, new Date(), 1);
+      const command: DeleteTodoCommand = { id: 'c3d4e5f6789012345678901234abcdef' };
+      const existingTodo = new Todo('Existing Todo', false, new Date(), 'c3d4e5f6789012345678901234abcdef');
       const deleteError = new Error('Delete operation failed');
       
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);

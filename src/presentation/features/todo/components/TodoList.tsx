@@ -34,7 +34,7 @@ export const TodoList: React.FC = () => {
     <div className="space-y-2" data-testid="todo-list">
       {viewModel.todos.map((todo) => (
         <TodoItem
-          key={todo.numericId}
+          key={todo.stringId}
           todo={todo}
         />
       ))}

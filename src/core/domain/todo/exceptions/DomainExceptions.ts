@@ -12,7 +12,7 @@ export abstract class DomainException extends Error {
  * Todo-specific domain exceptions
  */
 export class TodoNotFoundException extends DomainException {
-  constructor(id: number | string) {
+  constructor(id: string) {
     super(`Todo with ID ${id} not found`, 'TODO_NOT_FOUND');
   }
 }
