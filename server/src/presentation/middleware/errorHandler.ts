@@ -16,6 +16,16 @@ export const errorHandler = (
     return next(error);
   }
 
+  // Handle JSON parsing errors
+  if (error.type === 'entity.parse.failed') {
+    res.status(400).json({
+      success: false,
+      error: 'Invalid JSON format',
+      message: 'Request body contains invalid JSON'
+    });
+    return;
+  }
+
   res.status(500).json({
     success: false,
     error: 'Internal server error',

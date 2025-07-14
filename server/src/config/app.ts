@@ -5,6 +5,7 @@ import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import { createApiRoutes } from '@/presentation/routes';
 import { errorHandler, notFoundHandler, requestLogger } from '@/presentation/middleware/errorHandler';
+import { config } from '@/config/config';
 
 /**
  * Creates and configures the Express application
@@ -17,7 +18,7 @@ export const createApp = (): express.Application => {
   
   // CORS configuration
   app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173', // Default Vite dev server
+    origin: config.corsOrigin,
     credentials: true
   }));
 
@@ -49,6 +50,8 @@ export const createApp = (): express.Application => {
       success: true,
       message: 'Task App API Server',
       version: '1.0.0',
+      environment: config.nodeEnv,
+      database: config.database.type,
       endpoints: {
         health: '/api/health',
         todos: '/api/todos',
