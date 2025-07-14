@@ -140,7 +140,7 @@ describe('TodoDomainService', () => {
         'Very old todo',
         false,
         new Date('2024-05-01T10:00:00Z'), // Very old (more than 21 days)
-        generateTestUuid(104),
+        1,
         'low'
       );
 
@@ -151,9 +151,9 @@ describe('TodoDomainService', () => {
     });
 
     it('should handle todos with different priorities', () => {
-      const highPriorityTodo = new Todo('High', false, baseTodo.createdAt, generateTestUuid(1), 'high');
-      const mediumPriorityTodo = new Todo('Medium', false, baseTodo.createdAt, generateTestUuid(2), 'medium');
-      const lowPriorityTodo = new Todo('Low', false, baseTodo.createdAt, generateTestUuid(3), 'low');
+      const highPriorityTodo = new Todo('High', false, baseTodo.createdAt, 1, 'high');
+      const mediumPriorityTodo = new Todo('Medium', false, baseTodo.createdAt, 2, 'medium');
+      const lowPriorityTodo = new Todo('Low', false, baseTodo.createdAt, 3, 'low');
 
       const highScore = TodoDomainService.calculateUrgencyScore(highPriorityTodo, currentDate);
       const mediumScore = TodoDomainService.calculateUrgencyScore(mediumPriorityTodo, currentDate);
@@ -168,7 +168,7 @@ describe('TodoDomainService', () => {
         'No priority todo',
         false,
         currentDate,
-        generateTestUuid(105)
+        1
       );
 
       const score = TodoDomainService.calculateUrgencyScore(todoWithoutPriority, currentDate);
@@ -195,7 +195,7 @@ describe('TodoDomainService', () => {
 
   describe('canComplete', () => {
     it('should allow completion of incomplete todos', () => {
-      const incompleteTodo = new Todo('Incomplete', false, currentDate, generateTestUuid(1), 'medium');
+      const incompleteTodo = new Todo('Incomplete', false, currentDate, 1, 'medium');
 
       const result = TodoDomainService.canComplete(incompleteTodo);
 
@@ -204,7 +204,7 @@ describe('TodoDomainService', () => {
     });
 
     it('should not allow completion of already completed todos', () => {
-      const completedTodo = new Todo('Completed', true, currentDate, generateTestUuid(1), 'medium');
+      const completedTodo = new Todo('Completed', true, currentDate, 1, 'medium');
 
       const result = TodoDomainService.canComplete(completedTodo);
 
@@ -216,9 +216,9 @@ describe('TodoDomainService', () => {
   describe('sortByPriority', () => {
     it('should sort incomplete todos by urgency score (highest first)', () => {
       const todos = [
-        new Todo('Low priority', false, currentDate, generateTestUuid(1), 'low'),
-        new Todo('High priority', false, currentDate, generateTestUuid(2), 'high'),
-        new Todo('Medium priority', false, currentDate, generateTestUuid(3), 'medium'),
+        new Todo('Low priority', false, currentDate, 1, 'low'),
+        new Todo('High priority', false, currentDate, 2, 'high'),
+        new Todo('Medium priority', false, currentDate, 3, 'medium'),
       ];
 
       const sorted = TodoDomainService.sortByPriority(todos, currentDate);
@@ -230,10 +230,10 @@ describe('TodoDomainService', () => {
 
     it('should place completed todos at the bottom', () => {
       const todos = [
-        new Todo('Incomplete low', false, currentDate, generateTestUuid(1), 'low'),
-        new Todo('Completed high', true, currentDate, generateTestUuid(2), 'high'),
-        new Todo('Incomplete high', false, currentDate, generateTestUuid(3), 'high'),
-        new Todo('Completed medium', true, currentDate, generateTestUuid(4), 'medium'),
+        new Todo('Incomplete low', false, currentDate, 1, 'low'),
+        new Todo('Completed high', true, currentDate, 2, 'high'),
+        new Todo('Incomplete high', false, currentDate, 3, 'high'),
+        new Todo('Completed medium', true, currentDate, 4, 'medium'),
       ];
 
       const sorted = TodoDomainService.sortByPriority(todos, currentDate);
@@ -246,8 +246,8 @@ describe('TodoDomainService', () => {
 
     it('should consider age in sorting', () => {
       const todos = [
-        new Todo('New high', false, currentDate, generateTestUuid(1), 'high'),
-        new Todo('Old medium', false, new Date('2024-06-29T10:00:00Z'), generateTestUuid(2), 'medium'), // 14 days old
+        new Todo('New high', false, currentDate, 1, 'high'),
+        new Todo('Old medium', false, new Date('2024-06-29T10:00:00Z'), 2, 'medium'), // 14 days old
       ];
 
       const sorted = TodoDomainService.sortByPriority(todos, currentDate);
@@ -259,8 +259,8 @@ describe('TodoDomainService', () => {
 
     it('should not mutate the original array', () => {
       const todos = [
-        new Todo('Second', false, currentDate, generateTestUuid(1), 'low'),
-        new Todo('First', false, currentDate, generateTestUuid(2), 'high'),
+        new Todo('Second', false, currentDate, 1, 'low'),
+        new Todo('First', false, currentDate, 2, 'high'),
       ];
       const originalOrder = todos.map(t => t.title.value);
 
@@ -279,7 +279,7 @@ describe('TodoDomainService', () => {
     });
 
     it('should handle single todo', () => {
-      const todos = [new Todo('Single', false, currentDate, generateTestUuid(1), 'medium')];
+      const todos = [new Todo('Single', false, currentDate, 1, 'medium')];
 
       const sorted = TodoDomainService.sortByPriority(todos, currentDate);
 
@@ -289,8 +289,8 @@ describe('TodoDomainService', () => {
 
     it('should use current date when no date provided', () => {
       const todos = [
-        new Todo('Low priority', false, new Date(), generateTestUuid(1), 'low'),
-        new Todo('High priority', false, new Date(), generateTestUuid(2), 'high'),
+        new Todo('Low priority', false, new Date(), 1, 'low'),
+        new Todo('High priority', false, new Date(), 2, 'high'),
       ];
 
       const sorted = TodoDomainService.sortByPriority(todos);
@@ -305,11 +305,11 @@ describe('TodoDomainService', () => {
       const baseDate = new Date('2024-07-01T10:00:00Z');
       
       const todos = [
-        new Todo('Completed old high', true, new Date('2024-06-01T10:00:00Z'), generateTestUuid(1), 'high'),
-        new Todo('Active new low', false, new Date('2024-06-30T10:00:00Z'), generateTestUuid(2), 'low'),
-        new Todo('Active old medium', false, new Date('2024-06-15T10:00:00Z'), generateTestUuid(3), 'medium'),
-        new Todo('Completed recent medium', true, new Date('2024-06-28T10:00:00Z'), generateTestUuid(4), 'medium'),
-        new Todo('Active new high', false, new Date('2024-06-30T10:00:00Z'), generateTestUuid(5), 'high'),
+        new Todo('Completed old high', true, new Date('2024-06-01T10:00:00Z'), 1, 'high'),
+        new Todo('Active new low', false, new Date('2024-06-30T10:00:00Z'), 2, 'low'),
+        new Todo('Active old medium', false, new Date('2024-06-15T10:00:00Z'), 3, 'medium'),
+        new Todo('Completed recent medium', true, new Date('2024-06-28T10:00:00Z'), 4, 'medium'),
+        new Todo('Active new high', false, new Date('2024-06-30T10:00:00Z'), 5, 'high'),
       ];
 
       const sorted = TodoDomainService.sortByPriority(todos, baseDate);
