@@ -24,9 +24,9 @@ export interface TodoStore {
   // Actions
   loadTodos(): Promise<void>;
   createTodo(data: CreateTodoData): Promise<void>;
-  updateTodo(id: number, updates: UpdateTodoData): Promise<void>;
-  deleteTodo(id: number): Promise<void>;
-  toggleTodo(id: number): Promise<void>;
+  updateTodo(id: string, updates: UpdateTodoData): Promise<void>;
+  deleteTodo(id: string): Promise<void>;
+  toggleTodo(id: string): Promise<void>;
   setFilter(filter: 'all' | 'active' | 'completed'): void;
   clearError(): void;
 }

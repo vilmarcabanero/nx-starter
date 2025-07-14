@@ -21,7 +21,7 @@ export type GetTodoStatsQuery = object;
  * Query for getting a single todo by ID
  */
 export interface GetTodoByIdQuery {
-  id: number;
+  id: string;
 }
 
 /**

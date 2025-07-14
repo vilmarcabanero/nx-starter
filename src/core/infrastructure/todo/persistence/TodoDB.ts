@@ -3,7 +3,7 @@ import Dexie, { type Table } from 'dexie';
 // Interface for the raw data stored in IndexedDB
 // Note: completed is stored as 0/1 due to IndexedDB indexing requirements
 export interface TodoRecord {
-  id?: number;
+  id: string;
   title: string;
   completed: number; // 0 for false, 1 for true (IndexedDB indexing requirement)
   createdAt: Date;
@@ -19,7 +19,7 @@ export class TodoDB extends Dexie {
     
     // Clean schema for development - no legacy support needed
     this.version(1).stores({
-      todos: '++id, title, completed, createdAt, priority'
+      todos: 'id, title, completed, createdAt, priority'
     });
   }
 }

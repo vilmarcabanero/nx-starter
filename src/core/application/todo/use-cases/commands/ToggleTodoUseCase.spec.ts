@@ -32,9 +32,9 @@ describe('ToggleTodoUseCase', () => {
   describe('execute', () => {
     it('should toggle active todo to completed', async () => {
       // Arrange
-      const command: ToggleTodoCommand = { id: 1 };
-      const activeTodo = new Todo('Active Todo', false, new Date(), 1);
-      const completedTodo = new Todo('Active Todo', true, new Date(), 1);
+      const command: ToggleTodoCommand = { id: 'a1b2c3d4e5f6789012345678901234ab' };
+      const activeTodo = new Todo('Active Todo', false, new Date(), 'a1b2c3d4e5f6789012345678901234ab');
+      const completedTodo = new Todo('Active Todo', true, new Date(), 'a1b2c3d4e5f6789012345678901234ab');
       
       vi.mocked(mockRepository.getById).mockResolvedValue(activeTodo);
       vi.mocked(mockUpdateUseCase.execute).mockResolvedValue(completedTodo);

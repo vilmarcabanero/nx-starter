@@ -93,20 +93,20 @@ describe('TodoQueries DTO', () => {
 
   describe('GetTodoByIdQuery', () => {
     it('should define correct interface structure', () => {
-      const query: GetTodoByIdQuery = { id: 123 };
+      const query: GetTodoByIdQuery = { id: 'a1b2c3d4e5f6789012345678901234ab' };
       
-      expect(query.id).toBe(123);
-      expect(typeof query.id).toBe('number');
+      expect(query.id).toBe('a1b2c3d4e5f6789012345678901234ab');
+      expect(typeof query.id).toBe('string');
     });
 
     it('should work with different id values', () => {
-      const query1: GetTodoByIdQuery = { id: 0 };
-      const query2: GetTodoByIdQuery = { id: 999999 };
-      const query3: GetTodoByIdQuery = { id: -1 };
+      const query1: GetTodoByIdQuery = { id: 'b2c3d4e5f6789012345678901234abcd' };
+      const query2: GetTodoByIdQuery = { id: 'c3d4e5f6789012345678901234abcdef' };
+      const query3: GetTodoByIdQuery = { id: 'd4e5f6789012345678901234abcdef01' };
 
-      expect(query1.id).toBe(0);
-      expect(query2.id).toBe(999999);
-      expect(query3.id).toBe(-1);
+      expect(query1.id).toBe('b2c3d4e5f6789012345678901234abcd');
+      expect(query2.id).toBe('c3d4e5f6789012345678901234abcdef');
+      expect(query3.id).toBe('d4e5f6789012345678901234abcdef01');
     });
   });
 
@@ -182,14 +182,14 @@ describe('TodoQueries DTO', () => {
       const getAllQuery: GetAllTodosQuery = {};
       const getFilteredQuery: GetFilteredTodosQuery = { filter: 'all' };
       const getStatsQuery: GetTodoStatsQuery = {};
-      const getByIdQuery: GetTodoByIdQuery = { id: 1 };
+      const getByIdQuery: GetTodoByIdQuery = { id: 'e5f6789012345678901234abcdef0123' };
       const statsResult: TodoStatsQueryResult = { total: 1, completed: 0, active: 1, overdue: 0, highPriority: 1 };
 
       // Type checking through assignment
       expect(typeof getAllQuery).toBe('object');
       expect(typeof getFilteredQuery.filter).toBe('string');
       expect(typeof getStatsQuery).toBe('object');
-      expect(typeof getByIdQuery.id).toBe('number');
+      expect(typeof getByIdQuery.id).toBe('string');
       expect(typeof statsResult.total).toBe('number');
     });
 
