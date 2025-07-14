@@ -31,7 +31,8 @@
       "Bash(cp:*)",
       "Bash(npx c8 report:*)",
       "Bash(npm run test:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm run lint)"
     ],
     "deny": []
   }

@@ -183,7 +183,7 @@ describe('TodoDomainService', () => {
         priority: {
           numericValue: 0 // Falsy but not undefined, should trigger || 2
         }
-      } as any;
+      } as unknown as Todo;
 
       const score = TodoDomainService.calculateUrgencyScore(mockTodo, currentDate);
 

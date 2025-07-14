@@ -1,5 +1,6 @@
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { TodoDto, CreateTodoDto } from '@/core/application/todo/dto/TodoDto';
+import { type TodoPriorityLevel } from '@/core/domain/todo/value-objects/TodoPriority';
 
 export class TodoMapper {
   static toDto(todo: Todo): TodoDto {
@@ -24,7 +25,7 @@ export class TodoMapper {
       dto.completed,
       new Date(dto.createdAt),
       numericId,
-      dto.priority as any // Will need proper mapping based on TodoPriority
+      dto.priority as TodoPriorityLevel
     );
   }
 
@@ -34,7 +35,7 @@ export class TodoMapper {
       false,
       new Date(),
       undefined,
-      dto.priority as any
+      dto.priority as TodoPriorityLevel
     );
   }
 }

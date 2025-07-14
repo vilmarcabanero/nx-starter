@@ -224,7 +224,7 @@ describe('Todo Entity', () => {
     it('should throw error for empty title', () => {
       const todo = new Todo('Test');
       
-      (todo as any)._title = { value: '' };
+      (todo as unknown as { _title: { value: string } })._title = { value: '' };
       
       expect(() => todo.validate()).toThrow('Todo must have a valid title');
     });
@@ -232,7 +232,7 @@ describe('Todo Entity', () => {
     it('should throw error for title with only whitespace', () => {
       const todo = new Todo('Test');
       
-      (todo as any)._title = { value: '   ' };
+      (todo as unknown as { _title: { value: string } })._title = { value: '   ' };
       
       expect(() => todo.validate()).toThrow('Todo must have a valid title');
     });
@@ -240,7 +240,7 @@ describe('Todo Entity', () => {
     it('should throw error for undefined title', () => {
       const todo = new Todo('Test');
       
-      (todo as any)._title = undefined;
+      (todo as unknown as { _title: undefined })._title = undefined;
       
       expect(() => todo.validate()).toThrow('Todo must have a valid title');
     });
@@ -251,9 +251,9 @@ describe('Todo Entity', () => {
       
       const todo = new Todo('Test');
       
-      (todo as any)._createdAt = createdAt;
+      (todo as unknown as { _createdAt: Date })._createdAt = createdAt;
       
-      (todo as any)._dueDate = dueDate;
+      (todo as unknown as { _dueDate: Date })._dueDate = dueDate;
       
       expect(() => todo.validate()).toThrow('Due date cannot be before creation date');
     });
@@ -269,9 +269,9 @@ describe('Todo Entity', () => {
       
       const todo = new Todo('Test');
       
-      (todo as any)._createdAt = createdAt;
+      (todo as unknown as { _createdAt: Date })._createdAt = createdAt;
       
-      (todo as any)._dueDate = dueDate;
+      (todo as unknown as { _dueDate: Date })._dueDate = dueDate;
       
       expect(() => todo.validate()).not.toThrow();
     });

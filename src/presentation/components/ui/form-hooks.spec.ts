@@ -2,7 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import * as React from 'react';
 import { useFormContext, useFormState } from 'react-hook-form';
+import { render } from '@testing-library/react';
 import { FormFieldContext, FormItemContext, useFormField } from './form-hooks';
+
+type FormFieldContextValue = React.ContextType<typeof FormFieldContext>;
 
 // Mock react-hook-form
 vi.mock('react-hook-form', () => ({
@@ -10,8 +13,8 @@ vi.mock('react-hook-form', () => ({
   useFormState: vi.fn(),
 }));
 
-const mockUseFormContext = useFormContext as any;
-const mockUseFormState = useFormState as any;
+const mockUseFormContext = useFormContext as unknown as ReturnType<typeof vi.fn>;
+const mockUseFormState = useFormState as unknown as ReturnType<typeof vi.fn>;
 
 describe('Form Hooks', () => {
   beforeEach(() => {
@@ -47,7 +50,7 @@ describe('Form Hooks', () => {
         return React.createElement('div', { 'data-testid': 'context-value' }, JSON.stringify(context));
       };
 
-      const { getByTestId } = require('@testing-library/react').render(React.createElement(TestComponent));
+      const { getByTestId } = render(React.createElement(TestComponent));
       const contextValue = JSON.parse(getByTestId('context-value').textContent || '{}');
       expect(contextValue).toEqual({});
     });
@@ -66,7 +69,7 @@ describe('Form Hooks', () => {
         return React.createElement('div', { 'data-testid': 'context-value' }, JSON.stringify(context));
       };
 
-      const { getByTestId } = require('@testing-library/react').render(React.createElement(TestComponent));
+      const { getByTestId } = render(React.createElement(TestComponent));
       const contextValue = JSON.parse(getByTestId('context-value').textContent || '{}');
       expect(contextValue).toEqual({});
     });
@@ -89,7 +92,7 @@ describe('Form Hooks', () => {
       const wrapper = ({ children }: { children: React.ReactNode }) => 
         React.createElement(
           FormFieldContext.Provider,
-          { value: null as any },
+          { value: null as unknown as FormFieldContextValue },
           children
         );
 
@@ -102,7 +105,7 @@ describe('Form Hooks', () => {
       const wrapper = ({ children }: { children: React.ReactNode }) => 
         React.createElement(
           FormFieldContext.Provider,
-          { value: undefined as any },
+          { value: undefined as unknown as FormFieldContextValue },
           children
         );
 
@@ -115,7 +118,7 @@ describe('Form Hooks', () => {
       const wrapper = ({ children }: { children: React.ReactNode }) => 
         React.createElement(
           FormFieldContext.Provider,
-          { value: false as any },
+          { value: false as unknown as FormFieldContextValue },
           children
         );
 
@@ -128,7 +131,7 @@ describe('Form Hooks', () => {
       const wrapper = ({ children }: { children: React.ReactNode }) => 
         React.createElement(
           FormFieldContext.Provider,
-          { value: '' as any },
+          { value: '' as unknown as FormFieldContextValue },
           children
         );
 
@@ -141,7 +144,7 @@ describe('Form Hooks', () => {
       const wrapper = ({ children }: { children: React.ReactNode }) => 
         React.createElement(
           FormFieldContext.Provider,
-          { value: 0 as any },
+          { value: 0 as unknown as FormFieldContextValue },
           children
         );
 

@@ -37,7 +37,7 @@ const mockUseTodoViewModel = vi.mocked(useTodoViewModel);
 describe('TodoPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseTodoViewModel.mockReturnValue(undefined as any); // useTodoViewModel just initializes data loading
+    mockUseTodoViewModel.mockReturnValue(undefined as unknown as ReturnType<typeof useTodoViewModel>); // useTodoViewModel just initializes data loading
   });
 
   it('should render all main components', () => {

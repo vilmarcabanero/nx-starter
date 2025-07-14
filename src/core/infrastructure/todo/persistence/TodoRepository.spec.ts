@@ -116,7 +116,7 @@ describe('TodoRepository', () => {
       const id = await repository.create(todo);
 
       // Update with plain string priority (tests the 'else' branch in priority handling)
-      await repository.update(id, { priority: 'high' as any });
+      await repository.update(id, { priority: 'high' as unknown as TodoPriority });
 
       const updatedTodo = await repository.getById(id);
       expect(updatedTodo?.priority.level).toBe('high');
@@ -303,7 +303,7 @@ describe('TodoRepository', () => {
       const id = await repository.create(todo);
       
       // Directly modify the database record to have null createdAt
-      await db.todos.update(id, { createdAt: null as any });
+      await db.todos.update(id, { createdAt: null as unknown as Date });
       
       // Retrieve the todo - this should trigger the default Date() branch in mapToTodoEntity
       const retrievedTodo = await repository.getById(id);
@@ -320,7 +320,7 @@ describe('TodoRepository', () => {
       const id = await repository.create(todo);
       
       // Directly modify the database record to have undefined createdAt
-      await db.todos.update(id, { createdAt: undefined as any });
+      await db.todos.update(id, { createdAt: undefined as unknown as Date });
       
       // Retrieve the todo - this should trigger the default Date() branch in mapToTodoEntity
       const retrievedTodo = await repository.getById(id);
@@ -337,7 +337,7 @@ describe('TodoRepository', () => {
       const id = await repository.create(todo);
       
       // Directly modify the database record to have null priority
-      await db.todos.update(id, { priority: null as any });
+      await db.todos.update(id, { priority: null as unknown as string });
       
       // Retrieve the todo - this should trigger the default 'medium' priority branch in mapToTodoEntity
       const retrievedTodo = await repository.getById(id);
@@ -352,7 +352,7 @@ describe('TodoRepository', () => {
       const id = await repository.create(todo);
       
       // Directly modify the database record to have undefined priority
-      await db.todos.update(id, { priority: undefined as any });
+      await db.todos.update(id, { priority: undefined as unknown as string });
       
       // Retrieve the todo - this should trigger the default 'medium' priority branch in mapToTodoEntity
       const retrievedTodo = await repository.getById(id);
