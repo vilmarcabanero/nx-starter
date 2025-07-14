@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useTodoListViewModel } from './useTodoListViewModel';
 import { Todo } from '@/core/domain/todo/entities/Todo';
+import { TEST_UUIDS } from '@/test/test-helpers';
 
 // Mock the store
 const mockStore = {
@@ -30,8 +31,8 @@ describe('useTodoListViewModel', () => {
   it('should return todos from store', () => {
     // Arrange
     const mockTodos = [
-      new Todo('Todo 1', false, new Date(), 1),
-      new Todo('Todo 2', true, new Date(), 2),
+      new Todo('Todo 1', false, new Date(), TEST_UUIDS.TODO_1),
+      new Todo('Todo 2', true, new Date(), TEST_UUIDS.TODO_2),
     ];
     mockStore.getFilteredTodos.mockReturnValue(mockTodos);
 
@@ -107,7 +108,7 @@ describe('useTodoListViewModel', () => {
     // This test validates that the view model correctly reflects store state changes
     
     // Arrange
-    const initialTodos = [new Todo('Initial Todo', false, new Date(), 1)];
+    const initialTodos = [new Todo('Initial Todo', false, new Date(), TEST_UUIDS.TODO_1)];
     mockStore.getFilteredTodos.mockReturnValue(initialTodos);
     
     const { result } = renderHook(() => useTodoListViewModel());
