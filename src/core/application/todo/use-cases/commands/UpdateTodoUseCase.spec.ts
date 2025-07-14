@@ -3,6 +3,7 @@ import { UpdateTodoUseCase } from './UpdateTodoUseCase';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 import type { UpdateTodoCommand } from '@/core/application/todo/dto/TodoCommands';
+import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
 
 describe('UpdateTodoUseCase', () => {
   let useCase: UpdateTodoUseCase;
@@ -28,7 +29,7 @@ describe('UpdateTodoUseCase', () => {
       'Original title',
       false,
       new Date('2024-01-01'),
-      123,
+      TEST_UUIDS.TODO_1,
       'medium'
     );
   });
@@ -37,7 +38,7 @@ describe('UpdateTodoUseCase', () => {
     it('should update todo title', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: 123,
+        id: TEST_UUIDS.TODO_1,
         title: 'Updated title'
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -49,7 +50,7 @@ describe('UpdateTodoUseCase', () => {
       expect(result.title.value).toBe('Updated title');
       expect(result.completed).toBe(false); // unchanged
       expect(result.priority.level).toBe('medium'); // unchanged
-      expect(mockRepository.update).toHaveBeenCalledWith(123, {
+      expect(mockRepository.update).toHaveBeenCalledWith(TEST_UUIDS.TODO_1, {
         title: result.title,
         completed: result.completed,
         priority: result.priority,
@@ -60,7 +61,7 @@ describe('UpdateTodoUseCase', () => {
     it('should update todo priority', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: 123,
+        id: TEST_UUIDS.TODO_1,
         priority: 'high'
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -77,7 +78,7 @@ describe('UpdateTodoUseCase', () => {
     it('should mark todo as completed', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: 123,
+        id: TEST_UUIDS.TODO_1,
         completed: true
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -92,15 +93,16 @@ describe('UpdateTodoUseCase', () => {
 
     it('should mark completed todo as incomplete', async () => {
       // Arrange
+      const completedTodoId = TEST_UUIDS.TODO_2;
       const completedTodo = new Todo(
         'Completed todo',
         true,
         new Date('2024-01-01'),
-        456,
+        completedTodoId,
         'medium'
       );
       const command: UpdateTodoCommand = {
-        id: 456,
+        id: completedTodoId,
         completed: false
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(completedTodo);
@@ -116,7 +118,7 @@ describe('UpdateTodoUseCase', () => {
       // Arrange
       const newDueDate = new Date('2024-12-31');
       const command: UpdateTodoCommand = {
-        id: 123,
+        id: TEST_UUIDS.TODO_1,
         dueDate: newDueDate
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -132,7 +134,7 @@ describe('UpdateTodoUseCase', () => {
       // Arrange
       const newDueDate = new Date('2024-12-31');
       const command: UpdateTodoCommand = {
-        id: 123,
+        id: TEST_UUIDS.TODO_1,
         title: 'Multi-updated title',
         priority: 'high',
         completed: true,
@@ -153,7 +155,7 @@ describe('UpdateTodoUseCase', () => {
     it('should throw error when todo not found', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: 999,
+        id: generateTestUuid(999),
         title: 'New title'
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
@@ -166,7 +168,7 @@ describe('UpdateTodoUseCase', () => {
     it('should handle repository getById errors', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: 123,
+        id: TEST_UUIDS.TODO_1,
         title: 'New title'
       };
       const repositoryError = new Error('Database connection failed');
@@ -179,7 +181,7 @@ describe('UpdateTodoUseCase', () => {
     it('should handle repository update errors', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: 123,
+        id: TEST_UUIDS.TODO_1,
         title: 'New title'
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -193,7 +195,7 @@ describe('UpdateTodoUseCase', () => {
     it('should not change todo when no updates provided', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: 123
+        id: TEST_UUIDS.TODO_1
         // No properties to update
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -211,7 +213,7 @@ describe('UpdateTodoUseCase', () => {
     it('should validate business invariants after updates', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: 123,
+        id: TEST_UUIDS.TODO_1,
         title: 'Valid updated title',
         priority: 'low'
       };
@@ -228,7 +230,7 @@ describe('UpdateTodoUseCase', () => {
     it('should handle completion state changes correctly', async () => {
       // Arrange - test setting completed to same value
       const command: UpdateTodoCommand = {
-        id: 123,
+        id: TEST_UUIDS.TODO_1,
         completed: false // same as existing
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
