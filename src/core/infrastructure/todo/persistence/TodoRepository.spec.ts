@@ -45,8 +45,8 @@ describe('TodoRepository', () => {
 
       const result = await repository.create(todo);
 
-      expect(typeof result).toBe('number');
-      expect(result).toBeGreaterThan(0);
+      expect(typeof result).toBe('string');
+      expect(result).toMatch(/^[0-9a-f]{32}$/i); // Valid 32-char hex UUID
       
       // Verify the todo was actually saved
       const savedTodo = await repository.getById(result);
@@ -221,10 +221,15 @@ describe('TodoRepository', () => {
 
       expect(result).toHaveLength(2);
       expect(result[0]).toBeInstanceOf(Todo);
-      expect(result[0].titleValue).toBe('Active Todo 1');
-      expect(result[0].completed).toBe(false);
-      expect(result[1].titleValue).toBe('Active Todo 2');
-      expect(result[1].completed).toBe(false);
+      expect(result[1]).toBeInstanceOf(Todo);
+      
+      // Check that both active todos are returned (order may vary)
+      const titles = result.map(todo => todo.titleValue);
+      expect(titles).toContain('Active Todo 1');
+      expect(titles).toContain('Active Todo 2');
+      
+      // Verify both are not completed
+      expect(result.every(todo => !todo.completed)).toBe(true);
     });
   });
 
@@ -243,10 +248,15 @@ describe('TodoRepository', () => {
 
       expect(result).toHaveLength(2);
       expect(result[0]).toBeInstanceOf(Todo);
-      expect(result[0].titleValue).toBe('Completed Todo 1');
-      expect(result[0].completed).toBe(true);
-      expect(result[1].titleValue).toBe('Completed Todo 2');
-      expect(result[1].completed).toBe(true);
+      expect(result[1]).toBeInstanceOf(Todo);
+      
+      // Check that both completed todos are returned (order may vary)
+      const titles = result.map(todo => todo.titleValue);
+      expect(titles).toContain('Completed Todo 1');
+      expect(titles).toContain('Completed Todo 2');
+      
+      // Verify both are completed
+      expect(result.every(todo => todo.completed)).toBe(true);
     });
   });
 
