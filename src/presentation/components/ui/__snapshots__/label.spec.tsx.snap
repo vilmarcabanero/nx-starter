@@ -1,0 +1,162 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Label Component Snapshots > accessibility > renders label with aria-describedby 1`] = `
+<label
+  aria-describedby="help-text"
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+  data-slot="label"
+>
+  Label with Help
+</label>
+`;
+
+exports[`Label Component Snapshots > accessibility > renders label with aria-label 1`] = `
+<label
+  aria-label="Accessible label"
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+  data-slot="label"
+>
+  Visible Text
+</label>
+`;
+
+exports[`Label Component Snapshots > accessibility > renders label with data attributes 1`] = `
+<label
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+  data-required="true"
+  data-slot="label"
+  data-testid="test-label"
+>
+  Test Label
+</label>
+`;
+
+exports[`Label Component Snapshots > basic label > renders basic label 1`] = `
+<label
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+  data-slot="label"
+>
+  Basic Label
+</label>
+`;
+
+exports[`Label Component Snapshots > basic label > renders label with htmlFor attribute 1`] = `
+<label
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+  data-slot="label"
+  for="input-id"
+>
+  Input Label
+</label>
+`;
+
+exports[`Label Component Snapshots > basic label > renders label with id attribute 1`] = `
+<label
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+  data-slot="label"
+  id="label-id"
+>
+  Label with ID
+</label>
+`;
+
+exports[`Label Component Snapshots > combined attributes > renders label with all common attributes 1`] = `
+<label
+  aria-describedby="help-text"
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 form-label"
+  data-slot="label"
+  data-testid="complex-label"
+  for="complex-input"
+  id="complex-label"
+>
+  Complex Label
+</label>
+`;
+
+exports[`Label Component Snapshots > combined attributes > renders label with custom styling and associations 1`] = `
+<label
+  class="flex items-center gap-2 text-sm leading-none select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 text-blue-600 font-semibold hover:text-blue-800"
+  data-slot="label"
+  for="styled-input"
+>
+  Styled Label
+</label>
+`;
+
+exports[`Label Component Snapshots > content variations > renders empty label 1`] = `
+<label
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+  data-slot="label"
+/>
+`;
+
+exports[`Label Component Snapshots > content variations > renders label with emoji 1`] = `
+<label
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+  data-slot="label"
+>
+  📧 Email Address
+</label>
+`;
+
+exports[`Label Component Snapshots > content variations > renders label with required indicator 1`] = `
+<label
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+  data-slot="label"
+>
+  Required Field *
+</label>
+`;
+
+exports[`Label Component Snapshots > content variations > renders label with text content 1`] = `
+<label
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+  data-slot="label"
+>
+  Simple Text Label
+</label>
+`;
+
+exports[`Label Component Snapshots > customization > renders label with custom className 1`] = `
+<label
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 custom-label"
+  data-slot="label"
+>
+  Custom Label
+</label>
+`;
+
+exports[`Label Component Snapshots > customization > renders label with multiple custom classes 1`] = `
+<label
+  class="flex items-center gap-2 text-sm leading-none select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 text-red-500 font-bold"
+  data-slot="label"
+>
+  Red Bold Label
+</label>
+`;
+
+exports[`Label Component Snapshots > form associations > renders label associated with input 1`] = `
+<div>
+  <label
+    class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+    data-slot="label"
+    for="email-input"
+  >
+    Email
+  </label>
+  <input
+    id="email-input"
+    type="email"
+  />
+</div>
+`;
+
+exports[`Label Component Snapshots > form associations > renders label with required and htmlFor 1`] = `
+<label
+  class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50 required"
+  data-slot="label"
+  for="required-field"
+>
+  Required Field *
+</label>
+`;

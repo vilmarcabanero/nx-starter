@@ -2,21 +2,40 @@
 import { vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { type ReactElement } from 'react';
-import { Todo } from '../core/domain/entities/Todo';
-import type { ITodoRepository } from '../core/domain/repositories/ITodoRepository';
+import { Todo } from '@/core/domain/todo/entities/Todo';
+import { TodoId } from '@/core/domain/todo/value-objects/TodoId';
+import { TodoTitle } from '@/core/domain/todo/value-objects/TodoTitle';
+import { type TodoPriorityLevel } from '@/core/domain/todo/value-objects/TodoPriority';
+import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 
 // Factory function for creating mock todos
-export const createMockTodo = (overrides?: Partial<Todo>): Todo => {
+export const createMockTodo = (overrides?: {
+  id?: number | TodoId;
+  title?: string | TodoTitle;
+  completed?: boolean;
+  priority?: TodoPriorityLevel;
+  createdAt?: Date;
+  dueDate?: Date;
+}): Todo => {
   return new Todo(
     overrides?.title || 'Test Todo',
     overrides?.completed || false,
     overrides?.createdAt || new Date(),
-    overrides?.id || 1
+    overrides?.id || 1,
+    overrides?.priority || 'medium',
+    overrides?.dueDate
   );
 };
 
 // Factory function for creating mock todos arrays
-export const createMockTodos = (count: number, overrides?: Partial<Todo>[]): Todo[] => {
+export const createMockTodos = (count: number, overrides?: Array<{
+  id?: number | TodoId;
+  title?: string | TodoTitle;
+  completed?: boolean;
+  priority?: TodoPriorityLevel;
+  createdAt?: Date;
+  dueDate?: Date;
+}>): Todo[] => {
   return Array.from({ length: count }, (_, index) => 
     createMockTodo({
       id: index + 1,
@@ -36,6 +55,7 @@ export const createMockRepository = (): ITodoRepository => {
     getById: vi.fn(),
     getActive: vi.fn(),
     getCompleted: vi.fn(),
+    findBySpecification: vi.fn(),
   };
 };
 
@@ -47,13 +67,13 @@ export const renderWithTestSetup = (ui: ReactElement) => {
 // Common test data sets
 export const testTodos = {
   active: createMockTodos(3, [
-    { completed: false, title: 'Active Todo 1' },
-    { completed: false, title: 'Active Todo 2' },
-    { completed: false, title: 'Active Todo 3' },
+    { completed: false, title: new TodoTitle('Active Todo 1') },
+    { completed: false, title: new TodoTitle('Active Todo 2') },
+    { completed: false, title: new TodoTitle('Active Todo 3') },
   ]),
   completed: createMockTodos(2, [
-    { completed: true, title: 'Completed Todo 1' },
-    { completed: true, title: 'Completed Todo 2' },
+    { completed: true, title: new TodoTitle('Completed Todo 1') },
+    { completed: true, title: new TodoTitle('Completed Todo 2') },
   ]),
   mixed: [
     createMockTodo({ id: 1, title: 'Active Todo', completed: false }),

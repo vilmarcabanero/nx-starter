@@ -1,0 +1,167 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Separator Component Snapshots > accessibility > renders non-decorative separator with aria-orientation 1`] = `
+<div
+  aria-orientation="vertical"
+  class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
+  data-orientation="vertical"
+  data-slot="separator"
+  role="separator"
+/>
+`;
+
+exports[`Separator Component Snapshots > accessibility > renders separator with aria-label 1`] = `
+<div
+  aria-label="Section divider"
+  class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
+  data-orientation="horizontal"
+  data-slot="separator"
+  role="none"
+/>
+`;
+
+exports[`Separator Component Snapshots > accessibility > renders separator with custom role 1`] = `
+<div
+  class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
+  data-orientation="horizontal"
+  data-slot="separator"
+  role="separator"
+/>
+`;
+
+exports[`Separator Component Snapshots > combined properties > renders horizontal separator with aria-label and custom class 1`] = `
+<div
+  aria-label="Content separator"
+  class="shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px my-4 bg-gray-300"
+  data-orientation="horizontal"
+  data-slot="separator"
+  role="none"
+/>
+`;
+
+exports[`Separator Component Snapshots > combined properties > renders vertical non-decorative separator with custom styling 1`] = `
+<div
+  aria-orientation="vertical"
+  class="shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px bg-blue-500 w-2"
+  data-orientation="vertical"
+  data-slot="separator"
+  role="separator"
+/>
+`;
+
+exports[`Separator Component Snapshots > customization > renders separator with custom className 1`] = `
+<div
+  class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px custom-separator"
+  data-orientation="horizontal"
+  data-slot="separator"
+  role="none"
+/>
+`;
+
+exports[`Separator Component Snapshots > customization > renders separator with custom styling 1`] = `
+<div
+  class="shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px bg-red-300 h-1"
+  data-orientation="horizontal"
+  data-slot="separator"
+  role="none"
+/>
+`;
+
+exports[`Separator Component Snapshots > customization > renders vertical separator with custom height 1`] = `
+<div
+  class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px h-20"
+  data-orientation="vertical"
+  data-slot="separator"
+  role="none"
+/>
+`;
+
+exports[`Separator Component Snapshots > decorative property > renders decorative separator (default) 1`] = `
+<div
+  class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
+  data-orientation="horizontal"
+  data-slot="separator"
+  role="none"
+/>
+`;
+
+exports[`Separator Component Snapshots > decorative property > renders decorative separator explicitly 1`] = `
+<div
+  class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
+  data-orientation="horizontal"
+  data-slot="separator"
+  role="none"
+/>
+`;
+
+exports[`Separator Component Snapshots > decorative property > renders non-decorative separator 1`] = `
+<div
+  class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
+  data-orientation="horizontal"
+  data-slot="separator"
+  role="separator"
+/>
+`;
+
+exports[`Separator Component Snapshots > in context > renders separator between content blocks 1`] = `
+<div>
+  <div>
+    Content above
+  </div>
+  <div
+    class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px my-4"
+    data-orientation="horizontal"
+    data-slot="separator"
+    role="none"
+  />
+  <div>
+    Content below
+  </div>
+</div>
+`;
+
+exports[`Separator Component Snapshots > in context > renders vertical separator in flex layout 1`] = `
+<div
+  class="flex items-center"
+>
+  <span>
+    Left content
+  </span>
+  <div
+    class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px mx-2 h-6"
+    data-orientation="vertical"
+    data-slot="separator"
+    role="none"
+  />
+  <span>
+    Right content
+  </span>
+</div>
+`;
+
+exports[`Separator Component Snapshots > orientations > renders horizontal separator (default) 1`] = `
+<div
+  class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
+  data-orientation="horizontal"
+  data-slot="separator"
+  role="none"
+/>
+`;
+
+exports[`Separator Component Snapshots > orientations > renders horizontal separator explicitly 1`] = `
+<div
+  class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
+  data-orientation="horizontal"
+  data-slot="separator"
+  role="none"
+/>
+`;
+
+exports[`Separator Component Snapshots > orientations > renders vertical separator 1`] = `
+<div
+  class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px"
+  data-orientation="vertical"
+  data-slot="separator"
+  role="none"
+/>
+`;
