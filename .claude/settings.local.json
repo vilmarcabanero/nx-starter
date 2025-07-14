@@ -30,7 +30,8 @@
       "Bash(./check-coverage.sh)",
       "Bash(cp:*)",
       "Bash(npx c8 report:*)",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": []
   }

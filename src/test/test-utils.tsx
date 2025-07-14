@@ -28,7 +28,14 @@ export const createMockTodo = (overrides?: {
 };
 
 // Factory function for creating mock todos arrays
-export const createMockTodos = (count: number, overrides?: Partial<Todo>[]): Todo[] => {
+export const createMockTodos = (count: number, overrides?: Array<{
+  id?: number | TodoId;
+  title?: string | TodoTitle;
+  completed?: boolean;
+  priority?: TodoPriorityLevel;
+  createdAt?: Date;
+  dueDate?: Date;
+}>): Todo[] => {
   return Array.from({ length: count }, (_, index) => 
     createMockTodo({
       id: index + 1,
@@ -60,13 +67,13 @@ export const renderWithTestSetup = (ui: ReactElement) => {
 // Common test data sets
 export const testTodos = {
   active: createMockTodos(3, [
-    { completed: false, title: 'Active Todo 1' },
-    { completed: false, title: 'Active Todo 2' },
-    { completed: false, title: 'Active Todo 3' },
+    { completed: false, title: new TodoTitle('Active Todo 1') },
+    { completed: false, title: new TodoTitle('Active Todo 2') },
+    { completed: false, title: new TodoTitle('Active Todo 3') },
   ]),
   completed: createMockTodos(2, [
-    { completed: true, title: 'Completed Todo 1' },
-    { completed: true, title: 'Completed Todo 2' },
+    { completed: true, title: new TodoTitle('Completed Todo 1') },
+    { completed: true, title: new TodoTitle('Completed Todo 2') },
   ]),
   mixed: [
     createMockTodo({ id: 1, title: 'Active Todo', completed: false }),

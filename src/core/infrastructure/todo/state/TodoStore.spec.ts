@@ -538,7 +538,7 @@ describe('TodoStore Status Management', () => {
       const state = useTodoStore.getState();
       expect(state.status).toBe('succeeded');
       // Todo should not be found and not updated
-      expect(state.todos.find(todo => todo.id === 999)).toBeUndefined();
+      expect(state.todos.find(todo => todo.numericId === 999)).toBeUndefined();
     });
 
     it('should handle non-Error objects in catch block', async () => {
@@ -637,7 +637,7 @@ describe('TodoStore Status Management', () => {
 
       const state = useTodoStore.getState();
       expect(state.status).toBe('succeeded');
-      expect(state.todos.find(todo => todo.id === 999)).toBeUndefined();
+      expect(state.todos.find(todo => todo.numericId === 999)).toBeUndefined();
     });
 
     it('should handle clearError when status is not failed', () => {
@@ -792,7 +792,7 @@ describe('TodoStore Status Management', () => {
 
     it('should create deep copies for optimistic updates in updateTodo', async () => {
       const originalTodos = useTodoStore.getState().todos;
-      const updatedTodo = new Todo('Updated', true, new Date(), 1, 'medium');
+      new Todo('Updated', true, new Date(), 1, 'medium');
       
       mockTodoCommandService.updateTodo = vi.fn().mockRejectedValue(new Error('Update failed'));
       

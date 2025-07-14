@@ -224,7 +224,7 @@ describe('TodoForm', () => {
     
     render(<TodoForm />);
     
-    const input = screen.getByPlaceholderText('What needs to be done?');
+    screen.getByPlaceholderText('What needs to be done?');
     
     // Simulate react-hook-form error (this would normally be set by the validation)
     // We can't easily test this without triggering actual form validation

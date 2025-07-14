@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Todo } from '../../../domain/todo/entities/Todo';
+import { TodoTitle } from '../../../domain/todo/value-objects/TodoTitle';
 import { TodoPriority } from '../../../domain/todo/value-objects/TodoPriority';
+import { Specification } from '../../../domain/shared/specifications/Specification';
 import { TodoRepository } from './TodoRepository';
 import { db } from './TodoDB';
 
@@ -60,7 +62,7 @@ describe('TodoRepository', () => {
       const todo = new Todo('Original Todo');
       const id = await repository.create(todo);
       
-      const changes = { title: 'Updated Todo', completed: true };
+      const changes = { title: new TodoTitle('Updated Todo'), completed: true };
       await repository.update(id, changes);
 
       // Verify the update
@@ -260,9 +262,11 @@ describe('TodoRepository', () => {
       await repository.create(todo3);
 
       // Create a specification that finds todos with high priority
-      const highPrioritySpec = {
-        isSatisfiedBy: (todo: Todo) => todo.priority.level === 'high'
-      };
+      const highPrioritySpec = new (class extends Specification<Todo> {
+        isSatisfiedBy(todo: Todo): boolean {
+          return todo.priority.level === 'high';
+        }
+      })();
 
       const result = await repository.findBySpecification(highPrioritySpec);
 
@@ -280,9 +284,11 @@ describe('TodoRepository', () => {
       await repository.create(todo2);
 
       // Create a specification that finds todos with high priority (none exist)
-      const highPrioritySpec = {
-        isSatisfiedBy: (todo: Todo) => todo.priority.level === 'high'
-      };
+      const highPrioritySpec = new (class extends Specification<Todo> {
+        isSatisfiedBy(todo: Todo): boolean {
+          return todo.priority.level === 'high';
+        }
+      })();
 
       const result = await repository.findBySpecification(highPrioritySpec);
 

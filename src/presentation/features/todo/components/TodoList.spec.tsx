@@ -4,7 +4,10 @@ import { TodoList } from './TodoList';
 import { Todo } from '../../../../core/domain/todo/entities/Todo';
 
 // Mock the view model
-const mockViewModel = {
+const mockViewModel: {
+  todos: Todo[];
+  isLoading: boolean;
+} = {
   todos: [],
   isLoading: false,
 };
