@@ -10,19 +10,19 @@ describe('UpdateTodoUseCase', () => {
     const useCase = new UpdateTodoUseCase(repository);
 
     // Create a todo first
-    const originalTodo = new Todo('Original Title', false, new Date(), 'test-id', 'low');
-    await repository.create(originalTodo);
+    const originalTodo = new Todo('Original Title', false, new Date(), undefined, 'low');
+    const createdId = await repository.create(originalTodo);
 
     // Update the todo
     await useCase.execute({
-      id: 'test-id',
+      id: createdId,
       title: 'Updated Title',
       priority: 'high',
       completed: true
     });
 
     // Verify the update
-    const updatedTodo = await repository.getById('test-id');
+    const updatedTodo = await repository.getById(createdId);
     expect(updatedTodo).toBeDefined();
     expect(updatedTodo!.titleValue).toBe('Updated Title');
     expect(updatedTodo!.priority.level).toBe('high');
@@ -34,17 +34,17 @@ describe('UpdateTodoUseCase', () => {
     const useCase = new UpdateTodoUseCase(repository);
 
     // Create a todo first
-    const originalTodo = new Todo('Original Title', false, new Date(), 'test-id', 'medium');
-    await repository.create(originalTodo);
+    const originalTodo = new Todo('Original Title', false, new Date(), undefined, 'medium');
+    const createdId = await repository.create(originalTodo);
 
     // Update only the title
     await useCase.execute({
-      id: 'test-id',
+      id: createdId,
       title: 'Updated Title Only'
     });
 
     // Verify only title was updated
-    const updatedTodo = await repository.getById('test-id');
+    const updatedTodo = await repository.getById(createdId);
     expect(updatedTodo!.titleValue).toBe('Updated Title Only');
     expect(updatedTodo!.priority.level).toBe('medium'); // Unchanged
     expect(updatedTodo!.completed).toBe(false); // Unchanged
@@ -63,16 +63,16 @@ describe('UpdateTodoUseCase', () => {
     const repository = new InMemoryTodoRepository();
     const useCase = new UpdateTodoUseCase(repository);
 
-    const originalTodo = new Todo('Test Todo', false, new Date(), 'test-id', 'medium');
-    await repository.create(originalTodo);
+    const originalTodo = new Todo('Test Todo', false, new Date(), undefined, 'medium');
+    const createdId = await repository.create(originalTodo);
 
     const newDueDate = new Date('2025-01-01');
     await useCase.execute({
-      id: 'test-id',
+      id: createdId,
       dueDate: newDueDate
     });
 
-    const updatedTodo = await repository.getById('test-id');
+    const updatedTodo = await repository.getById(createdId);
     expect(updatedTodo!.dueDate).toEqual(newDueDate);
   });
 
@@ -80,12 +80,12 @@ describe('UpdateTodoUseCase', () => {
     const repository = new InMemoryTodoRepository();
     const useCase = new UpdateTodoUseCase(repository);
 
-    const originalTodo = new Todo('Original Title', false, new Date(), 'test-id', 'medium');
-    await repository.create(originalTodo);
+    const originalTodo = new Todo('Original Title', false, new Date(), undefined, 'medium');
+    const createdId = await repository.create(originalTodo);
 
     // Try to update with invalid title - this will be caught by the repository's update method
     // which creates a new Todo with the title, triggering TodoTitle validation
-    await expect(useCase.execute({ id: 'test-id', title: 'A' }))
+    await expect(useCase.execute({ id: createdId, title: 'A' }))
       .rejects
       .toThrow('Invalid todo title: must be at least 2 characters long');
   });

@@ -53,6 +53,21 @@ describe('TodoDomainService', () => {
       const result = TodoDomainService.calculateUrgencyScore(oldTodo, new Date('2020-02-01'));
       expect(result).toBeLessThanOrEqual(12); // 3 * (1 + 3)
     });
+
+    it('should handle undefined priority with default weight', () => {
+      // Create a todo with undefined priority (test the || 2 fallback)
+      const todo = new Todo('Test', false, new Date(), 'test-id', 'medium');
+      // Manually set priority to undefined to test the fallback
+      Object.defineProperty(todo, 'priority', {
+        get: () => undefined,
+        configurable: true
+      });
+      
+      const urgencyScore = TodoDomainService.calculateUrgencyScore(todo, new Date());
+      
+      // Should use default weight of 2
+      expect(urgencyScore).toBe(2); // 2 * (1 + 0) for a new todo
+    });
   });
 
   describe('canComplete', () => {
@@ -80,6 +95,25 @@ describe('TodoDomainService', () => {
       
       expect(sorted[0]).toBe(activeTodo);
       expect(sorted[1]).toBe(completedTodo);
+    });
+
+    it('should handle mixed completion statuses', () => {
+      const activeTodo1 = new Todo('Active 1', false, new Date(), '1', 'low');
+      const activeTodo2 = new Todo('Active 2', false, new Date(), '2', 'high');
+      const completedTodo1 = new Todo('Completed 1', true, new Date(), '3', 'high');
+      const completedTodo2 = new Todo('Completed 2', true, new Date(), '4', 'low');
+      
+      const sorted = TodoDomainService.sortByPriority([completedTodo1, activeTodo1, completedTodo2, activeTodo2]);
+      
+      // All active todos should come before completed todos
+      expect(sorted[0].completed).toBe(false);
+      expect(sorted[1].completed).toBe(false);
+      expect(sorted[2].completed).toBe(true);
+      expect(sorted[3].completed).toBe(true);
+      
+      // Within active todos, high priority should come first
+      expect(sorted[0]).toBe(activeTodo2);
+      expect(sorted[1]).toBe(activeTodo1);
     });
 
     it('should sort by urgency score within same completion status', () => {

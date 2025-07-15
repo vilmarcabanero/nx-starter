@@ -70,6 +70,7 @@ describe('TodoTitle', () => {
       const title2 = new TodoTitle('Same Title');
       
       expect(title1.value).toBe(title2.value);
+      expect(title1.equals(title2)).toBe(true);
     });
 
     it('should handle case sensitivity', () => {
@@ -77,6 +78,7 @@ describe('TodoTitle', () => {
       const title2 = new TodoTitle('title');
       
       expect(title1.value).not.toBe(title2.value);
+      expect(title1.equals(title2)).toBe(false);
     });
 
     it('should handle trimming in equality', () => {
@@ -84,6 +86,27 @@ describe('TodoTitle', () => {
       const title2 = new TodoTitle('Title');
       
       expect(title1.value).toBe(title2.value);
+      expect(title1.equals(title2)).toBe(true);
+    });
+
+    it('should handle different titles as not equal', () => {
+      const title1 = new TodoTitle('Different Title');
+      const title2 = new TodoTitle('Another Title');
+      
+      expect(title1.equals(title2)).toBe(false);
+    });
+  });
+
+  describe('toString', () => {
+    it('should return the title value as string', () => {
+      const titleValue = 'Test Todo Title';
+      const title = new TodoTitle(titleValue);
+      expect(title.toString()).toBe(titleValue);
+    });
+
+    it('should return trimmed value', () => {
+      const title = new TodoTitle('  Trimmed Title  ');
+      expect(title.toString()).toBe('Trimmed Title');
     });
   });
 

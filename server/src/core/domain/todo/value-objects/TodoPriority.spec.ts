@@ -48,6 +48,14 @@ describe('TodoPriority', () => {
       // but we can verify medium returns 2
       expect(priority.numericValue).toBe(2);
     });
+
+    it('should return default numeric value for invalid priority level', () => {
+      const priority = new TodoPriority('medium');
+      // Artificially set an invalid level to test the default case
+      (priority as any)._level = 'invalid' as any;
+      
+      expect(priority.numericValue).toBe(2); // Default value
+    });
   });
 
   describe('isHigherThan', () => {

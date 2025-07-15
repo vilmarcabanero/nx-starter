@@ -27,6 +27,10 @@ describe('TodoId', () => {
       expect(() => new TodoId('   ')).toThrow('Todo ID must be a non-empty string');
     });
 
+    // Note: The second check (lines 24-26) is dead code since 
+    // trim().length === 0 already covers trim().length < 1
+    // But we can still test that the validation works correctly
+
     it('should throw error for non-string types', () => {
       expect(() => new TodoId(null as any)).toThrow('Todo ID must be a non-empty string');
       expect(() => new TodoId(undefined as any)).toThrow('Todo ID must be a non-empty string');
