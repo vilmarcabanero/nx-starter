@@ -3,6 +3,7 @@ import { Todo } from './Todo';
 import { TodoTitle } from '@/core/domain/todo/value-objects/TodoTitle';
 import { TodoId } from '@/core/domain/todo/value-objects/TodoId';
 import { TodoAlreadyCompletedException } from '@/core/domain/todo/exceptions/DomainExceptions';
+import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
 
 describe('Todo Entity', () => {
   describe('Constructor', () => {
@@ -156,14 +157,14 @@ describe('Todo Entity', () => {
       });
 
       it('should return false for todos with different ids', () => {
-        const todo1 = new Todo('Test todo', false, new Date(), 'e5f6789012345678901234abcdef0123');
-        const todo2 = new Todo('Test todo', false, new Date(), 'f6789012345678901234abcdef0123456');
+        const todo1 = new Todo('Test todo', false, new Date(), TEST_UUIDS.TODO_1);
+        const todo2 = new Todo('Test todo', false, new Date(), TEST_UUIDS.TODO_2);
         
         expect(todo1.equals(todo2)).toBe(false);
       });
 
       it('should return false when one todo has no id', () => {
-        const todo1 = new Todo('Test todo', false, new Date(), '789012345678901234abcdef01234567');
+        const todo1 = new Todo('Test todo', false, new Date(), TEST_UUIDS.TODO_3);
         const todo2 = new Todo('Test todo', false, new Date());
         
         expect(todo1.equals(todo2)).toBe(false);

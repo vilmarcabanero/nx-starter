@@ -6,6 +6,7 @@ import {
   HighPriorityTodoSpecification,
 } from './TodoSpecifications';
 import { Todo } from '@/core/domain/todo/entities/Todo';
+import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
 
 describe('TodoSpecifications', () => {
   describe('CompletedTodoSpecification', () => {
@@ -17,7 +18,7 @@ describe('TodoSpecifications', () => {
 
     it('should be satisfied by completed todo', () => {
       // Arrange
-      const completedTodo = new Todo('Completed Todo', true, new Date(), 1);
+      const completedTodo = new Todo('Completed Todo', true, new Date(), TEST_UUIDS.TODO_1);
 
       // Act
       const result = specification.isSatisfiedBy(completedTodo);
@@ -28,7 +29,7 @@ describe('TodoSpecifications', () => {
 
     it('should not be satisfied by active todo', () => {
       // Arrange
-      const activeTodo = new Todo('Active Todo', false, new Date(), 1);
+      const activeTodo = new Todo('Active Todo', false, new Date(), TEST_UUIDS.TODO_1);
 
       // Act
       const result = specification.isSatisfiedBy(activeTodo);
@@ -39,8 +40,8 @@ describe('TodoSpecifications', () => {
 
     it('should work with different todo properties', () => {
       // Arrange
-      const completedHighPriority = new Todo('Completed High Priority', true, new Date(), 1, 'high');
-      const completedLowPriority = new Todo('Completed Low Priority', true, new Date(), 2, 'low');
+      const completedHighPriority = new Todo('Completed High Priority', true, new Date(), TEST_UUIDS.TODO_1, 'high');
+      const completedLowPriority = new Todo('Completed Low Priority', true, new Date(), TEST_UUIDS.TODO_2, 'low');
 
       // Act
       const highResult = specification.isSatisfiedBy(completedHighPriority);
@@ -61,7 +62,7 @@ describe('TodoSpecifications', () => {
 
     it('should be satisfied by active todo', () => {
       // Arrange
-      const activeTodo = new Todo('Active Todo', false, new Date(), 1);
+      const activeTodo = new Todo('Active Todo', false, new Date(), TEST_UUIDS.TODO_1);
 
       // Act
       const result = specification.isSatisfiedBy(activeTodo);
@@ -72,7 +73,7 @@ describe('TodoSpecifications', () => {
 
     it('should not be satisfied by completed todo', () => {
       // Arrange
-      const completedTodo = new Todo('Completed Todo', true, new Date(), 1);
+      const completedTodo = new Todo('Completed Todo', true, new Date(), TEST_UUIDS.TODO_1);
 
       // Act
       const result = specification.isSatisfiedBy(completedTodo);
@@ -83,9 +84,9 @@ describe('TodoSpecifications', () => {
 
     it('should work with different priority levels', () => {
       // Arrange
-      const activeHigh = new Todo('Active High', false, new Date(), 1, 'high');
-      const activeMedium = new Todo('Active Medium', false, new Date(), 2, 'medium');
-      const activeLow = new Todo('Active Low', false, new Date(), 3, 'low');
+      const activeHigh = new Todo('Active High', false, new Date(), TEST_UUIDS.TODO_1, 'high');
+      const activeMedium = new Todo('Active Medium', false, new Date(), TEST_UUIDS.TODO_2, 'medium');
+      const activeLow = new Todo('Active Low', false, new Date(), TEST_UUIDS.TODO_3, 'low');
 
       // Act & Assert
       expect(specification.isSatisfiedBy(activeHigh)).toBe(true);
@@ -100,7 +101,7 @@ describe('TodoSpecifications', () => {
       const currentDate = new Date('2024-07-13T10:00:00Z');
       const oldDate = new Date('2024-07-01T10:00:00Z'); // 12 days ago
       const specification = new OverdueTodoSpecification(currentDate);
-      const overdueTodo = new Todo('Overdue Todo', false, oldDate, 1);
+      const overdueTodo = new Todo('Overdue Todo', false, oldDate, TEST_UUIDS.TODO_1);
 
       // Act
       const result = specification.isSatisfiedBy(overdueTodo);
@@ -114,7 +115,7 @@ describe('TodoSpecifications', () => {
       const currentDate = new Date('2024-07-13T10:00:00Z');
       const recentDate = new Date('2024-07-10T10:00:00Z'); // 3 days ago
       const specification = new OverdueTodoSpecification(currentDate);
-      const recentTodo = new Todo('Recent Todo', false, recentDate, 1);
+      const recentTodo = new Todo('Recent Todo', false, recentDate, TEST_UUIDS.TODO_1);
 
       // Act
       const result = specification.isSatisfiedBy(recentTodo);
@@ -128,7 +129,7 @@ describe('TodoSpecifications', () => {
       const currentDate = new Date('2024-07-13T10:00:00Z');
       const oldDate = new Date('2024-06-01T10:00:00Z'); // Very old
       const specification = new OverdueTodoSpecification(currentDate);
-      const completedOldTodo = new Todo('Completed Old Todo', true, oldDate, 1);
+      const completedOldTodo = new Todo('Completed Old Todo', true, oldDate, TEST_UUIDS.TODO_1);
 
       // Act
       const result = specification.isSatisfiedBy(completedOldTodo);
@@ -142,7 +143,7 @@ describe('TodoSpecifications', () => {
       const currentDate = new Date('2024-07-13T10:00:00Z');
       const exactlySevenDaysAgo = new Date('2024-07-06T10:00:00Z');
       const specification = new OverdueTodoSpecification(currentDate);
-      const sevenDayTodo = new Todo('Seven Day Todo', false, exactlySevenDaysAgo, 1);
+      const sevenDayTodo = new Todo('Seven Day Todo', false, exactlySevenDaysAgo, TEST_UUIDS.TODO_1);
 
       // Act
       const result = specification.isSatisfiedBy(sevenDayTodo);
@@ -156,7 +157,7 @@ describe('TodoSpecifications', () => {
       const currentDate = new Date('2024-07-13T10:00:00Z');
       const eightDaysAgo = new Date('2024-07-05T10:00:00Z');
       const specification = new OverdueTodoSpecification(currentDate);
-      const eightDayTodo = new Todo('Eight Day Todo', false, eightDaysAgo, 1);
+      const eightDayTodo = new Todo('Eight Day Todo', false, eightDaysAgo, TEST_UUIDS.TODO_1);
 
       // Act
       const result = specification.isSatisfiedBy(eightDayTodo);
@@ -170,7 +171,7 @@ describe('TodoSpecifications', () => {
       const oldDate = new Date();
       oldDate.setDate(oldDate.getDate() - 10); // 10 days ago
       const specification = new OverdueTodoSpecification(); // No date provided
-      const overdueTodo = new Todo('Overdue Todo', false, oldDate, 1);
+      const overdueTodo = new Todo('Overdue Todo', false, oldDate, TEST_UUIDS.TODO_1);
 
       // Act
       const result = specification.isSatisfiedBy(overdueTodo);
@@ -183,7 +184,7 @@ describe('TodoSpecifications', () => {
       // Arrange
       const sameDate = new Date('2024-07-13T10:00:00Z');
       const specification = new OverdueTodoSpecification(sameDate);
-      const sameDateTodo = new Todo('Same Date Todo', false, sameDate, 1);
+      const sameDateTodo = new Todo('Same Date Todo', false, sameDate, TEST_UUIDS.TODO_1);
 
       // Act
       const result = specification.isSatisfiedBy(sameDateTodo);
@@ -202,7 +203,7 @@ describe('TodoSpecifications', () => {
 
     it('should be satisfied by high priority todo', () => {
       // Arrange
-      const highPriorityTodo = new Todo('High Priority Todo', false, new Date(), 1, 'high');
+      const highPriorityTodo = new Todo('High Priority Todo', false, new Date(), TEST_UUIDS.TODO_1, 'high');
 
       // Act
       const result = specification.isSatisfiedBy(highPriorityTodo);
@@ -213,7 +214,7 @@ describe('TodoSpecifications', () => {
 
     it('should not be satisfied by medium priority todo', () => {
       // Arrange
-      const mediumPriorityTodo = new Todo('Medium Priority Todo', false, new Date(), 1, 'medium');
+      const mediumPriorityTodo = new Todo('Medium Priority Todo', false, new Date(), TEST_UUIDS.TODO_1, 'medium');
 
       // Act
       const result = specification.isSatisfiedBy(mediumPriorityTodo);
@@ -224,7 +225,7 @@ describe('TodoSpecifications', () => {
 
     it('should not be satisfied by low priority todo', () => {
       // Arrange
-      const lowPriorityTodo = new Todo('Low Priority Todo', false, new Date(), 1, 'low');
+      const lowPriorityTodo = new Todo('Low Priority Todo', false, new Date(), TEST_UUIDS.TODO_1, 'low');
 
       // Act
       const result = specification.isSatisfiedBy(lowPriorityTodo);
@@ -235,8 +236,8 @@ describe('TodoSpecifications', () => {
 
     it('should work regardless of completion status', () => {
       // Arrange
-      const activeHighPriority = new Todo('Active High Priority', false, new Date(), 1, 'high');
-      const completedHighPriority = new Todo('Completed High Priority', true, new Date(), 2, 'high');
+      const activeHighPriority = new Todo('Active High Priority', false, new Date(), TEST_UUIDS.TODO_1, 'high');
+      const completedHighPriority = new Todo('Completed High Priority', true, new Date(), TEST_UUIDS.TODO_2, 'high');
 
       // Act
       const activeResult = specification.isSatisfiedBy(activeHighPriority);
@@ -249,8 +250,8 @@ describe('TodoSpecifications', () => {
 
     it('should work with different creation dates', () => {
       // Arrange
-      const oldHighPriority = new Todo('Old High Priority', false, new Date('2024-01-01'), 1, 'high');
-      const newHighPriority = new Todo('New High Priority', false, new Date(), 2, 'high');
+      const oldHighPriority = new Todo('Old High Priority', false, new Date('2024-01-01'), TEST_UUIDS.TODO_1, 'high');
+      const newHighPriority = new Todo('New High Priority', false, new Date(), TEST_UUIDS.TODO_2, 'high');
 
       // Act
       const oldResult = specification.isSatisfiedBy(oldHighPriority);
@@ -269,9 +270,9 @@ describe('TodoSpecifications', () => {
       const highPrioritySpec = new HighPriorityTodoSpecification();
       const combinedSpec = activeSpec.and(highPrioritySpec);
       
-      const activeHighTodo = new Todo('Active High Priority', false, new Date(), 1, 'high');
-      const completedHighTodo = new Todo('Completed High Priority', true, new Date(), 2, 'high');
-      const activeLowTodo = new Todo('Active Low Priority', false, new Date(), 3, 'low');
+      const activeHighTodo = new Todo('Active High Priority', false, new Date(), TEST_UUIDS.TODO_1, 'high');
+      const completedHighTodo = new Todo('Completed High Priority', true, new Date(), TEST_UUIDS.TODO_2, 'high');
+      const activeLowTodo = new Todo('Active Low Priority', false, new Date(), TEST_UUIDS.TODO_3, 'low');
 
       // Act & Assert
       expect(combinedSpec.isSatisfiedBy(activeHighTodo)).toBe(true);
@@ -285,9 +286,9 @@ describe('TodoSpecifications', () => {
       const highPrioritySpec = new HighPriorityTodoSpecification();
       const combinedSpec = completedSpec.or(highPrioritySpec);
       
-      const completedLowTodo = new Todo('Completed Low Priority', true, new Date(), 1, 'low');
-      const activeHighTodo = new Todo('Active High Priority', false, new Date(), 2, 'high');
-      const activeLowTodo = new Todo('Active Low Priority', false, new Date(), 3, 'low');
+      const completedLowTodo = new Todo('Completed Low Priority', true, new Date(), TEST_UUIDS.TODO_1, 'low');
+      const activeHighTodo = new Todo('Active High Priority', false, new Date(), TEST_UUIDS.TODO_2, 'high');
+      const activeLowTodo = new Todo('Active Low Priority', false, new Date(), TEST_UUIDS.TODO_3, 'low');
 
       // Act & Assert
       expect(combinedSpec.isSatisfiedBy(completedLowTodo)).toBe(true); // Completed
@@ -300,8 +301,8 @@ describe('TodoSpecifications', () => {
       const completedSpec = new CompletedTodoSpecification();
       const notCompletedSpec = completedSpec.not();
       
-      const completedTodo = new Todo('Completed Todo', true, new Date(), 1);
-      const activeTodo = new Todo('Active Todo', false, new Date(), 2);
+      const completedTodo = new Todo('Completed Todo', true, new Date(), TEST_UUIDS.TODO_1);
+      const activeTodo = new Todo('Active Todo', false, new Date(), TEST_UUIDS.TODO_2);
 
       // Act & Assert
       expect(notCompletedSpec.isSatisfiedBy(completedTodo)).toBe(false);
@@ -317,10 +318,10 @@ describe('TodoSpecifications', () => {
       // Active AND (High Priority OR Overdue)
       const complexSpec = activeSpec.and(highPrioritySpec.or(overdueSpec));
       
-      const activeHighTodo = new Todo('Active High', false, new Date('2024-07-10T10:00:00Z'), 1, 'high');
-      const activeOverdueTodo = new Todo('Active Overdue', false, new Date('2024-07-01T10:00:00Z'), 2, 'low');
-      const completedHighTodo = new Todo('Completed High', true, new Date('2024-07-10T10:00:00Z'), 3, 'high');
-      const activeLowRecentTodo = new Todo('Active Low Recent', false, new Date('2024-07-10T10:00:00Z'), 4, 'low');
+      const activeHighTodo = new Todo('Active High', false, new Date('2024-07-10T10:00:00Z'), TEST_UUIDS.TODO_1, 'high');
+      const activeOverdueTodo = new Todo('Active Overdue', false, new Date('2024-07-01T10:00:00Z'), TEST_UUIDS.TODO_2, 'low');
+      const completedHighTodo = new Todo('Completed High', true, new Date('2024-07-10T10:00:00Z'), TEST_UUIDS.TODO_3, 'high');
+      const activeLowRecentTodo = new Todo('Active Low Recent', false, new Date('2024-07-10T10:00:00Z'), TEST_UUIDS.TODO_4, 'low');
 
       // Act & Assert
       expect(complexSpec.isSatisfiedBy(activeHighTodo)).toBe(true); // Active AND High Priority

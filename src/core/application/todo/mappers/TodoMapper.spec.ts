@@ -2,19 +2,21 @@ import { describe, it, expect } from 'vitest';
 import { TodoMapper } from './TodoMapper';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { TodoDto, CreateTodoDto } from '@/core/application/todo/dto/TodoDto';
+import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
 
 describe('TodoMapper', () => {
   describe('toDto', () => {
     it('should map Todo entity to TodoDto', () => {
       // Arrange
-      const todo = new Todo('Test Todo', false, new Date('2024-01-01T10:00:00Z'), 1, 'medium');
+      const todoId = TEST_UUIDS.TODO_1;
+      const todo = new Todo('Test Todo', false, new Date('2024-01-01T10:00:00Z'), todoId, 'medium');
 
       // Act
       const dto = TodoMapper.toDto(todo);
 
       // Assert
       expect(dto).toEqual({
-        id: '1',
+        id: todoId,
         title: 'Test Todo',
         completed: false,
         priority: 'medium',
@@ -25,7 +27,8 @@ describe('TodoMapper', () => {
 
     it('should handle completed todo', () => {
       // Arrange
-      const todo = new Todo('Completed Todo', true, new Date('2024-01-02T15:30:00Z'), 2, 'high');
+      const todoId = TEST_UUIDS.TODO_2;
+      const todo = new Todo('Completed Todo', true, new Date('2024-01-02T15:30:00Z'), todoId, 'high');
 
       // Act
       const dto = TodoMapper.toDto(todo);
@@ -34,7 +37,7 @@ describe('TodoMapper', () => {
       expect(dto.completed).toBe(true);
       expect(dto.title).toBe('Completed Todo');
       expect(dto.priority).toBe('high');
-      expect(dto.id).toBe('2');
+      expect(dto.id).toBe(todoId);
     });
 
     it('should handle todo without id', () => {
@@ -53,9 +56,9 @@ describe('TodoMapper', () => {
 
     it('should handle different priority levels', () => {
       // Arrange
-      const lowPriorityTodo = new Todo('Low Priority', false, new Date(), 1, 'low');
-      const mediumPriorityTodo = new Todo('Medium Priority', false, new Date(), 2, 'medium');
-      const highPriorityTodo = new Todo('High Priority', false, new Date(), 3, 'high');
+      const lowPriorityTodo = new Todo('Low Priority', false, new Date(), TEST_UUIDS.TODO_1, 'low');
+      const mediumPriorityTodo = new Todo('Medium Priority', false, new Date(), TEST_UUIDS.TODO_2, 'medium');
+      const highPriorityTodo = new Todo('High Priority', false, new Date(), TEST_UUIDS.TODO_3, 'high');
 
       // Act
       const lowDto = TodoMapper.toDto(lowPriorityTodo);
@@ -71,7 +74,8 @@ describe('TodoMapper', () => {
     it('should format dates correctly', () => {
       // Arrange
       const specificDate = new Date('2024-07-13T14:30:45.123Z');
-      const todo = new Todo('Date Test', false, specificDate, 1, 'medium');
+      const todoId = TEST_UUIDS.TODO_4;
+      const todo = new Todo('Date Test', false, specificDate, todoId, 'medium');
 
       // Act
       const dto = TodoMapper.toDto(todo);
@@ -86,9 +90,9 @@ describe('TodoMapper', () => {
     it('should map array of Todo entities to TodoDto array', () => {
       // Arrange
       const todos = [
-        new Todo('Todo 1', false, new Date('2024-01-01'), 1, 'high'),
-        new Todo('Todo 2', true, new Date('2024-01-02'), 2, 'medium'),
-        new Todo('Todo 3', false, new Date('2024-01-03'), 3, 'low'),
+        new Todo('Todo 1', false, new Date('2024-01-01'), TEST_UUIDS.TODO_1, 'high'),
+        new Todo('Todo 2', true, new Date('2024-01-02'), TEST_UUIDS.TODO_2, 'medium'),
+        new Todo('Todo 3', false, new Date('2024-01-03'), TEST_UUIDS.TODO_3, 'low'),
       ];
 
       // Act
@@ -120,7 +124,7 @@ describe('TodoMapper', () => {
 
     it('should handle single todo array', () => {
       // Arrange
-      const todos = [new Todo('Single Todo', false, new Date(), 1, 'medium')];
+      const todos = [new Todo('Single Todo', false, new Date(), TEST_UUIDS.TODO_5, 'medium')];
 
       // Act
       const dtos = TodoMapper.toDtoArray(todos);
@@ -135,7 +139,7 @@ describe('TodoMapper', () => {
     it('should map TodoDto to Todo entity', () => {
       // Arrange
       const dto: TodoDto = {
-        id: '1',
+        id: TEST_UUIDS.TODO_1,
         title: 'DTO Todo',
         completed: true,
         priority: 'high',
@@ -149,7 +153,7 @@ describe('TodoMapper', () => {
       // Assert
       expect(todo.title.value).toBe('DTO Todo');
       expect(todo.completed).toBe(true);
-      expect(todo.numericId).toBe(1);
+      expect(todo.id?.value).toBe(TEST_UUIDS.TODO_1);
       expect(todo.createdAt).toEqual(new Date('2024-01-01T10:00:00.000Z'));
       expect(todo.priority.level).toBe('high');
     });
@@ -157,7 +161,7 @@ describe('TodoMapper', () => {
     it('should handle incomplete todo from DTO', () => {
       // Arrange
       const dto: TodoDto = {
-        id: '5',
+        id: TEST_UUIDS.TODO_5,
         title: 'Incomplete Todo',
         completed: false,
         priority: 'low',
@@ -171,7 +175,7 @@ describe('TodoMapper', () => {
       // Assert
       expect(todo.title.value).toBe('Incomplete Todo');
       expect(todo.completed).toBe(false);
-      expect(todo.numericId).toBe(5);
+      expect(todo.id?.value).toBe(TEST_UUIDS.TODO_5);
       expect(todo.priority.level).toBe('low');
     });
 
@@ -191,14 +195,14 @@ describe('TodoMapper', () => {
 
       // Assert
       expect(todo.title.value).toBe('No ID Todo');
-      expect(todo.numericId).toBeUndefined(); // Should be undefined for empty string
+      expect(todo.id).toBeUndefined(); // Should be undefined for empty string
       expect(todo.completed).toBe(false);
     });
 
     it('should parse dates correctly', () => {
       // Arrange
       const dto: TodoDto = {
-        id: '1',
+        id: TEST_UUIDS.TODO_1,
         title: 'Date Test',
         completed: false,
         priority: 'medium',
@@ -285,7 +289,7 @@ describe('TodoMapper', () => {
     it('should maintain data integrity through toDomain -> toDto', () => {
       // Arrange
       const originalDto: TodoDto = {
-        id: '42',
+        id: generateTestUuid(42),
         title: 'Round Trip Test',
         completed: true,
         priority: 'medium',
