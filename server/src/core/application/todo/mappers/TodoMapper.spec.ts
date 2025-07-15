@@ -2,6 +2,13 @@ import { describe, it, expect } from 'vitest';
 import { TodoMapper } from './TodoMapper';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 
+// Test UUIDs (32-character hex strings)
+const TEST_UUIDS = {
+  TODO_1: 'a1b2c3d4e5f6789012345678901234ab',
+  TODO_2: 'b2c3d4e5f6789012345678901234abc1',
+  TODO_3: 'c3d4e5f6789012345678901234abcd12',
+} as const;
+
 describe('TodoMapper', () => {
   describe('toDto', () => {
     it('should map Todo entity to TodoDto with all fields', () => {
@@ -11,14 +18,14 @@ describe('TodoMapper', () => {
         'Test Todo',
         false,
         createdAt,
-        'test-id',
+        TEST_UUIDS.TODO_1,
         'high',
         dueDate
       );
 
       const dto = TodoMapper.toDto(todo);
 
-      expect(dto.id).toBe('test-id');
+      expect(dto.id).toBe(TEST_UUIDS.TODO_1);
       expect(dto.title).toBe('Test Todo');
       expect(dto.completed).toBe(false);
       expect(dto.priority).toBe('high');
@@ -32,13 +39,13 @@ describe('TodoMapper', () => {
         'Test Todo',
         false,
         createdAt,
-        'test-id',
+        TEST_UUIDS.TODO_1,
         'medium'
       );
 
       const dto = TodoMapper.toDto(todo);
 
-      expect(dto.id).toBe('test-id');
+      expect(dto.id).toBe(TEST_UUIDS.TODO_1);
       expect(dto.title).toBe('Test Todo');
       expect(dto.completed).toBe(false);
       expect(dto.priority).toBe('medium');
@@ -58,7 +65,7 @@ describe('TodoMapper', () => {
     });
 
     it('should map completed todo', () => {
-      const todo = new Todo('Completed Todo', true, new Date(), 'test-id', 'low');
+      const todo = new Todo('Completed Todo', true, new Date(), TEST_UUIDS.TODO_1, 'low');
 
       const dto = TodoMapper.toDto(todo);
 
@@ -70,20 +77,20 @@ describe('TodoMapper', () => {
   describe('toDtoArray', () => {
     it('should map array of Todo entities to TodoDtos', () => {
       const todos = [
-        new Todo('Todo 1', false, new Date(), '1', 'high'),
-        new Todo('Todo 2', true, new Date(), '2', 'low'),
-        new Todo('Todo 3', false, new Date(), '3', 'medium')
+        new Todo('Todo 1', false, new Date(), TEST_UUIDS.TODO_1, 'high'),
+        new Todo('Todo 2', true, new Date(), TEST_UUIDS.TODO_2, 'low'),
+        new Todo('Todo 3', false, new Date(), TEST_UUIDS.TODO_3, 'medium')
       ];
 
       const dtos = TodoMapper.toDtoArray(todos);
 
       expect(dtos).toHaveLength(3);
-      expect(dtos[0].id).toBe('1');
+      expect(dtos[0].id).toBe(TEST_UUIDS.TODO_1);
       expect(dtos[0].title).toBe('Todo 1');
       expect(dtos[0].completed).toBe(false);
       expect(dtos[0].priority).toBe('high');
 
-      expect(dtos[1].id).toBe('2');
+      expect(dtos[1].id).toBe(TEST_UUIDS.TODO_2);
       expect(dtos[1].completed).toBe(true);
       expect(dtos[1].priority).toBe('low');
     });
@@ -97,7 +104,7 @@ describe('TodoMapper', () => {
   describe('fromPlainObject', () => {
     it('should map plain object to Todo entity with all fields', () => {
       const plainObject = {
-        id: 'test-id',
+        id: TEST_UUIDS.TODO_1,
         title: 'Test Todo',
         completed: false,
         createdAt: new Date('2020-01-01'),
@@ -107,7 +114,7 @@ describe('TodoMapper', () => {
 
       const todo = TodoMapper.fromPlainObject(plainObject);
 
-      expect(todo.stringId).toBe('test-id');
+      expect(todo.stringId).toBe(TEST_UUIDS.TODO_1);
       expect(todo.titleValue).toBe('Test Todo');
       expect(todo.completed).toBe(false);
       expect(todo.priority.level).toBe('high');
@@ -117,7 +124,7 @@ describe('TodoMapper', () => {
 
     it('should map plain object without optional fields', () => {
       const plainObject = {
-        id: 'test-id',
+        id: TEST_UUIDS.TODO_1,
         title: 'Test Todo',
         completed: true,
         createdAt: new Date('2020-01-01')
@@ -125,7 +132,7 @@ describe('TodoMapper', () => {
 
       const todo = TodoMapper.fromPlainObject(plainObject);
 
-      expect(todo.stringId).toBe('test-id');
+      expect(todo.stringId).toBe(TEST_UUIDS.TODO_1);
       expect(todo.titleValue).toBe('Test Todo');
       expect(todo.completed).toBe(true);
       expect(todo.priority.level).toBe('medium'); // Default priority
@@ -134,7 +141,7 @@ describe('TodoMapper', () => {
 
     it('should handle different priority values', () => {
       const lowPriorityObj = {
-        id: 'test-id',
+        id: TEST_UUIDS.TODO_1,
         title: 'Low Priority Todo',
         completed: false,
         createdAt: new Date(),
@@ -154,7 +161,7 @@ describe('TodoMapper', () => {
         'Test Todo',
         false,
         createdAt,
-        'test-id',
+        TEST_UUIDS.TODO_1,
         'high',
         dueDate
       );
@@ -181,7 +188,7 @@ describe('TodoMapper', () => {
     });
 
     it('should map Todo entity without due date', () => {
-      const todo = new Todo('Test Todo', true, new Date(), 'test-id', 'low');
+      const todo = new Todo('Test Todo', true, new Date(), TEST_UUIDS.TODO_1, 'low');
 
       const plainObject = TodoMapper.toPlainObject(todo);
 
@@ -192,7 +199,7 @@ describe('TodoMapper', () => {
     });
 
     it('should not include id when not provided', () => {
-      const todo = new Todo('Test Todo', false, new Date(), 'test-id', 'medium');
+      const todo = new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1, 'medium');
 
       const plainObject = TodoMapper.toPlainObject(todo);
 
@@ -203,7 +210,7 @@ describe('TodoMapper', () => {
 
   describe('edge cases', () => {
     it('should handle todos with special characters in title', () => {
-      const todo = new Todo('Special chars: @#$% émojis 🚀', false, new Date(), 'test-id', 'high');
+      const todo = new Todo('Special chars: @#$% émojis 🚀', false, new Date(), TEST_UUIDS.TODO_1, 'high');
 
       const dto = TodoMapper.toDto(todo);
       expect(dto.title).toBe('Special chars: @#$% émojis 🚀');
@@ -214,7 +221,7 @@ describe('TodoMapper', () => {
 
     it('should handle dates correctly in ISO format', () => {
       const specificDate = new Date('2020-06-15T14:30:00.123Z');
-      const todo = new Todo('Date Test', false, specificDate, 'test-id', 'medium');
+      const todo = new Todo('Date Test', false, specificDate, TEST_UUIDS.TODO_1, 'medium');
 
       const dto = TodoMapper.toDto(todo);
       expect(dto.createdAt).toBe('2020-06-15T14:30:00.123Z');

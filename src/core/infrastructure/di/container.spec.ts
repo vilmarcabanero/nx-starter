@@ -4,6 +4,7 @@ import { configureDI, TOKENS } from './container';
 import { TodoCommandService } from '../../application/todo/services/TodoCommandService';
 import { TodoQueryService } from '../../application/todo/services/TodoQueryService';
 import { TodoRepository } from '../todo/persistence/TodoRepository';
+import { ApiTodoRepository } from '../todo/persistence/ApiTodoRepository';
 import type { ITodoCommandService, ITodoQueryService } from '../../application/shared/interfaces/ITodoService';
 import type { ITodoRepository } from '../../domain/todo/repositories/ITodoRepository';
 
@@ -16,7 +17,13 @@ describe('Dependency Injection', () => {
   describe('Infrastructure Services', () => {
     it('should register and resolve TodoRepository', () => {
       const repository = container.resolve<ITodoRepository>(TOKENS.TodoRepository);
-      expect(repository).toBeInstanceOf(TodoRepository);
+      // Check that we get the correct implementation based on environment
+      const useApiBackend = import.meta.env.VITE_USE_API_BACKEND === 'true';
+      if (useApiBackend) {
+        expect(repository).toBeInstanceOf(ApiTodoRepository);
+      } else {
+        expect(repository).toBeInstanceOf(TodoRepository);
+      }
     });
 
     it('should provide the same instance when using singleton registration for repository', () => {

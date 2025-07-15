@@ -5,6 +5,13 @@ import { TodoPriority } from '@/core/domain/todo/value-objects/TodoPriority';
 import { TodoId } from '@/core/domain/todo/value-objects/TodoId';
 import { TodoAlreadyCompletedException } from '@/core/domain/todo/exceptions/DomainExceptions';
 
+// Test UUIDs (32-character hex strings)
+const TEST_UUIDS = {
+  TODO_1: 'a1b2c3d4e5f6789012345678901234ab',
+  TODO_2: 'b2c3d4e5f6789012345678901234abc1',
+  TODO_3: 'c3d4e5f6789012345678901234abcd12',
+} as const;
+
 describe('Todo', () => {
   describe('constructor', () => {
     it('should create todo with title string', () => {
@@ -39,14 +46,14 @@ describe('Todo', () => {
     });
 
     it('should create todo with id string', () => {
-      const todo = new Todo('Test Todo', false, new Date(), 'test-id');
+      const todo = new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1);
       
       expect(todo.id).toBeInstanceOf(TodoId);
-      expect(todo.id?.value).toBe('test-id');
+      expect(todo.id?.value).toBe(TEST_UUIDS.TODO_1);
     });
 
     it('should create todo with TodoId object', () => {
-      const todoId = new TodoId('test-id');
+      const todoId = new TodoId(TEST_UUIDS.TODO_1);
       const todo = new Todo('Test Todo', false, new Date(), todoId);
       
       expect(todo.id).toBe(todoId);
@@ -198,9 +205,9 @@ describe('Todo', () => {
     });
 
     it('should check equality based on ID', () => {
-      const todo1 = new Todo('Todo 1', false, new Date(), 'same-id');
-      const todo2 = new Todo('Todo 2', false, new Date(), 'same-id');
-      const todo3 = new Todo('Todo 3', false, new Date(), 'different-id');
+      const todo1 = new Todo('Todo 1', false, new Date(), TEST_UUIDS.TODO_1);
+      const todo2 = new Todo('Todo 2', false, new Date(), TEST_UUIDS.TODO_1);
+      const todo3 = new Todo('Todo 3', false, new Date(), TEST_UUIDS.TODO_2);
       const todoWithoutId = new Todo('No ID Todo', false);
       
       expect(todo1.equals(todo2)).toBe(true);

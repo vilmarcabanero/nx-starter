@@ -58,10 +58,10 @@ describe('Server Index', () => {
 
   it('should start server successfully', async () => {
     // Import after mocking
-    await import('./index');
+    const { startServer } = await import('./index');
 
-    // Allow some time for async operations
-    await new Promise(resolve => setTimeout(resolve, 10));
+    // Call startServer explicitly
+    await startServer();
 
     // Verify console.log was called with server start messages
     expect(consoleSpy).toHaveBeenCalledWith('🚀 Task App API Server running on port 3001');
@@ -73,10 +73,12 @@ describe('Server Index', () => {
     const { configureDI } = await import('@/core/infrastructure/di/container');
     vi.mocked(configureDI).mockRejectedValueOnce(new Error('DI configuration failed'));
 
+    const { startServer } = await import('./index');
+
     try {
-      await import('./index');
-      // Allow some time for async operations
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await startServer();
+      // If we reach here, the test should fail because startServer should have thrown
+      expect.fail('Expected startServer to throw an error');
     } catch (error) {
       // This is expected since process.exit() throws in our mock
       expect(error.message).toBe('process.exit(1) was called');
@@ -92,10 +94,12 @@ describe('Server Index', () => {
       throw new Error('App creation failed');
     });
 
+    const { startServer } = await import('./index');
+
     try {
-      await import('./index');
-      // Allow some time for async operations
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await startServer();
+      // If we reach here, the test should fail because startServer should have thrown
+      expect.fail('Expected startServer to throw an error');
     } catch (error) {
       // This is expected since process.exit() throws in our mock
       expect(error.message).toBe('process.exit(1) was called');

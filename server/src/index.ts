@@ -7,7 +7,7 @@ import { config } from '@/config/config';
 // Load environment variables
 dotenv.config();
 
-async function startServer() {
+export async function startServer() {
   try {
     // Configure dependency injection (now async)
     await configureDI();
@@ -29,5 +29,7 @@ async function startServer() {
   }
 }
 
-// Start the server
-startServer();
+// Start the server only if this module is being run directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  startServer();
+}

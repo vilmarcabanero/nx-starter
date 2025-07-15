@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
 import { TodoRepository } from '@/core/infrastructure/todo/persistence/TodoRepository';
+import { ApiTodoRepository } from '@/core/infrastructure/todo/persistence/ApiTodoRepository';
 import { TodoCommandService } from '@/core/application/todo/services/TodoCommandService';
 import { TodoQueryService } from '@/core/application/todo/services/TodoQueryService';
 import { CreateTodoUseCase } from '@/core/application/todo/use-cases/commands/CreateTodoUseCase';
@@ -17,13 +18,25 @@ import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepos
 import type { ITodoCommandService, ITodoQueryService } from '@/core/application/shared/interfaces/ITodoService';
 import { TOKENS } from './tokens';
 
+// Check environment variable to determine data source
+const useApiBackend = import.meta.env.VITE_USE_API_BACKEND === 'true';
+
 // Register dependencies following Clean Architecture layers
 export const configureDI = () => {
-  // Infrastructure Layer - Repository
-  container.registerSingleton<ITodoRepository>(
-    TOKENS.TodoRepository,
-    TodoRepository
-  );
+  // Infrastructure Layer - Repository (conditionally based on environment)
+  if (useApiBackend) {
+    console.log('📡 Using API backend for data storage');
+    container.registerSingleton<ITodoRepository>(
+      TOKENS.TodoRepository,
+      ApiTodoRepository
+    );
+  } else {
+    console.log('💾 Using local Dexie.js for data storage');
+    container.registerSingleton<ITodoRepository>(
+      TOKENS.TodoRepository,
+      TodoRepository
+    );
+  }
 
   // Application Layer - Use Cases (Commands)
   container.registerSingleton(TOKENS.CreateTodoUseCase, CreateTodoUseCase);
