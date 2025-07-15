@@ -2,8 +2,7 @@ import { injectable } from 'tsyringe';
 import mongoose from 'mongoose';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
-import { TodoModel, ITodoDocument } from './TodoSchema';
-import { generateId } from '@/utils/uuid';
+import { TodoModel } from './TodoSchema';
 
 /**
  * Mongoose implementation of ITodoRepository
@@ -31,6 +30,10 @@ export class MongooseTodoRepository implements ITodoRepository {
   }
 
   async update(id: string, changes: Partial<Todo>): Promise<void> {
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error(`Todo with ID ${id} not found`);
+    }
+
     const updateData: any = {};
 
     if (changes.title !== undefined) {
@@ -56,6 +59,10 @@ export class MongooseTodoRepository implements ITodoRepository {
   }
 
   async delete(id: string): Promise<void> {
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error(`Todo with ID ${id} not found`);
+    }
+
     const result = await TodoModel.deleteOne({ _id: id }).exec();
 
     if (result.deletedCount === 0) {
@@ -64,6 +71,10 @@ export class MongooseTodoRepository implements ITodoRepository {
   }
 
   async getById(id: string): Promise<Todo | undefined> {
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return undefined;
+    }
+    
     const document = await TodoModel.findById(id).lean().exec();
     return document ? this.toDomain(document) : undefined;
   }

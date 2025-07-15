@@ -1,37 +1,42 @@
+import 'reflect-metadata';
 import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest';
-import { DataSource } from 'typeorm';
-import { TypeOrmTodoRepository } from './TypeOrmTodoRepository';
-import { TodoEntity } from './TodoEntity';
+import { Sequelize } from 'sequelize';
+import { SequelizeTodoRepository } from './SequelizeTodoRepository';
+import { TodoSequelizeModel, initTodoModel } from './TodoModel';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 
-describe('TypeOrmTodoRepository', () => {
-  let dataSource: DataSource;
-  let repository: TypeOrmTodoRepository;
+describe('SequelizeTodoRepository', () => {
+  let sequelize: Sequelize;
+  let repository: SequelizeTodoRepository;
 
   beforeEach(async () => {
     // Create in-memory SQLite database for testing
-    dataSource = new DataSource({
-      type: 'sqlite',
-      database: ':memory:',
-      entities: [TodoEntity],
-      synchronize: true,
+    sequelize = new Sequelize('sqlite::memory:', {
       logging: false,
+      define: {
+        timestamps: false,
+      },
     });
 
-    await dataSource.initialize();
-    repository = new TypeOrmTodoRepository(dataSource);
+    // Initialize the model
+    initTodoModel(sequelize);
+
+    // Sync the database
+    await sequelize.sync({ force: true });
+    
+    repository = new SequelizeTodoRepository();
   });
 
   afterEach(async () => {
     // Clean up database after each test
-    if (dataSource && dataSource.isInitialized) {
-      await dataSource.getRepository(TodoEntity).clear();
+    if (sequelize) {
+      await TodoSequelizeModel.destroy({ where: {} });
     }
   });
 
   afterAll(async () => {
-    if (dataSource && dataSource.isInitialized) {
-      await dataSource.destroy();
+    if (sequelize) {
+      await sequelize.close();
     }
   });
 
@@ -206,7 +211,7 @@ describe('TypeOrmTodoRepository', () => {
 
     it('should throw error for empty string id', async () => {
       await expect(repository.delete('')).rejects.toThrow(
-        'Empty criteria(s) are not allowed'
+        'Todo with ID  not found'
       );
     });
   });
@@ -237,7 +242,7 @@ describe('TypeOrmTodoRepository', () => {
 
     it('should return empty array when no active todos exist', async () => {
       // Clear the beforeEach data and create only completed todos
-      await dataSource.getRepository(TodoEntity).clear();
+      await TodoSequelizeModel.destroy({ where: {} });
       await repository.create(new Todo('Completed todo 1', true));
       await repository.create(new Todo('Completed todo 2', true));
 
@@ -247,7 +252,7 @@ describe('TypeOrmTodoRepository', () => {
 
     it('should return empty array when no completed todos exist', async () => {
       // Clear the beforeEach data and create only active todos
-      await dataSource.getRepository(TodoEntity).clear();
+      await TodoSequelizeModel.destroy({ where: {} });
       await repository.create(new Todo('Active todo 1', false));
       await repository.create(new Todo('Active todo 2', false));
 

@@ -1,37 +1,44 @@
+import 'reflect-metadata';
 import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest';
-import { DataSource } from 'typeorm';
-import { TypeOrmTodoRepository } from './TypeOrmTodoRepository';
-import { TodoEntity } from './TodoEntity';
+import mongoose from 'mongoose';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongooseTodoRepository } from './MongooseTodoRepository';
+import { TodoModel } from './TodoSchema';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 
-describe('TypeOrmTodoRepository', () => {
-  let dataSource: DataSource;
-  let repository: TypeOrmTodoRepository;
+describe('MongooseTodoRepository', () => {
+  let repository: MongooseTodoRepository;
+  let mongoServer: MongoMemoryServer;
+
+  beforeAll(async () => {
+    // Create in-memory MongoDB instance for testing
+    mongoServer = await MongoMemoryServer.create();
+    const mongoUri = mongoServer.getUri();
+    
+    await mongoose.connect(mongoUri);
+  });
 
   beforeEach(async () => {
-    // Create in-memory SQLite database for testing
-    dataSource = new DataSource({
-      type: 'sqlite',
-      database: ':memory:',
-      entities: [TodoEntity],
-      synchronize: true,
-      logging: false,
-    });
-
-    await dataSource.initialize();
-    repository = new TypeOrmTodoRepository(dataSource);
+    // Clear any existing data before each test
+    await TodoModel.deleteMany({});
+    
+    repository = new MongooseTodoRepository();
   });
 
   afterEach(async () => {
     // Clean up database after each test
-    if (dataSource && dataSource.isInitialized) {
-      await dataSource.getRepository(TodoEntity).clear();
+    if (mongoose.connection.readyState === 1) {
+      await TodoModel.deleteMany({});
     }
   });
 
   afterAll(async () => {
-    if (dataSource && dataSource.isInitialized) {
-      await dataSource.destroy();
+    // Clean up everything after all tests
+    if (mongoose.connection.readyState === 1) {
+      await mongoose.connection.close();
+    }
+    if (mongoServer) {
+      await mongoServer.stop();
     }
   });
 
@@ -105,19 +112,19 @@ describe('TypeOrmTodoRepository', () => {
     });
 
     it('should return undefined for non-existent id', async () => {
-      const todo = await repository.getById('non-existent');
+      const todo = await repository.getById('507f1f77bcf86cd799439011'); // Valid ObjectId format
+
+      expect(todo).toBeUndefined();
+    });
+
+    it('should return undefined for invalid ObjectId', async () => {
+      const todo = await repository.getById('invalid-id');
 
       expect(todo).toBeUndefined();
     });
 
     it('should return undefined for empty string id', async () => {
       const todo = await repository.getById('');
-
-      expect(todo).toBeUndefined();
-    });
-
-    it('should return undefined for null-like id', async () => {
-      const todo = await repository.getById('null');
 
       expect(todo).toBeUndefined();
     });
@@ -161,14 +168,14 @@ describe('TypeOrmTodoRepository', () => {
     });
 
     it('should throw error for non-existent todo', async () => {
-      await expect(repository.update('non-existent', { title: 'New title' })).rejects.toThrow(
-        'Todo with ID non-existent not found'
+      await expect(repository.update('507f1f77bcf86cd799439011', { title: 'New title' })).rejects.toThrow(
+        'Todo with ID 507f1f77bcf86cd799439011 not found'
       );
     });
 
-    it('should throw error for empty string id', async () => {
-      await expect(repository.update('', { title: 'New title' })).rejects.toThrow(
-        'Todo with ID  not found'
+    it('should throw error for invalid ObjectId', async () => {
+      await expect(repository.update('invalid-id', { title: 'New title' })).rejects.toThrow(
+        'Todo with ID invalid-id not found'
       );
     });
   });
@@ -199,14 +206,14 @@ describe('TypeOrmTodoRepository', () => {
     });
 
     it('should throw error for non-existent todo', async () => {
-      await expect(repository.delete('non-existent')).rejects.toThrow(
-        'Todo with ID non-existent not found'
+      await expect(repository.delete('507f1f77bcf86cd799439011')).rejects.toThrow(
+        'Todo with ID 507f1f77bcf86cd799439011 not found'
       );
     });
 
-    it('should throw error for empty string id', async () => {
-      await expect(repository.delete('')).rejects.toThrow(
-        'Empty criteria(s) are not allowed'
+    it('should throw error for invalid ObjectId', async () => {
+      await expect(repository.delete('invalid-id')).rejects.toThrow(
+        'Todo with ID invalid-id not found'
       );
     });
   });
@@ -237,7 +244,7 @@ describe('TypeOrmTodoRepository', () => {
 
     it('should return empty array when no active todos exist', async () => {
       // Clear the beforeEach data and create only completed todos
-      await dataSource.getRepository(TodoEntity).clear();
+      await TodoModel.deleteMany({});
       await repository.create(new Todo('Completed todo 1', true));
       await repository.create(new Todo('Completed todo 2', true));
 
@@ -247,7 +254,7 @@ describe('TypeOrmTodoRepository', () => {
 
     it('should return empty array when no completed todos exist', async () => {
       // Clear the beforeEach data and create only active todos
-      await dataSource.getRepository(TodoEntity).clear();
+      await TodoModel.deleteMany({});
       await repository.create(new Todo('Active todo 1', false));
       await repository.create(new Todo('Active todo 2', false));
 

@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm test)",
+      "Bash(npm test:*)",
+      "Bash(npm install:*)",
+      "Bash(sed:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run build:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npm run test:coverage:*)",
+      "Bash(cat:*)",
+      "Bash(npx vitest run:*)",
+      "Bash(./check-coverage.sh)",
+      "Bash(npx vitest:*)"
+    ],
+    "deny": []
+  }
+}

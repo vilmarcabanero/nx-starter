@@ -31,3 +31,5 @@ playwright-report
 *.iml
 
 .env
+
+todos.txt

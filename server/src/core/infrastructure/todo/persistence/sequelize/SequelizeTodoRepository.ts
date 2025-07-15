@@ -32,7 +32,7 @@ export class SequelizeTodoRepository implements ITodoRepository {
     });
 
     // Return the actual ID (important for PostgreSQL auto-generated UUIDs)
-    return created.id;
+    return created.get('id') as string;
   }
 
   async update(id: string, changes: Partial<Todo>): Promise<void> {
@@ -119,11 +119,11 @@ export class SequelizeTodoRepository implements ITodoRepository {
   private toDomain(model: any): Todo {
     return new Todo(
       model.title,
-      model.completed,
-      model.createdAt,
+      Boolean(model.completed), // Convert SQLite integer to boolean
+      model.createdAt instanceof Date ? model.createdAt : new Date(model.createdAt),
       model.id,
       model.priority,
-      model.dueDate
+      model.dueDate ? (model.dueDate instanceof Date ? model.dueDate : new Date(model.dueDate)) : undefined
     );
   }
 }
