@@ -39,6 +39,7 @@ export default defineConfig({
       '**/tests/e2e/**',
       '**/*.e2e.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       '**/target/**',
+      '**/server/**',
     ],
     coverage: {
       exclude: [
@@ -50,6 +51,7 @@ export default defineConfig({
         '**/dist/**',
         '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
         'get-coverage-json.js',
+        '**/server/**',
       ],
     },
   },
