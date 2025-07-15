@@ -43,7 +43,7 @@ describe('ApiTodoRepository', () => {
 
       const todos = await repository.getAll();
 
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3000/api/todos', undefined);
+      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3001/api/todos', undefined);
       expect(todos).toHaveLength(2);
       expect(todos[0]).toBeInstanceOf(Todo);
       expect(todos[0].titleValue).toBe('Test Todo 1');
@@ -90,7 +90,7 @@ describe('ApiTodoRepository', () => {
       const id = await repository.create(todo);
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'http://localhost:3000/api/todos',
+        'http://localhost:3001/api/todos',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -119,7 +119,7 @@ describe('ApiTodoRepository', () => {
       await repository.create(todo);
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'http://localhost:3000/api/todos',
+        'http://localhost:3001/api/todos',
         expect.objectContaining({
           body: JSON.stringify({
             title: 'Todo with due date',
@@ -144,7 +144,7 @@ describe('ApiTodoRepository', () => {
       });
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'http://localhost:3000/api/todos/test-id',
+        'http://localhost:3001/api/todos/test-id',
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -178,7 +178,7 @@ describe('ApiTodoRepository', () => {
       await repository.delete('test-id');
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'http://localhost:3000/api/todos/test-id',
+        'http://localhost:3001/api/todos/test-id',
         { method: 'DELETE' }
       );
     });
@@ -216,7 +216,7 @@ describe('ApiTodoRepository', () => {
 
       const todo = await repository.getById('a1b2c3d4e5f6789012345678901234ab');
 
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3000/api/todos/a1b2c3d4e5f6789012345678901234ab', undefined);
+      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3001/api/todos/a1b2c3d4e5f6789012345678901234ab', undefined);
       expect(todo).toBeInstanceOf(Todo);
       expect(todo?.titleValue).toBe('Test Todo');
     });
@@ -255,7 +255,7 @@ describe('ApiTodoRepository', () => {
 
       const todos = await repository.getActive();
 
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3000/api/todos/active', undefined);
+      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3001/api/todos/active', undefined);
       expect(todos).toHaveLength(1);
       expect(todos[0].completed).toBe(false);
     });
@@ -283,7 +283,7 @@ describe('ApiTodoRepository', () => {
 
       const todos = await repository.getCompleted();
 
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3000/api/todos/completed', undefined);
+      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3001/api/todos/completed', undefined);
       expect(todos).toHaveLength(1);
       expect(todos[0].completed).toBe(true);
     });
