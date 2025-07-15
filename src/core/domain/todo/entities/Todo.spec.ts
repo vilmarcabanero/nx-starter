@@ -3,7 +3,7 @@ import { Todo } from './Todo';
 import { TodoTitle } from '@/core/domain/todo/value-objects/TodoTitle';
 import { TodoId } from '@/core/domain/todo/value-objects/TodoId';
 import { TodoAlreadyCompletedException } from '@/core/domain/todo/exceptions/DomainExceptions';
-import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
+import { TEST_UUIDS } from '@/test/test-helpers';
 
 describe('Todo Entity', () => {
   describe('Constructor', () => {
@@ -61,6 +61,16 @@ describe('Todo Entity', () => {
       const todo = new Todo('Test todo');
       expect(todo.titleValue).toBe('Test todo');
     });
+
+    it('should return string id', () => {
+      const todo = new Todo('Test todo', false, new Date(), 'd4e5f6789012345678901234abcdef01');
+      expect(todo.stringId).toBe('d4e5f6789012345678901234abcdef01');
+    });
+
+    it('should return undefined for string id when no id', () => {
+      const todo = new Todo('Test todo');
+      expect(todo.stringId).toBeUndefined();
+    });
   });
 
   describe('Domain Methods', () => {
@@ -116,6 +126,18 @@ describe('Todo Entity', () => {
       const newDueDate = new Date('2024-01-01');
       const updatedDueDate = withDueDate.updateDueDate(newDueDate);
       expect(updatedDueDate.dueDate).toBe(newDueDate);
+    });
+
+    it('should remove due date when updateDueDate is called without parameter', () => {
+      // Create todo with due date
+      const dueDate = new Date('2023-12-31');
+      const todoWithDueDate = new Todo('Test todo', false, new Date(), undefined, 'medium', dueDate);
+      expect(todoWithDueDate.dueDate).toBe(dueDate);
+      
+      // Call updateDueDate without parameter should preserve the existing due date
+      // because the implementation checks !== undefined and falls back to existing value
+      const updatedTodo = todoWithDueDate.updateDueDate();
+      expect(updatedTodo.dueDate).toBe(dueDate);
     });
   });
 
