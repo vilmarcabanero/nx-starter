@@ -17,8 +17,16 @@ export const createSequelizeInstance = (): Sequelize => {
       logging: config.nodeEnv === 'development' ? console.log : false,
       dialectOptions: dbConfig.type === 'sqlite' ? {
         // SQLite specific options
+      } : dbConfig.type === 'postgresql' ? {
+        // PostgreSQL specific options
+        ssl: config.nodeEnv === 'production' ? {
+          require: true,
+          rejectUnauthorized: false
+        } : false,
+        // Enable UUID extension for PostgreSQL
+        prependSearchPath: false,
       } : {
-        // MySQL/PostgreSQL specific options
+        // MySQL specific options
         ssl: config.nodeEnv === 'production' ? {
           require: true,
           rejectUnauthorized: false
@@ -42,6 +50,23 @@ export const createSequelizeInstance = (): Sequelize => {
         logging: config.nodeEnv === 'development' ? console.log : false,
       });
     } else {
+      const dialectOptions: any = {};
+      
+      if (dialect === 'postgres') {
+        dialectOptions.prependSearchPath = false;
+        if (config.nodeEnv === 'production') {
+          dialectOptions.ssl = {
+            require: true,
+            rejectUnauthorized: false
+          };
+        }
+      } else if (config.nodeEnv === 'production') {
+        dialectOptions.ssl = {
+          require: true,
+          rejectUnauthorized: false
+        };
+      }
+      
       sequelize = new Sequelize({
         dialect: dialect as any,
         host: dbConfig.host || 'localhost',
@@ -50,12 +75,7 @@ export const createSequelizeInstance = (): Sequelize => {
         password: dbConfig.password!,
         database: dbConfig.database || 'task_app',
         logging: config.nodeEnv === 'development' ? console.log : false,
-        dialectOptions: config.nodeEnv === 'production' ? {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false
-          }
-        } : {}
+        dialectOptions
       });
     }
   }
@@ -76,6 +96,28 @@ export const getSequelizeInstance = async (): Promise<Sequelize> => {
     try {
       await sequelize.authenticate();
       console.log('📦 Sequelize connection established successfully');
+      
+      // For PostgreSQL, ensure UUID extension is available and create ENUM type
+      const dialect = sequelize.getDialect();
+      if (dialect === 'postgres') {
+        try {
+          // Enable UUID extension
+          await sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+          console.log('📦 PostgreSQL UUID extension enabled');
+          
+          // Create ENUM type if it doesn't exist
+          await sequelize.query(`
+            DO $$ BEGIN
+              CREATE TYPE todo_priority AS ENUM ('low', 'medium', 'high');
+            EXCEPTION
+              WHEN duplicate_object THEN null;
+            END $$;
+          `);
+          console.log('📦 PostgreSQL ENUM type created/verified');
+        } catch (error) {
+          console.warn('⚠️  PostgreSQL setup warning:', (error as Error).message);
+        }
+      }
       
       // Sync models (create tables if they don't exist)
       if (config.nodeEnv === 'development') {

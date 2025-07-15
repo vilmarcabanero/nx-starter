@@ -200,6 +200,83 @@ To switch between databases:
 
 No code changes required - the repository pattern abstracts all database differences!
 
+## Troubleshooting
+
+### PostgreSQL Issues
+
+#### **Common Error: ENUM Type Issues**
+```
+ERROR: type "todo_priority" already exists
+```
+**Solution**: This happens when the ENUM type already exists. The server will handle this automatically, but if you encounter issues:
+
+1. Connect to your PostgreSQL database
+2. Drop the existing type: `DROP TYPE IF EXISTS todo_priority CASCADE;`
+3. Restart the server
+
+#### **Common Error: UUID Extension**
+```
+ERROR: function uuid_generate_v4() does not exist
+```
+**Solution**: Enable the UUID extension (the server does this automatically):
+```sql
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+```
+
+#### **Common Error: Permission Issues**
+```
+ERROR: permission denied to create extension "uuid-ossp"
+```
+**Solution**: Ensure your PostgreSQL user has superuser privileges or ask your admin to enable the extension.
+
+#### **Common Error: Connection Issues**
+```
+ERROR: password authentication failed
+```
+**Solution**: Check your connection string and credentials:
+```bash
+# Test connection manually
+psql postgresql://username:password@localhost:5432/database_name
+```
+
+### Sequelize Issues
+
+#### **Error: Data Type Not Supported**
+This error indicates incompatible data types between different databases. The current implementation handles cross-database compatibility automatically.
+
+#### **Error: Model Synchronization Issues**
+```
+ERROR: relation "todo" already exists
+```
+**Solution**: This is normal for existing databases. The server uses `{ alter: true }` which safely updates schema.
+
+### TypeORM Issues
+
+#### **Error: Entity Metadata Validation**
+Ensure your entities are properly decorated and imported in the data source configuration.
+
+### MongoDB/Mongoose Issues
+
+#### **Error: ObjectId Validation**
+```
+Cast to ObjectId failed for value "string-id"
+```
+The system automatically handles ID generation. MongoDB uses ObjectId while other databases use UUID.
+
+### General Database Issues
+
+#### **Port Already in Use**
+```
+ERROR: Port 3001 is already in use
+```
+**Solution**: Change the port in your `.env` file:
+```
+PORT=3002
+```
+
+#### **Database Connection Timeout**
+**Solution**: Check if your database server is running and accessible.
+
 ## API Documentation
 
 ### 📦 Postman Collection

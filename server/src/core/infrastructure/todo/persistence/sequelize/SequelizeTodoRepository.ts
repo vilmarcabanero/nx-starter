@@ -22,7 +22,7 @@ export class SequelizeTodoRepository implements ITodoRepository {
   async create(todo: Todo): Promise<string> {
     const id = generateId();
     
-    await TodoSequelizeModel.create({
+    const created = await TodoSequelizeModel.create({
       id,
       title: todo.titleValue,
       completed: todo.completed,
@@ -31,7 +31,8 @@ export class SequelizeTodoRepository implements ITodoRepository {
       dueDate: todo.dueDate
     });
     
-    return id;
+    // Return the actual ID (important for PostgreSQL auto-generated UUIDs)
+    return created.id;
   }
 
   async update(id: string, changes: Partial<Todo>): Promise<void> {

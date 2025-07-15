@@ -24,12 +24,27 @@ export class TodoSequelizeModel extends Model<ITodoAttributes, ITodoCreationAttr
 }
 
 export const initTodoModel = (sequelize: Sequelize): void => {
+  // Get the dialect to handle database-specific configurations
+  const dialect = sequelize.getDialect();
+  
+  // Define ENUM with database-specific handling
+  let priorityType;
+  if (dialect === 'postgres') {
+    // PostgreSQL ENUM - create it properly
+    priorityType = DataTypes.ENUM('low', 'medium', 'high');
+  } else {
+    // MySQL and SQLite
+    priorityType = DataTypes.ENUM('low', 'medium', 'high');
+  }
+
   TodoSequelizeModel.init(
     {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
         allowNull: false,
+        // For PostgreSQL, let the database handle UUID generation if not provided
+        defaultValue: dialect === 'postgres' ? DataTypes.UUIDV4 : undefined,
       },
       title: {
         type: DataTypes.STRING(255),
@@ -51,7 +66,7 @@ export const initTodoModel = (sequelize: Sequelize): void => {
         field: 'created_at'
       },
       priority: {
-        type: DataTypes.ENUM('low', 'medium', 'high'),
+        type: priorityType,
         allowNull: false,
         defaultValue: 'medium'
       },
@@ -65,6 +80,11 @@ export const initTodoModel = (sequelize: Sequelize): void => {
       sequelize,
       tableName: 'todo',
       timestamps: false, // We handle createdAt manually
+      // Database-specific options
+      ...(dialect === 'postgres' ? {
+        // PostgreSQL specific options
+        schema: process.env.DB_SCHEMA || 'public'
+      } : {}),
       indexes: [
         {
           fields: ['completed']
