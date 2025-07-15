@@ -1,0 +1,14 @@
+dist
+node_modules
+coverage
+*.log
+.env
+.env.*
+!.env.example
+pnpm-lock.yaml
+package-lock.json
+public/vite.svg
+# Build outputs
+build
+# Dependencies
+.pnpm-store
