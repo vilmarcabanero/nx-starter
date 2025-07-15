@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { TodoList } from './TodoList';
 import { Todo } from '../../../../core/domain/todo/entities/Todo';
+import { TEST_UUIDS } from '../../../../test/test-helpers';
 
 // Mock the view model
 const mockViewModel: {
@@ -30,9 +31,9 @@ vi.mock('./TodoItem', () => ({
 
 describe('TodoList', () => {
   const mockTodos: Todo[] = [
-    new Todo('First Todo', false, new Date('2024-01-01T10:00:00Z'), 1),
-    new Todo('Second Todo', true, new Date('2024-01-02T10:00:00Z'), 2),
-    new Todo('Third Todo', false, new Date('2024-01-03T10:00:00Z'), 3),
+    new Todo('First Todo', false, new Date('2024-01-01T10:00:00Z'), TEST_UUIDS.TODO_1),
+    new Todo('Second Todo', true, new Date('2024-01-02T10:00:00Z'), TEST_UUIDS.TODO_2),
+    new Todo('Third Todo', false, new Date('2024-01-03T10:00:00Z'), TEST_UUIDS.TODO_3),
   ];
 
   beforeEach(() => {

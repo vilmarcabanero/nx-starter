@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { TodoItem } from './TodoItem';
 import { Todo } from '../../../../core/domain/todo/entities/Todo';
+import { TEST_UUIDS } from '../../../../test/test-helpers';
 
 // Mock the store
 const mockStore = {
@@ -15,7 +16,7 @@ vi.mock('../../../../core/infrastructure/todo/state/TodoStore', () => ({
 }));
 
 describe('TodoItem', () => {
-  const mockTodo: Todo = new Todo('Test Todo', false, new Date('2024-01-01T10:00:00Z'), 1);
+  const mockTodo: Todo = new Todo('Test Todo', false, new Date('2024-01-01T10:00:00Z'), TEST_UUIDS.TODO_1);
   
   beforeEach(() => {
     vi.clearAllMocks();
@@ -35,7 +36,7 @@ describe('TodoItem', () => {
   });
 
   it('should show checked checkbox when todo is completed', () => {
-    const completedTodo = new Todo('Test Todo', true, new Date('2024-01-01T10:00:00Z'), 1);
+    const completedTodo = new Todo('Test Todo', true, new Date('2024-01-01T10:00:00Z'), TEST_UUIDS.TODO_2);
     render(<TodoItem todo={completedTodo} />);
 
     const checkbox = screen.getByRole('checkbox');
@@ -160,7 +161,7 @@ describe('TodoItem', () => {
   });
 
   it('should show overdue indicator when todo is overdue', () => {
-    const overdueTodo = new Todo('Test Todo', false, new Date('2024-01-01T10:00:00Z'), 1);
+    const overdueTodo = new Todo('Test Todo', false, new Date('2024-01-01T10:00:00Z'), TEST_UUIDS.TODO_3);
     vi.spyOn(overdueTodo, 'isOverdue').mockReturnValue(true);
     render(<TodoItem todo={overdueTodo} />);
 
@@ -168,7 +169,7 @@ describe('TodoItem', () => {
   });
 
   it('should show strikethrough text when todo is completed', () => {
-    const completedTodo = new Todo('Test Todo', true, new Date('2024-01-01T10:00:00Z'), 1);
+    const completedTodo = new Todo('Test Todo', true, new Date('2024-01-01T10:00:00Z'), TEST_UUIDS.TODO_4);
     render(<TodoItem todo={completedTodo} />);
 
     const titleSpan = screen.getByText(completedTodo.titleValue);
