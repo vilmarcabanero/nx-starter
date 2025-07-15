@@ -9,9 +9,7 @@ import { TOKENS } from '@/core/infrastructure/di/tokens';
  */
 @injectable()
 export class UpdateTodoUseCase {
-  constructor(
-    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
-  ) {}
+  constructor(@inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository) {}
 
   async execute(command: UpdateTodoCommand): Promise<void> {
     // Check if todo exists
@@ -22,19 +20,19 @@ export class UpdateTodoUseCase {
 
     // Prepare updates (exclude undefined values)
     const updates: Partial<any> = {};
-    
+
     if (command.title !== undefined) {
       updates.title = command.title;
     }
-    
+
     if (command.completed !== undefined) {
       updates.completed = command.completed;
     }
-    
+
     if (command.priority !== undefined) {
       updates.priority = command.priority;
     }
-    
+
     if (command.dueDate !== undefined) {
       updates.dueDate = command.dueDate;
     }

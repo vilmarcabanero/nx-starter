@@ -39,7 +39,7 @@ describe('ErrorHandler Middleware', () => {
   describe('errorHandler', () => {
     it('should handle general errors in development mode', () => {
       const error = new Error('Test error');
-      
+
       errorHandler(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(consoleErrorSpy).toHaveBeenCalledWith('Global error handler:', error);
@@ -47,14 +47,14 @@ describe('ErrorHandler Middleware', () => {
       expect(mockRes.json).toHaveBeenCalledWith({
         success: false,
         error: 'Internal server error',
-        message: 'Test error'
+        message: 'Test error',
       });
     });
 
     it('should handle general errors in production mode', () => {
       process.env.NODE_ENV = 'production';
       const error = new Error('Test error');
-      
+
       errorHandler(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(consoleErrorSpy).toHaveBeenCalledWith('Global error handler:', error);
@@ -62,27 +62,27 @@ describe('ErrorHandler Middleware', () => {
       expect(mockRes.json).toHaveBeenCalledWith({
         success: false,
         error: 'Internal server error',
-        message: 'Something went wrong'
+        message: 'Something went wrong',
       });
     });
 
     it('should handle JSON parsing errors', () => {
       const error = { type: 'entity.parse.failed' };
-      
+
       errorHandler(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockRes.status).toHaveBeenCalledWith(400);
       expect(mockRes.json).toHaveBeenCalledWith({
         success: false,
         error: 'Invalid JSON format',
-        message: 'Request body contains invalid JSON'
+        message: 'Request body contains invalid JSON',
       });
     });
 
     it('should delegate to Express error handler if headers already sent', () => {
       const error = new Error('Test error');
       mockRes.headersSent = true;
-      
+
       errorHandler(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledWith(error);
@@ -92,7 +92,7 @@ describe('ErrorHandler Middleware', () => {
 
     it('should handle non-Error objects', () => {
       const error = 'String error';
-      
+
       errorHandler(error, mockReq as Request, mockRes as Response, mockNext);
 
       expect(consoleErrorSpy).toHaveBeenCalledWith('Global error handler:', error);
@@ -100,7 +100,7 @@ describe('ErrorHandler Middleware', () => {
       expect(mockRes.json).toHaveBeenCalledWith({
         success: false,
         error: 'Internal server error',
-        message: undefined // String doesn't have .message property
+        message: undefined, // String doesn't have .message property
       });
     });
   });
@@ -109,28 +109,28 @@ describe('ErrorHandler Middleware', () => {
     it('should handle 404 errors with GET method', () => {
       mockReq.method = 'GET';
       mockReq.path = '/unknown';
-      
+
       notFoundHandler(mockReq as Request, mockRes as Response);
 
       expect(mockRes.status).toHaveBeenCalledWith(404);
       expect(mockRes.json).toHaveBeenCalledWith({
         success: false,
         error: 'Not found',
-        message: 'Route GET /unknown not found'
+        message: 'Route GET /unknown not found',
       });
     });
 
     it('should handle 404 errors with POST method', () => {
       mockReq.method = 'POST';
       mockReq.path = '/api/unknown';
-      
+
       notFoundHandler(mockReq as Request, mockRes as Response);
 
       expect(mockRes.status).toHaveBeenCalledWith(404);
       expect(mockRes.json).toHaveBeenCalledWith({
         success: false,
         error: 'Not found',
-        message: 'Route POST /api/unknown not found'
+        message: 'Route POST /api/unknown not found',
       });
     });
   });
@@ -138,7 +138,7 @@ describe('ErrorHandler Middleware', () => {
   describe('requestLogger', () => {
     it('should log request details when response finishes', () => {
       mockRes.statusCode = 200;
-      
+
       // Mock Date.now to control timing
       const mockDateNow = vi.spyOn(Date, 'now');
       mockDateNow.mockReturnValueOnce(1000).mockReturnValueOnce(1100); // 100ms duration
@@ -167,7 +167,7 @@ describe('ErrorHandler Middleware', () => {
       mockReq.method = 'POST';
       mockReq.path = '/api/todos';
       mockRes.statusCode = 201;
-      
+
       const mockDateNow = vi.spyOn(Date, 'now');
       mockDateNow.mockReturnValueOnce(2000).mockReturnValueOnce(2050); // 50ms duration
 

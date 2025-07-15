@@ -1,21 +1,21 @@
 import { Request, Response } from 'express';
 import { injectable, inject } from 'tsyringe';
-import { 
-  CreateTodoCommandSchema, 
-  UpdateTodoCommandSchema, 
-  DeleteTodoCommandSchema, 
-  ToggleTodoCommandSchema 
+import {
+  CreateTodoCommandSchema,
+  UpdateTodoCommandSchema,
+  DeleteTodoCommandSchema,
+  ToggleTodoCommandSchema,
 } from '@/core/application/todo/dto/TodoCommands';
 import { CreateTodoUseCase } from '@/core/application/todo/use-cases/commands/CreateTodoUseCase';
 import { UpdateTodoUseCase } from '@/core/application/todo/use-cases/commands/UpdateTodoUseCase';
 import { DeleteTodoUseCase } from '@/core/application/todo/use-cases/commands/DeleteTodoUseCase';
 import { ToggleTodoUseCase } from '@/core/application/todo/use-cases/commands/ToggleTodoUseCase';
-import { 
+import {
   GetAllTodosQueryHandler,
   GetActiveTodosQueryHandler,
   GetCompletedTodosQueryHandler,
   GetTodoByIdQueryHandler,
-  GetTodoStatsQueryHandler 
+  GetTodoStatsQueryHandler,
 } from '@/core/application/todo/use-cases/queries/TodoQueryHandlers';
 import { TodoMapper } from '@/core/application/todo/mappers/TodoMapper';
 import { DomainException } from '@/core/domain/todo/exceptions/DomainExceptions';
@@ -33,11 +33,16 @@ export class TodoController {
     @inject(TOKENS.UpdateTodoUseCase) private updateTodoUseCase: UpdateTodoUseCase,
     @inject(TOKENS.DeleteTodoUseCase) private deleteTodoUseCase: DeleteTodoUseCase,
     @inject(TOKENS.ToggleTodoUseCase) private toggleTodoUseCase: ToggleTodoUseCase,
-    @inject(TOKENS.GetAllTodosQueryHandler) private getAllTodosQueryHandler: GetAllTodosQueryHandler,
-    @inject(TOKENS.GetActiveTodosQueryHandler) private getActiveTodosQueryHandler: GetActiveTodosQueryHandler,
-    @inject(TOKENS.GetCompletedTodosQueryHandler) private getCompletedTodosQueryHandler: GetCompletedTodosQueryHandler,
-    @inject(TOKENS.GetTodoByIdQueryHandler) private getTodoByIdQueryHandler: GetTodoByIdQueryHandler,
-    @inject(TOKENS.GetTodoStatsQueryHandler) private getTodoStatsQueryHandler: GetTodoStatsQueryHandler
+    @inject(TOKENS.GetAllTodosQueryHandler)
+    private getAllTodosQueryHandler: GetAllTodosQueryHandler,
+    @inject(TOKENS.GetActiveTodosQueryHandler)
+    private getActiveTodosQueryHandler: GetActiveTodosQueryHandler,
+    @inject(TOKENS.GetCompletedTodosQueryHandler)
+    private getCompletedTodosQueryHandler: GetCompletedTodosQueryHandler,
+    @inject(TOKENS.GetTodoByIdQueryHandler)
+    private getTodoByIdQueryHandler: GetTodoByIdQueryHandler,
+    @inject(TOKENS.GetTodoStatsQueryHandler)
+    private getTodoStatsQueryHandler: GetTodoStatsQueryHandler
   ) {}
 
   /**
@@ -46,10 +51,10 @@ export class TodoController {
   getAllTodos = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const todos = await this.getAllTodosQueryHandler.execute();
     const todoDtos = TodoMapper.toDtoArray(todos);
-    
+
     res.json({
       success: true,
-      data: todoDtos
+      data: todoDtos,
     });
   });
 
@@ -59,10 +64,10 @@ export class TodoController {
   getActiveTodos = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const todos = await this.getActiveTodosQueryHandler.execute();
     const todoDtos = TodoMapper.toDtoArray(todos);
-    
+
     res.json({
       success: true,
-      data: todoDtos
+      data: todoDtos,
     });
   });
 
@@ -72,10 +77,10 @@ export class TodoController {
   getCompletedTodos = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const todos = await this.getCompletedTodosQueryHandler.execute();
     const todoDtos = TodoMapper.toDtoArray(todos);
-    
+
     res.json({
       success: true,
-      data: todoDtos
+      data: todoDtos,
     });
   });
 
@@ -84,10 +89,10 @@ export class TodoController {
    */
   getTodoStats = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const stats = await this.getTodoStatsQueryHandler.execute();
-    
+
     res.json({
       success: true,
-      data: stats
+      data: stats,
     });
   });
 
@@ -97,11 +102,11 @@ export class TodoController {
   getTodoById = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     const todo = await this.getTodoByIdQueryHandler.execute({ id });
-    
+
     if (!todo) {
       res.status(404).json({
         success: false,
-        error: 'Todo not found'
+        error: 'Todo not found',
       });
       return;
     }
@@ -109,7 +114,7 @@ export class TodoController {
     const todoDto = TodoMapper.toDto(todo);
     res.json({
       success: true,
-      data: todoDto
+      data: todoDto,
     });
   });
 
@@ -120,10 +125,10 @@ export class TodoController {
     const validatedData = CreateTodoCommandSchema.parse(req.body);
     const todo = await this.createTodoUseCase.execute(validatedData);
     const todoDto = TodoMapper.toDto(todo);
-    
+
     res.status(201).json({
       success: true,
-      data: todoDto
+      data: todoDto,
     });
   });
 
@@ -133,12 +138,12 @@ export class TodoController {
   updateTodo = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     const validatedData = UpdateTodoCommandSchema.parse({ ...req.body, id });
-    
+
     await this.updateTodoUseCase.execute(validatedData);
-    
+
     res.json({
       success: true,
-      message: 'Todo updated successfully'
+      message: 'Todo updated successfully',
     });
   });
 
@@ -148,12 +153,12 @@ export class TodoController {
   toggleTodo = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     const validatedData = ToggleTodoCommandSchema.parse({ id });
-    
+
     await this.toggleTodoUseCase.execute(validatedData);
-    
+
     res.json({
       success: true,
-      message: 'Todo toggled successfully'
+      message: 'Todo toggled successfully',
     });
   });
 
@@ -163,13 +168,12 @@ export class TodoController {
   deleteTodo = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     const validatedData = DeleteTodoCommandSchema.parse({ id });
-    
+
     await this.deleteTodoUseCase.execute(validatedData);
-    
+
     res.json({
       success: true,
-      message: 'Todo deleted successfully'
+      message: 'Todo deleted successfully',
     });
   });
-
 }

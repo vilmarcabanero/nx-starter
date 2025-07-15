@@ -13,8 +13,10 @@ export interface ITodoCreationAttributes extends Omit<ITodoAttributes, 'id'> {
   id?: string;
 }
 
-export class TodoSequelizeModel extends Model<ITodoAttributes, ITodoCreationAttributes> 
-  implements ITodoAttributes {
+export class TodoSequelizeModel
+  extends Model<ITodoAttributes, ITodoCreationAttributes>
+  implements ITodoAttributes
+{
   public id!: string;
   public title!: string;
   public completed!: boolean;
@@ -26,7 +28,7 @@ export class TodoSequelizeModel extends Model<ITodoAttributes, ITodoCreationAttr
 export const initTodoModel = (sequelize: Sequelize): void => {
   // Get the dialect to handle database-specific configurations
   const dialect = sequelize.getDialect();
-  
+
   // Define ENUM with database-specific handling
   let priorityType;
   if (dialect === 'postgres') {
@@ -51,54 +53,56 @@ export const initTodoModel = (sequelize: Sequelize): void => {
         allowNull: false,
         validate: {
           notEmpty: true,
-          len: [1, 255]
-        }
+          len: [1, 255],
+        },
       },
       completed: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: false
+        defaultValue: false,
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
-        field: 'created_at'
+        field: 'created_at',
       },
       priority: {
         type: priorityType,
         allowNull: false,
-        defaultValue: 'medium'
+        defaultValue: 'medium',
       },
       dueDate: {
         type: DataTypes.DATE,
         allowNull: true,
-        field: 'due_date'
-      }
+        field: 'due_date',
+      },
     },
     {
       sequelize,
       tableName: 'todo',
       timestamps: false, // We handle createdAt manually
       // Database-specific options
-      ...(dialect === 'postgres' ? {
-        // PostgreSQL specific options
-        schema: process.env.DB_SCHEMA || 'public'
-      } : {}),
+      ...(dialect === 'postgres'
+        ? {
+            // PostgreSQL specific options
+            schema: process.env.DB_SCHEMA || 'public',
+          }
+        : {}),
       indexes: [
         {
-          fields: ['completed']
+          fields: ['completed'],
         },
         {
-          fields: ['created_at']
+          fields: ['created_at'],
         },
         {
-          fields: ['priority']
+          fields: ['priority'],
         },
         {
-          fields: ['due_date']
-        }
-      ]
+          fields: ['due_date'],
+        },
+      ],
     }
   );
 };

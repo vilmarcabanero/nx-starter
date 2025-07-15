@@ -53,7 +53,7 @@ describe('TodoPriority', () => {
       const priority = new TodoPriority('medium');
       // Artificially set an invalid level to test the default case
       (priority as any)._level = 'invalid' as any;
-      
+
       expect(priority.numericValue).toBe(2); // Default value
     });
   });
@@ -124,7 +124,7 @@ describe('TodoPriority', () => {
     it('should only accept valid priority levels', () => {
       // This is enforced by TypeScript, but we can test the valid values
       const validLevels: TodoPriorityLevel[] = ['low', 'medium', 'high'];
-      
+
       validLevels.forEach(level => {
         const priority = new TodoPriority(level);
         expect(priority.level).toBe(level);

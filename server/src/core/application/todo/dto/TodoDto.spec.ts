@@ -1,11 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { 
-  TodoDto, 
-  CreateTodoDto, 
-  UpdateTodoDto, 
-  TodoStatsDto, 
-  TodoFilterDto 
-} from './TodoDto';
+import type { TodoDto, CreateTodoDto, UpdateTodoDto, TodoStatsDto, TodoFilterDto } from './TodoDto';
 
 // Import the actual module to ensure coverage
 import * as TodoDtoModule from './TodoDto';
@@ -26,7 +20,7 @@ describe('TodoDto', () => {
       completed: false,
       priority: 'medium',
       createdAt: '2020-01-01T00:00:00.000Z',
-      dueDate: '2020-01-02T00:00:00.000Z'
+      dueDate: '2020-01-02T00:00:00.000Z',
     };
 
     expect(todoDto.id).toBe('test-id');
@@ -43,7 +37,7 @@ describe('TodoDto', () => {
       title: 'Test Todo',
       completed: false,
       priority: 'medium',
-      createdAt: '2020-01-01T00:00:00.000Z'
+      createdAt: '2020-01-01T00:00:00.000Z',
     };
 
     expect(todoDto.dueDate).toBeUndefined();
@@ -53,7 +47,7 @@ describe('TodoDto', () => {
 describe('CreateTodoDto', () => {
   it('should define correct interface structure with required title', () => {
     const createDto: CreateTodoDto = {
-      title: 'New Todo'
+      title: 'New Todo',
     };
 
     expect(createDto.title).toBe('New Todo');
@@ -65,7 +59,7 @@ describe('CreateTodoDto', () => {
     const createDto: CreateTodoDto = {
       title: 'New Todo',
       priority: 'high',
-      dueDate: '2020-01-01T00:00:00.000Z'
+      dueDate: '2020-01-01T00:00:00.000Z',
     };
 
     expect(createDto.title).toBe('New Todo');
@@ -84,7 +78,7 @@ describe('UpdateTodoDto', () => {
   it('should allow partial updates', () => {
     const updateDto: UpdateTodoDto = {
       title: 'Updated Title',
-      completed: true
+      completed: true,
     };
 
     expect(updateDto.title).toBe('Updated Title');
@@ -98,7 +92,7 @@ describe('UpdateTodoDto', () => {
       title: 'Updated Todo',
       completed: true,
       priority: 'low',
-      dueDate: '2020-01-01T00:00:00.000Z'
+      dueDate: '2020-01-01T00:00:00.000Z',
     };
 
     expect(updateDto.title).toBe('Updated Todo');
@@ -115,7 +109,7 @@ describe('TodoStatsDto', () => {
       active: 5,
       completed: 5,
       overdue: 2,
-      highPriority: 3
+      highPriority: 3,
     };
 
     expect(statsDto.total).toBe(10);
@@ -136,7 +130,7 @@ describe('TodoFilterDto', () => {
   it('should allow partial filters', () => {
     const filterDto: TodoFilterDto = {
       completed: true,
-      priority: 'high'
+      priority: 'high',
     };
 
     expect(filterDto.completed).toBe(true);
@@ -148,7 +142,7 @@ describe('TodoFilterDto', () => {
     const filterDto: TodoFilterDto = {
       completed: false,
       priority: 'medium',
-      search: 'test search'
+      search: 'test search',
     };
 
     expect(filterDto.completed).toBe(false);

@@ -19,7 +19,7 @@ export class TypeOrmTodoRepository implements ITodoRepository {
 
   async getAll(): Promise<Todo[]> {
     const entities = await this.repository.find({
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
     });
     return entities.map(this.toDomain);
   }
@@ -32,9 +32,9 @@ export class TypeOrmTodoRepository implements ITodoRepository {
       completed: todo.completed,
       createdAt: todo.createdAt,
       priority: todo.priority.level,
-      dueDate: todo.dueDate
+      dueDate: todo.dueDate,
     });
-    
+
     await this.repository.save(entity);
     return id;
   }
@@ -46,19 +46,17 @@ export class TypeOrmTodoRepository implements ITodoRepository {
     }
 
     const updateData: Partial<TodoEntity> = {};
-    
+
     if (changes.title !== undefined) {
-      updateData.title = typeof changes.title === 'string' 
-        ? changes.title 
-        : (changes.title as any).value;
+      updateData.title =
+        typeof changes.title === 'string' ? changes.title : (changes.title as any).value;
     }
     if (changes.completed !== undefined) {
       updateData.completed = changes.completed;
     }
     if (changes.priority !== undefined) {
-      updateData.priority = typeof changes.priority === 'string'
-        ? changes.priority
-        : (changes.priority as any).level;
+      updateData.priority =
+        typeof changes.priority === 'string' ? changes.priority : (changes.priority as any).level;
     }
     if (changes.dueDate !== undefined) {
       updateData.dueDate = changes.dueDate;
@@ -82,7 +80,7 @@ export class TypeOrmTodoRepository implements ITodoRepository {
   async getActive(): Promise<Todo[]> {
     const entities = await this.repository.find({
       where: { completed: false },
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
     });
     return entities.map(this.toDomain);
   }
@@ -90,7 +88,7 @@ export class TypeOrmTodoRepository implements ITodoRepository {
   async getCompleted(): Promise<Todo[]> {
     const entities = await this.repository.find({
       where: { completed: true },
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
     });
     return entities.map(this.toDomain);
   }

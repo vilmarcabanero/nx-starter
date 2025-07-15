@@ -53,7 +53,7 @@ export class SqliteTodoRepository implements ITodoRepository {
       INSERT INTO todos (id, title, completed, priority, createdAt, dueDate)
       VALUES (?, ?, ?, ?, ?, ?)
     `);
-    
+
     stmt.run(
       id,
       todo.titleValue,
@@ -62,7 +62,7 @@ export class SqliteTodoRepository implements ITodoRepository {
       todo.createdAt.toISOString(),
       todo.dueDate?.toISOString()
     );
-    
+
     return id;
   }
 
@@ -82,7 +82,9 @@ export class SqliteTodoRepository implements ITodoRepository {
 
     if (changes.priority !== undefined) {
       updates.push('priority = ?');
-      params.push(typeof changes.priority === 'string' ? changes.priority : (changes.priority as any).level);
+      params.push(
+        typeof changes.priority === 'string' ? changes.priority : (changes.priority as any).level
+      );
     }
 
     if (changes.dueDate !== undefined) {
@@ -155,7 +157,7 @@ export class SqliteTodoRepository implements ITodoRepository {
       completed: Boolean(row.completed),
       createdAt: new Date(row.createdAt),
       priority: row.priority,
-      dueDate: row.dueDate ? new Date(row.dueDate) : undefined
+      dueDate: row.dueDate ? new Date(row.dueDate) : undefined,
     });
   }
 

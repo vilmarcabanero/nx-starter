@@ -29,9 +29,9 @@ describe('DeleteTodoUseCase', () => {
     const repository = new InMemoryTodoRepository();
     const useCase = new DeleteTodoUseCase(repository);
 
-    await expect(useCase.execute({ id: 'non-existent-id' }))
-      .rejects
-      .toThrow('Todo with ID non-existent-id not found');
+    await expect(useCase.execute({ id: 'non-existent-id' })).rejects.toThrow(
+      'Todo with ID non-existent-id not found'
+    );
   });
 
   it('should handle multiple deletions', async () => {

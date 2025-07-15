@@ -16,12 +16,14 @@ export const createApp = (): express.Application => {
 
   // Security middleware
   app.use(helmet());
-  
+
   // CORS configuration
-  app.use(cors({
-    origin: config.corsOrigin,
-    credentials: true
-  }));
+  app.use(
+    cors({
+      origin: config.corsOrigin,
+      credentials: true,
+    })
+  );
 
   // Rate limiting
   const limiter = rateLimit({
@@ -29,8 +31,8 @@ export const createApp = (): express.Application => {
     max: 100, // limit each IP to 100 requests per windowMs
     message: {
       success: false,
-      error: 'Too many requests from this IP, please try again later.'
-    }
+      error: 'Too many requests from this IP, please try again later.',
+    },
   });
   app.use('/api', limiter);
 
@@ -56,8 +58,8 @@ export const createApp = (): express.Application => {
       endpoints: {
         health: '/api/health',
         todos: '/api/todos',
-        documentation: 'See README.md for API documentation'
-      }
+        documentation: 'See README.md for API documentation',
+      },
     });
   });
 

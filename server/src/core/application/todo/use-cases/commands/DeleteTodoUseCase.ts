@@ -9,9 +9,7 @@ import { TOKENS } from '@/core/infrastructure/di/tokens';
  */
 @injectable()
 export class DeleteTodoUseCase {
-  constructor(
-    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
-  ) {}
+  constructor(@inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository) {}
 
   async execute(command: DeleteTodoCommand): Promise<void> {
     // Check if todo exists

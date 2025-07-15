@@ -5,9 +5,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    include: [
-      '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'
-    ],
+    include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
@@ -41,8 +39,8 @@ export default defineConfig({
         lines: 100,
         functions: 100,
         branches: 100,
-        statements: 100
-      }
+        statements: 100,
+      },
     },
   },
   resolve: {

@@ -10,9 +10,7 @@ import { Todo } from '@/core/domain/todo/entities/Todo';
  */
 @injectable()
 export class ToggleTodoUseCase {
-  constructor(
-    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
-  ) {}
+  constructor(@inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository) {}
 
   async execute(command: ToggleTodoCommand): Promise<Todo> {
     // Check if todo exists
@@ -23,7 +21,7 @@ export class ToggleTodoUseCase {
 
     // Toggle completion state
     await this.todoRepository.update(command.id, {
-      completed: !existingTodo.completed
+      completed: !existingTodo.completed,
     });
 
     // Return the updated todo

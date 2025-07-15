@@ -5,32 +5,32 @@ vi.mock('@/config/app', () => ({
   createApp: vi.fn(() => ({
     listen: vi.fn((port, callback) => {
       if (callback) callback();
-      return { 
+      return {
         on: vi.fn(),
-        close: vi.fn()
+        close: vi.fn(),
       };
-    })
-  }))
+    }),
+  })),
 }));
 
 // Mock the DI container module
 vi.mock('@/core/infrastructure/di/container', () => ({
-  configureDI: vi.fn().mockResolvedValue(undefined)
+  configureDI: vi.fn().mockResolvedValue(undefined),
 }));
 
 // Mock the config module
 vi.mock('@/config/config', () => ({
   config: {
     port: 3001,
-    nodeEnv: 'test'
-  }
+    nodeEnv: 'test',
+  },
 }));
 
 // Mock dotenv
 vi.mock('dotenv', () => ({
   default: {
-    config: vi.fn()
-  }
+    config: vi.fn(),
+  },
 }));
 
 describe('Server Index', () => {
@@ -43,7 +43,7 @@ describe('Server Index', () => {
     processExitSpy = vi.spyOn(process, 'exit').mockImplementation((code?: number) => {
       throw new Error(`process.exit(${code}) was called`);
     });
-    
+
     // Clear all mocks
     vi.clearAllMocks();
   });
@@ -51,7 +51,7 @@ describe('Server Index', () => {
   afterEach(() => {
     consoleSpy.mockRestore();
     processExitSpy.mockRestore();
-    
+
     // Clean up modules
     vi.resetModules();
   });

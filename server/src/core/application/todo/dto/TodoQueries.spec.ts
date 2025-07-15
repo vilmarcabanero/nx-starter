@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import type { 
-  GetAllTodosQuery, 
-  GetFilteredTodosQuery, 
-  GetTodoStatsQuery, 
-  GetTodoByIdQuery, 
-  TodoStatsQueryResult 
+import type {
+  GetAllTodosQuery,
+  GetFilteredTodosQuery,
+  GetTodoStatsQuery,
+  GetTodoByIdQuery,
+  TodoStatsQueryResult,
 } from './TodoQueries';
 
 // Import the actual module to ensure coverage
@@ -41,7 +41,7 @@ describe('TodoQueries', () => {
       const query: GetFilteredTodosQuery = {
         filter: 'active',
         sortBy: 'priority',
-        sortOrder: 'desc'
+        sortOrder: 'desc',
       };
 
       expect(query.filter).toBe('active');
@@ -78,7 +78,7 @@ describe('TodoQueries', () => {
   describe('GetTodoByIdQuery', () => {
     it('should define correct interface structure', () => {
       const query: GetTodoByIdQuery = {
-        id: 'test-id'
+        id: 'test-id',
       };
 
       expect(query.id).toBe('test-id');
@@ -92,7 +92,7 @@ describe('TodoQueries', () => {
         active: 5,
         completed: 5,
         overdue: 2,
-        highPriority: 3
+        highPriority: 3,
       };
 
       expect(result.total).toBe(10);
@@ -108,7 +108,7 @@ describe('TodoQueries', () => {
         active: 8,
         completed: 7,
         overdue: 3,
-        highPriority: 5
+        highPriority: 5,
       };
 
       // Verify all required fields are present

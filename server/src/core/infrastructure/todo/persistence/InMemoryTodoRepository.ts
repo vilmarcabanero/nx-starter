@@ -13,8 +13,9 @@ export class InMemoryTodoRepository implements ITodoRepository {
   private todos: Map<string, Todo> = new Map();
 
   async getAll(): Promise<Todo[]> {
-    return Array.from(this.todos.values())
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    return Array.from(this.todos.values()).sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+    );
   }
 
   async create(todo: Todo): Promise<string> {
@@ -27,7 +28,7 @@ export class InMemoryTodoRepository implements ITodoRepository {
       todo.priority.level,
       todo.dueDate
     );
-    
+
     this.todos.set(id, todoWithId);
     return id;
   }

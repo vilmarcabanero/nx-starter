@@ -9,12 +9,12 @@ import { CreateTodoUseCase } from '@/core/application/todo/use-cases/commands/Cr
 import { UpdateTodoUseCase } from '@/core/application/todo/use-cases/commands/UpdateTodoUseCase';
 import { DeleteTodoUseCase } from '@/core/application/todo/use-cases/commands/DeleteTodoUseCase';
 import { ToggleTodoUseCase } from '@/core/application/todo/use-cases/commands/ToggleTodoUseCase';
-import { 
+import {
   GetAllTodosQueryHandler,
   GetActiveTodosQueryHandler,
   GetCompletedTodosQueryHandler,
   GetTodoByIdQueryHandler,
-  GetTodoStatsQueryHandler
+  GetTodoStatsQueryHandler,
 } from '@/core/application/todo/use-cases/queries/TodoQueryHandlers';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 import { config } from '@/config/config';
@@ -27,10 +27,7 @@ import { getSequelizeInstance } from '@/core/infrastructure/todo/persistence/seq
 export const configureDI = async () => {
   // Infrastructure Layer - Repository (choose based on config)
   const repositoryImplementation = await getRepositoryImplementation();
-  container.registerInstance<ITodoRepository>(
-    TOKENS.TodoRepository,
-    repositoryImplementation
-  );
+  container.registerInstance<ITodoRepository>(TOKENS.TodoRepository, repositoryImplementation);
 
   // Application Layer - Use Cases (Commands)
   container.registerSingleton(TOKENS.CreateTodoUseCase, CreateTodoUseCase);
@@ -49,22 +46,22 @@ export const configureDI = async () => {
 async function getRepositoryImplementation(): Promise<ITodoRepository> {
   const dbType = config.database.type;
   const ormType = config.database.orm || 'native';
-  
+
   console.log(`📦 Using ${ormType} ORM with ${dbType} database`);
-  
+
   // Handle memory database (always uses in-memory repository)
   if (dbType === 'memory') {
     console.log('📦 Using in-memory repository');
     return new InMemoryTodoRepository();
   }
-  
+
   // Handle MongoDB (always uses Mongoose)
   if (dbType === 'mongodb') {
     await connectMongoDB();
     console.log('📦 Using Mongoose repository with MongoDB');
     return new MongooseTodoRepository();
   }
-  
+
   // Handle SQL databases with different ORMs
   switch (ormType) {
     case 'typeorm': {
@@ -72,20 +69,20 @@ async function getRepositoryImplementation(): Promise<ITodoRepository> {
       console.log(`📦 Using TypeORM repository with ${dbType}`);
       return new TypeOrmTodoRepository(dataSource);
     }
-    
+
     case 'sequelize': {
       const sequelize = await getSequelizeInstance();
       console.log(`📦 Using Sequelize repository with ${dbType}`);
       return new SequelizeTodoRepository();
     }
-    
+
     case 'native':
     default: {
       if (dbType === 'sqlite') {
         console.log('📦 Using native SQLite repository');
         return new SqliteTodoRepository();
       }
-      
+
       // For other databases without native support, default to TypeORM
       console.log(`📦 No native support for ${dbType}, falling back to TypeORM`);
       const dataSource = await getTypeOrmDataSource();

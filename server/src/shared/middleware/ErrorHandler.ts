@@ -5,9 +5,11 @@ import { DomainException } from '@/core/domain/todo/exceptions/DomainExceptions'
  * Async error handler wrapper to avoid repetitive try-catch blocks
  * Wraps controller methods and automatically handles errors
  */
-export const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {
+export const asyncHandler = (
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
+) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(fn(req, res, next)).catch((error) => {
+    Promise.resolve(fn(req, res, next)).catch(error => {
       handleControllerError(error, req, res, next);
     });
   };
@@ -16,14 +18,19 @@ export const asyncHandler = (fn: (req: Request, res: Response, next: NextFunctio
 /**
  * Centralized error handling for controllers
  */
-export const handleControllerError = (error: any, req: Request, res: Response, next: NextFunction): void => {
+export const handleControllerError = (
+  error: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   console.error('Controller error:', error);
 
   if (error instanceof DomainException) {
     res.status(400).json({
       success: false,
       error: error.message,
-      code: error.code
+      code: error.code,
     });
     return;
   }
@@ -32,7 +39,7 @@ export const handleControllerError = (error: any, req: Request, res: Response, n
     res.status(400).json({
       success: false,
       error: 'Validation failed',
-      details: error.errors
+      details: error.errors,
     });
     return;
   }
@@ -40,7 +47,7 @@ export const handleControllerError = (error: any, req: Request, res: Response, n
   if (error.message?.includes('not found')) {
     res.status(404).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
     return;
   }
@@ -49,7 +56,7 @@ export const handleControllerError = (error: any, req: Request, res: Response, n
     res.status(400).json({
       success: false,
       error: 'Validation failed',
-      message: error.message
+      message: error.message,
     });
     return;
   }
@@ -57,7 +64,7 @@ export const handleControllerError = (error: any, req: Request, res: Response, n
   if (error.name === 'CastError') {
     res.status(400).json({
       success: false,
-      error: 'Invalid ID format'
+      error: 'Invalid ID format',
     });
     return;
   }
@@ -65,22 +72,27 @@ export const handleControllerError = (error: any, req: Request, res: Response, n
   // Generic server error
   res.status(500).json({
     success: false,
-    error: 'Internal server error'
+    error: 'Internal server error',
   });
 };
 
 /**
  * Express error middleware for unhandled errors
  */
-export const errorMiddleware = (error: any, req: Request, res: Response, next: NextFunction): void => {
+export const errorMiddleware = (
+  error: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   // Handle JSON parsing errors
   if (error.type === 'entity.parse.failed') {
     res.status(400).json({
       success: false,
-      error: 'Invalid JSON format'
+      error: 'Invalid JSON format',
     });
     return;
   }
-  
+
   handleControllerError(error, req, res, next);
 };

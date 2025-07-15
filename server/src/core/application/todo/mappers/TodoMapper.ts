@@ -15,7 +15,7 @@ export class TodoMapper {
       completed: todo.completed,
       priority: todo.priority.level,
       createdAt: todo.createdAt.toISOString(),
-      dueDate: todo.dueDate?.toISOString()
+      dueDate: todo.dueDate?.toISOString(),
     };
   }
 
@@ -51,7 +51,10 @@ export class TodoMapper {
   /**
    * Maps Todo entity to plain object for database storage
    */
-  static toPlainObject(todo: Todo, id?: string): {
+  static toPlainObject(
+    todo: Todo,
+    id?: string
+  ): {
     id?: string;
     title: string;
     completed: boolean;
@@ -65,7 +68,7 @@ export class TodoMapper {
       completed: todo.completed,
       createdAt: todo.createdAt,
       priority: todo.priority.level,
-      dueDate: todo.dueDate
+      dueDate: todo.dueDate,
     };
   }
 }

@@ -19,12 +19,12 @@ describe('GetFilteredTodosQueryHandler', () => {
     // Create test todos
     const activeTodo = new Todo('Active Todo', false, new Date(), TEST_UUIDS.TODO_1, 'medium');
     const completedTodo = new Todo('Completed Todo', true, new Date(), '2', 'medium');
-    
+
     await repository.create(activeTodo);
     await repository.create(completedTodo);
 
     const result = await handler.execute({ filter: 'active' });
-    
+
     expect(result).toHaveLength(1);
     expect(result[0].completed).toBe(false);
   });
@@ -36,12 +36,12 @@ describe('GetFilteredTodosQueryHandler', () => {
     // Create test todos
     const activeTodo = new Todo('Active Todo', false, new Date(), TEST_UUIDS.TODO_1, 'medium');
     const completedTodo = new Todo('Completed Todo', true, new Date(), '2', 'medium');
-    
+
     await repository.create(activeTodo);
     await repository.create(completedTodo);
 
     const result = await handler.execute({ filter: 'completed' });
-    
+
     expect(result).toHaveLength(1);
     expect(result[0].completed).toBe(true);
   });
@@ -53,12 +53,12 @@ describe('GetFilteredTodosQueryHandler', () => {
     // Create test todos
     const activeTodo = new Todo('Active Todo', false, new Date(), TEST_UUIDS.TODO_1, 'medium');
     const completedTodo = new Todo('Completed Todo', true, new Date(), '2', 'medium');
-    
+
     await repository.create(activeTodo);
     await repository.create(completedTodo);
 
     const result = await handler.execute({ filter: 'all' });
-    
+
     expect(result).toHaveLength(2);
   });
 
@@ -69,16 +69,16 @@ describe('GetFilteredTodosQueryHandler', () => {
     // Create todos with different priorities
     const lowTodo = new Todo('Low Priority', false, new Date(), TEST_UUIDS.TODO_1, 'low');
     const highTodo = new Todo('High Priority', false, new Date(), '2', 'high');
-    
+
     await repository.create(lowTodo);
     await repository.create(highTodo);
 
-    const result = await handler.execute({ 
-      filter: 'all', 
-      sortBy: 'priority', 
-      sortOrder: 'asc' 
+    const result = await handler.execute({
+      filter: 'all',
+      sortBy: 'priority',
+      sortOrder: 'asc',
     });
-    
+
     expect(result[0].priority.level).toBe('high');
     expect(result[1].priority.level).toBe('low');
   });
@@ -88,18 +88,24 @@ describe('GetFilteredTodosQueryHandler', () => {
     const handler = new GetFilteredTodosQueryHandler(repository);
 
     // Create todos with different creation dates
-    const oldTodo = new Todo('Old Todo', false, new Date('2020-01-01'), TEST_UUIDS.TODO_1, 'medium');
+    const oldTodo = new Todo(
+      'Old Todo',
+      false,
+      new Date('2020-01-01'),
+      TEST_UUIDS.TODO_1,
+      'medium'
+    );
     const newTodo = new Todo('New Todo', false, new Date('2020-01-02'), '2', 'medium');
-    
+
     await repository.create(oldTodo);
     await repository.create(newTodo);
 
-    const result = await handler.execute({ 
-      filter: 'all', 
-      sortBy: 'createdAt', 
-      sortOrder: 'asc' 
+    const result = await handler.execute({
+      filter: 'all',
+      sortBy: 'createdAt',
+      sortOrder: 'asc',
     });
-    
+
     expect(result[0].createdAt.getTime()).toBeLessThan(result[1].createdAt.getTime());
   });
 
@@ -110,16 +116,16 @@ describe('GetFilteredTodosQueryHandler', () => {
     // Create todos with different priorities
     const lowTodo = new Todo('Low Priority', false, new Date(), TEST_UUIDS.TODO_1, 'low');
     const highTodo = new Todo('High Priority', false, new Date(), '2', 'high');
-    
+
     await repository.create(lowTodo);
     await repository.create(highTodo);
 
-    const result = await handler.execute({ 
-      filter: 'all', 
-      sortBy: 'priority', 
-      sortOrder: 'desc' 
+    const result = await handler.execute({
+      filter: 'all',
+      sortBy: 'priority',
+      sortOrder: 'desc',
     });
-    
+
     expect(result[0].priority.level).toBe('low');
     expect(result[1].priority.level).toBe('high');
   });

@@ -16,10 +16,14 @@ export class TodoPriority {
 
   get numericValue(): number {
     switch (this._level) {
-      case 'high': return 3;
-      case 'medium': return 2;
-      case 'low': return 1;
-      default: return 2;
+      case 'high':
+        return 3;
+      case 'medium':
+        return 2;
+      case 'low':
+        return 1;
+      default:
+        return 2;
     }
   }
 

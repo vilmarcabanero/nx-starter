@@ -2,17 +2,17 @@ import { injectable, inject } from 'tsyringe';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 import type { Todo } from '@/core/domain/todo/entities/Todo';
 import type { TodoStatsDto } from '@/core/application/todo/dto/TodoDto';
-import type { 
-  GetFilteredTodosQuery, 
+import type {
+  GetFilteredTodosQuery,
   GetTodoByIdQuery,
-  TodoStatsQueryResult
+  TodoStatsQueryResult,
 } from '@/core/application/todo/dto/TodoQueries';
 import { TodoDomainService } from '@/core/domain/todo/services/TodoDomainService';
-import { 
-  ActiveTodoSpecification, 
-  CompletedTodoSpecification, 
+import {
+  ActiveTodoSpecification,
+  CompletedTodoSpecification,
   OverdueTodoSpecification,
-  HighPriorityTodoSpecification 
+  HighPriorityTodoSpecification,
 } from '@/core/domain/todo/specifications/TodoSpecifications';
 import { TOKENS } from '@/core/infrastructure/di/tokens';
 
@@ -21,9 +21,7 @@ import { TOKENS } from '@/core/infrastructure/di/tokens';
  */
 @injectable()
 export class GetAllTodosQueryHandler {
-  constructor(
-    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
-  ) {}
+  constructor(@inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository) {}
 
   async execute(): Promise<Todo[]> {
     return await this.todoRepository.getAll();
@@ -35,16 +33,14 @@ export class GetAllTodosQueryHandler {
  */
 @injectable()
 export class GetFilteredTodosQueryHandler {
-  constructor(
-    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
-  ) {}
+  constructor(@inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository) {}
 
   async execute(query: GetFilteredTodosQuery): Promise<Todo[]> {
     const allTodos = await this.todoRepository.getAll();
-    
+
     // Apply filter using specifications
     let filteredTodos: Todo[];
-    
+
     switch (query.filter) {
       case 'active': {
         const activeSpec = new ActiveTodoSpecification();
@@ -82,9 +78,7 @@ export class GetFilteredTodosQueryHandler {
  */
 @injectable()
 export class GetActiveTodosQueryHandler {
-  constructor(
-    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
-  ) {}
+  constructor(@inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository) {}
 
   async execute(): Promise<Todo[]> {
     return await this.todoRepository.getActive();
@@ -96,9 +90,7 @@ export class GetActiveTodosQueryHandler {
  */
 @injectable()
 export class GetCompletedTodosQueryHandler {
-  constructor(
-    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
-  ) {}
+  constructor(@inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository) {}
 
   async execute(): Promise<Todo[]> {
     return await this.todoRepository.getCompleted();
@@ -110,9 +102,7 @@ export class GetCompletedTodosQueryHandler {
  */
 @injectable()
 export class GetTodoByIdQueryHandler {
-  constructor(
-    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
-  ) {}
+  constructor(@inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository) {}
 
   async execute(query: GetTodoByIdQuery): Promise<Todo | undefined> {
     return await this.todoRepository.getById(query.id);
@@ -124,13 +114,11 @@ export class GetTodoByIdQueryHandler {
  */
 @injectable()
 export class GetTodoStatsQueryHandler {
-  constructor(
-    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
-  ) {}
+  constructor(@inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository) {}
 
   async execute(): Promise<TodoStatsQueryResult> {
     const allTodos = await this.todoRepository.getAll();
-    
+
     const activeSpec = new ActiveTodoSpecification();
     const completedSpec = new CompletedTodoSpecification();
     const overdueSpec = new OverdueTodoSpecification();

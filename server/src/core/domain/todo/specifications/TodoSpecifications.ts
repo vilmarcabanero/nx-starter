@@ -90,11 +90,11 @@ export class OverdueTodoSpecification extends BaseSpecification<Todo> {
 
   isSatisfiedBy(todo: Todo): boolean {
     if (todo.completed) return false;
-    
+
     const daysSinceCreation = Math.floor(
       (this.currentDate.getTime() - todo.createdAt.getTime()) / (1000 * 60 * 60 * 24)
     );
-    
+
     return daysSinceCreation > 7;
   }
 }
