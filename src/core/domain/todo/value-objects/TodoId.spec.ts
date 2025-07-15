@@ -289,4 +289,58 @@ describe('TodoId Value Object', () => {
       expect(mongoId.value).toBe('6875fb81218768f1acf26122');
     });
   });
+
+  describe('edge cases and defensive programming', () => {
+    it('should handle validator array manipulation edge case', () => {
+      // Test the defensive case where findValidator might not find a validator
+      // This tests the defensive programming in the findValidator method
+      
+      // Create a valid ID first to ensure we can modify the static validators
+      const validId = 'a1b2c3d4e5f6789012345678901234ab';
+      
+      // Store original validators
+      const originalValidators = [...(TodoId as any).validators];
+      
+      try {
+        // Temporarily clear validators to simulate the edge case
+        (TodoId as any).validators = [];
+        
+        // This should trigger the defensive error in findValidator
+        expect(() => new TodoId(validId)).toThrow('Todo ID must be a valid format');
+      } finally {
+        // Restore original validators
+        (TodoId as any).validators = originalValidators;
+      }
+    });
+
+    it('should handle concurrent validator modification scenario', () => {
+      // Test another edge case where validator state might be inconsistent
+      const validId = '6875fb81218768f1acf26122';
+      
+      // Store original validators
+      const originalValidators = [...(TodoId as any).validators];
+      
+      try {
+        // Create a mock validator that passes initial validation but fails on second call
+        let callCount = 0;
+        const flakyValidator = {
+          isValid: (id: string) => {
+            callCount++;
+            // Pass on first call (validateId), fail on second call (findValidator)
+            return callCount === 1;
+          },
+          getTypeName: () => 'flaky'
+        };
+        
+        // Replace validators with our flaky one
+        (TodoId as any).validators = [flakyValidator];
+        
+        // This should trigger the defensive error in findValidator
+        expect(() => new TodoId(validId)).toThrow('No validator found for the given ID');
+      } finally {
+        // Restore original validators
+        (TodoId as any).validators = originalValidators;
+      }
+    });
+  });
 });
