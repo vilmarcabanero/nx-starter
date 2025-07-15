@@ -183,4 +183,30 @@ describe('TodoId', () => {
       expect(id1.equals(id2)).toBe(true); // But equal values
     });
   });
+
+  describe('Open/Closed Principle compliance', () => {
+    it('should allow adding new validators without modifying existing code', () => {
+      // Create a custom validator for UUID format
+      class UuidValidator {
+        isValid(id: string): boolean {
+          return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+        }
+        
+        getTypeName(): string {
+          return 'uuid';
+        }
+      }
+      
+      // Add the new validator
+      TodoId.addValidator(new UuidValidator());
+      
+      // Test that the new format is now supported
+      const uuid = new TodoId('123e4567-e89b-12d3-a456-426614174000');
+      expect(uuid.value).toBe('123e4567-e89b-12d3-a456-426614174000');
+      
+      // Test that old formats still work
+      const flexibleId = new TodoId('simple-string-id');
+      expect(flexibleId.value).toBe('simple-string-id');
+    });
+  });
 });

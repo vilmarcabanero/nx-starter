@@ -1,13 +1,41 @@
 /**
+ * Interface for ID validation strategies
+ */
+interface IdValidator {
+  isValid(id: string): boolean;
+  getTypeName(): string;
+}
+
+/**
+ * Flexible string validator for backward compatibility
+ */
+class FlexibleStringValidator implements IdValidator {
+  isValid(id: string): boolean {
+    return typeof id === 'string' && id.trim().length >= 1;
+  }
+
+  getTypeName(): string {
+    return 'flexible';
+  }
+}
+
+/**
  * Value Object for Todo ID
  * Ensures type safety and validation for todo identifiers
+ * Uses Strategy pattern for OCP compliance
  */
 export class TodoId {
   private readonly _value: string;
+  private readonly _validator: IdValidator;
+  
+  private static readonly validators: IdValidator[] = [
+    new FlexibleStringValidator()
+  ];
 
   constructor(value: string) {
     this.validateId(value);
     this._value = value;
+    this._validator = this.findValidator(value);
   }
 
   get value(): string {
@@ -19,11 +47,20 @@ export class TodoId {
       throw new Error('Todo ID must be a non-empty string');
     }
 
-    // For flexibility, allow both UUID formats and simple string IDs
-    // This makes the server more compatible with different client implementations
-    if (id.trim().length < 1) {
-      throw new Error('Todo ID must be at least 1 character long');
+    const isValid = TodoId.validators.some(validator => validator.isValid(id));
+    
+    if (!isValid) {
+      const supportedFormats = TodoId.validators.map(v => v.getTypeName()).join(', ');
+      throw new Error(`Todo ID must be a valid format. Supported formats: ${supportedFormats}`);
     }
+  }
+
+  private findValidator(id: string): IdValidator {
+    const validator = TodoId.validators.find(v => v.isValid(id));
+    if (!validator) {
+      throw new Error('No validator found for the given ID');
+    }
+    return validator;
   }
 
   equals(other: TodoId): boolean {
@@ -36,5 +73,9 @@ export class TodoId {
 
   static fromString(value: string): TodoId {
     return new TodoId(value);
+  }
+
+  static addValidator(validator: IdValidator): void {
+    TodoId.validators.push(validator);
   }
 }

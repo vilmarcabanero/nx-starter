@@ -40,15 +40,15 @@ describe('TodoId Value Object', () => {
     });
 
     it('should throw error for invalid MongoDB ObjectId - too short', () => {
-      expect(() => new TodoId('6875fb81218768f1acf2612')).toThrow('Todo ID must be a valid UUID without dashes (32 hex characters) or MongoDB ObjectId (24 hex characters)');
+      expect(() => new TodoId('6875fb81218768f1acf2612')).toThrow('Todo ID must be a valid format. Supported formats: uuid, mongodb');
     });
 
     it('should throw error for invalid MongoDB ObjectId - too long', () => {
-      expect(() => new TodoId('6875fb81218768f1acf261223')).toThrow('Todo ID must be a valid UUID without dashes (32 hex characters) or MongoDB ObjectId (24 hex characters)');
+      expect(() => new TodoId('6875fb81218768f1acf261223')).toThrow('Todo ID must be a valid format. Supported formats: uuid, mongodb');
     });
 
     it('should throw error for invalid MongoDB ObjectId - contains invalid characters', () => {
-      expect(() => new TodoId('6875fb81218768f1acf2612z')).toThrow('Todo ID must be a valid UUID without dashes (32 hex characters) or MongoDB ObjectId (24 hex characters)');
+      expect(() => new TodoId('6875fb81218768f1acf2612z')).toThrow('Todo ID must be a valid format. Supported formats: uuid, mongodb');
     });
 
     it('should support equals comparison between MongoDB ObjectIds', () => {
@@ -128,19 +128,19 @@ describe('TodoId Value Object', () => {
     });
 
     it('should throw error for invalid UUID format - too short', () => {
-      expect(() => new TodoId('abc123')).toThrow('Todo ID must be a valid UUID without dashes (32 hex characters)');
+      expect(() => new TodoId('abc123')).toThrow('Todo ID must be a valid format. Supported formats: uuid, mongodb');
     });
 
     it('should throw error for invalid UUID format - too long', () => {
-      expect(() => new TodoId('a1b2c3d4e5f6789012345678901234abc')).toThrow('Todo ID must be a valid UUID without dashes (32 hex characters)');
+      expect(() => new TodoId('a1b2c3d4e5f6789012345678901234abc')).toThrow('Todo ID must be a valid format. Supported formats: uuid, mongodb');
     });
 
     it('should throw error for invalid UUID format - contains invalid characters', () => {
-      expect(() => new TodoId('a1b2c3d4e5f6789012345678901234zx')).toThrow('Todo ID must be a valid UUID without dashes (32 hex characters)');
+      expect(() => new TodoId('a1b2c3d4e5f6789012345678901234zx')).toThrow('Todo ID must be a valid format. Supported formats: uuid, mongodb');
     });
 
     it('should throw error for UUID with dashes', () => {
-      expect(() => new TodoId('a1b2c3d4-e5f6-7890-1234-5678901234ab')).toThrow('Todo ID must be a valid UUID without dashes (32 hex characters)');
+      expect(() => new TodoId('a1b2c3d4-e5f6-7890-1234-5678901234ab')).toThrow('Todo ID must be a valid format. Supported formats: uuid, mongodb');
     });
 
     it('should accept uppercase UUID', () => {
@@ -220,18 +220,18 @@ describe('TodoId Value Object', () => {
     });
 
     it('should throw error for invalid string format', () => {
-      expect(() => TodoId.fromString('abc')).toThrow('Todo ID must be a valid UUID without dashes (32 hex characters)');
-      expect(() => TodoId.fromString('12.34')).toThrow('Todo ID must be a valid UUID without dashes (32 hex characters)');
+      expect(() => TodoId.fromString('abc')).toThrow('Todo ID must be a valid format. Supported formats: uuid, mongodb');
+      expect(() => TodoId.fromString('12.34')).toThrow('Todo ID must be a valid format. Supported formats: uuid, mongodb');
       expect(() => TodoId.fromString('')).toThrow('Todo ID must be a non-empty string');
       expect(() => TodoId.fromString('   ')).toThrow('Todo ID must be a non-empty string');
     });
 
     it('should throw error for string with dashes', () => {
-      expect(() => TodoId.fromString('a1b2c3d4-e5f6-7890-1234-5678901234ab')).toThrow('Todo ID must be a valid UUID without dashes (32 hex characters)');
+      expect(() => TodoId.fromString('a1b2c3d4-e5f6-7890-1234-5678901234ab')).toThrow('Todo ID must be a valid format. Supported formats: uuid, mongodb');
     });
 
     it('should throw error for string with invalid characters', () => {
-      expect(() => TodoId.fromString('a1b2c3d4e5f6789012345678901234zx')).toThrow('Todo ID must be a valid UUID without dashes (32 hex characters)');
+      expect(() => TodoId.fromString('a1b2c3d4e5f6789012345678901234zx')).toThrow('Todo ID must be a valid format. Supported formats: uuid, mongodb');
     });
 
     it('should handle uppercase UUID strings', () => {
@@ -257,6 +257,36 @@ describe('TodoId Value Object', () => {
       expect(id1.value < id2.value).toBe(true);
       expect(id2.value > id1.value).toBe(true);
       expect(id1.equals(id3)).toBe(true);
+    });
+  });
+
+  describe('Open/Closed Principle compliance', () => {
+    it('should allow adding new validators without modifying existing code', () => {
+      // Create a custom validator for NanoID format
+      class NanoIdValidator {
+        isValid(id: string): boolean {
+          // NanoID is typically 21 characters with URL-safe characters
+          return /^[A-Za-z0-9_-]{21}$/.test(id);
+        }
+        
+        getTypeName(): string {
+          return 'nanoid';
+        }
+      }
+      
+      // Add the new validator
+      TodoId.addValidator(new NanoIdValidator());
+      
+      // Test that the new format is now supported
+      const nanoId = new TodoId('V1StGXR8_Z5jdHi6B-myT');
+      expect(nanoId.value).toBe('V1StGXR8_Z5jdHi6B-myT');
+      
+      // Test that old formats still work
+      const uuid = new TodoId('a1b2c3d4e5f6789012345678901234ab');
+      expect(uuid.value).toBe('a1b2c3d4e5f6789012345678901234ab');
+      
+      const mongoId = new TodoId('6875fb81218768f1acf26122');
+      expect(mongoId.value).toBe('6875fb81218768f1acf26122');
     });
   });
 });
