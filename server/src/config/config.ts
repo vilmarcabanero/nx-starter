@@ -1,3 +1,8 @@
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
 interface DatabaseConfig {
   type: 'memory' | 'sqlite' | 'mysql' | 'postgresql' | 'mongodb';
   orm?: 'native' | 'typeorm' | 'sequelize' | 'mongoose';

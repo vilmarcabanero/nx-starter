@@ -20,6 +20,7 @@ import {
 import { TodoMapper } from '@/core/application/todo/mappers/TodoMapper';
 import { DomainException } from '@/core/domain/todo/exceptions/DomainExceptions';
 import { TOKENS } from '@/core/infrastructure/di/tokens';
+import { asyncHandler } from '@/shared/middleware/ErrorHandler';
 
 /**
  * REST API Controller for Todo operations
@@ -42,198 +43,133 @@ export class TodoController {
   /**
    * GET /api/todos - Get all todos
    */
-  async getAllTodos(req: Request, res: Response): Promise<void> {
-    try {
-      const todos = await this.getAllTodosQueryHandler.execute();
-      const todoDtos = TodoMapper.toDtoArray(todos);
-      
-      res.json({
-        success: true,
-        data: todoDtos
-      });
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  }
+  getAllTodos = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const todos = await this.getAllTodosQueryHandler.execute();
+    const todoDtos = TodoMapper.toDtoArray(todos);
+    
+    res.json({
+      success: true,
+      data: todoDtos
+    });
+  });
 
   /**
    * GET /api/todos/active - Get active todos
    */
-  async getActiveTodos(req: Request, res: Response): Promise<void> {
-    try {
-      const todos = await this.getActiveTodosQueryHandler.execute();
-      const todoDtos = TodoMapper.toDtoArray(todos);
-      
-      res.json({
-        success: true,
-        data: todoDtos
-      });
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  }
+  getActiveTodos = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const todos = await this.getActiveTodosQueryHandler.execute();
+    const todoDtos = TodoMapper.toDtoArray(todos);
+    
+    res.json({
+      success: true,
+      data: todoDtos
+    });
+  });
 
   /**
    * GET /api/todos/completed - Get completed todos
    */
-  async getCompletedTodos(req: Request, res: Response): Promise<void> {
-    try {
-      const todos = await this.getCompletedTodosQueryHandler.execute();
-      const todoDtos = TodoMapper.toDtoArray(todos);
-      
-      res.json({
-        success: true,
-        data: todoDtos
-      });
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  }
+  getCompletedTodos = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const todos = await this.getCompletedTodosQueryHandler.execute();
+    const todoDtos = TodoMapper.toDtoArray(todos);
+    
+    res.json({
+      success: true,
+      data: todoDtos
+    });
+  });
 
   /**
    * GET /api/todos/stats - Get todo statistics
    */
-  async getTodoStats(req: Request, res: Response): Promise<void> {
-    try {
-      const stats = await this.getTodoStatsQueryHandler.execute();
-      
-      res.json({
-        success: true,
-        data: stats
-      });
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  }
+  getTodoStats = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const stats = await this.getTodoStatsQueryHandler.execute();
+    
+    res.json({
+      success: true,
+      data: stats
+    });
+  });
 
   /**
    * GET /api/todos/:id - Get todo by ID
    */
-  async getTodoById(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      const todo = await this.getTodoByIdQueryHandler.execute(id);
-      
-      if (!todo) {
-        res.status(404).json({
-          success: false,
-          error: 'Todo not found'
-        });
-        return;
-      }
-
-      const todoDto = TodoMapper.toDto(todo);
-      res.json({
-        success: true,
-        data: todoDto
+  getTodoById = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const todo = await this.getTodoByIdQueryHandler.execute(id);
+    
+    if (!todo) {
+      res.status(404).json({
+        success: false,
+        error: 'Todo not found'
       });
-    } catch (error) {
-      this.handleError(error, res);
+      return;
     }
-  }
+
+    const todoDto = TodoMapper.toDto(todo);
+    res.json({
+      success: true,
+      data: todoDto
+    });
+  });
 
   /**
    * POST /api/todos - Create a new todo
    */
-  async createTodo(req: Request, res: Response): Promise<void> {
-    try {
-      const validatedData = CreateTodoCommandSchema.parse(req.body);
-      const todo = await this.createTodoUseCase.execute(validatedData);
-      const todoDto = TodoMapper.toDto(todo);
-      
-      res.status(201).json({
-        success: true,
-        data: todoDto
-      });
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  }
+  createTodo = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const validatedData = CreateTodoCommandSchema.parse(req.body);
+    const todo = await this.createTodoUseCase.execute(validatedData);
+    const todoDto = TodoMapper.toDto(todo);
+    
+    res.status(201).json({
+      success: true,
+      data: todoDto
+    });
+  });
 
   /**
    * PUT /api/todos/:id - Update a todo
    */
-  async updateTodo(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      const validatedData = UpdateTodoCommandSchema.parse({ ...req.body, id });
-      
-      await this.updateTodoUseCase.execute(validatedData);
-      
-      res.json({
-        success: true,
-        message: 'Todo updated successfully'
-      });
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  }
+  updateTodo = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const validatedData = UpdateTodoCommandSchema.parse({ ...req.body, id });
+    
+    await this.updateTodoUseCase.execute(validatedData);
+    
+    res.json({
+      success: true,
+      message: 'Todo updated successfully'
+    });
+  });
 
   /**
    * PATCH /api/todos/:id/toggle - Toggle todo completion
    */
-  async toggleTodo(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      const validatedData = ToggleTodoCommandSchema.parse({ id });
-      
-      await this.toggleTodoUseCase.execute(validatedData);
-      
-      res.json({
-        success: true,
-        message: 'Todo toggled successfully'
-      });
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  }
+  toggleTodo = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const validatedData = ToggleTodoCommandSchema.parse({ id });
+    
+    await this.toggleTodoUseCase.execute(validatedData);
+    
+    res.json({
+      success: true,
+      message: 'Todo toggled successfully'
+    });
+  });
 
   /**
    * DELETE /api/todos/:id - Delete a todo
    */
-  async deleteTodo(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      const validatedData = DeleteTodoCommandSchema.parse({ id });
-      
-      await this.deleteTodoUseCase.execute(validatedData);
-      
-      res.json({
-        success: true,
-        message: 'Todo deleted successfully'
-      });
-    } catch (error) {
-      this.handleError(error, res);
-    }
-  }
-
-  /**
-   * Error handling helper
-   */
-  private handleError(error: any, res: Response): void {
-    console.error('Controller error:', error);
-
-    if (error instanceof DomainException) {
-      res.status(400).json({
-        success: false,
-        error: error.message,
-        code: error.code
-      });
-      return;
-    }
-
-    if (error.name === 'ZodError') {
-      res.status(400).json({
-        success: false,
-        error: 'Validation failed',
-        details: error.errors
-      });
-      return;
-    }
-
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error'
+  deleteTodo = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const validatedData = DeleteTodoCommandSchema.parse({ id });
+    
+    await this.deleteTodoUseCase.execute(validatedData);
+    
+    res.json({
+      success: true,
+      message: 'Todo deleted successfully'
     });
-  }
+  });
+
 }

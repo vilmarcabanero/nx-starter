@@ -4,7 +4,8 @@ import helmet from 'helmet';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import { createApiRoutes } from '@/presentation/routes';
-import { errorHandler, notFoundHandler, requestLogger } from '@/presentation/middleware/errorHandler';
+import { errorMiddleware } from '@/shared/middleware/ErrorHandler';
+import { notFoundHandler, requestLogger } from '@/presentation/middleware/errorHandler';
 import { config } from '@/config/config';
 
 /**
@@ -62,7 +63,7 @@ export const createApp = (): express.Application => {
 
   // Error handling
   app.use(notFoundHandler);
-  app.use(errorHandler);
+  app.use(errorMiddleware);
 
   return app;
 };

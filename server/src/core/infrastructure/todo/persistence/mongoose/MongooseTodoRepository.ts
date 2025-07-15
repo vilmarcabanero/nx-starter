@@ -21,9 +21,7 @@ export class MongooseTodoRepository implements ITodoRepository {
   }
 
   async create(todo: Todo): Promise<string> {
-    const id = generateId();
     const document = new TodoModel({
-      _id: id,
       title: todo.titleValue,
       completed: todo.completed,
       createdAt: todo.createdAt,
@@ -31,8 +29,8 @@ export class MongooseTodoRepository implements ITodoRepository {
       dueDate: todo.dueDate
     });
     
-    await document.save();
-    return id;
+    const saved = await document.save();
+    return saved._id.toString();
   }
 
   async update(id: string, changes: Partial<Todo>): Promise<void> {

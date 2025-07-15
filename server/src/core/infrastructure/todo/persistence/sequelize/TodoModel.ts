@@ -47,7 +47,8 @@ export const initTodoModel = (sequelize: Sequelize): void => {
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
-        defaultValue: DataTypes.NOW
+        defaultValue: DataTypes.NOW,
+        field: 'created_at'
       },
       priority: {
         type: DataTypes.ENUM('low', 'medium', 'high'),
@@ -56,25 +57,26 @@ export const initTodoModel = (sequelize: Sequelize): void => {
       },
       dueDate: {
         type: DataTypes.DATE,
-        allowNull: true
+        allowNull: true,
+        field: 'due_date'
       }
     },
     {
       sequelize,
-      tableName: 'todos',
+      tableName: 'todo',
       timestamps: false, // We handle createdAt manually
       indexes: [
         {
           fields: ['completed']
         },
         {
-          fields: ['createdAt']
+          fields: ['created_at']
         },
         {
           fields: ['priority']
         },
         {
-          fields: ['dueDate']
+          fields: ['due_date']
         }
       ]
     }

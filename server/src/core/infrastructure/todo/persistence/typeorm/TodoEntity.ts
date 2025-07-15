@@ -1,22 +1,22 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
-@Entity('todos')
+@Entity('todo')
 export class TodoEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column('varchar', { length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   title!: string;
 
-  @Column('boolean', { default: false })
+  @Column({ type: 'boolean', default: false })
   completed!: boolean;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 
-  @Column('varchar', { length: 20, default: 'medium' })
+  @Column({ type: 'varchar', length: 20, default: 'medium' })
   priority!: string;
 
-  @Column('datetime', { nullable: true })
+  @Column({ type: Date, nullable: true, name: 'due_date' })
   dueDate?: Date;
 }
