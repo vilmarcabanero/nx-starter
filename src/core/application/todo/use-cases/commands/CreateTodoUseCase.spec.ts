@@ -4,6 +4,7 @@ import { Todo } from '@/core/domain/todo/entities/Todo';
 import { InvalidTodoTitleException } from '@/core/domain/todo/exceptions/DomainExceptions';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 import type { CreateTodoCommand } from '@/core/application/todo/dto/TodoCommands';
+import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
 
 describe('CreateTodoUseCase', () => {
   let useCase: CreateTodoUseCase;
@@ -31,7 +32,7 @@ describe('CreateTodoUseCase', () => {
         title: 'Valid todo title',
         priority: 'medium'
       };
-      const expectedId = 123;
+      const expectedId = TEST_UUIDS.TODO_1;
       vi.mocked(mockRepository.create).mockResolvedValue(expectedId);
 
       // Act
@@ -52,7 +53,7 @@ describe('CreateTodoUseCase', () => {
       const command: CreateTodoCommand = {
         title: 'Todo without priority'
       };
-      const expectedId = 456;
+      const expectedId = TEST_UUIDS.TODO_2;
       vi.mocked(mockRepository.create).mockResolvedValue(expectedId);
 
       // Act
@@ -70,7 +71,7 @@ describe('CreateTodoUseCase', () => {
         priority: 'high',
         dueDate
       };
-      const expectedId = 789;
+      const expectedId = TEST_UUIDS.TODO_3;
       vi.mocked(mockRepository.create).mockResolvedValue(expectedId);
 
       // Act
@@ -142,7 +143,7 @@ describe('CreateTodoUseCase', () => {
       const command: CreateTodoCommand = {
         title: '  Todo with spaces  '
       };
-      const expectedId = 999;
+      const expectedId = TEST_UUIDS.TODO_4;
       vi.mocked(mockRepository.create).mockResolvedValue(expectedId);
 
       // Act
@@ -158,7 +159,7 @@ describe('CreateTodoUseCase', () => {
         title: 'Valid todo title',
         priority: 'high'
       };
-      const expectedId = 111;
+      const expectedId = TEST_UUIDS.TODO_5;
       vi.mocked(mockRepository.create).mockResolvedValue(expectedId);
 
       // Act
@@ -174,12 +175,13 @@ describe('CreateTodoUseCase', () => {
       // Arrange & Act & Assert for each priority level
       const priorities: Array<'low' | 'medium' | 'high'> = ['low', 'medium', 'high'];
       
-      for (const priority of priorities) {
+      for (let i = 0; i < priorities.length; i++) {
+        const priority = priorities[i];
         const command: CreateTodoCommand = {
           title: `Todo with ${priority} priority`,
           priority
         };
-        const expectedId = Math.floor(Math.random() * 1000);
+        const expectedId = generateTestUuid(100 + i);
         vi.mocked(mockRepository.create).mockResolvedValue(expectedId);
 
         const result = await useCase.execute(command);

@@ -3,6 +3,7 @@ import { renderHook, act } from '@testing-library/react';
 import { useTodoItemViewModel } from './useTodoItemViewModel';
 import { useTodoStore } from '@/core/infrastructure/todo/state/TodoStore';
 import { Todo } from '@/core/domain/todo/entities/Todo';
+import { TEST_UUIDS } from '@/test/test-helpers';
 
 // Mock the store
 vi.mock('@/core/infrastructure/todo/state/TodoStore');
@@ -29,7 +30,7 @@ describe('useTodoItemViewModel', () => {
     vi.mocked(useTodoStore).mockReturnValue(mockStore as unknown as ReturnType<typeof useTodoStore>);
     
     // Create a mock todo using the correct constructor
-    mockTodo = new Todo('Test Todo', false, new Date(), 1, 'medium');
+    mockTodo = new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1, 'medium');
 
     // Clear console spy
     consoleSpy.mockClear();
@@ -54,7 +55,7 @@ describe('useTodoItemViewModel', () => {
       expect(result.current.editTitle).toBe('Test Todo');
 
       // Update todo title
-      const updatedTodo = new Todo('Updated Todo', false, new Date(), 1, 'medium');
+      const updatedTodo = new Todo('Updated Todo', false, new Date(), TEST_UUIDS.TODO_1, 'medium');
 
       rerender({ todo: updatedTodo });
 
@@ -78,7 +79,7 @@ describe('useTodoItemViewModel', () => {
       });
 
       // Update todo title (should not affect editTitle since we're editing)
-      const updatedTodo = new Todo('New Todo Title', false, new Date(), 1, 'medium');
+      const updatedTodo = new Todo('New Todo Title', false, new Date(), TEST_UUIDS.TODO_1, 'medium');
 
       rerender({ todo: updatedTodo });
 
@@ -96,7 +97,7 @@ describe('useTodoItemViewModel', () => {
         await result.current.toggleComplete();
       });
 
-      expect(mockStore.toggleTodo).toHaveBeenCalledWith(1);
+      expect(mockStore.toggleTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1);
       expect(result.current.isUpdating).toBe(false);
     });
 
@@ -109,7 +110,7 @@ describe('useTodoItemViewModel', () => {
         await result.current.toggleComplete();
       });
 
-      expect(mockStore.toggleTodo).toHaveBeenCalledWith(1);
+      expect(mockStore.toggleTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1);
       expect(consoleSpy).toHaveBeenCalledWith('Failed to toggle todo:', error);
       expect(result.current.isUpdating).toBe(false);
     });
@@ -164,7 +165,7 @@ describe('useTodoItemViewModel', () => {
         await result.current.updateTitle('New Title');
       });
 
-      expect(mockStore.updateTodo).toHaveBeenCalledWith(1, { title: 'New Title' });
+      expect(mockStore.updateTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1, { title: 'New Title' });
       expect(result.current.isUpdating).toBe(false);
     });
 
@@ -176,7 +177,7 @@ describe('useTodoItemViewModel', () => {
         await result.current.updateTitle('  Trimmed Title  ');
       });
 
-      expect(mockStore.updateTodo).toHaveBeenCalledWith(1, { title: 'Trimmed Title' });
+      expect(mockStore.updateTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1, { title: 'Trimmed Title' });
     });
 
     it('should throw error for empty title', async () => {
@@ -268,7 +269,7 @@ describe('useTodoItemViewModel', () => {
         await result.current.deleteTodo();
       });
 
-      expect(mockStore.deleteTodo).toHaveBeenCalledWith(1);
+      expect(mockStore.deleteTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1);
       expect(result.current.isUpdating).toBe(false);
     });
 
@@ -281,7 +282,7 @@ describe('useTodoItemViewModel', () => {
         await result.current.deleteTodo();
       });
 
-      expect(mockStore.deleteTodo).toHaveBeenCalledWith(1);
+      expect(mockStore.deleteTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1);
       expect(consoleSpy).toHaveBeenCalledWith('Failed to delete todo:', error);
       expect(result.current.isUpdating).toBe(false);
     });
@@ -336,7 +337,7 @@ describe('useTodoItemViewModel', () => {
         await result.current.updatePriority('high');
       });
 
-      expect(mockStore.updateTodo).toHaveBeenCalledWith(1, { priority: 'high' });
+      expect(mockStore.updateTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1, { priority: 'high' });
       expect(result.current.isUpdating).toBe(false);
     });
 
@@ -448,7 +449,7 @@ describe('useTodoItemViewModel', () => {
         await result.current.saveEdit();
       });
 
-      expect(mockStore.updateTodo).toHaveBeenCalledWith(1, { title: 'Edited Title' });
+      expect(mockStore.updateTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1, { title: 'Edited Title' });
       expect(result.current.isEditing).toBe(false);
     });
 
@@ -536,7 +537,7 @@ describe('useTodoItemViewModel', () => {
         result.current.handleKeyDown(enterEvent);
       });
 
-      expect(mockStore.updateTodo).toHaveBeenCalledWith(1, { title: 'Edited Title' });
+      expect(mockStore.updateTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1, { title: 'Edited Title' });
       expect(result.current.isEditing).toBe(false);
     });
 
@@ -604,7 +605,7 @@ describe('useTodoItemViewModel', () => {
         result.current.handleKeyDown(enterEvent);
       });
 
-      expect(mockStore.updateTodo).toHaveBeenCalledWith(1, { title: 'Updated Title' });
+      expect(mockStore.updateTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1, { title: 'Updated Title' });
       expect(result.current.isEditing).toBe(false);
     });
 
@@ -658,9 +659,9 @@ describe('useTodoItemViewModel', () => {
         await result.current.saveEdit();
       });
 
-      expect(mockStore.toggleTodo).toHaveBeenCalledWith(1);
-      expect(mockStore.updateTodo).toHaveBeenCalledWith(1, { priority: 'high' });
-      expect(mockStore.updateTodo).toHaveBeenCalledWith(1, { title: 'Final Title' });
+      expect(mockStore.toggleTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1);
+      expect(mockStore.updateTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1, { priority: 'high' });
+      expect(mockStore.updateTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1, { title: 'Final Title' });
       expect(result.current.isEditing).toBe(false);
     });
   });

@@ -3,6 +3,7 @@ import { DeleteTodoUseCase } from './DeleteTodoUseCase';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 import type { DeleteTodoCommand } from '@/core/application/todo/dto/TodoCommands';
+import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
 
 describe('DeleteTodoUseCase', () => {
   let useCase: DeleteTodoUseCase;
@@ -26,8 +27,9 @@ describe('DeleteTodoUseCase', () => {
   describe('execute', () => {
     it('should delete an existing todo', async () => {
       // Arrange
-      const command: DeleteTodoCommand = { id: 'a1b2c3d4e5f6789012345678901234ab' };
-      const existingTodo = new Todo('Existing Todo', false, new Date(), 'a1b2c3d4e5f6789012345678901234ab');
+      const todoId = TEST_UUIDS.TODO_1;
+      const command: DeleteTodoCommand = { id: todoId };
+      const existingTodo = new Todo('Existing Todo', false, new Date(), todoId);
       
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
       vi.mocked(mockRepository.delete).mockResolvedValue();
@@ -36,26 +38,28 @@ describe('DeleteTodoUseCase', () => {
       await useCase.execute(command);
 
       // Assert
-      expect(mockRepository.getById).toHaveBeenCalledWith('a1b2c3d4e5f6789012345678901234ab');
-      expect(mockRepository.delete).toHaveBeenCalledWith('a1b2c3d4e5f6789012345678901234ab');
+      expect(mockRepository.getById).toHaveBeenCalledWith(todoId);
+      expect(mockRepository.delete).toHaveBeenCalledWith(todoId);
       expect(mockRepository.getById).toHaveBeenCalledTimes(1);
       expect(mockRepository.delete).toHaveBeenCalledTimes(1);
     });
 
     it('should throw error when todo does not exist', async () => {
       // Arrange
-      const command: DeleteTodoCommand = { id: 'b2c3d4e5f6789012345678901234abcd' };
+      const todoId = TEST_UUIDS.TODO_2;
+      const command: DeleteTodoCommand = { id: todoId };
       vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
 
       // Act & Assert
       await expect(useCase.execute(command)).rejects.toThrow('Todo not found');
-      expect(mockRepository.getById).toHaveBeenCalledWith('b2c3d4e5f6789012345678901234abcd');
+      expect(mockRepository.getById).toHaveBeenCalledWith(todoId);
       expect(mockRepository.delete).not.toHaveBeenCalled();
     });
 
     it('should propagate repository getById errors', async () => {
       // Arrange
-      const command: DeleteTodoCommand = { id: 1 };
+      const todoId = TEST_UUIDS.TODO_3;
+      const command: DeleteTodoCommand = { id: todoId };
       const error = new Error('Database connection failed');
       vi.mocked(mockRepository.getById).mockRejectedValue(error);
 
@@ -66,8 +70,9 @@ describe('DeleteTodoUseCase', () => {
 
     it('should propagate repository delete errors', async () => {
       // Arrange
-      const command: DeleteTodoCommand = { id: 'c3d4e5f6789012345678901234abcdef' };
-      const existingTodo = new Todo('Existing Todo', false, new Date(), 'c3d4e5f6789012345678901234abcdef');
+      const todoId = TEST_UUIDS.TODO_4;
+      const command: DeleteTodoCommand = { id: todoId };
+      const existingTodo = new Todo('Existing Todo', false, new Date(), todoId);
       const deleteError = new Error('Delete operation failed');
       
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -75,14 +80,15 @@ describe('DeleteTodoUseCase', () => {
 
       // Act & Assert
       await expect(useCase.execute(command)).rejects.toThrow('Delete operation failed');
-      expect(mockRepository.getById).toHaveBeenCalledWith(1);
-      expect(mockRepository.delete).toHaveBeenCalledWith(1);
+      expect(mockRepository.getById).toHaveBeenCalledWith(todoId);
+      expect(mockRepository.delete).toHaveBeenCalledWith(todoId);
     });
 
     it('should handle deletion of completed todo', async () => {
       // Arrange
-      const command: DeleteTodoCommand = { id: 2 };
-      const completedTodo = new Todo('Completed Todo', true, new Date(), 2);
+      const todoId = TEST_UUIDS.TODO_5;
+      const command: DeleteTodoCommand = { id: todoId };
+      const completedTodo = new Todo('Completed Todo', true, new Date(), todoId);
       
       vi.mocked(mockRepository.getById).mockResolvedValue(completedTodo);
       vi.mocked(mockRepository.delete).mockResolvedValue();
@@ -91,14 +97,15 @@ describe('DeleteTodoUseCase', () => {
       await useCase.execute(command);
 
       // Assert
-      expect(mockRepository.getById).toHaveBeenCalledWith(2);
-      expect(mockRepository.delete).toHaveBeenCalledWith(2);
+      expect(mockRepository.getById).toHaveBeenCalledWith(todoId);
+      expect(mockRepository.delete).toHaveBeenCalledWith(todoId);
     });
 
     it('should handle deletion of todo with different priorities', async () => {
       // Arrange
-      const command: DeleteTodoCommand = { id: 3 };
-      const highPriorityTodo = new Todo('High Priority Todo', false, new Date(), 3, 'high');
+      const todoId = generateTestUuid(6);
+      const command: DeleteTodoCommand = { id: todoId };
+      const highPriorityTodo = new Todo('High Priority Todo', false, new Date(), todoId, 'high');
       
       vi.mocked(mockRepository.getById).mockResolvedValue(highPriorityTodo);
       vi.mocked(mockRepository.delete).mockResolvedValue();
@@ -107,18 +114,19 @@ describe('DeleteTodoUseCase', () => {
       await useCase.execute(command);
 
       // Assert
-      expect(mockRepository.getById).toHaveBeenCalledWith(3);
-      expect(mockRepository.delete).toHaveBeenCalledWith(3);
+      expect(mockRepository.getById).toHaveBeenCalledWith(todoId);
+      expect(mockRepository.delete).toHaveBeenCalledWith(todoId);
     });
 
     it('should validate command id is provided', async () => {
       // Arrange
-      const command: DeleteTodoCommand = { id: 0 };
+      const todoId = generateTestUuid(0);
+      const command: DeleteTodoCommand = { id: todoId };
       vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
 
       // Act & Assert
       await expect(useCase.execute(command)).rejects.toThrow('Todo not found');
-      expect(mockRepository.getById).toHaveBeenCalledWith(0);
+      expect(mockRepository.getById).toHaveBeenCalledWith(todoId);
     });
   });
 
@@ -126,8 +134,9 @@ describe('DeleteTodoUseCase', () => {
     it('should prevent deletion if todo has dependencies (future enhancement)', async () => {
       // This test demonstrates how business logic could be extended
       // Currently the use case doesn't implement dependency checking
-      const command: DeleteTodoCommand = { id: 1 };
-      const todoWithDependencies = new Todo('Parent Todo', false, new Date(), 1);
+      const todoId = generateTestUuid(7);
+      const command: DeleteTodoCommand = { id: todoId };
+      const todoWithDependencies = new Todo('Parent Todo', false, new Date(), todoId);
       
       vi.mocked(mockRepository.getById).mockResolvedValue(todoWithDependencies);
       vi.mocked(mockRepository.delete).mockResolvedValue();
@@ -136,7 +145,7 @@ describe('DeleteTodoUseCase', () => {
       await useCase.execute(command);
 
       // Assert - Currently this passes, but could be enhanced to check dependencies
-      expect(mockRepository.delete).toHaveBeenCalledWith(1);
+      expect(mockRepository.delete).toHaveBeenCalledWith(todoId);
     });
   });
 });

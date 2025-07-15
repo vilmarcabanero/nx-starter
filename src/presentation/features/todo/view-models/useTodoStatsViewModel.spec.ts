@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useTodoStatsViewModel } from './useTodoStatsViewModel';
 import { Todo } from '@/core/domain/todo/entities/Todo';
+import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
 
 // Mock the store
 const mockStore = {
@@ -48,9 +49,9 @@ describe('useTodoStatsViewModel', () => {
     sixDaysAgo.setDate(now.getDate() - 6);
 
     mockStore.todos = [
-      new Todo('Overdue Todo', false, eightDaysAgo, 1), // Should be overdue
-      new Todo('Recent Todo', false, sixDaysAgo, 2), // Should not be overdue
-      new Todo('Completed Old Todo', true, eightDaysAgo, 3), // Completed, not overdue
+      new Todo('Overdue Todo', false, eightDaysAgo, TEST_UUIDS.TODO_1), // Should be overdue
+      new Todo('Recent Todo', false, sixDaysAgo, TEST_UUIDS.TODO_2), // Should not be overdue
+      new Todo('Completed Old Todo', true, eightDaysAgo, TEST_UUIDS.TODO_3), // Completed, not overdue
     ];
     mockStore.getStats.mockReturnValue({ total: 3, active: 2, completed: 1 });
 
@@ -64,10 +65,10 @@ describe('useTodoStatsViewModel', () => {
   it('should calculate high priority todos', () => {
     // Arrange
     mockStore.todos = [
-      new Todo('High Priority Active', false, new Date(), 1, 'high'), // Should count
-      new Todo('High Priority Completed', true, new Date(), 2, 'high'), // Should not count (completed)
-      new Todo('Medium Priority Active', false, new Date(), 3, 'medium'), // Should not count
-      new Todo('Low Priority Active', false, new Date(), 4, 'low'), // Should not count
+      new Todo('High Priority Active', false, new Date(), TEST_UUIDS.TODO_1, 'high'), // Should count
+      new Todo('High Priority Completed', true, new Date(), TEST_UUIDS.TODO_2, 'high'), // Should not count (completed)
+      new Todo('Medium Priority Active', false, new Date(), TEST_UUIDS.TODO_3, 'medium'), // Should not count
+      new Todo('Low Priority Active', false, new Date(), TEST_UUIDS.TODO_4, 'low'), // Should not count
     ];
     mockStore.getStats.mockReturnValue({ total: 4, active: 3, completed: 1 });
 
@@ -192,11 +193,11 @@ describe('useTodoStatsViewModel', () => {
     tenDaysAgo.setDate(now.getDate() - 10);
 
     mockStore.todos = [
-      new Todo('Active High Priority', false, new Date(), 1, 'high'),
-      new Todo('Active Medium Priority', false, new Date(), 2, 'medium'),
-      new Todo('Completed High Priority', true, new Date(), 3, 'high'),
-      new Todo('Overdue Low Priority', false, tenDaysAgo, 4, 'low'),
-      new Todo('Overdue High Priority', false, tenDaysAgo, 5, 'high'),
+      new Todo('Active High Priority', false, new Date(), TEST_UUIDS.TODO_1, 'high'),
+      new Todo('Active Medium Priority', false, new Date(), TEST_UUIDS.TODO_2, 'medium'),
+      new Todo('Completed High Priority', true, new Date(), TEST_UUIDS.TODO_3, 'high'),
+      new Todo('Overdue Low Priority', false, tenDaysAgo, TEST_UUIDS.TODO_4, 'low'),
+      new Todo('Overdue High Priority', false, tenDaysAgo, TEST_UUIDS.TODO_5, 'high'),
     ];
     mockStore.getStats.mockReturnValue({ total: 5, active: 4, completed: 1 });
 
@@ -246,7 +247,7 @@ describe('useTodoStatsViewModel', () => {
     // from the store's todos and basic stats
     
     // Arrange - setup store with high priority todo
-    const todosWithHighPriority = [new Todo('High Priority Todo', false, new Date(), 1, 'high')];
+    const todosWithHighPriority = [new Todo('High Priority Todo', false, new Date(), generateTestUuid(200), 'high')];
     mockStore.todos = todosWithHighPriority;
     mockStore.getStats.mockReturnValue({ total: 1, active: 1, completed: 0 });
 
@@ -280,7 +281,7 @@ describe('useTodoStatsViewModel', () => {
   it('should handle todos with no priority', () => {
     // Arrange
     mockStore.todos = [
-      new Todo('No Priority Todo', false, new Date(), 1), // No priority specified
+      new Todo('No Priority Todo', false, new Date(), generateTestUuid(300)), // No priority specified
     ];
     mockStore.getStats.mockReturnValue({ total: 1, active: 1, completed: 0 });
 

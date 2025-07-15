@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TodoCommandService } from './TodoCommandService';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { CreateTodoData, UpdateTodoData } from '@/core/application/shared/interfaces/ITodoService';
+import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
 
 describe('TodoCommandService', () => {
   let service: TodoCommandService;
@@ -45,7 +46,7 @@ describe('TodoCommandService', () => {
         dueDate: new Date('2024-12-31'),
       };
       
-      const expectedTodo = new Todo('New Todo', false, new Date(), 'a1b2c3d4e5f6789012345678901234ab', 'high');
+      const expectedTodo = new Todo('New Todo', false, new Date(), TEST_UUIDS.TODO_1, 'high');
       vi.mocked(mockCreateUseCase.execute).mockResolvedValue(expectedTodo);
 
       // Act
@@ -193,7 +194,7 @@ describe('TodoCommandService', () => {
   describe('toggleTodo', () => {
     it('should toggle a todo by id', async () => {
       // Arrange
-      const id = '89012345678901234abcdef0123456789';
+      const id = TEST_UUIDS.TODO_2;
       const expectedTodo = new Todo('Toggled Todo', true, new Date(), id);
       vi.mocked(mockToggleUseCase.execute).mockResolvedValue(expectedTodo);
 
@@ -202,7 +203,7 @@ describe('TodoCommandService', () => {
 
       // Assert
       expect(result).toBe(expectedTodo);
-      expect(mockToggleUseCase.execute).toHaveBeenCalledWith({ id: '89012345678901234abcdef0123456789' });
+      expect(mockToggleUseCase.execute).toHaveBeenCalledWith({ id });
       expect(mockToggleUseCase.execute).toHaveBeenCalledTimes(1);
     });
 
@@ -224,8 +225,9 @@ describe('TodoCommandService', () => {
       const createData: CreateTodoData = { title: 'Test Todo' };
       const updateData: UpdateTodoData = { completed: true };
       
-      const createdTodo = new Todo('Test Todo', false, new Date(), '012345678901234abcdef0123456789ab');
-      const updatedTodo = new Todo('Test Todo', true, new Date(), '012345678901234abcdef0123456789ab');
+      const todoId = TEST_UUIDS.TODO_3;
+      const createdTodo = new Todo('Test Todo', false, new Date(), todoId);
+      const updatedTodo = new Todo('Test Todo', true, new Date(), todoId);
       
       vi.mocked(mockCreateUseCase.execute).mockResolvedValue(createdTodo);
       vi.mocked(mockUpdateUseCase.execute).mockResolvedValue(updatedTodo);
@@ -233,8 +235,8 @@ describe('TodoCommandService', () => {
 
       // Act
       const created = await service.createTodo(createData);
-      const updated = await service.updateTodo('012345678901234abcdef0123456789ab', updateData);
-      await service.deleteTodo('012345678901234abcdef0123456789ab');
+      const updated = await service.updateTodo(todoId, updateData);
+      await service.deleteTodo(todoId);
 
       // Assert
       expect(created).toBe(createdTodo);

@@ -3,6 +3,7 @@ import { useTodoStore } from '@/core/infrastructure/todo/state/TodoStore';
 import { configureDI, container, TOKENS } from '@/core/infrastructure/shared/container';
 import type { ITodoService, ITodoCommandService, ITodoQueryService } from '@/core/application/shared/interfaces/ITodoService';
 import { Todo } from '@/core/domain/todo/entities/Todo';
+import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
 
 // Mock the CQRS services separately to test clean architecture
 const mockTodoCommandService: ITodoCommandService = {
@@ -104,7 +105,7 @@ describe('TodoStore Status Management', () => {
   describe('loadTodos status management', () => {
     it('should set loading status when loadTodos starts', async () => {
       const mockTodos: Todo[] = [
-        new Todo('Test Todo', false, new Date(), 1),
+        new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1),
       ];
       
       let resolvePromise: (value: Todo[]) => void = () => {};
@@ -149,7 +150,7 @@ describe('TodoStore Status Management', () => {
 
   describe('createTodo status management', () => {
     it('should create todo successfully without loading state', async () => {
-      const mockTodo = new Todo('New Todo', false, new Date(), 1);
+      const mockTodo = new Todo('New Todo', false, new Date(), TEST_UUIDS.TODO_1);
       mockTodoCommandService.createTodo = vi.fn().mockResolvedValue(mockTodo);
       
       await useTodoStore.getState().createTodo({ title: 'New Todo' });
@@ -181,18 +182,18 @@ describe('TodoStore Status Management', () => {
 
   describe('updateTodo status management', () => {
     it('should update todo successfully without loading state', async () => {
-      const mockTodo = new Todo('Updated Todo', true, new Date(), 1);
+      const mockTodo = new Todo('Updated Todo', true, new Date(), TEST_UUIDS.TODO_1);
       
       // Set initial state with a todo
       useTodoStore.setState({
-        todos: [new Todo('Test Todo', false, new Date(), 1)],
+        todos: [new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1)],
         status: 'idle',
         error: null,
       });
       
       mockTodoCommandService.updateTodo = vi.fn().mockResolvedValue(mockTodo);
       
-      await useTodoStore.getState().updateTodo(1, { completed: true });
+      await useTodoStore.getState().updateTodo(TEST_UUIDS.TODO_1, { completed: true });
       
       const finalState = useTodoStore.getState();
       expect(finalState.status).toBe('succeeded');
@@ -207,13 +208,13 @@ describe('TodoStore Status Management', () => {
       
       // Set initial state with a todo
       useTodoStore.setState({
-        todos: [new Todo('Test Todo', false, new Date(), 1)],
+        todos: [new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1)],
         status: 'idle',
         error: null,
       });
       
       try {
-        await useTodoStore.getState().updateTodo(1, { completed: true });
+        await useTodoStore.getState().updateTodo(TEST_UUIDS.TODO_1, { completed: true });
       } catch {
         // Expected to throw
       }
@@ -230,14 +231,14 @@ describe('TodoStore Status Management', () => {
     it('should delete todo successfully without loading state', async () => {
       // Set initial state with a todo
       useTodoStore.setState({
-        todos: [new Todo('Test Todo', false, new Date(), 1)],
+        todos: [new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1)],
         status: 'idle',
         error: null,
       });
       
       mockTodoCommandService.deleteTodo = vi.fn().mockResolvedValue(undefined);
       
-      await useTodoStore.getState().deleteTodo(1);
+      await useTodoStore.getState().deleteTodo(TEST_UUIDS.TODO_1);
       
       const finalState = useTodoStore.getState();
       expect(finalState.status).toBe('succeeded');
@@ -252,13 +253,13 @@ describe('TodoStore Status Management', () => {
       
       // Set initial state with a todo
       useTodoStore.setState({
-        todos: [new Todo('Test Todo', false, new Date(), 1)],
+        todos: [new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1)],
         status: 'idle',
         error: null,
       });
       
       try {
-        await useTodoStore.getState().deleteTodo(1);
+        await useTodoStore.getState().deleteTodo(TEST_UUIDS.TODO_1);
       } catch {
         // Expected to throw
       }
@@ -365,10 +366,10 @@ describe('TodoStore Status Management', () => {
   describe('getFilteredTodos', () => {
     beforeEach(() => {
       const todos = [
-        new Todo('Active Todo 1', false, new Date(), 1),
-        new Todo('Completed Todo 1', true, new Date(), 2),
-        new Todo('Active Todo 2', false, new Date(), 3),
-        new Todo('Completed Todo 2', true, new Date(), 4),
+        new Todo('Active Todo 1', false, new Date(), TEST_UUIDS.TODO_1),
+        new Todo('Completed Todo 1', true, new Date(), TEST_UUIDS.TODO_2),
+        new Todo('Active Todo 2', false, new Date(), TEST_UUIDS.TODO_3),
+        new Todo('Completed Todo 2', true, new Date(), TEST_UUIDS.TODO_4),
       ];
       
       useTodoStore.setState({
@@ -420,11 +421,11 @@ describe('TodoStore Status Management', () => {
 
     it('should return correct stats for mixed todos', () => {
       const todos = [
-        new Todo('Active Todo 1', false, new Date(), 1),
-        new Todo('Completed Todo 1', true, new Date(), 2),
-        new Todo('Active Todo 2', false, new Date(), 3),
-        new Todo('Completed Todo 2', true, new Date(), 4),
-        new Todo('Active Todo 3', false, new Date(), 5),
+        new Todo('Active Todo 1', false, new Date(), TEST_UUIDS.TODO_1),
+        new Todo('Completed Todo 1', true, new Date(), TEST_UUIDS.TODO_2),
+        new Todo('Active Todo 2', false, new Date(), TEST_UUIDS.TODO_3),
+        new Todo('Completed Todo 2', true, new Date(), TEST_UUIDS.TODO_4),
+        new Todo('Active Todo 3', false, new Date(), TEST_UUIDS.TODO_5),
       ];
       
       useTodoStore.setState({ todos });
@@ -438,8 +439,8 @@ describe('TodoStore Status Management', () => {
 
     it('should return correct stats for all active todos', () => {
       const todos = [
-        new Todo('Active Todo 1', false, new Date(), 1),
-        new Todo('Active Todo 2', false, new Date(), 2),
+        new Todo('Active Todo 1', false, new Date(), TEST_UUIDS.TODO_1),
+        new Todo('Active Todo 2', false, new Date(), TEST_UUIDS.TODO_2),
       ];
       
       useTodoStore.setState({ todos });
@@ -453,8 +454,8 @@ describe('TodoStore Status Management', () => {
 
     it('should return correct stats for all completed todos', () => {
       const todos = [
-        new Todo('Completed Todo 1', true, new Date(), 1),
-        new Todo('Completed Todo 2', true, new Date(), 2),
+        new Todo('Completed Todo 1', true, new Date(), TEST_UUIDS.TODO_1),
+        new Todo('Completed Todo 2', true, new Date(), TEST_UUIDS.TODO_2),
       ];
       
       useTodoStore.setState({ todos });
@@ -487,8 +488,8 @@ describe('TodoStore Status Management', () => {
   describe('toggleTodo', () => {
     beforeEach(() => {
       const todos = [
-        new Todo('Test Todo 1', false, new Date(), 1),
-        new Todo('Test Todo 2', true, new Date(), 2),
+        new Todo('Test Todo 1', false, new Date(), TEST_UUIDS.TODO_1),
+        new Todo('Test Todo 2', true, new Date(), TEST_UUIDS.TODO_2),
       ];
       
       useTodoStore.setState({
@@ -499,15 +500,15 @@ describe('TodoStore Status Management', () => {
     });
 
     it('should toggle todo completion status successfully', async () => {
-      const updatedTodo = new Todo('Test Todo 1', true, new Date(), 1);
+      const updatedTodo = new Todo('Test Todo 1', true, new Date(), TEST_UUIDS.TODO_1);
       mockTodoCommandService.toggleTodo = vi.fn().mockResolvedValue(updatedTodo);
 
-      await useTodoStore.getState().toggleTodo(1);
+      await useTodoStore.getState().toggleTodo(TEST_UUIDS.TODO_1);
 
       const state = useTodoStore.getState();
       expect(state.status).toBe('succeeded');
       expect(state.todos[0].completed).toBe(true);
-      expect(mockTodoCommandService.toggleTodo).toHaveBeenCalledWith(1);
+      expect(mockTodoCommandService.toggleTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1);
     });
 
     it('should handle toggle todo failure with error revert', async () => {
@@ -518,7 +519,7 @@ describe('TodoStore Status Management', () => {
       expect(useTodoStore.getState().todos[0].completed).toBe(false);
 
       try {
-        await useTodoStore.getState().toggleTodo(1);
+        await useTodoStore.getState().toggleTodo(TEST_UUIDS.TODO_1);
       } catch {
         // Expected to throw
       }
@@ -530,10 +531,10 @@ describe('TodoStore Status Management', () => {
     });
 
     it('should handle toggle todo when todo is not found', async () => {
-      const updatedTodo = new Todo('Test Todo 999', false, new Date(), 999);
+      const updatedTodo = new Todo('Test Todo 999', false, new Date(), generateTestUuid(999));
       mockTodoCommandService.toggleTodo = vi.fn().mockResolvedValue(updatedTodo);
 
-      await useTodoStore.getState().toggleTodo(999);
+      await useTodoStore.getState().toggleTodo(generateTestUuid(999));
 
       const state = useTodoStore.getState();
       expect(state.status).toBe('succeeded');
@@ -545,7 +546,7 @@ describe('TodoStore Status Management', () => {
       mockTodoCommandService.toggleTodo = vi.fn().mockRejectedValue('String error');
 
       try {
-        await useTodoStore.getState().toggleTodo(1);
+        await useTodoStore.getState().toggleTodo(TEST_UUIDS.TODO_1);
       } catch {
         // Expected to throw
       }
@@ -583,7 +584,7 @@ describe('TodoStore Status Management', () => {
 
     it('should handle non-Error objects in updateTodo', async () => {
       useTodoStore.setState({
-        todos: [new Todo('Test Todo', false, new Date(), 1)],
+        todos: [new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1)],
         status: 'idle',
         error: null,
       });
@@ -591,7 +592,7 @@ describe('TodoStore Status Management', () => {
       mockTodoCommandService.updateTodo = vi.fn().mockRejectedValue('String error');
       
       try {
-        await useTodoStore.getState().updateTodo(1, { completed: true });
+        await useTodoStore.getState().updateTodo(TEST_UUIDS.TODO_1, { completed: true });
       } catch {
         // Expected to throw
       }
@@ -603,7 +604,7 @@ describe('TodoStore Status Management', () => {
 
     it('should handle non-Error objects in deleteTodo', async () => {
       useTodoStore.setState({
-        todos: [new Todo('Test Todo', false, new Date(), 1)],
+        todos: [new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1)],
         status: 'idle',
         error: null,
       });
@@ -611,7 +612,7 @@ describe('TodoStore Status Management', () => {
       mockTodoCommandService.deleteTodo = vi.fn().mockRejectedValue('String error');
       
       try {
-        await useTodoStore.getState().deleteTodo(1);
+        await useTodoStore.getState().deleteTodo(TEST_UUIDS.TODO_1);
       } catch {
         // Expected to throw
       }
@@ -624,11 +625,11 @@ describe('TodoStore Status Management', () => {
 
   describe('edge cases for updateTodo and deleteTodo', () => {
     it('should handle updateTodo when todo is not found', async () => {
-      const updatedTodo = new Todo('Updated Todo', true, new Date(), 999);
+      const updatedTodo = new Todo('Updated Todo', true, new Date(), generateTestUuid(999));
       mockTodoCommandService.updateTodo = vi.fn().mockResolvedValue(updatedTodo);
 
       useTodoStore.setState({
-        todos: [new Todo('Test Todo', false, new Date(), 1)],
+        todos: [new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1)],
         status: 'idle',
         error: null,
       });
@@ -656,7 +657,7 @@ describe('TodoStore Status Management', () => {
 
   describe('updateTodo edge cases to achieve 100% branch coverage', () => {
     beforeEach(() => {
-      const testTodo = new Todo('Test Todo', false, new Date(), 1, 'medium');
+      const testTodo = new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1, 'medium');
       useTodoStore.setState({
         todos: [testTodo],
         status: 'idle',
@@ -667,12 +668,12 @@ describe('TodoStore Status Management', () => {
     it('should handle updateTodo with undefined title, priority, and dueDate (missing branch coverage)', async () => {
       // This test covers the missing branches in lines 110-115 where title, priority, and dueDate are undefined
       const originalTodo = useTodoStore.getState().todos[0];
-      const updatedTodo = new Todo('Test Todo', true, originalTodo.createdAt, 1, 'medium');
+      const updatedTodo = new Todo('Test Todo', true, originalTodo.createdAt, TEST_UUIDS.TODO_1, 'medium');
       
       mockTodoCommandService.updateTodo = vi.fn().mockResolvedValue(updatedTodo);
       
       // Only update completed field, leaving title, priority, and dueDate undefined
-      await useTodoStore.getState().updateTodo(1, { completed: true });
+      await useTodoStore.getState().updateTodo(TEST_UUIDS.TODO_1, { completed: true });
       
       const state = useTodoStore.getState();
       expect(state.status).toBe('succeeded');
@@ -684,23 +685,23 @@ describe('TodoStore Status Management', () => {
 
     it('should handle updateTodo with partial updates (testing all undefined branches)', async () => {
       const originalTodo = useTodoStore.getState().todos[0];
-      const updatedTodo = new Todo('Updated Title', false, originalTodo.createdAt, 1, 'high', new Date());
+      const updatedTodo = new Todo('Updated Title', false, originalTodo.createdAt, TEST_UUIDS.TODO_1, 'high', new Date());
       
       mockTodoCommandService.updateTodo = vi.fn().mockResolvedValue(updatedTodo);
       
       // Test case where only title is provided, completed and priority are undefined
-      await useTodoStore.getState().updateTodo(1, { title: 'Updated Title' });
+      await useTodoStore.getState().updateTodo(TEST_UUIDS.TODO_1, { title: 'Updated Title' });
       
       // Verify the fallback logic worked during optimistic update
       const state = useTodoStore.getState();
       expect(state.status).toBe('succeeded');
-      expect(mockTodoCommandService.updateTodo).toHaveBeenCalledWith(1, { title: 'Updated Title' });
+      expect(mockTodoCommandService.updateTodo).toHaveBeenCalledWith(TEST_UUIDS.TODO_1, { title: 'Updated Title' });
     });
 
     it('should handle updateTodo with dueDate undefined to cover remaining branch (line 115)', async () => {
       // Set up a todo with an existing dueDate
       const existingDueDate = new Date('2024-12-31');
-      const testTodo = new Todo('Test Todo', false, new Date(), 1, 'medium', existingDueDate);
+      const testTodo = new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1, 'medium', existingDueDate);
       useTodoStore.setState({
         todos: [testTodo],
         status: 'idle',
@@ -708,13 +709,13 @@ describe('TodoStore Status Management', () => {
       });
 
       const originalTodo = useTodoStore.getState().todos[0];
-      const updatedTodo = new Todo('Test Todo', true, originalTodo.createdAt, 1, 'medium', existingDueDate);
+      const updatedTodo = new Todo('Test Todo', true, originalTodo.createdAt, TEST_UUIDS.TODO_1, 'medium', existingDueDate);
       
       mockTodoCommandService.updateTodo = vi.fn().mockResolvedValue(updatedTodo);
       
       // Explicitly test both branches of the dueDate condition (line 115) 
       // First, test with dueDate explicitly undefined
-      await useTodoStore.getState().updateTodo(1, { 
+      await useTodoStore.getState().updateTodo(TEST_UUIDS.TODO_1, { 
         completed: true, 
         dueDate: undefined  // This should trigger the fallback: currentTodo.dueDate
       });
@@ -729,7 +730,7 @@ describe('TodoStore Status Management', () => {
     it('should handle updateTodo with dueDate provided (covering the other branch of line 115)', async () => {
       const existingDueDate = new Date('2024-12-31');
       const newDueDate = new Date('2025-01-15');
-      const testTodo = new Todo('Test Todo', false, new Date(), 1, 'medium', existingDueDate);
+      const testTodo = new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1, 'medium', existingDueDate);
       
       useTodoStore.setState({
         todos: [testTodo],
@@ -738,12 +739,12 @@ describe('TodoStore Status Management', () => {
       });
 
       const originalTodo = useTodoStore.getState().todos[0];
-      const updatedTodo = new Todo('Test Todo', true, originalTodo.createdAt, 1, 'medium', newDueDate);
+      const updatedTodo = new Todo('Test Todo', true, originalTodo.createdAt, TEST_UUIDS.TODO_1, 'medium', newDueDate);
       
       mockTodoCommandService.updateTodo = vi.fn().mockResolvedValue(updatedTodo);
       
       // Test with dueDate provided (not undefined) - this should use the provided value
-      await useTodoStore.getState().updateTodo(1, { 
+      await useTodoStore.getState().updateTodo(TEST_UUIDS.TODO_1, { 
         completed: true, 
         dueDate: newDueDate  // This should use the new date, not the fallback
       });
@@ -758,8 +759,8 @@ describe('TodoStore Status Management', () => {
 
   describe('CQRS pattern validation', () => {
     it('should use separate command and query services following CQRS principles', async () => {
-      const mockTodos = [new Todo('Test Todo', false, new Date(), 1)];
-      const mockTodo = new Todo('New Todo', false, new Date(), 2);
+      const mockTodos = [new Todo('Test Todo', false, new Date(), TEST_UUIDS.TODO_1)];
+      const mockTodo = new Todo('New Todo', false, new Date(), TEST_UUIDS.TODO_2);
       
       // Test that query operations use query service
       mockTodoQueryService.getAllTodos = vi.fn().mockResolvedValue(mockTodos);
@@ -780,8 +781,8 @@ describe('TodoStore Status Management', () => {
   describe('optimistic updates comprehensive coverage', () => {
     beforeEach(() => {
       const todos = [
-        new Todo('Test Todo 1', false, new Date(), 1, 'low'),
-        new Todo('Test Todo 2', true, new Date(), 2, 'high'),
+        new Todo('Test Todo 1', false, new Date(), TEST_UUIDS.TODO_1, 'low'),
+        new Todo('Test Todo 2', true, new Date(), TEST_UUIDS.TODO_2, 'high'),
       ];
       useTodoStore.setState({
         todos,
@@ -792,12 +793,12 @@ describe('TodoStore Status Management', () => {
 
     it('should create deep copies for optimistic updates in updateTodo', async () => {
       const originalTodos = useTodoStore.getState().todos;
-      new Todo('Updated', true, new Date(), 1, 'medium');
+      new Todo('Updated', true, new Date(), TEST_UUIDS.TODO_1, 'medium');
       
       mockTodoCommandService.updateTodo = vi.fn().mockRejectedValue(new Error('Update failed'));
       
       try {
-        await useTodoStore.getState().updateTodo(1, { title: 'Updated', completed: true, priority: 'medium' });
+        await useTodoStore.getState().updateTodo(TEST_UUIDS.TODO_1, { title: 'Updated', completed: true, priority: 'medium' });
       } catch {
         // Expected to fail
       }
@@ -815,7 +816,7 @@ describe('TodoStore Status Management', () => {
       mockTodoCommandService.deleteTodo = vi.fn().mockRejectedValue(new Error('Delete failed'));
       
       try {
-        await useTodoStore.getState().deleteTodo(1);
+        await useTodoStore.getState().deleteTodo(TEST_UUIDS.TODO_1);
       } catch {
         // Expected to fail
       }
@@ -832,7 +833,7 @@ describe('TodoStore Status Management', () => {
       mockTodoCommandService.toggleTodo = vi.fn().mockRejectedValue(new Error('Toggle failed'));
       
       try {
-        await useTodoStore.getState().toggleTodo(1);
+        await useTodoStore.getState().toggleTodo(TEST_UUIDS.TODO_1);
       } catch {
         // Expected to fail
       }

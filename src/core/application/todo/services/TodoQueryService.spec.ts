@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TodoQueryService } from './TodoQueryService';
 import { Todo } from '@/core/domain/todo/entities/Todo';
+import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
 
 describe('TodoQueryService', () => {
   let service: TodoQueryService;
@@ -39,8 +40,8 @@ describe('TodoQueryService', () => {
     it('should return all todos from handler', async () => {
       // Arrange
       const expectedTodos = [
-        new Todo('Todo 1', false, new Date(), 1),
-        new Todo('Todo 2', true, new Date(), 2),
+        new Todo('Todo 1', false, new Date(), TEST_UUIDS.TODO_1),
+        new Todo('Todo 2', true, new Date(), TEST_UUIDS.TODO_2),
       ];
       mockGetAllTodosHandler.handle.mockResolvedValue(expectedTodos);
 
@@ -68,8 +69,8 @@ describe('TodoQueryService', () => {
     it('should return active todos from filtered handler', async () => {
       // Arrange
       const activeTodos = [
-        new Todo('Active Todo 1', false, new Date(), 1),
-        new Todo('Active Todo 2', false, new Date(), 3),
+        new Todo('Active Todo 1', false, new Date(), TEST_UUIDS.TODO_1),
+        new Todo('Active Todo 2', false, new Date(), TEST_UUIDS.TODO_3),
       ];
       mockGetFilteredTodosHandler.handle.mockResolvedValue(activeTodos);
 
@@ -98,8 +99,8 @@ describe('TodoQueryService', () => {
     it('should return completed todos from filtered handler', async () => {
       // Arrange
       const completedTodos = [
-        new Todo('Completed Todo 1', true, new Date(), 2),
-        new Todo('Completed Todo 2', true, new Date(), 4),
+        new Todo('Completed Todo 1', true, new Date(), TEST_UUIDS.TODO_2),
+        new Todo('Completed Todo 2', true, new Date(), TEST_UUIDS.TODO_4),
       ];
       mockGetFilteredTodosHandler.handle.mockResolvedValue(completedTodos);
 
@@ -118,7 +119,7 @@ describe('TodoQueryService', () => {
   describe('getTodoById', () => {
     it('should return todo by id from handler', async () => {
       // Arrange
-      const todoId = 1;
+      const todoId = TEST_UUIDS.TODO_1;
       const expectedTodo = new Todo('Todo by ID', false, new Date(), todoId);
       mockGetTodoByIdHandler.handle.mockResolvedValue(expectedTodo);
 
@@ -133,7 +134,7 @@ describe('TodoQueryService', () => {
 
     it('should return null when todo not found', async () => {
       // Arrange
-      const todoId = 999;
+      const todoId = generateTestUuid(999);
       mockGetTodoByIdHandler.handle.mockResolvedValue(null);
 
       // Act
@@ -146,7 +147,7 @@ describe('TodoQueryService', () => {
 
     it('should propagate errors from handler', async () => {
       // Arrange
-      const todoId = 1;
+      const todoId = TEST_UUIDS.TODO_1;
       const error = new Error('Todo not found');
       mockGetTodoByIdHandler.handle.mockRejectedValue(error);
 
@@ -159,8 +160,8 @@ describe('TodoQueryService', () => {
     it('should return filtered todos with all filter', async () => {
       // Arrange
       const allTodos = [
-        new Todo('Active Todo', false, new Date(), 1),
-        new Todo('Completed Todo', true, new Date(), 2),
+        new Todo('Active Todo', false, new Date(), TEST_UUIDS.TODO_1),
+        new Todo('Completed Todo', true, new Date(), TEST_UUIDS.TODO_2),
       ];
       mockGetFilteredTodosHandler.handle.mockResolvedValue(allTodos);
 
@@ -176,7 +177,7 @@ describe('TodoQueryService', () => {
 
     it('should return filtered todos with active filter', async () => {
       // Arrange
-      const activeTodos = [new Todo('Active Todo', false, new Date(), 1)];
+      const activeTodos = [new Todo('Active Todo', false, new Date(), TEST_UUIDS.TODO_1)];
       mockGetFilteredTodosHandler.handle.mockResolvedValue(activeTodos);
 
       // Act
@@ -191,7 +192,7 @@ describe('TodoQueryService', () => {
 
     it('should return filtered todos with completed filter', async () => {
       // Arrange
-      const completedTodos = [new Todo('Completed Todo', true, new Date(), 2)];
+      const completedTodos = [new Todo('Completed Todo', true, new Date(), TEST_UUIDS.TODO_2)];
       mockGetFilteredTodosHandler.handle.mockResolvedValue(completedTodos);
 
       // Act
@@ -238,10 +239,10 @@ describe('TodoQueryService', () => {
     it('should handle multiple query operations', async () => {
       // Arrange
       const allTodos = [
-        new Todo('Todo 1', false, new Date(), 1),
-        new Todo('Todo 2', true, new Date(), 2),
+        new Todo('Todo 1', false, new Date(), TEST_UUIDS.TODO_1),
+        new Todo('Todo 2', true, new Date(), TEST_UUIDS.TODO_2),
       ];
-      const activeTodos = [new Todo('Todo 1', false, new Date(), 1)];
+      const activeTodos = [new Todo('Todo 1', false, new Date(), TEST_UUIDS.TODO_1)];
       const stats = { total: 2, active: 1, completed: 1 };
 
       mockGetAllTodosHandler.handle.mockResolvedValue(allTodos);

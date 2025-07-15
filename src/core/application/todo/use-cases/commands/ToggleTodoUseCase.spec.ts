@@ -4,6 +4,7 @@ import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 import type { UpdateTodoUseCase } from './UpdateTodoUseCase';
 import type { ToggleTodoCommand } from '@/core/application/todo/dto/TodoCommands';
+import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
 
 describe('ToggleTodoUseCase', () => {
   let useCase: ToggleTodoUseCase;
@@ -32,9 +33,10 @@ describe('ToggleTodoUseCase', () => {
   describe('execute', () => {
     it('should toggle active todo to completed', async () => {
       // Arrange
-      const command: ToggleTodoCommand = { id: 'a1b2c3d4e5f6789012345678901234ab' };
-      const activeTodo = new Todo('Active Todo', false, new Date(), 'a1b2c3d4e5f6789012345678901234ab');
-      const completedTodo = new Todo('Active Todo', true, new Date(), 'a1b2c3d4e5f6789012345678901234ab');
+      const todoId = TEST_UUIDS.TODO_1;
+      const command: ToggleTodoCommand = { id: todoId };
+      const activeTodo = new Todo('Active Todo', false, new Date(), todoId);
+      const completedTodo = new Todo('Active Todo', true, new Date(), todoId);
       
       vi.mocked(mockRepository.getById).mockResolvedValue(activeTodo);
       vi.mocked(mockUpdateUseCase.execute).mockResolvedValue(completedTodo);
@@ -44,9 +46,9 @@ describe('ToggleTodoUseCase', () => {
 
       // Assert
       expect(result).toBe(completedTodo);
-      expect(mockRepository.getById).toHaveBeenCalledWith(1);
+      expect(mockRepository.getById).toHaveBeenCalledWith(todoId);
       expect(mockUpdateUseCase.execute).toHaveBeenCalledWith({
-        id: 1,
+        id: todoId,
         completed: true,
       });
       expect(mockRepository.getById).toHaveBeenCalledTimes(1);
@@ -55,9 +57,10 @@ describe('ToggleTodoUseCase', () => {
 
     it('should toggle completed todo to active', async () => {
       // Arrange
-      const command: ToggleTodoCommand = { id: 2 };
-      const completedTodo = new Todo('Completed Todo', true, new Date(), 2);
-      const activeTodo = new Todo('Completed Todo', false, new Date(), 2);
+      const todoId = TEST_UUIDS.TODO_2;
+      const command: ToggleTodoCommand = { id: todoId };
+      const completedTodo = new Todo('Completed Todo', true, new Date(), todoId);
+      const activeTodo = new Todo('Completed Todo', false, new Date(), todoId);
       
       vi.mocked(mockRepository.getById).mockResolvedValue(completedTodo);
       vi.mocked(mockUpdateUseCase.execute).mockResolvedValue(activeTodo);
@@ -67,27 +70,29 @@ describe('ToggleTodoUseCase', () => {
 
       // Assert
       expect(result).toBe(activeTodo);
-      expect(mockRepository.getById).toHaveBeenCalledWith(2);
+      expect(mockRepository.getById).toHaveBeenCalledWith(todoId);
       expect(mockUpdateUseCase.execute).toHaveBeenCalledWith({
-        id: 2,
+        id: todoId,
         completed: false,
       });
     });
 
     it('should throw error when todo does not exist', async () => {
       // Arrange
-      const command: ToggleTodoCommand = { id: 999 };
+      const todoId = generateTestUuid(999);
+      const command: ToggleTodoCommand = { id: todoId };
       vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
 
       // Act & Assert
       await expect(useCase.execute(command)).rejects.toThrow('Todo not found');
-      expect(mockRepository.getById).toHaveBeenCalledWith(999);
+      expect(mockRepository.getById).toHaveBeenCalledWith(todoId);
       expect(mockUpdateUseCase.execute).not.toHaveBeenCalled();
     });
 
     it('should propagate repository getById errors', async () => {
       // Arrange
-      const command: ToggleTodoCommand = { id: 1 };
+      const todoId = TEST_UUIDS.TODO_3;
+      const command: ToggleTodoCommand = { id: todoId };
       const error = new Error('Database connection failed');
       vi.mocked(mockRepository.getById).mockRejectedValue(error);
 
@@ -98,8 +103,9 @@ describe('ToggleTodoUseCase', () => {
 
     it('should propagate update use case errors', async () => {
       // Arrange
-      const command: ToggleTodoCommand = { id: 1 };
-      const existingTodo = new Todo('Existing Todo', false, new Date(), 1);
+      const todoId = TEST_UUIDS.TODO_4;
+      const command: ToggleTodoCommand = { id: todoId };
+      const existingTodo = new Todo('Existing Todo', false, new Date(), todoId);
       const updateError = new Error('Update operation failed');
       
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -107,18 +113,19 @@ describe('ToggleTodoUseCase', () => {
 
       // Act & Assert
       await expect(useCase.execute(command)).rejects.toThrow('Update operation failed');
-      expect(mockRepository.getById).toHaveBeenCalledWith(1);
+      expect(mockRepository.getById).toHaveBeenCalledWith(todoId);
       expect(mockUpdateUseCase.execute).toHaveBeenCalledWith({
-        id: 1,
+        id: todoId,
         completed: true,
       });
     });
 
     it('should handle toggle of todo with different priorities', async () => {
       // Arrange
-      const command: ToggleTodoCommand = { id: 3 };
-      const highPriorityTodo = new Todo('High Priority Todo', false, new Date(), 3, 'high');
-      const toggledTodo = new Todo('High Priority Todo', true, new Date(), 3, 'high');
+      const todoId = TEST_UUIDS.TODO_5;
+      const command: ToggleTodoCommand = { id: todoId };
+      const highPriorityTodo = new Todo('High Priority Todo', false, new Date(), todoId, 'high');
+      const toggledTodo = new Todo('High Priority Todo', true, new Date(), todoId, 'high');
       
       vi.mocked(mockRepository.getById).mockResolvedValue(highPriorityTodo);
       vi.mocked(mockUpdateUseCase.execute).mockResolvedValue(toggledTodo);
@@ -129,17 +136,18 @@ describe('ToggleTodoUseCase', () => {
       // Assert
       expect(result).toBe(toggledTodo);
       expect(mockUpdateUseCase.execute).toHaveBeenCalledWith({
-        id: 3,
+        id: todoId,
         completed: true,
       });
     });
 
     it('should handle toggle of todo with due date', async () => {
       // Arrange
-      const command: ToggleTodoCommand = { id: 4 };
+      const todoId = generateTestUuid(4);
+      const command: ToggleTodoCommand = { id: todoId };
       const dueDate = new Date('2024-12-31');
-      const todoWithDueDate = new Todo('Todo with due date', false, new Date(), 4, 'medium', dueDate);
-      const toggledTodo = new Todo('Todo with due date', true, new Date(), 4, 'medium');
+      const todoWithDueDate = new Todo('Todo with due date', false, new Date(), todoId, 'medium', dueDate);
+      const toggledTodo = new Todo('Todo with due date', true, new Date(), todoId, 'medium');
       
       vi.mocked(mockRepository.getById).mockResolvedValue(todoWithDueDate);
       vi.mocked(mockUpdateUseCase.execute).mockResolvedValue(toggledTodo);
@@ -150,30 +158,32 @@ describe('ToggleTodoUseCase', () => {
       // Assert
       expect(result).toBe(toggledTodo);
       expect(mockUpdateUseCase.execute).toHaveBeenCalledWith({
-        id: 4,
+        id: todoId,
         completed: true,
       });
     });
 
     it('should validate command id is provided', async () => {
       // Arrange
-      const command: ToggleTodoCommand = { id: 0 };
+      const todoId = generateTestUuid(0);
+      const command: ToggleTodoCommand = { id: todoId };
       vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
 
       // Act & Assert
       await expect(useCase.execute(command)).rejects.toThrow('Todo not found');
-      expect(mockRepository.getById).toHaveBeenCalledWith(0);
+      expect(mockRepository.getById).toHaveBeenCalledWith(todoId);
     });
   });
 
   describe('business logic scenarios', () => {
     it('should handle completion of overdue todo', async () => {
       // Arrange
-      const command: ToggleTodoCommand = { id: 5 };
+      const todoId = generateTestUuid(5);
+      const command: ToggleTodoCommand = { id: todoId };
       const oldDate = new Date();
       oldDate.setDate(oldDate.getDate() - 30); // 30 days ago
-      const overdueTodo = new Todo('Overdue Todo', false, oldDate, 5);
-      const completedTodo = new Todo('Overdue Todo', true, oldDate, 5);
+      const overdueTodo = new Todo('Overdue Todo', false, oldDate, todoId);
+      const completedTodo = new Todo('Overdue Todo', true, oldDate, todoId);
       
       vi.mocked(mockRepository.getById).mockResolvedValue(overdueTodo);
       vi.mocked(mockUpdateUseCase.execute).mockResolvedValue(completedTodo);
@@ -184,18 +194,19 @@ describe('ToggleTodoUseCase', () => {
       // Assert
       expect(result).toBe(completedTodo);
       expect(mockUpdateUseCase.execute).toHaveBeenCalledWith({
-        id: 5,
+        id: todoId,
         completed: true,
       });
     });
 
     it('should handle reactivation of recently completed todo', async () => {
       // Arrange
-      const command: ToggleTodoCommand = { id: 6 };
+      const todoId = generateTestUuid(6);
+      const command: ToggleTodoCommand = { id: todoId };
       const recentDate = new Date();
       recentDate.setHours(recentDate.getHours() - 1); // 1 hour ago
-      const recentlyCompletedTodo = new Todo('Recently Completed', true, recentDate, 6);
-      const reactivatedTodo = new Todo('Recently Completed', false, recentDate, 6);
+      const recentlyCompletedTodo = new Todo('Recently Completed', true, recentDate, todoId);
+      const reactivatedTodo = new Todo('Recently Completed', false, recentDate, todoId);
       
       vi.mocked(mockRepository.getById).mockResolvedValue(recentlyCompletedTodo);
       vi.mocked(mockUpdateUseCase.execute).mockResolvedValue(reactivatedTodo);
@@ -206,7 +217,7 @@ describe('ToggleTodoUseCase', () => {
       // Assert
       expect(result).toBe(reactivatedTodo);
       expect(mockUpdateUseCase.execute).toHaveBeenCalledWith({
-        id: 6,
+        id: todoId,
         completed: false,
       });
     });
@@ -214,9 +225,10 @@ describe('ToggleTodoUseCase', () => {
     it('should demonstrate delegation to UpdateTodoUseCase for consistency', async () => {
       // This test shows that ToggleTodoUseCase properly delegates to UpdateTodoUseCase
       // ensuring consistent update logic across all update operations
-      const command: ToggleTodoCommand = { id: 7 };
-      const todo = new Todo('Test Delegation', false, new Date(), 7);
-      const updatedTodo = new Todo('Test Delegation', true, new Date(), 7);
+      const todoId = generateTestUuid(7);
+      const command: ToggleTodoCommand = { id: todoId };
+      const todo = new Todo('Test Delegation', false, new Date(), todoId);
+      const updatedTodo = new Todo('Test Delegation', true, new Date(), todoId);
       
       vi.mocked(mockRepository.getById).mockResolvedValue(todo);
       vi.mocked(mockUpdateUseCase.execute).mockResolvedValue(updatedTodo);
@@ -226,7 +238,7 @@ describe('ToggleTodoUseCase', () => {
 
       // Assert - Verify delegation pattern
       expect(mockUpdateUseCase.execute).toHaveBeenCalledWith({
-        id: 7,
+        id: todoId,
         completed: true,
       });
       // The use case doesn't directly call repository.update, it delegates to UpdateTodoUseCase

@@ -8,6 +8,7 @@ import {
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 import type { GetFilteredTodosQuery, GetTodoByIdQuery } from '@/core/application/todo/dto/TodoQueries';
+import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers';
 
 // Mock the specifications
 vi.mock('@/core/domain/todo/specifications/TodoSpecifications', () => ({
@@ -66,8 +67,8 @@ describe('TodoQueryHandlers', () => {
     it('should return all todos from repository', async () => {
       // Arrange
       const expectedTodos = [
-        new Todo('Todo 1', false, new Date(), 1),
-        new Todo('Todo 2', true, new Date(), 2),
+        new Todo('Todo 1', false, new Date(), TEST_UUIDS.TODO_1),
+        new Todo('Todo 2', true, new Date(), TEST_UUIDS.TODO_2),
       ];
       vi.mocked(mockRepository.getAll).mockResolvedValue(expectedTodos);
 
@@ -109,10 +110,10 @@ describe('TodoQueryHandlers', () => {
     });
 
     const createTestTodos = () => [
-      new Todo('Active Todo 1', false, new Date(), 1, 'high'),
-      new Todo('Active Todo 2', false, new Date(), 2, 'medium'),
-      new Todo('Completed Todo 1', true, new Date(), 3, 'low'),
-      new Todo('Completed Todo 2', true, new Date(), 4, 'high'),
+      new Todo('Active Todo 1', false, new Date(), TEST_UUIDS.TODO_1, 'high'),
+      new Todo('Active Todo 2', false, new Date(), TEST_UUIDS.TODO_2, 'medium'),
+      new Todo('Completed Todo 1', true, new Date(), TEST_UUIDS.TODO_3, 'low'),
+      new Todo('Completed Todo 2', true, new Date(), TEST_UUIDS.TODO_4, 'high'),
     ];
 
     it('should filter active todos', async () => {
@@ -198,8 +199,8 @@ describe('TodoQueryHandlers', () => {
       const date1 = new Date('2024-01-01');
       const date2 = new Date('2024-01-02');
       const allTodos = [
-        new Todo('Todo 2', false, date2, 2),
-        new Todo('Todo 1', false, date1, 1),
+        new Todo('Todo 2', false, date2, TEST_UUIDS.TODO_2),
+        new Todo('Todo 1', false, date1, TEST_UUIDS.TODO_1),
       ];
       const query: GetFilteredTodosQuery = { 
         filter: 'all', 
@@ -221,8 +222,8 @@ describe('TodoQueryHandlers', () => {
       const date1 = new Date('2024-01-01');
       const date2 = new Date('2024-01-02');
       const allTodos = [
-        new Todo('Todo 1', false, date1, 1),
-        new Todo('Todo 2', false, date2, 2),
+        new Todo('Todo 1', false, date1, TEST_UUIDS.TODO_1),
+        new Todo('Todo 2', false, date2, TEST_UUIDS.TODO_2),
       ];
       const query: GetFilteredTodosQuery = { 
         filter: 'all', 
@@ -241,7 +242,7 @@ describe('TodoQueryHandlers', () => {
 
     it('should handle empty result after filtering', async () => {
       // Arrange
-      const allTodos = [new Todo('Completed Todo', true, new Date(), 1)];
+      const allTodos = [new Todo('Completed Todo', true, new Date(), TEST_UUIDS.TODO_1)];
       const query: GetFilteredTodosQuery = { filter: 'active' };
       vi.mocked(mockRepository.getAll).mockResolvedValue(allTodos);
 
@@ -276,10 +277,10 @@ describe('TodoQueryHandlers', () => {
       oldDate.setDate(oldDate.getDate() - 10); // 10 days ago (overdue)
       
       const allTodos = [
-        new Todo('Active Todo', false, new Date(), 1, 'medium'),
-        new Todo('Completed Todo', true, new Date(), 2, 'low'),
-        new Todo('High Priority Todo', false, new Date(), 3, 'high'),
-        new Todo('Overdue Todo', false, oldDate, 4, 'medium'),
+        new Todo('Active Todo', false, new Date(), TEST_UUIDS.TODO_1, 'medium'),
+        new Todo('Completed Todo', true, new Date(), TEST_UUIDS.TODO_2, 'low'),
+        new Todo('High Priority Todo', false, new Date(), TEST_UUIDS.TODO_3, 'high'),
+        new Todo('Overdue Todo', false, oldDate, TEST_UUIDS.TODO_4, 'medium'),
       ];
       vi.mocked(mockRepository.getAll).mockResolvedValue(allTodos);
 
@@ -316,8 +317,8 @@ describe('TodoQueryHandlers', () => {
     it('should handle all completed todos', async () => {
       // Arrange
       const allTodos = [
-        new Todo('Completed Todo 1', true, new Date(), 1),
-        new Todo('Completed Todo 2', true, new Date(), 2),
+        new Todo('Completed Todo 1', true, new Date(), TEST_UUIDS.TODO_1),
+        new Todo('Completed Todo 2', true, new Date(), TEST_UUIDS.TODO_2),
       ];
       vi.mocked(mockRepository.getAll).mockResolvedValue(allTodos);
 
@@ -353,8 +354,8 @@ describe('TodoQueryHandlers', () => {
 
     it('should return todo when found', async () => {
       // Arrange
-      const query: GetTodoByIdQuery = { id: 1 };
-      const expectedTodo = new Todo('Found Todo', false, new Date(), 1);
+      const query: GetTodoByIdQuery = { id: TEST_UUIDS.TODO_1 };
+      const expectedTodo = new Todo('Found Todo', false, new Date(), TEST_UUIDS.TODO_1);
       vi.mocked(mockRepository.getById).mockResolvedValue(expectedTodo);
 
       // Act
@@ -362,12 +363,12 @@ describe('TodoQueryHandlers', () => {
 
       // Assert
       expect(result).toBe(expectedTodo);
-      expect(mockRepository.getById).toHaveBeenCalledWith(1);
+      expect(mockRepository.getById).toHaveBeenCalledWith(TEST_UUIDS.TODO_1);
     });
 
     it('should return null when todo not found', async () => {
       // Arrange
-      const query: GetTodoByIdQuery = { id: 999 };
+      const query: GetTodoByIdQuery = { id: generateTestUuid(999) };
       vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
 
       // Act
@@ -375,12 +376,12 @@ describe('TodoQueryHandlers', () => {
 
       // Assert
       expect(result).toBeNull();
-      expect(mockRepository.getById).toHaveBeenCalledWith(999);
+      expect(mockRepository.getById).toHaveBeenCalledWith(generateTestUuid(999));
     });
 
     it('should propagate repository errors', async () => {
       // Arrange
-      const query: GetTodoByIdQuery = { id: 1 };
+      const query: GetTodoByIdQuery = { id: TEST_UUIDS.TODO_1 };
       const error = new Error('Database error');
       vi.mocked(mockRepository.getById).mockRejectedValue(error);
 
@@ -390,7 +391,7 @@ describe('TodoQueryHandlers', () => {
 
     it('should handle valid edge case IDs', async () => {
       // Arrange
-      const query: GetTodoByIdQuery = { id: 0 };
+      const query: GetTodoByIdQuery = { id: generateTestUuid(0) };
       vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
 
       // Act
@@ -398,7 +399,7 @@ describe('TodoQueryHandlers', () => {
 
       // Assert
       expect(result).toBeNull();
-      expect(mockRepository.getById).toHaveBeenCalledWith(0);
+      expect(mockRepository.getById).toHaveBeenCalledWith(generateTestUuid(0));
     });
   });
 });
