@@ -21,8 +21,12 @@ export class TodoId {
     
     // Validate UUID format without dashes (32 hex characters)
     const uuidRegex = /^[0-9a-f]{32}$/i;
-    if (!uuidRegex.test(id)) {
-      throw new Error('Todo ID must be a valid UUID without dashes (32 hex characters)');
+    
+    // Validate MongoDB ObjectId format (24 hex characters)
+    const mongoIdRegex = /^[0-9a-f]{24}$/i;
+    
+    if (!uuidRegex.test(id) && !mongoIdRegex.test(id)) {
+      throw new Error('Todo ID must be a valid UUID without dashes (32 hex characters) or MongoDB ObjectId (24 hex characters)');
     }
   }
 
@@ -36,5 +40,19 @@ export class TodoId {
 
   static fromString(value: string): TodoId {
     return new TodoId(value);
+  }
+
+  isUUID(): boolean {
+    const uuidRegex = /^[0-9a-f]{32}$/i;
+    return uuidRegex.test(this._value);
+  }
+
+  isMongoObjectId(): boolean {
+    const mongoIdRegex = /^[0-9a-f]{24}$/i;
+    return mongoIdRegex.test(this._value);
+  }
+
+  getIdType(): 'uuid' | 'mongodb' {
+    return this.isUUID() ? 'uuid' : 'mongodb';
   }
 }
