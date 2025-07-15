@@ -1,4 +1,5 @@
 import { Todo } from '@/core/domain/todo/entities/Todo';
+import { type Specification } from '@/core/domain/todo/specifications/TodoSpecifications';
 
 export interface ITodoRepository {
   getAll(): Promise<Todo[]>;
@@ -11,4 +12,5 @@ export interface ITodoRepository {
   count(): Promise<number>;
   countActive(): Promise<number>;
   countCompleted(): Promise<number>;
+  findBySpecification(specification: Specification<Todo>): Promise<Todo[]>;
 }

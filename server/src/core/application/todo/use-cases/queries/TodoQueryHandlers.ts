@@ -2,6 +2,18 @@ import { injectable, inject } from 'tsyringe';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
 import type { Todo } from '@/core/domain/todo/entities/Todo';
 import type { TodoStatsDto } from '@/core/application/todo/dto/TodoDto';
+import type { 
+  GetFilteredTodosQuery, 
+  GetTodoByIdQuery,
+  TodoStatsQueryResult
+} from '@/core/application/todo/dto/TodoQueries';
+import { TodoDomainService } from '@/core/domain/todo/services/TodoDomainService';
+import { 
+  ActiveTodoSpecification, 
+  CompletedTodoSpecification, 
+  OverdueTodoSpecification,
+  HighPriorityTodoSpecification 
+} from '@/core/domain/todo/specifications/TodoSpecifications';
 import { TOKENS } from '@/core/infrastructure/di/tokens';
 
 /**
@@ -15,6 +27,53 @@ export class GetAllTodosQueryHandler {
 
   async execute(): Promise<Todo[]> {
     return await this.todoRepository.getAll();
+  }
+}
+
+/**
+ * Query handler for getting filtered todos
+ */
+@injectable()
+export class GetFilteredTodosQueryHandler {
+  constructor(
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
+  ) {}
+
+  async execute(query: GetFilteredTodosQuery): Promise<Todo[]> {
+    const allTodos = await this.todoRepository.getAll();
+    
+    // Apply filter using specifications
+    let filteredTodos: Todo[];
+    
+    switch (query.filter) {
+      case 'active': {
+        const activeSpec = new ActiveTodoSpecification();
+        filteredTodos = allTodos.filter(todo => activeSpec.isSatisfiedBy(todo));
+        break;
+      }
+      case 'completed': {
+        const completedSpec = new CompletedTodoSpecification();
+        filteredTodos = allTodos.filter(todo => completedSpec.isSatisfiedBy(todo));
+        break;
+      }
+      default:
+        filteredTodos = allTodos;
+    }
+
+    // Apply sorting using domain service
+    if (query.sortBy === 'priority' || query.sortBy === 'urgency') {
+      filteredTodos = TodoDomainService.sortByPriority(filteredTodos);
+      if (query.sortOrder === 'desc') {
+        filteredTodos.reverse();
+      }
+    } else if (query.sortBy === 'createdAt') {
+      filteredTodos.sort((a, b) => {
+        const dateComparison = a.createdAt.getTime() - b.createdAt.getTime();
+        return query.sortOrder === 'desc' ? -dateComparison : dateComparison;
+      });
+    }
+
+    return filteredTodos;
   }
 }
 
@@ -55,8 +114,8 @@ export class GetTodoByIdQueryHandler {
     @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
-  async execute(id: string): Promise<Todo | undefined> {
-    return await this.todoRepository.getById(id);
+  async execute(query: GetTodoByIdQuery): Promise<Todo | undefined> {
+    return await this.todoRepository.getById(query.id);
   }
 }
 
@@ -69,17 +128,20 @@ export class GetTodoStatsQueryHandler {
     @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
-  async execute(): Promise<TodoStatsDto> {
-    const [total, active, completed] = await Promise.all([
-      this.todoRepository.count(),
-      this.todoRepository.countActive(),
-      this.todoRepository.countCompleted()
-    ]);
+  async execute(): Promise<TodoStatsQueryResult> {
+    const allTodos = await this.todoRepository.getAll();
+    
+    const activeSpec = new ActiveTodoSpecification();
+    const completedSpec = new CompletedTodoSpecification();
+    const overdueSpec = new OverdueTodoSpecification();
+    const highPrioritySpec = new HighPriorityTodoSpecification();
 
     return {
-      total,
-      active,
-      completed
+      total: allTodos.length,
+      active: allTodos.filter(todo => activeSpec.isSatisfiedBy(todo)).length,
+      completed: allTodos.filter(todo => completedSpec.isSatisfiedBy(todo)).length,
+      overdue: allTodos.filter(todo => overdueSpec.isSatisfiedBy(todo)).length,
+      highPriority: allTodos.filter(todo => highPrioritySpec.isSatisfiedBy(todo)).length,
     };
   }
 }

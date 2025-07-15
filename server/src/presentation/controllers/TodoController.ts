@@ -96,7 +96,7 @@ export class TodoController {
    */
   getTodoById = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
-    const todo = await this.getTodoByIdQueryHandler.execute(id);
+    const todo = await this.getTodoByIdQueryHandler.execute({ id });
     
     if (!todo) {
       res.status(404).json({

@@ -1,6 +1,7 @@
 import { injectable } from 'tsyringe';
 import { Todo } from '@/core/domain/todo/entities/Todo';
 import type { ITodoRepository } from '@/core/domain/todo/repositories/ITodoRepository';
+import type { Specification } from '@/core/domain/todo/specifications/TodoSpecifications';
 import { generateId } from '@/utils/uuid';
 
 /**
@@ -83,5 +84,11 @@ export class InMemoryTodoRepository implements ITodoRepository {
 
   async countCompleted(): Promise<number> {
     return Array.from(this.todos.values()).filter(todo => todo.completed).length;
+  }
+
+  async findBySpecification(specification: Specification<Todo>): Promise<Todo[]> {
+    return Array.from(this.todos.values())
+      .filter(todo => specification.isSatisfiedBy(todo))
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 }

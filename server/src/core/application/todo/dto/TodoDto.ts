@@ -26,6 +26,8 @@ export interface TodoStatsDto {
   total: number;
   active: number;
   completed: number;
+  overdue: number;
+  highPriority: number;
 }
 
 export interface TodoFilterDto {
