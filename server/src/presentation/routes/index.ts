@@ -9,7 +9,7 @@ export const createApiRoutes = (): Router => {
     res.json({
       success: true,
       message: 'Server is running',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   });
 

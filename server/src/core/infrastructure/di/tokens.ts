@@ -2,20 +2,20 @@
 export const TOKENS = {
   // Infrastructure Layer - Repositories
   TodoRepository: 'ITodoRepository',
-  
+
   // Application Layer - Use Cases (Commands)
   CreateTodoUseCase: 'CreateTodoUseCase',
   UpdateTodoUseCase: 'UpdateTodoUseCase',
   DeleteTodoUseCase: 'DeleteTodoUseCase',
   ToggleTodoUseCase: 'ToggleTodoUseCase',
-  
+
   // Application Layer - Use Cases (Queries)
   GetAllTodosQueryHandler: 'GetAllTodosQueryHandler',
   GetActiveTodosQueryHandler: 'GetActiveTodosQueryHandler',
   GetCompletedTodosQueryHandler: 'GetCompletedTodosQueryHandler',
   GetTodoByIdQueryHandler: 'GetTodoByIdQueryHandler',
   GetTodoStatsQueryHandler: 'GetTodoStatsQueryHandler',
-  
+
   // Infrastructure Layer - Database Connections
   DatabaseConnection: 'DatabaseConnection',
 } as const;

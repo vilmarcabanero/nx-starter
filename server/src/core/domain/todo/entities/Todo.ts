@@ -1,5 +1,8 @@
 import { TodoTitle } from '@/core/domain/todo/value-objects/TodoTitle';
-import { TodoPriority, type TodoPriorityLevel } from '@/core/domain/todo/value-objects/TodoPriority';
+import {
+  TodoPriority,
+  type TodoPriorityLevel,
+} from '@/core/domain/todo/value-objects/TodoPriority';
 import { TodoId } from '@/core/domain/todo/value-objects/TodoId';
 import { TodoAlreadyCompletedException } from '@/core/domain/todo/exceptions/DomainExceptions';
 
@@ -30,7 +33,7 @@ export class Todo implements ITodo {
   ) {
     this._title = title instanceof TodoTitle ? title : new TodoTitle(title);
     this._priority = new TodoPriority(priority);
-    this._id = id instanceof TodoId ? id : (id ? new TodoId(id) : undefined);
+    this._id = id instanceof TodoId ? id : id ? new TodoId(id) : undefined;
     this._completed = completed;
     this._createdAt = createdAt;
     this._dueDate = dueDate;
@@ -115,11 +118,11 @@ export class Todo implements ITodo {
 
   isOverdue(): boolean {
     if (this._completed) return false;
-    
+
     if (this._dueDate) {
       return new Date() > this._dueDate;
     }
-    
+
     // Fallback: consider todos overdue after 7 days if no due date
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
@@ -160,7 +163,7 @@ export class Todo implements ITodo {
     if (!this._title || this._title.value.trim().length === 0) {
       throw new Error('Todo must have a valid title');
     }
-    
+
     if (this._dueDate && this._dueDate < this._createdAt) {
       throw new Error('Due date cannot be before creation date');
     }

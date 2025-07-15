@@ -47,14 +47,16 @@ This Postman collection provides comprehensive testing for the Task App Express.
 ### 1. Import Collection and Environment
 
 **Option A: Import from Files**
+
 1. Open Postman
 2. Click "Import" button
 3. Select `postman-collection.json` and `postman-environment.json`
 4. Select the "Task App Development Environment" from the environment dropdown
 
 **Option B: Import from URL (if hosted)**
+
 1. Copy the raw URL of the collection file
-2. In Postman, click "Import" → "Link" 
+2. In Postman, click "Import" → "Link"
 3. Paste the URL and import
 
 ### 2. Start the API Server
@@ -75,6 +77,7 @@ The collection uses environment variables for flexibility:
 - `sampleTodoId`: Sample todo ID for testing (default: `todo-123`)
 
 **To update these:**
+
 1. Click the environment dropdown → "Task App Development Environment"
 2. Click the eye icon to view/edit variables
 3. Update `baseUrl` if your server runs on a different port
@@ -102,50 +105,55 @@ The collection uses environment variables for flexibility:
 ### Working with Dynamic Data
 
 **Getting Real Todo IDs:**
+
 1. Run "Create Todo - Happy Path (Minimal)" request
 2. Copy the `id` from the response
 3. Update the `sampleTodoId` environment variable
 4. Now all requests using `{{sampleTodoId}}` will use the real ID
 
 **Chaining Requests:**
+
 - Use Postman's "Tests" tab to extract values from responses
 - Set environment variables dynamically for use in subsequent requests
 
 Example test script:
+
 ```javascript
 // Extract todo ID from create response
 if (pm.response.code === 201) {
-    const response = pm.response.json();
-    pm.environment.set("sampleTodoId", response.data.id);
+  const response = pm.response.json();
+  pm.environment.set('sampleTodoId', response.data.id);
 }
 ```
 
 ## 🔍 API Endpoint Reference
 
 ### Base URL
+
 ```
 http://localhost:3001
 ```
 
 ### Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Server information |
-| GET | `/api/health` | Health check |
-| GET | `/api/todos` | Get all todos |
-| GET | `/api/todos/active` | Get active todos |
-| GET | `/api/todos/completed` | Get completed todos |
-| GET | `/api/todos/stats` | Get todo statistics |
-| GET | `/api/todos/:id` | Get todo by ID |
-| POST | `/api/todos` | Create new todo |
-| PUT | `/api/todos/:id` | Update todo |
-| PATCH | `/api/todos/:id/toggle` | Toggle todo completion |
-| DELETE | `/api/todos/:id` | Delete todo |
+| Method | Endpoint                | Description            |
+| ------ | ----------------------- | ---------------------- |
+| GET    | `/`                     | Server information     |
+| GET    | `/api/health`           | Health check           |
+| GET    | `/api/todos`            | Get all todos          |
+| GET    | `/api/todos/active`     | Get active todos       |
+| GET    | `/api/todos/completed`  | Get completed todos    |
+| GET    | `/api/todos/stats`      | Get todo statistics    |
+| GET    | `/api/todos/:id`        | Get todo by ID         |
+| POST   | `/api/todos`            | Create new todo        |
+| PUT    | `/api/todos/:id`        | Update todo            |
+| PATCH  | `/api/todos/:id/toggle` | Toggle todo completion |
+| DELETE | `/api/todos/:id`        | Delete todo            |
 
 ### Request/Response Formats
 
 **Create Todo Request:**
+
 ```json
 {
   "title": "Todo title (required, 2-255 chars)",
@@ -155,6 +163,7 @@ http://localhost:3001
 ```
 
 **Update Todo Request:**
+
 ```json
 {
   "title": "Updated title (optional)",
@@ -165,6 +174,7 @@ http://localhost:3001
 ```
 
 **Todo Response:**
+
 ```json
 {
   "success": true,
@@ -180,6 +190,7 @@ http://localhost:3001
 ```
 
 **Error Response:**
+
 ```json
 {
   "success": false,
@@ -191,6 +202,7 @@ http://localhost:3001
 ## 🧪 Testing Scenarios
 
 ### Happy Path Tests
+
 - ✅ All CRUD operations with valid data
 - ✅ Different todo priorities (low, medium, high)
 - ✅ Optional fields (dueDate)
@@ -198,6 +210,7 @@ http://localhost:3001
 - ✅ Toggle completion status
 
 ### Error Handling Tests
+
 - ❌ Missing required fields
 - ❌ Invalid data types
 - ❌ Invalid enum values
@@ -207,6 +220,7 @@ http://localhost:3001
 - ❌ Unknown API endpoints
 
 ### Security & Performance Tests
+
 - 🔒 Rate limiting (100 requests per 15 minutes)
 - 🔒 CORS headers
 - 🔒 Input validation
@@ -215,6 +229,7 @@ http://localhost:3001
 ## 🔧 Environment Configuration
 
 ### Development Environment
+
 ```json
 {
   "baseUrl": "http://localhost:3001",
@@ -223,6 +238,7 @@ http://localhost:3001
 ```
 
 ### Production Environment (Example)
+
 ```json
 {
   "baseUrl": "https://api.taskapp.com",
@@ -231,6 +247,7 @@ http://localhost:3001
 ```
 
 ### Testing Environment (Example)
+
 ```json
 {
   "baseUrl": "http://localhost:3002",
@@ -241,18 +258,21 @@ http://localhost:3001
 ## 📝 Collection Features
 
 ### Comprehensive Test Coverage
+
 - **30+ requests** covering all API endpoints
 - **Multiple scenarios** per endpoint (happy path + error cases)
 - **Realistic sample data** for testing
 - **Detailed descriptions** for each request
 
 ### Production-Ready Testing
+
 - **Environment variables** for different deployment stages
 - **Error scenario coverage** for robust testing
 - **Request/response examples** for documentation
 - **Rate limiting tests** for performance validation
 
 ### Developer Experience
+
 - **Clear folder organization** by operation type
 - **Descriptive request names** indicating test scenarios
 - **Sample responses** for expected output

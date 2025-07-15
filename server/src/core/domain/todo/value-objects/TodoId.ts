@@ -18,7 +18,7 @@ export class TodoId {
     if (typeof id !== 'string' || id.trim().length === 0) {
       throw new Error('Todo ID must be a non-empty string');
     }
-    
+
     // For flexibility, allow both UUID formats and simple string IDs
     // This makes the server more compatible with different client implementations
     if (id.trim().length < 1) {

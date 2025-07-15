@@ -14,14 +14,7 @@ describe('TodoMapper', () => {
     it('should map Todo entity to TodoDto with all fields', () => {
       const createdAt = new Date('2020-01-01T00:00:00.000Z');
       const dueDate = new Date('2020-01-02T00:00:00.000Z');
-      const todo = new Todo(
-        'Test Todo',
-        false,
-        createdAt,
-        TEST_UUIDS.TODO_1,
-        'high',
-        dueDate
-      );
+      const todo = new Todo('Test Todo', false, createdAt, TEST_UUIDS.TODO_1, 'high', dueDate);
 
       const dto = TodoMapper.toDto(todo);
 
@@ -35,13 +28,7 @@ describe('TodoMapper', () => {
 
     it('should map Todo entity to TodoDto without due date', () => {
       const createdAt = new Date('2020-01-01T00:00:00.000Z');
-      const todo = new Todo(
-        'Test Todo',
-        false,
-        createdAt,
-        TEST_UUIDS.TODO_1,
-        'medium'
-      );
+      const todo = new Todo('Test Todo', false, createdAt, TEST_UUIDS.TODO_1, 'medium');
 
       const dto = TodoMapper.toDto(todo);
 
@@ -79,7 +66,7 @@ describe('TodoMapper', () => {
       const todos = [
         new Todo('Todo 1', false, new Date(), TEST_UUIDS.TODO_1, 'high'),
         new Todo('Todo 2', true, new Date(), TEST_UUIDS.TODO_2, 'low'),
-        new Todo('Todo 3', false, new Date(), TEST_UUIDS.TODO_3, 'medium')
+        new Todo('Todo 3', false, new Date(), TEST_UUIDS.TODO_3, 'medium'),
       ];
 
       const dtos = TodoMapper.toDtoArray(todos);
@@ -109,7 +96,7 @@ describe('TodoMapper', () => {
         completed: false,
         createdAt: new Date('2020-01-01'),
         priority: 'high',
-        dueDate: new Date('2020-01-02')
+        dueDate: new Date('2020-01-02'),
       };
 
       const todo = TodoMapper.fromPlainObject(plainObject);
@@ -127,7 +114,7 @@ describe('TodoMapper', () => {
         id: TEST_UUIDS.TODO_1,
         title: 'Test Todo',
         completed: true,
-        createdAt: new Date('2020-01-01')
+        createdAt: new Date('2020-01-01'),
       };
 
       const todo = TodoMapper.fromPlainObject(plainObject);
@@ -145,7 +132,7 @@ describe('TodoMapper', () => {
         title: 'Low Priority Todo',
         completed: false,
         createdAt: new Date(),
-        priority: 'low'
+        priority: 'low',
       };
 
       const todo = TodoMapper.fromPlainObject(lowPriorityObj);
@@ -157,14 +144,7 @@ describe('TodoMapper', () => {
     it('should map Todo entity to plain object with all fields', () => {
       const createdAt = new Date('2020-01-01');
       const dueDate = new Date('2020-01-02');
-      const todo = new Todo(
-        'Test Todo',
-        false,
-        createdAt,
-        TEST_UUIDS.TODO_1,
-        'high',
-        dueDate
-      );
+      const todo = new Todo('Test Todo', false, createdAt, TEST_UUIDS.TODO_1, 'high', dueDate);
 
       const plainObject = TodoMapper.toPlainObject(todo);
 
@@ -210,7 +190,13 @@ describe('TodoMapper', () => {
 
   describe('edge cases', () => {
     it('should handle todos with special characters in title', () => {
-      const todo = new Todo('Special chars: @#$% émojis 🚀', false, new Date(), TEST_UUIDS.TODO_1, 'high');
+      const todo = new Todo(
+        'Special chars: @#$% émojis 🚀',
+        false,
+        new Date(),
+        TEST_UUIDS.TODO_1,
+        'high'
+      );
 
       const dto = TodoMapper.toDto(todo);
       expect(dto.title).toBe('Special chars: @#$% émojis 🚀');

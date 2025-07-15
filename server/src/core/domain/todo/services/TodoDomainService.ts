@@ -10,11 +10,11 @@ export class TodoDomainService {
    */
   static isOverdue(todo: Todo, currentDate: Date = new Date()): boolean {
     if (todo.completed) return false;
-    
+
     const daysSinceCreation = Math.floor(
       (currentDate.getTime() - todo.createdAt.getTime()) / (1000 * 60 * 60 * 24)
     );
-    
+
     return daysSinceCreation > 7;
   }
 
@@ -23,14 +23,14 @@ export class TodoDomainService {
    */
   static calculateUrgencyScore(todo: Todo, currentDate: Date = new Date()): number {
     if (todo.completed) return 0;
-    
+
     const daysSinceCreation = Math.floor(
       (currentDate.getTime() - todo.createdAt.getTime()) / (1000 * 60 * 60 * 24)
     );
-    
+
     const priorityWeight = todo.priority?.numericValue || 2;
     const ageWeight = Math.min(daysSinceCreation / 7, 3); // Max 3x multiplier for age
-    
+
     return priorityWeight * (1 + ageWeight);
   }
 
@@ -41,7 +41,7 @@ export class TodoDomainService {
     if (todo.completed) {
       return { canComplete: false, reason: 'Todo is already completed' };
     }
-    
+
     return { canComplete: true };
   }
 
@@ -54,11 +54,11 @@ export class TodoDomainService {
       if (a.completed !== b.completed) {
         return a.completed ? 1 : -1;
       }
-      
+
       // Sort by urgency score (highest first)
       const scoreA = this.calculateUrgencyScore(a, currentDate);
       const scoreB = this.calculateUrgencyScore(b, currentDate);
-      
+
       return scoreB - scoreA;
     });
   }

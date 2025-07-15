@@ -3,12 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 /**
  * Global error handling middleware
  */
-export const errorHandler = (
-  error: any,
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
+export const errorHandler = (error: any, req: Request, res: Response, next: NextFunction): void => {
   console.error('Global error handler:', error);
 
   // If response already sent, delegate to default Express error handler
@@ -21,7 +16,7 @@ export const errorHandler = (
     res.status(400).json({
       success: false,
       error: 'Invalid JSON format',
-      message: 'Request body contains invalid JSON'
+      message: 'Request body contains invalid JSON',
     });
     return;
   }
@@ -29,7 +24,7 @@ export const errorHandler = (
   res.status(500).json({
     success: false,
     error: 'Internal server error',
-    message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+    message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong',
   });
 };
 
@@ -40,7 +35,7 @@ export const notFoundHandler = (req: Request, res: Response): void => {
   res.status(404).json({
     success: false,
     error: 'Not found',
-    message: `Route ${req.method} ${req.path} not found`
+    message: `Route ${req.method} ${req.path} not found`,
   });
 };
 
@@ -49,11 +44,11 @@ export const notFoundHandler = (req: Request, res: Response): void => {
  */
 export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {
   const start = Date.now();
-  
+
   res.on('finish', () => {
     const duration = Date.now() - start;
     console.log(`${req.method} ${req.path} - ${res.statusCode} - ${duration}ms`);
   });
-  
+
   next();
 };

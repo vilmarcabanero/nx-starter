@@ -12,7 +12,7 @@ describe('Todo API Integration Tests', () => {
   beforeAll(async () => {
     // Configure DI container (now async)
     await configureDI();
-    
+
     // Create app
     app = createApp();
     request = supertest(app);
@@ -20,10 +20,7 @@ describe('Todo API Integration Tests', () => {
 
   describe('GET /', () => {
     it('should return server information', async () => {
-      const response = await request
-        .get('/')
-        .expect('Content-Type', /json/)
-        .expect(200);
+      const response = await request.get('/').expect('Content-Type', /json/).expect(200);
 
       expect(response.body).toMatchObject({
         success: true,
@@ -31,22 +28,19 @@ describe('Todo API Integration Tests', () => {
         version: '1.0.0',
         endpoints: {
           health: '/api/health',
-          todos: '/api/todos'
-        }
+          todos: '/api/todos',
+        },
       });
     });
   });
 
   describe('GET /api/health', () => {
     it('should return health check', async () => {
-      const response = await request
-        .get('/api/health')
-        .expect('Content-Type', /json/)
-        .expect(200);
+      const response = await request.get('/api/health').expect('Content-Type', /json/).expect(200);
 
       expect(response.body).toMatchObject({
         success: true,
-        message: 'Server is running'
+        message: 'Server is running',
       });
       expect(response.body.timestamp).toBeDefined();
     });
@@ -59,7 +53,7 @@ describe('Todo API Integration Tests', () => {
       it('should create a new todo', async () => {
         const todoData = {
           title: 'Integration Test Todo',
-          priority: 'high'
+          priority: 'high',
         };
 
         const response = await request
@@ -73,13 +67,13 @@ describe('Todo API Integration Tests', () => {
           data: {
             title: 'Integration Test Todo',
             completed: false,
-            priority: 'high'
-          }
+            priority: 'high',
+          },
         });
 
         expect(response.body.data.id).toBeDefined();
         expect(response.body.data.createdAt).toBeDefined();
-        
+
         todoId = response.body.data.id;
       });
 
@@ -92,7 +86,7 @@ describe('Todo API Integration Tests', () => {
 
         expect(response.body).toMatchObject({
           success: false,
-          error: 'Validation failed'
+          error: 'Validation failed',
         });
       });
 
@@ -105,21 +99,18 @@ describe('Todo API Integration Tests', () => {
 
         expect(response.body).toMatchObject({
           success: false,
-          error: 'Validation failed'
+          error: 'Validation failed',
         });
       });
     });
 
     describe('GET /api/todos', () => {
       it('should return all todos', async () => {
-        const response = await request
-          .get('/api/todos')
-          .expect('Content-Type', /json/)
-          .expect(200);
+        const response = await request.get('/api/todos').expect('Content-Type', /json/).expect(200);
 
         expect(response.body).toMatchObject({
           success: true,
-          data: expect.any(Array)
+          data: expect.any(Array),
         });
 
         expect(response.body.data.length).toBeGreaterThan(0);
@@ -128,7 +119,7 @@ describe('Todo API Integration Tests', () => {
           title: expect.any(String),
           completed: expect.any(Boolean),
           priority: expect.any(String),
-          createdAt: expect.any(String)
+          createdAt: expect.any(String),
         });
       });
     });
@@ -146,8 +137,8 @@ describe('Todo API Integration Tests', () => {
             id: todoId,
             title: 'Integration Test Todo',
             completed: false,
-            priority: 'high'
-          }
+            priority: 'high',
+          },
         });
       });
 
@@ -159,7 +150,7 @@ describe('Todo API Integration Tests', () => {
 
         expect(response.body).toMatchObject({
           success: false,
-          error: 'Todo not found'
+          error: 'Todo not found',
         });
       });
     });
@@ -168,7 +159,7 @@ describe('Todo API Integration Tests', () => {
       it('should update todo', async () => {
         const updateData = {
           title: 'Updated Integration Test Todo',
-          priority: 'medium'
+          priority: 'medium',
         };
 
         const response = await request
@@ -179,18 +170,16 @@ describe('Todo API Integration Tests', () => {
 
         expect(response.body).toMatchObject({
           success: true,
-          message: 'Todo updated successfully'
+          message: 'Todo updated successfully',
         });
 
         // Verify the update
-        const getResponse = await request
-          .get(`/api/todos/${todoId}`)
-          .expect(200);
+        const getResponse = await request.get(`/api/todos/${todoId}`).expect(200);
 
         expect(getResponse.body.data).toMatchObject({
           id: todoId,
           title: 'Updated Integration Test Todo',
-          priority: 'medium'
+          priority: 'medium',
         });
       });
     });
@@ -204,13 +193,11 @@ describe('Todo API Integration Tests', () => {
 
         expect(response.body).toMatchObject({
           success: true,
-          message: 'Todo toggled successfully'
+          message: 'Todo toggled successfully',
         });
 
         // Verify the toggle
-        const getResponse = await request
-          .get(`/api/todos/${todoId}`)
-          .expect(200);
+        const getResponse = await request.get(`/api/todos/${todoId}`).expect(200);
 
         expect(getResponse.body.data.completed).toBe(true);
       });
@@ -228,8 +215,8 @@ describe('Todo API Integration Tests', () => {
           data: {
             total: expect.any(Number),
             active: expect.any(Number),
-            completed: expect.any(Number)
-          }
+            completed: expect.any(Number),
+          },
         });
 
         expect(response.body.data.total).toBeGreaterThan(0);
@@ -245,7 +232,7 @@ describe('Todo API Integration Tests', () => {
 
         expect(response.body).toMatchObject({
           success: true,
-          data: expect.any(Array)
+          data: expect.any(Array),
         });
 
         // All returned todos should be active
@@ -264,7 +251,7 @@ describe('Todo API Integration Tests', () => {
 
         expect(response.body).toMatchObject({
           success: true,
-          data: expect.any(Array)
+          data: expect.any(Array),
         });
 
         // All returned todos should be completed
@@ -283,27 +270,22 @@ describe('Todo API Integration Tests', () => {
 
         expect(response.body).toMatchObject({
           success: true,
-          message: 'Todo deleted successfully'
+          message: 'Todo deleted successfully',
         });
 
         // Verify deletion
-        await request
-          .get(`/api/todos/${todoId}`)
-          .expect(404);
+        await request.get(`/api/todos/${todoId}`).expect(404);
       });
     });
   });
 
   describe('Error Handling', () => {
     it('should handle 404 for unknown routes', async () => {
-      const response = await request
-        .get('/api/unknown')
-        .expect('Content-Type', /json/)
-        .expect(404);
+      const response = await request.get('/api/unknown').expect('Content-Type', /json/).expect(404);
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Not found'
+        error: 'Not found',
       });
     });
 

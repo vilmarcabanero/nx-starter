@@ -18,7 +18,7 @@ describe('UpdateTodoUseCase', () => {
       id: createdId,
       title: 'Updated Title',
       priority: 'high',
-      completed: true
+      completed: true,
     });
 
     // Verify the update
@@ -40,7 +40,7 @@ describe('UpdateTodoUseCase', () => {
     // Update only the title
     await useCase.execute({
       id: createdId,
-      title: 'Updated Title Only'
+      title: 'Updated Title Only',
     });
 
     // Verify only title was updated
@@ -54,9 +54,9 @@ describe('UpdateTodoUseCase', () => {
     const repository = new InMemoryTodoRepository();
     const useCase = new UpdateTodoUseCase(repository);
 
-    await expect(useCase.execute({ id: 'non-existent-id', title: 'New Title' }))
-      .rejects
-      .toThrow('Todo with ID non-existent-id not found');
+    await expect(useCase.execute({ id: 'non-existent-id', title: 'New Title' })).rejects.toThrow(
+      'Todo with ID non-existent-id not found'
+    );
   });
 
   it('should handle due date updates', async () => {
@@ -69,7 +69,7 @@ describe('UpdateTodoUseCase', () => {
     const newDueDate = new Date('2025-01-01');
     await useCase.execute({
       id: createdId,
-      dueDate: newDueDate
+      dueDate: newDueDate,
     });
 
     const updatedTodo = await repository.getById(createdId);
@@ -85,8 +85,8 @@ describe('UpdateTodoUseCase', () => {
 
     // Try to update with invalid title - this will be caught by the repository's update method
     // which creates a new Todo with the title, triggering TodoTitle validation
-    await expect(useCase.execute({ id: createdId, title: 'A' }))
-      .rejects
-      .toThrow('Invalid todo title: must be at least 2 characters long');
+    await expect(useCase.execute({ id: createdId, title: 'A' })).rejects.toThrow(
+      'Invalid todo title: must be at least 2 characters long'
+    );
   });
 });

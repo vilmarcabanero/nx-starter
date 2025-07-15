@@ -12,11 +12,8 @@ import { generateId } from '@/utils/uuid';
 @injectable()
 export class MongooseTodoRepository implements ITodoRepository {
   async getAll(): Promise<Todo[]> {
-    const documents = await TodoModel.find()
-      .sort({ createdAt: -1 })
-      .lean()
-      .exec();
-    
+    const documents = await TodoModel.find().sort({ createdAt: -1 }).lean().exec();
+
     return documents.map(this.toDomain);
   }
 
@@ -26,35 +23,33 @@ export class MongooseTodoRepository implements ITodoRepository {
       completed: todo.completed,
       createdAt: todo.createdAt,
       priority: todo.priority.level,
-      dueDate: todo.dueDate
+      dueDate: todo.dueDate,
     });
-    
+
     const saved = await document.save();
     return saved._id.toString();
   }
 
   async update(id: string, changes: Partial<Todo>): Promise<void> {
     const updateData: any = {};
-    
+
     if (changes.title !== undefined) {
-      updateData.title = typeof changes.title === 'string' 
-        ? changes.title 
-        : (changes.title as any).value;
+      updateData.title =
+        typeof changes.title === 'string' ? changes.title : (changes.title as any).value;
     }
     if (changes.completed !== undefined) {
       updateData.completed = changes.completed;
     }
     if (changes.priority !== undefined) {
-      updateData.priority = typeof changes.priority === 'string'
-        ? changes.priority
-        : (changes.priority as any).level;
+      updateData.priority =
+        typeof changes.priority === 'string' ? changes.priority : (changes.priority as any).level;
     }
     if (changes.dueDate !== undefined) {
       updateData.dueDate = changes.dueDate;
     }
 
     const result = await TodoModel.updateOne({ _id: id }, updateData).exec();
-    
+
     if (result.matchedCount === 0) {
       throw new Error(`Todo with ID ${id} not found`);
     }
@@ -62,7 +57,7 @@ export class MongooseTodoRepository implements ITodoRepository {
 
   async delete(id: string): Promise<void> {
     const result = await TodoModel.deleteOne({ _id: id }).exec();
-    
+
     if (result.deletedCount === 0) {
       throw new Error(`Todo with ID ${id} not found`);
     }
@@ -78,7 +73,7 @@ export class MongooseTodoRepository implements ITodoRepository {
       .sort({ createdAt: -1 })
       .lean()
       .exec();
-    
+
     return documents.map(this.toDomain);
   }
 
@@ -87,7 +82,7 @@ export class MongooseTodoRepository implements ITodoRepository {
       .sort({ createdAt: -1 })
       .lean()
       .exec();
-    
+
     return documents.map(this.toDomain);
   }
 

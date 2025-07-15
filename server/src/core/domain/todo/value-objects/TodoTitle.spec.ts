@@ -26,13 +26,17 @@ describe('TodoTitle', () => {
 
     it('should throw error for title too short', () => {
       expect(() => new TodoTitle('A')).toThrow(InvalidTodoTitleException);
-      expect(() => new TodoTitle('A')).toThrow('Invalid todo title: must be at least 2 characters long');
+      expect(() => new TodoTitle('A')).toThrow(
+        'Invalid todo title: must be at least 2 characters long'
+      );
     });
 
     it('should throw error for title too long', () => {
       const longTitle = 'A'.repeat(256);
       expect(() => new TodoTitle(longTitle)).toThrow(InvalidTodoTitleException);
-      expect(() => new TodoTitle(longTitle)).toThrow('Invalid todo title: cannot exceed 255 characters');
+      expect(() => new TodoTitle(longTitle)).toThrow(
+        'Invalid todo title: cannot exceed 255 characters'
+      );
     });
 
     it('should accept minimum valid length', () => {
@@ -57,7 +61,7 @@ describe('TodoTitle', () => {
     it('should return immutable value', () => {
       const title = new TodoTitle('Test Title');
       const value = title.value;
-      
+
       // The value should be a string and cannot be modified
       expect(typeof value).toBe('string');
       expect(title.value).toBe('Test Title');
@@ -68,7 +72,7 @@ describe('TodoTitle', () => {
     it('should be equal for same title values', () => {
       const title1 = new TodoTitle('Same Title');
       const title2 = new TodoTitle('Same Title');
-      
+
       expect(title1.value).toBe(title2.value);
       expect(title1.equals(title2)).toBe(true);
     });
@@ -76,7 +80,7 @@ describe('TodoTitle', () => {
     it('should handle case sensitivity', () => {
       const title1 = new TodoTitle('Title');
       const title2 = new TodoTitle('title');
-      
+
       expect(title1.value).not.toBe(title2.value);
       expect(title1.equals(title2)).toBe(false);
     });
@@ -84,7 +88,7 @@ describe('TodoTitle', () => {
     it('should handle trimming in equality', () => {
       const title1 = new TodoTitle('  Title  ');
       const title2 = new TodoTitle('Title');
-      
+
       expect(title1.value).toBe(title2.value);
       expect(title1.equals(title2)).toBe(true);
     });
@@ -92,7 +96,7 @@ describe('TodoTitle', () => {
     it('should handle different titles as not equal', () => {
       const title1 = new TodoTitle('Different Title');
       const title2 = new TodoTitle('Another Title');
-      
+
       expect(title1.equals(title2)).toBe(false);
     });
   });

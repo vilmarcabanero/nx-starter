@@ -8,7 +8,7 @@ import { TodoEntity } from './TodoEntity';
  */
 export const createTypeOrmDataSource = (): DataSource => {
   const dbConfig = config.database;
-  
+
   // Base configuration
   const baseConfig = {
     entities: [TodoEntity],
@@ -58,13 +58,13 @@ let dataSource: DataSource | null = null;
 export const getTypeOrmDataSource = async (): Promise<DataSource> => {
   if (!dataSource) {
     dataSource = createTypeOrmDataSource();
-    
+
     if (!dataSource.isInitialized) {
       await dataSource.initialize();
       console.log('📦 TypeORM DataSource initialized');
     }
   }
-  
+
   return dataSource;
 };
 

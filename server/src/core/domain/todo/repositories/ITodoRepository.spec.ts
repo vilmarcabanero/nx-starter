@@ -24,7 +24,7 @@ describe('ITodoRepository', () => {
       count: async () => 0,
       countActive: async () => 0,
       countCompleted: async () => 0,
-      findBySpecification: async () => []
+      findBySpecification: async () => [],
     };
 
     expect(typeof mockRepo.getAll).toBe('function');

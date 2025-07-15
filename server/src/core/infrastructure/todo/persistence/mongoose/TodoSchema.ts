@@ -9,34 +9,37 @@ export interface ITodoDocument extends Document {
   dueDate?: Date;
 }
 
-const TodoSchema = new Schema<ITodoDocument>({
-  title: {
-    type: String,
-    required: true,
-    maxlength: 255,
-    trim: true
+const TodoSchema = new Schema<ITodoDocument>(
+  {
+    title: {
+      type: String,
+      required: true,
+      maxlength: 255,
+      trim: true,
+    },
+    completed: {
+      type: Boolean,
+      default: false,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    priority: {
+      type: String,
+      enum: ['low', 'medium', 'high'],
+      default: 'medium',
+    },
+    dueDate: {
+      type: Date,
+      required: false,
+    },
   },
-  completed: {
-    type: Boolean,
-    default: false
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  priority: {
-    type: String,
-    enum: ['low', 'medium', 'high'],
-    default: 'medium'
-  },
-  dueDate: {
-    type: Date,
-    required: false
+  {
+    timestamps: false, // We handle createdAt manually
+    collection: 'todos',
   }
-}, {
-  timestamps: false, // We handle createdAt manually
-  collection: 'todos'
-});
+);
 
 // Create indexes for better query performance
 TodoSchema.index({ completed: 1 });

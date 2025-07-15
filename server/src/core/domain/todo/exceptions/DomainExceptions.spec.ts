@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { 
+import {
   DomainException,
-  TodoNotFoundException, 
-  TodoAlreadyCompletedException, 
-  InvalidTodoTitleException, 
-  InvalidTodoPriorityException 
+  TodoNotFoundException,
+  TodoAlreadyCompletedException,
+  InvalidTodoTitleException,
+  InvalidTodoPriorityException,
 } from './DomainExceptions';
 
 describe('DomainExceptions', () => {
@@ -17,7 +17,7 @@ describe('DomainExceptions', () => {
 
     it('should create exception with correct message, name and code', () => {
       const error = new TestDomainException('Test message');
-      
+
       expect(error.name).toBe('TestDomainException');
       expect(error.message).toBe('Test message');
       expect(error.code).toBe('TEST_CODE');
@@ -29,7 +29,7 @@ describe('DomainExceptions', () => {
   describe('TodoNotFoundException', () => {
     it('should create error with correct message and code', () => {
       const error = new TodoNotFoundException('123');
-      
+
       expect(error.name).toBe('TodoNotFoundException');
       expect(error.message).toBe('Todo with ID 123 not found');
       expect(error.code).toBe('TODO_NOT_FOUND');
@@ -38,7 +38,7 @@ describe('DomainExceptions', () => {
 
     it('should be instanceof TodoNotFoundException', () => {
       const error = new TodoNotFoundException('test-id');
-      
+
       expect(error instanceof TodoNotFoundException).toBe(true);
       expect(error instanceof DomainException).toBe(true);
       expect(error instanceof Error).toBe(true);
@@ -48,7 +48,7 @@ describe('DomainExceptions', () => {
   describe('TodoAlreadyCompletedException', () => {
     it('should create error with correct message and code', () => {
       const error = new TodoAlreadyCompletedException();
-      
+
       expect(error.name).toBe('TodoAlreadyCompletedException');
       expect(error.message).toBe('Todo is already completed');
       expect(error.code).toBe('TODO_ALREADY_COMPLETED');
@@ -57,7 +57,7 @@ describe('DomainExceptions', () => {
 
     it('should be instanceof TodoAlreadyCompletedException', () => {
       const error = new TodoAlreadyCompletedException();
-      
+
       expect(error instanceof TodoAlreadyCompletedException).toBe(true);
       expect(error instanceof DomainException).toBe(true);
       expect(error instanceof Error).toBe(true);
@@ -67,7 +67,7 @@ describe('DomainExceptions', () => {
   describe('InvalidTodoTitleException', () => {
     it('should create error with correct message and code', () => {
       const error = new InvalidTodoTitleException('too short');
-      
+
       expect(error.name).toBe('InvalidTodoTitleException');
       expect(error.message).toBe('Invalid todo title: too short');
       expect(error.code).toBe('INVALID_TODO_TITLE');
@@ -76,7 +76,7 @@ describe('DomainExceptions', () => {
 
     it('should be instanceof InvalidTodoTitleException', () => {
       const error = new InvalidTodoTitleException('test reason');
-      
+
       expect(error instanceof InvalidTodoTitleException).toBe(true);
       expect(error instanceof DomainException).toBe(true);
       expect(error instanceof Error).toBe(true);
@@ -86,7 +86,7 @@ describe('DomainExceptions', () => {
   describe('InvalidTodoPriorityException', () => {
     it('should create error with correct message and code', () => {
       const error = new InvalidTodoPriorityException('invalid');
-      
+
       expect(error.name).toBe('InvalidTodoPriorityException');
       expect(error.message).toBe('Invalid todo priority: invalid');
       expect(error.code).toBe('INVALID_TODO_PRIORITY');
@@ -95,7 +95,7 @@ describe('DomainExceptions', () => {
 
     it('should be instanceof InvalidTodoPriorityException', () => {
       const error = new InvalidTodoPriorityException('test priority');
-      
+
       expect(error instanceof InvalidTodoPriorityException).toBe(true);
       expect(error instanceof DomainException).toBe(true);
       expect(error instanceof Error).toBe(true);
@@ -111,20 +111,20 @@ describe('DomainExceptions', () => {
 
       expect(notFoundError instanceof Error).toBe(true);
       expect(notFoundError instanceof DomainException).toBe(true);
-      
+
       expect(completedError instanceof Error).toBe(true);
       expect(completedError instanceof DomainException).toBe(true);
-      
+
       expect(titleError instanceof Error).toBe(true);
       expect(titleError instanceof DomainException).toBe(true);
-      
+
       expect(priorityError instanceof Error).toBe(true);
       expect(priorityError instanceof DomainException).toBe(true);
     });
 
     it('should have correct stack traces', () => {
       const error = new TodoNotFoundException('test-id');
-      
+
       expect(error.stack).toBeDefined();
       expect(error.stack).toContain('TodoNotFoundException');
     });
