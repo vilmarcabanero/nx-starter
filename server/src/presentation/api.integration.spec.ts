@@ -9,9 +9,9 @@ describe('Todo API Integration Tests', () => {
   let app: Express;
   let request: supertest.SuperTest<supertest.Test>;
 
-  beforeAll(() => {
-    // Configure DI container
-    configureDI();
+  beforeAll(async () => {
+    // Configure DI container (now async)
+    await configureDI();
     
     // Create app
     app = createApp();

@@ -12,7 +12,8 @@ Express.js API server for the Task App, built with Clean Architecture principles
 - **Validation**: Request validation using Zod schemas
 - **Error Handling**: Comprehensive error handling with proper HTTP status codes
 - **Security**: Helmet, CORS, and rate limiting included
-- **Multiple Database Support**: Ready for Prisma, Mongoose, TypeORM, and Sequelize (currently using in-memory storage)
+- **Multiple ORM Support**: Choose between TypeORM, Mongoose, Sequelize, or native implementations
+- **Multi-Database Support**: SQLite, MySQL, PostgreSQL, MongoDB support out of the box
 
 ## Quick Start
 
@@ -42,6 +43,162 @@ The server will start on http://localhost:3001
 npm run build
 npm start
 ```
+
+## Database Configuration
+
+The server supports multiple databases and ORMs through a flexible configuration system. Choose the combination that best fits your needs.
+
+### Supported Combinations
+
+| Database     | ORM/Driver | Description |
+|-------------|------------|-------------|
+| **Memory**  | Native     | In-memory storage for development/testing |
+| **SQLite**  | Native     | File-based SQLite using better-sqlite3 |
+| **SQLite**  | TypeORM    | SQLite with TypeORM ORM |
+| **SQLite**  | Sequelize  | SQLite with Sequelize ORM |
+| **MySQL**   | TypeORM    | MySQL with TypeORM ORM |
+| **MySQL**   | Sequelize  | MySQL with Sequelize ORM |
+| **PostgreSQL** | TypeORM | PostgreSQL with TypeORM ORM |
+| **PostgreSQL** | Sequelize | PostgreSQL with Sequelize ORM |
+| **MongoDB** | Mongoose   | MongoDB with Mongoose ODM |
+
+### Configuration
+
+Set the following environment variables in your `.env` file:
+
+```bash
+# Database type: memory | sqlite | mysql | postgresql | mongodb
+DB_TYPE=memory
+
+# ORM selection: native | typeorm | sequelize | mongoose
+# - native: Uses better-sqlite3 for SQLite only
+# - typeorm: Supports MySQL, PostgreSQL, SQLite
+# - sequelize: Supports MySQL, PostgreSQL, SQLite  
+# - mongoose: Only for MongoDB (automatic when DB_TYPE=mongodb)
+DB_ORM=native
+
+# Connection URL (recommended)
+DATABASE_URL=sqlite:./data/todos.db
+
+# OR individual parameters
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=user
+DB_PASSWORD=password
+DB_NAME=task_app
+```
+
+### Example Configurations
+
+#### **1. In-Memory (Default - Development)**
+```bash
+DB_TYPE=memory
+DB_ORM=native
+```
+- Fast startup
+- No persistence
+- Perfect for testing
+
+#### **2. SQLite + Native Driver**
+```bash
+DB_TYPE=sqlite
+DB_ORM=native
+DATABASE_URL=./data/todos.db
+```
+- Lightweight file database
+- No external dependencies
+- Good for small deployments
+
+#### **3. SQLite + TypeORM**
+```bash
+DB_TYPE=sqlite
+DB_ORM=typeorm
+DATABASE_URL=sqlite:./data/todos.db
+```
+- Full ORM features
+- Migration support
+- Type-safe queries
+
+#### **4. MySQL + TypeORM**
+```bash
+DB_TYPE=mysql
+DB_ORM=typeorm
+DATABASE_URL=mysql://user:password@localhost:3306/task_app
+```
+- Production-ready SQL database
+- ACID transactions
+- Excellent performance
+
+#### **5. PostgreSQL + Sequelize**
+```bash
+DB_TYPE=postgresql
+DB_ORM=sequelize
+DATABASE_URL=postgresql://user:password@localhost:5432/task_app
+```
+- Advanced SQL features
+- JSON support
+- Mature ORM
+
+#### **6. MongoDB + Mongoose**
+```bash
+DB_TYPE=mongodb
+DATABASE_URL=mongodb://localhost:27017/task_app
+```
+- NoSQL flexibility
+- Document-based storage
+- Horizontal scaling
+
+### Database Setup
+
+#### **SQLite** (No setup required)
+Files will be created automatically.
+
+#### **MySQL**
+```sql
+CREATE DATABASE task_app;
+CREATE USER 'task_user'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON task_app.* TO 'task_user'@'localhost';
+```
+
+#### **PostgreSQL**
+```sql
+CREATE DATABASE task_app;
+CREATE USER task_user WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE task_app TO task_user;
+```
+
+#### **MongoDB**
+```bash
+# Using Docker
+docker run -d -p 27017:27017 --name mongodb mongo:latest
+
+# Or install locally
+# Database and collections will be created automatically
+```
+
+### Migration and Schema
+
+- **TypeORM**: Auto-syncs in development mode
+- **Sequelize**: Auto-syncs in development mode  
+- **Mongoose**: Schema-less, indexes created automatically
+- **Native SQLite**: Tables created on first use
+
+### Performance Tips
+
+1. **Development**: Use `memory` or `sqlite` for fast iteration
+2. **Testing**: Use `memory` for unit tests, `sqlite` for integration tests
+3. **Production**: Use `mysql` or `postgresql` for best performance
+4. **NoSQL needs**: Use `mongodb` for document-heavy applications
+
+### Switching Databases
+
+To switch between databases:
+
+1. Update your `.env` file with new configuration
+2. Restart the server
+3. The application will automatically use the new database
+
+No code changes required - the repository pattern abstracts all database differences!
 
 ## API Documentation
 
@@ -289,6 +446,101 @@ WebSocket support for real-time todo synchronization.
 
 ### Caching
 Redis integration for improved performance.
+
+## Practical Examples
+
+### Docker Deployment with Different Databases
+
+#### **Example 1: Production with PostgreSQL + TypeORM**
+
+**docker-compose.yml:**
+```yaml
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: task_app
+      POSTGRES_USER: task_user
+      POSTGRES_PASSWORD: secure_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    environment:
+      DB_TYPE: postgresql
+      DB_ORM: typeorm
+      DATABASE_URL: postgresql://task_user:secure_password@postgres:5432/task_app
+      NODE_ENV: production
+    ports:
+      - "3001:3001"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+```
+
+#### **Example 2: Development with MongoDB + Mongoose**
+
+**.env:**
+```bash
+DB_TYPE=mongodb
+DATABASE_URL=mongodb://localhost:27017/task_app_dev
+NODE_ENV=development
+```
+
+**Start MongoDB:**
+```bash
+docker run -d -p 27017:27017 --name mongodb mongo:latest
+npm run dev
+```
+
+#### **Example 3: Testing with SQLite + Sequelize**
+
+**.env.test:**
+```bash
+DB_TYPE=sqlite
+DB_ORM=sequelize
+DATABASE_URL=sqlite:./test/test.db
+NODE_ENV=test
+```
+
+### Repository Pattern Benefits
+
+The repository pattern allows you to switch between databases without changing your business logic:
+
+```typescript
+// This same code works with ANY database/ORM combination
+const todoService = container.resolve(CreateTodoUseCase);
+const todo = await todoService.execute({
+  title: "Learn Clean Architecture",
+  priority: "high"
+});
+```
+
+Whether you're using:
+- ✅ Memory + Native
+- ✅ SQLite + TypeORM  
+- ✅ MySQL + Sequelize
+- ✅ PostgreSQL + TypeORM
+- ✅ MongoDB + Mongoose
+
+The business logic remains identical!
+
+### Performance Comparison
+
+| Database | ORM | Setup Time | Query Performance | Memory Usage | Best For |
+|----------|-----|------------|-------------------|--------------|----------|
+| Memory | Native | Instant | Fastest | Lowest | Testing, Development |
+| SQLite | Native | Fast | Fast | Low | Small Apps, Prototypes |
+| SQLite | TypeORM | Fast | Good | Medium | Development, Small Production |
+| MySQL | TypeORM | Medium | Excellent | Medium | Medium Production Apps |
+| PostgreSQL | Sequelize | Medium | Excellent | Medium | Large Production Apps |
+| MongoDB | Mongoose | Fast | Good | Medium | Document-heavy Apps |
 
 ## Testing
 

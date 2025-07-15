@@ -1,6 +1,12 @@
 interface DatabaseConfig {
   type: 'memory' | 'sqlite' | 'mysql' | 'postgresql' | 'mongodb';
+  orm?: 'native' | 'typeorm' | 'sequelize' | 'mongoose';
   url?: string;
+  host?: string;
+  port?: number;
+  username?: string;
+  password?: string;
+  database?: string;
 }
 
 interface AppConfig {
@@ -16,7 +22,13 @@ export const config: AppConfig = {
   corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
   database: {
     type: (process.env.DB_TYPE as any) || 'memory',
-    url: process.env.DATABASE_URL
+    orm: (process.env.DB_ORM as any) || 'native',
+    url: process.env.DATABASE_URL,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : undefined,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
   }
 };
 
