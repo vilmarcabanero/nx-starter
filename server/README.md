@@ -45,6 +45,22 @@ npm start
 
 ## API Documentation
 
+### 📦 Postman Collection
+
+A comprehensive Postman collection is available for testing all API endpoints with various scenarios:
+
+- **Collection**: [`postman-collection.json`](postman-collection.json)
+- **Environment**: [`postman-environment.json`](postman-environment.json)
+- **Documentation**: [`POSTMAN.md`](POSTMAN.md)
+
+**Quick Import:**
+1. Open Postman
+2. Import both `postman-collection.json` and `postman-environment.json`
+3. Select "Task App Development Environment"
+4. Start testing all endpoints with happy path and error scenarios
+
+The collection includes 30+ requests organized by operation type with comprehensive test coverage.
+
 ### Base URL
 ```
 http://localhost:3001/api
