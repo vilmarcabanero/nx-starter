@@ -34,7 +34,9 @@
       "Bash(npm run build:*)",
       "Bash(npm run lint)",
       "Bash(npm install:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(true)",
+      "Bash(npx nx:*)"
     ],
     "deny": []
   }
