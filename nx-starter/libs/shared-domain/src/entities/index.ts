@@ -1,10 +1,10 @@
 /**
  * Domain entities
- * TODO: Export domain entities here
+ * Exports domain entities and base classes
  */
 
-// TODO: Export all domain entities
-// export * from './Todo';
+// Base classes
+export * from './Entity';
 
-// Placeholder export to make this a module
-export {};
+// Domain entities
+export * from './Todo';

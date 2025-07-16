@@ -1,10 +1,10 @@
 /**
  * Domain specifications
- * TODO: Export domain specifications here
+ * Exports domain specifications and base classes
  */
 
-// TODO: Export all domain specifications
-// export * from './TodoSpecifications';
+// Base classes
+export * from './Specification';
 
-// Placeholder export to make this a module
-export {};
+// Domain specifications
+export * from './TodoSpecifications';

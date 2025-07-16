@@ -36,7 +36,8 @@
       "Bash(npm install:*)",
       "Bash(npm run:*)",
       "Bash(true)",
-      "Bash(npx nx:*)"
+      "Bash(npx nx:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }

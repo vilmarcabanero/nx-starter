@@ -1,12 +1,12 @@
 /**
  * Domain value objects
- * TODO: Export domain value objects here
+ * Exports domain value objects and base classes
  */
 
-// TODO: Export all value objects
-// export * from './TodoId';
-// export * from './TodoTitle';
-// export * from './TodoPriority';
+// Base classes
+export * from './ValueObject';
 
-// Placeholder export to make this a module
-export {};
+// Value objects
+export * from './TodoId';
+export * from './TodoTitle';
+export * from './TodoPriority';

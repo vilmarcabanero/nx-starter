@@ -1,10 +1,7 @@
 /**
  * Domain exceptions
- * TODO: Export domain exceptions here
+ * Exports domain exceptions
  */
 
-// TODO: Export all domain exceptions
-// export * from './DomainExceptions';
-
-// Placeholder export to make this a module
-export {};
+// Domain exceptions
+export * from './DomainExceptions';
