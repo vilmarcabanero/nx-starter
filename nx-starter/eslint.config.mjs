@@ -34,7 +34,11 @@ export default [
             },
             {
               sourceTag: 'type:app',
-              onlyDependOnLibsWithTags: ['type:domain', 'type:application', 'type:util'],
+              onlyDependOnLibsWithTags: [
+                'type:domain',
+                'type:application',
+                'type:util',
+              ],
             },
           ],
         },

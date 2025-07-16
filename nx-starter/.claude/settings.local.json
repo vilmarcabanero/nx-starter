@@ -8,7 +8,13 @@
       "Bash(ls:*)",
       "Bash(nx test:*)",
       "Bash(nx build:*)",
-      "Bash(nx run-many:*)"
+      "Bash(nx run-many:*)",
+      "Bash(npm test)",
+      "Bash(npx nx run-many:*)",
+      "Bash(nx g:*)",
+      "Bash(npm install:*)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": []
   }
