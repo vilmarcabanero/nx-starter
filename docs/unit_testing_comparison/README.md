@@ -8,7 +8,7 @@ The project contains a robust test suite located in the `src/test/` directory, u
 
 ## Current State
 
-- **Project Directory**: `/Users/vilmar.cabanero/Documents/vilmarcabanero/code/personal/task-app-gh`
+- **Project Directory**: `/path/to/your/project/task-app-gh`
 - **Test Location**: `src/test/` (23 test files)
 - **No Secondary Implementation**: The referenced `task-app-gh-cc` directory does not exist in the current project
 
