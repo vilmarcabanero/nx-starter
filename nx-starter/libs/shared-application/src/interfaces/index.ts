@@ -1,11 +1,7 @@
 /**
  * Application interfaces
- * TODO: Export application interfaces here
+ * Service contracts and interfaces
  */
 
-// TODO: Export all interfaces
-// export * from './ITodoRepository';
-// export * from './ITodoService';
-
-// Placeholder export to make this a module
-export {};
+// Export all interfaces
+export * from './ITodoService';

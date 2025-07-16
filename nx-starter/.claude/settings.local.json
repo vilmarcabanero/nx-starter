@@ -3,7 +3,12 @@
     "allow": [
       "Bash(git ls-tree:*)",
       "Bash(npx nx test:*)",
-      "Bash(npx nx build:*)"
+      "Bash(npx nx build:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(nx test:*)",
+      "Bash(nx build:*)",
+      "Bash(nx run-many:*)"
     ],
     "deny": []
   }

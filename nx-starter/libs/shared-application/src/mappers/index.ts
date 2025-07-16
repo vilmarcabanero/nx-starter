@@ -1,10 +1,7 @@
 /**
  * Object mappers
- * TODO: Export object mappers here
+ * Domain-Application layer mapping utilities
  */
 
-// TODO: Export all mappers
-// export * from './TodoMapper';
-
-// Placeholder export to make this a module
-export {};
+// Export all mappers
+export * from './TodoMapper';

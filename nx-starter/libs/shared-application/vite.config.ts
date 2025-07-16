@@ -20,5 +20,6 @@ export default defineConfig(() => ({
       reportsDirectory: '../coverage/shared-application',
       provider: 'v8' as const,
     },
+    setupFiles: ['reflect-metadata'],
   },
 }));
