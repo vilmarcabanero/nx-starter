@@ -1,0 +1,1 @@
+Please create a comprehensive documentation with markdown (provide a snake-case-name forder under docs) which would compare the unit testing done in task-app-gh-cc/src/test directory and in src/test directory. Provide a README.md which serves as the overview that contains links to the other .md files.
