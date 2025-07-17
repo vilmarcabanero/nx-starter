@@ -4,7 +4,9 @@ import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
 
-export default defineConfig(() => ({
+export default defineConfig(async () => {
+  const tailwindcss = await import('@tailwindcss/vite');
+  return {
   root: __dirname,
   cacheDir: '../node_modules/.vite/frontend',
   server: {
@@ -15,7 +17,12 @@ export default defineConfig(() => ({
     port: 4200,
     host: 'localhost',
   },
-  plugins: [react(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
+  plugins: [tailwindcss.default(), react(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
+  resolve: {
+    alias: {
+      '@': '/src',
+    },
+  },
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [ nxViteTsPaths() ],
@@ -40,4 +47,4 @@ export default defineConfig(() => ({
       provider: 'v8' as const,
     },
   },
-}));
+}});

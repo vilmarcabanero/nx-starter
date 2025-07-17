@@ -17,14 +17,14 @@ exports[`Tabs Component Snapshots > Tabs root > renders basic tabs container 1`]
     tabindex="0"
   >
     <button
-      aria-controls="radix-«r0»-content-tab1"
+      aria-controls="radix-:r0:-content-tab1"
       aria-selected="true"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="active"
-      id="radix-«r0»-trigger-tab1"
+      id="radix-:r0:-trigger-tab1"
       role="tab"
       tabindex="-1"
       type="button"
@@ -33,12 +33,12 @@ exports[`Tabs Component Snapshots > Tabs root > renders basic tabs container 1`]
     </button>
   </div>
   <div
-    aria-labelledby="radix-«r0»-trigger-tab1"
+    aria-labelledby="radix-:r0:-trigger-tab1"
     class="flex-1 outline-none"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="active"
-    id="radix-«r0»-content-tab1"
+    id="radix-:r0:-content-tab1"
     role="tabpanel"
     style="animation-duration: 0s;"
     tabindex="0"
@@ -65,14 +65,14 @@ exports[`Tabs Component Snapshots > Tabs root > renders tabs with custom classNa
     tabindex="0"
   >
     <button
-      aria-controls="radix-«r2»-content-tab1"
+      aria-controls="radix-:r2:-content-tab1"
       aria-selected="true"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="active"
-      id="radix-«r2»-trigger-tab1"
+      id="radix-:r2:-trigger-tab1"
       role="tab"
       tabindex="-1"
       type="button"
@@ -81,12 +81,12 @@ exports[`Tabs Component Snapshots > Tabs root > renders tabs with custom classNa
     </button>
   </div>
   <div
-    aria-labelledby="radix-«r2»-trigger-tab1"
+    aria-labelledby="radix-:r2:-trigger-tab1"
     class="flex-1 outline-none"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="active"
-    id="radix-«r2»-content-tab1"
+    id="radix-:r2:-content-tab1"
     role="tabpanel"
     style="animation-duration: 0s;"
     tabindex="0"
@@ -104,12 +104,12 @@ exports[`Tabs Component Snapshots > TabsContent > renders basic tab content 1`] 
   dir="ltr"
 >
   <div
-    aria-labelledby="radix-«ri»-trigger-tab1"
+    aria-labelledby="radix-:ri:-trigger-tab1"
     class="flex-1 outline-none"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="active"
-    id="radix-«ri»-content-tab1"
+    id="radix-:ri:-content-tab1"
     role="tabpanel"
     style="animation-duration: 0s;"
     tabindex="0"
@@ -129,12 +129,12 @@ exports[`Tabs Component Snapshots > TabsContent > renders tab content with custo
   dir="ltr"
 >
   <div
-    aria-labelledby="radix-«rj»-trigger-tab1"
+    aria-labelledby="radix-:rj:-trigger-tab1"
     class="flex-1 outline-none custom-content"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="active"
-    id="radix-«rj»-content-tab1"
+    id="radix-:rj:-content-tab1"
     role="tabpanel"
     style="animation-duration: 0s;"
     tabindex="0"
@@ -163,14 +163,14 @@ exports[`Tabs Component Snapshots > TabsList > renders basic tabs list 1`] = `
     tabindex="0"
   >
     <button
-      aria-controls="radix-«r4»-content-tab1"
+      aria-controls="radix-:r4:-content-tab1"
       aria-selected="true"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="active"
-      id="radix-«r4»-trigger-tab1"
+      id="radix-:r4:-trigger-tab1"
       role="tab"
       tabindex="-1"
       type="button"
@@ -178,14 +178,14 @@ exports[`Tabs Component Snapshots > TabsList > renders basic tabs list 1`] = `
       Tab 1
     </button>
     <button
-      aria-controls="radix-«r4»-content-tab2"
+      aria-controls="radix-:r4:-content-tab2"
       aria-selected="false"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="inactive"
-      id="radix-«r4»-trigger-tab2"
+      id="radix-:r4:-trigger-tab2"
       role="tab"
       tabindex="-1"
       type="button"
@@ -213,14 +213,14 @@ exports[`Tabs Component Snapshots > TabsList > renders tabs list with custom cla
     tabindex="0"
   >
     <button
-      aria-controls="radix-«r7»-content-tab1"
+      aria-controls="radix-:r7:-content-tab1"
       aria-selected="true"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="active"
-      id="radix-«r7»-trigger-tab1"
+      id="radix-:r7:-trigger-tab1"
       role="tab"
       tabindex="-1"
       type="button"
@@ -228,14 +228,14 @@ exports[`Tabs Component Snapshots > TabsList > renders tabs list with custom cla
       Tab 1
     </button>
     <button
-      aria-controls="radix-«r7»-content-tab2"
+      aria-controls="radix-:r7:-content-tab2"
       aria-selected="false"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="inactive"
-      id="radix-«r7»-trigger-tab2"
+      id="radix-:r7:-trigger-tab2"
       role="tab"
       tabindex="-1"
       type="button"
@@ -263,14 +263,14 @@ exports[`Tabs Component Snapshots > TabsTrigger > renders basic tab trigger 1`] 
     tabindex="0"
   >
     <button
-      aria-controls="radix-«ra»-content-tab1"
+      aria-controls="radix-:ra:-content-tab1"
       aria-selected="true"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="active"
-      id="radix-«ra»-trigger-tab1"
+      id="radix-:ra:-trigger-tab1"
       role="tab"
       tabindex="-1"
       type="button"
@@ -298,7 +298,7 @@ exports[`Tabs Component Snapshots > TabsTrigger > renders disabled tab trigger 1
     tabindex="-1"
   >
     <button
-      aria-controls="radix-«re»-content-tab1"
+      aria-controls="radix-:re:-content-tab1"
       aria-selected="true"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-disabled=""
@@ -307,7 +307,7 @@ exports[`Tabs Component Snapshots > TabsTrigger > renders disabled tab trigger 1
       data-slot="tabs-trigger"
       data-state="active"
       disabled=""
-      id="radix-«re»-trigger-tab1"
+      id="radix-:re:-trigger-tab1"
       role="tab"
       tabindex="-1"
       type="button"
@@ -335,14 +335,14 @@ exports[`Tabs Component Snapshots > TabsTrigger > renders tab trigger with custo
     tabindex="0"
   >
     <button
-      aria-controls="radix-«rc»-content-tab1"
+      aria-controls="radix-:rc:-content-tab1"
       aria-selected="true"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 custom-trigger"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="active"
-      id="radix-«rc»-trigger-tab1"
+      id="radix-:rc:-trigger-tab1"
       role="tab"
       tabindex="-1"
       type="button"
@@ -370,14 +370,14 @@ exports[`Tabs Component Snapshots > TabsTrigger > renders tab trigger with icon 
     tabindex="0"
   >
     <button
-      aria-controls="radix-«rg»-content-settings"
+      aria-controls="radix-:rg:-content-settings"
       aria-selected="true"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="active"
-      id="radix-«rg»-trigger-settings"
+      id="radix-:rg:-trigger-settings"
       role="tab"
       tabindex="-1"
       type="button"
@@ -435,7 +435,7 @@ exports[`Tabs Component Snapshots > accessibility > renders tabs with aria attri
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="active"
-      id="radix-«r12»-trigger-accessible"
+      id="radix-:r12:-trigger-accessible"
       role="tab"
       tabindex="-1"
       type="button"
@@ -444,7 +444,7 @@ exports[`Tabs Component Snapshots > accessibility > renders tabs with aria attri
     </button>
   </div>
   <div
-    aria-labelledby="radix-«r12»-trigger-accessible"
+    aria-labelledby="radix-:r12:-trigger-accessible"
     class="flex-1 outline-none"
     data-orientation="horizontal"
     data-slot="tabs-content"
@@ -478,14 +478,14 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders simple two-
     tabindex="0"
   >
     <button
-      aria-controls="radix-«rk»-content-account"
+      aria-controls="radix-:rk:-content-account"
       aria-selected="true"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="active"
-      id="radix-«rk»-trigger-account"
+      id="radix-:rk:-trigger-account"
       role="tab"
       tabindex="-1"
       type="button"
@@ -493,14 +493,14 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders simple two-
       Account
     </button>
     <button
-      aria-controls="radix-«rk»-content-password"
+      aria-controls="radix-:rk:-content-password"
       aria-selected="false"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="inactive"
-      id="radix-«rk»-trigger-password"
+      id="radix-:rk:-trigger-password"
       role="tab"
       tabindex="-1"
       type="button"
@@ -509,12 +509,12 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders simple two-
     </button>
   </div>
   <div
-    aria-labelledby="radix-«rk»-trigger-account"
+    aria-labelledby="radix-:rk:-trigger-account"
     class="flex-1 outline-none"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="active"
-    id="radix-«rk»-content-account"
+    id="radix-:rk:-content-account"
     role="tabpanel"
     style="animation-duration: 0s;"
     tabindex="0"
@@ -524,13 +524,13 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders simple two-
     </p>
   </div>
   <div
-    aria-labelledby="radix-«rk»-trigger-password"
+    aria-labelledby="radix-:rk:-trigger-password"
     class="flex-1 outline-none"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="inactive"
     hidden=""
-    id="radix-«rk»-content-password"
+    id="radix-:rk:-content-password"
     role="tabpanel"
     tabindex="0"
   />
@@ -554,14 +554,14 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with c
     tabindex="0"
   >
     <button
-      aria-controls="radix-«rv»-content-custom"
+      aria-controls="radix-:rv:-content-custom"
       aria-selected="true"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 text-blue-600"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="active"
-      id="radix-«rv»-trigger-custom"
+      id="radix-:rv:-trigger-custom"
       role="tab"
       tabindex="-1"
       type="button"
@@ -569,14 +569,14 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with c
       Custom Tab 1
     </button>
     <button
-      aria-controls="radix-«rv»-content-styled"
+      aria-controls="radix-:rv:-content-styled"
       aria-selected="false"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 text-green-600"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="inactive"
-      id="radix-«rv»-trigger-styled"
+      id="radix-:rv:-trigger-styled"
       role="tab"
       tabindex="-1"
       type="button"
@@ -585,12 +585,12 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with c
     </button>
   </div>
   <div
-    aria-labelledby="radix-«rv»-trigger-custom"
+    aria-labelledby="radix-:rv:-trigger-custom"
     class="flex-1 outline-none mt-4 p-4 border rounded"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="active"
-    id="radix-«rv»-content-custom"
+    id="radix-:rv:-content-custom"
     role="tabpanel"
     style="animation-duration: 0s;"
     tabindex="0"
@@ -600,13 +600,13 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with c
     </p>
   </div>
   <div
-    aria-labelledby="radix-«rv»-trigger-styled"
+    aria-labelledby="radix-:rv:-trigger-styled"
     class="flex-1 outline-none mt-4 p-4 border rounded"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="inactive"
     hidden=""
-    id="radix-«rv»-content-styled"
+    id="radix-:rv:-content-styled"
     role="tabpanel"
     tabindex="0"
   />
@@ -630,14 +630,14 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with d
     tabindex="0"
   >
     <button
-      aria-controls="radix-«rr»-content-available"
+      aria-controls="radix-:rr:-content-available"
       aria-selected="true"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="active"
-      id="radix-«rr»-trigger-available"
+      id="radix-:rr:-trigger-available"
       role="tab"
       tabindex="-1"
       type="button"
@@ -645,7 +645,7 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with d
       Available
     </button>
     <button
-      aria-controls="radix-«rr»-content-disabled"
+      aria-controls="radix-:rr:-content-disabled"
       aria-selected="false"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-disabled=""
@@ -654,7 +654,7 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with d
       data-slot="tabs-trigger"
       data-state="inactive"
       disabled=""
-      id="radix-«rr»-trigger-disabled"
+      id="radix-:rr:-trigger-disabled"
       role="tab"
       tabindex="-1"
       type="button"
@@ -662,14 +662,14 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with d
       Disabled
     </button>
     <button
-      aria-controls="radix-«rr»-content-another"
+      aria-controls="radix-:rr:-content-another"
       aria-selected="false"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="inactive"
-      id="radix-«rr»-trigger-another"
+      id="radix-:rr:-trigger-another"
       role="tab"
       tabindex="-1"
       type="button"
@@ -678,12 +678,12 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with d
     </button>
   </div>
   <div
-    aria-labelledby="radix-«rr»-trigger-available"
+    aria-labelledby="radix-:rr:-trigger-available"
     class="flex-1 outline-none"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="active"
-    id="radix-«rr»-content-available"
+    id="radix-:rr:-content-available"
     role="tabpanel"
     style="animation-duration: 0s;"
     tabindex="0"
@@ -693,24 +693,24 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with d
     </p>
   </div>
   <div
-    aria-labelledby="radix-«rr»-trigger-disabled"
+    aria-labelledby="radix-:rr:-trigger-disabled"
     class="flex-1 outline-none"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="inactive"
     hidden=""
-    id="radix-«rr»-content-disabled"
+    id="radix-:rr:-content-disabled"
     role="tabpanel"
     tabindex="0"
   />
   <div
-    aria-labelledby="radix-«rr»-trigger-another"
+    aria-labelledby="radix-:rr:-trigger-another"
     class="flex-1 outline-none"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="inactive"
     hidden=""
-    id="radix-«rr»-content-another"
+    id="radix-:rr:-content-another"
     role="tabpanel"
     tabindex="0"
   />
@@ -734,14 +734,14 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with i
     tabindex="0"
   >
     <button
-      aria-controls="radix-«rn»-content-profile"
+      aria-controls="radix-:rn:-content-profile"
       aria-selected="true"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="active"
-      id="radix-«rn»-trigger-profile"
+      id="radix-:rn:-trigger-profile"
       role="tab"
       tabindex="-1"
       type="button"
@@ -771,14 +771,14 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with i
       Profile
     </button>
     <button
-      aria-controls="radix-«rn»-content-notifications"
+      aria-controls="radix-:rn:-content-notifications"
       aria-selected="false"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="inactive"
-      id="radix-«rn»-trigger-notifications"
+      id="radix-:rn:-trigger-notifications"
       role="tab"
       tabindex="-1"
       type="button"
@@ -806,14 +806,14 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with i
       Notifications
     </button>
     <button
-      aria-controls="radix-«rn»-content-settings"
+      aria-controls="radix-:rn:-content-settings"
       aria-selected="false"
       class="data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       data-orientation="horizontal"
       data-radix-collection-item=""
       data-slot="tabs-trigger"
       data-state="inactive"
-      id="radix-«rn»-trigger-settings"
+      id="radix-:rn:-trigger-settings"
       role="tab"
       tabindex="-1"
       type="button"
@@ -844,12 +844,12 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with i
     </button>
   </div>
   <div
-    aria-labelledby="radix-«rn»-trigger-profile"
+    aria-labelledby="radix-:rn:-trigger-profile"
     class="flex-1 outline-none"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="active"
-    id="radix-«rn»-content-profile"
+    id="radix-:rn:-content-profile"
     role="tabpanel"
     style="animation-duration: 0s;"
     tabindex="0"
@@ -862,24 +862,24 @@ exports[`Tabs Component Snapshots > complete tabs examples > renders tabs with i
     </p>
   </div>
   <div
-    aria-labelledby="radix-«rn»-trigger-notifications"
+    aria-labelledby="radix-:rn:-trigger-notifications"
     class="flex-1 outline-none"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="inactive"
     hidden=""
-    id="radix-«rn»-content-notifications"
+    id="radix-:rn:-content-notifications"
     role="tabpanel"
     tabindex="0"
   />
   <div
-    aria-labelledby="radix-«rn»-trigger-settings"
+    aria-labelledby="radix-:rn:-trigger-settings"
     class="flex-1 outline-none"
     data-orientation="horizontal"
     data-slot="tabs-content"
     data-state="inactive"
     hidden=""
-    id="radix-«rn»-content-settings"
+    id="radix-:rn:-content-settings"
     role="tabpanel"
     tabindex="0"
   />
