@@ -1,21 +1,26 @@
 Your directory structure is **exceptionally well-designed** and demonstrates a deep understanding of DDD, Clean Architecture, and SOLID principles. Here's a detailed analysis with suggestions for refinement:
 
 ### Key Strengths ✅
+
 1. **Proper Layer Separation**:
+
    - `shared-domain` = Pure domain logic (entities, VOs, specs)
    - `shared-application` = Application orchestration (use cases, services)
    - `shared-utils` = Infrastructure-agnostic helpers
    - Perfectly follows Clean Architecture dependency rule: `application → domain ← utils`
 
 2. **CQRS Implementation**:
+
    - Clear command/query separation in `use-cases`
    - Dedicated command services and query handlers
 
 3. **Test Coverage**:
+
    - `.spec.ts` files co-located with implementations
    - Value object and entity validation tests
 
 4. **DDD Building Blocks**:
+
    - Entities, VOs, domain services, specifications
    - Repository interfaces in domain layer
 
@@ -26,6 +31,7 @@ Your directory structure is **exceptionally well-designed** and demonstrates a d
 ### Recommendations for Enhancement 🔧
 
 1. **Library Naming Convention**:
+
    ```diff
    - shared-domain
    - shared-application
@@ -34,9 +40,11 @@ Your directory structure is **exceptionally well-designed** and demonstrates a d
    + application-core
    + utils-core
    ```
-   *Why:* "Core" better denotes foundational nature; "shared" is implicit in monorepos.
+
+   _Why:_ "Core" better denotes foundational nature; "shared" is implicit in monorepos.
 
 2. **Refine Domain Layer Structure**:
+
    ```text
    shared-domain/
    └── src/
@@ -54,15 +62,13 @@ Your directory structure is **exceptionally well-designed** and demonstrates a d
    ```
 
 3. **Application Layer Improvements**:
+
    - **Use Case Execution**:
      ```ts
      // Use command objects instead of multiple files
      // apps/starter-api/src/todos/commands/create-todo.command.ts
      export class CreateTodoCommand {
-       constructor(
-         public readonly title: string,
-         public readonly priority: TodoPriority
-       ) {}
+       constructor(public readonly title: string, public readonly priority: TodoPriority) {}
      }
      ```
    - **Unified Exception Handling**:
@@ -76,6 +82,7 @@ Your directory structure is **exceptionally well-designed** and demonstrates a d
      ```
 
 4. **TypeScript Barrel File Optimization**:
+
    ```ts
    // Instead of index.ts in every folder:
    // libs/domain-core/src/todo/index.ts
@@ -85,6 +92,7 @@ Your directory structure is **exceptionally well-designed** and demonstrates a d
    ```
 
 5. **Vite Config Simplification**:
+
    ```ts
    // Remove vite.config.ts from domain/libs - they shouldn't need bundling
    // Only keep for application/utils if building distributables
@@ -99,13 +107,15 @@ Your directory structure is **exceptionally well-designed** and demonstrates a d
            │   └── typeorm-todo.repository.ts  # Implements ITodoRepository
            └── database/                       # DB-specific code
      ```
-     *Why:* Keeps domain pure; implements ports in infrastructure
+     _Why:_ Keeps domain pure; implements ports in infrastructure
 
 ### SOLID Principles Audit 🔍
+
 1. **Single Responsibility**: ✅ Each class/file has clear purpose
 2. **Open/Closed**: ✅ Use cases extendable via new commands
 3. **Liskov**: ✅ Interfaces ensure substitutability
-4. **Interface Segregation**: 
+4. **Interface Segregation**:
+
    ```ts
    // Consider splitting:
    interface ITodoRepository {
@@ -113,22 +123,26 @@ Your directory structure is **exceptionally well-designed** and demonstrates a d
      findAll(): Promise<Todo[]>;
      save(todo: Todo): Promise<void>;
    }
-   
+
    // Into:
    interface ITodoReader {
      findById(id: TodoId): Promise<Todo>;
      findAll(): Promise<Todo[]>;
    }
-   
+
    interface ITodoWriter {
      save(todo: Todo): Promise<void>;
    }
    ```
+
 5. **Dependency Inversion**: ✅ Domain defines interfaces, infrastructure implements
 
 ### Production Readiness Checklist
+
 1. **Transaction Management**:
+
    - Add Unit of Work pattern to `application-core`
+
    ```ts
    export interface IUnitOfWork {
      startTransaction(): Promise<void>;
@@ -138,6 +152,7 @@ Your directory structure is **exceptionally well-designed** and demonstrates a d
    ```
 
 2. **Event Publishing**:
+
    ```ts
    // shared-domain/src/events/
    export interface IDomainEventPublisher {
@@ -146,20 +161,22 @@ Your directory structure is **exceptionally well-designed** and demonstrates a d
    ```
 
 3. **DTO Validation**:
+
    ```ts
    // application-core/src/dto/
    import { IsNotEmpty, IsEnum } from 'class-validator';
-   
+
    export class CreateTodoDto {
      @IsNotEmpty()
      title!: string;
-   
+
      @IsEnum(TodoPriority)
      priority!: TodoPriority;
    }
    ```
 
 ### Suggested Final Structure
+
 ```text
 libs/
 ├── domain-core/          # Pure business logic
@@ -171,6 +188,7 @@ libs/
 ```
 
 ### Key Architectural Wins
+
 1. **Testability**: Domain objects fully testable without mocks
 2. **Framework Independence**: Core logic decoupled from Express/React
 3. **Deployability**: Each app only pulls needed dependencies
