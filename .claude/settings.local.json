@@ -37,7 +37,12 @@
       "Bash(npm run:*)",
       "Bash(true)",
       "Bash(npx nx:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(nx run-many:*)",
+      "Bash(nx build:*)",
+      "Bash(nx serve:*)",
+      "Bash(nx test:*)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }
