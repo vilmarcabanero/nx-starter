@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { TodoItem } from './TodoItem';
-import { Todo } from '../../../../core/domain/todo/entities/Todo';
+import { Todo } from '@nx-starter/shared-domain';
 import { TEST_UUIDS } from '../../../../test/test-helpers';
 
 // Mock the store
@@ -11,7 +11,7 @@ const mockStore = {
   updateTodo: vi.fn(),
 };
 
-vi.mock('../../../../core/infrastructure/todo/state/TodoStore', () => ({
+vi.mock('../../../infrastructure/state/TodoStore', () => ({
   useTodoStore: () => mockStore
 }));
 

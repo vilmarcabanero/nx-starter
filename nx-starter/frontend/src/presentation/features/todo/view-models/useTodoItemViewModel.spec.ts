@@ -3,7 +3,7 @@ import { renderHook, act } from '@testing-library/react';
 import { useTodoItemViewModel } from './useTodoItemViewModel';
 import { useTodoStore } from '../../../../infrastructure/state/TodoStore';
 import { Todo } from '@nx-starter/shared-domain';
-// import { TEST_UUIDS } from '@/test/test-helpers'; // TODO: Add test helpers to shared-utils
+import { TEST_UUIDS } from '../../../../test/test-helpers';
 
 // Mock the store
 vi.mock('../../../../infrastructure/state/TodoStore');
