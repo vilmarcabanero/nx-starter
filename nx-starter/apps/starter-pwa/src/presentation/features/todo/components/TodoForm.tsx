@@ -44,13 +44,13 @@ export const TodoForm: React.FC = () => {
               placeholder="What needs to be done?"
               disabled={viewModel.isGlobalLoading || viewModel.isSubmitting}
               className={
-                errors.title || viewModel.validationErrors.title
+                errors.title || (viewModel.shouldShowValidationErrors && viewModel.validationErrors.title)
                   ? 'border-destructive'
                   : ''
               }
               data-testid="todo-input"
             />
-            {(errors.title || viewModel.validationErrors.title) && (
+            {(errors.title || (viewModel.shouldShowValidationErrors && viewModel.validationErrors.title)) && (
               <p
                 className="text-sm text-destructive mt-1"
                 data-testid="todo-input-error"
