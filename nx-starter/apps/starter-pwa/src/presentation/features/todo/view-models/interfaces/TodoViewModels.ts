@@ -20,6 +20,7 @@ export interface TodoFormViewModel {
   isSubmitting: boolean;
   isGlobalLoading: boolean;
   validationErrors: Record<string, string>;
+  shouldShowValidationErrors: boolean;
 
   // Actions
   submitTodo(title: string): Promise<void>;

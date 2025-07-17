@@ -29,6 +29,7 @@ describe('useTodoFormViewModel', () => {
 
       expect(result.current.isSubmitting).toBe(false);
       expect(result.current.validationErrors).toEqual({});
+      expect(result.current.shouldShowValidationErrors).toBe(false);
       expect(result.current.isGlobalLoading).toBe(false);
     });
 
@@ -52,7 +53,7 @@ describe('useTodoFormViewModel', () => {
       expect(result.current.validationErrors).toEqual({});
     });
 
-    it('should return false and set error for empty title', () => {
+    it('should return false for empty title but not set errors initially', () => {
       const { result } = renderHook(() => useTodoFormViewModel());
 
       act(() => {
@@ -60,10 +61,11 @@ describe('useTodoFormViewModel', () => {
         expect(isValid).toBe(false);
       });
 
-      expect(result.current.validationErrors.title).toBe('Title is required');
+      // Should not set errors when shouldShowValidationErrors is false
+      expect(result.current.validationErrors).toEqual({});
     });
 
-    it('should return false and set error for whitespace only title', () => {
+    it('should return false for whitespace only title but not set errors initially', () => {
       const { result } = renderHook(() => useTodoFormViewModel());
 
       act(() => {
@@ -71,12 +73,11 @@ describe('useTodoFormViewModel', () => {
         expect(isValid).toBe(false);
       });
 
-      expect(result.current.validationErrors.title).toBe(
-        'Title cannot be empty'
-      );
+      // Should not set errors when shouldShowValidationErrors is false
+      expect(result.current.validationErrors).toEqual({});
     });
 
-    it('should return false and set error for title too short', () => {
+    it('should return false for title too short but not set errors initially', () => {
       const { result } = renderHook(() => useTodoFormViewModel());
 
       act(() => {
@@ -84,12 +85,11 @@ describe('useTodoFormViewModel', () => {
         expect(isValid).toBe(false);
       });
 
-      expect(result.current.validationErrors.title).toBe(
-        'Title must be at least 2 characters long'
-      );
+      // Should not set errors when shouldShowValidationErrors is false
+      expect(result.current.validationErrors).toEqual({});
     });
 
-    it('should return false and set error for title too long', () => {
+    it('should return false for title too long but not set errors initially', () => {
       const { result } = renderHook(() => useTodoFormViewModel());
       const longTitle = 'a'.repeat(256);
 
@@ -98,22 +98,27 @@ describe('useTodoFormViewModel', () => {
         expect(isValid).toBe(false);
       });
 
-      expect(result.current.validationErrors.title).toBe(
-        'Title cannot exceed 255 characters'
-      );
+      // Should not set errors when shouldShowValidationErrors is false
+      expect(result.current.validationErrors).toEqual({});
     });
 
-    it('should clear previous errors on valid input', () => {
+    it('should clear previous errors on valid input', async () => {
       const { result } = renderHook(() => useTodoFormViewModel());
 
-      act(() => {
-        // First invalid
-        result.current.validateTitle('');
+      // First invalid - simulate after submission attempt
+      await act(async () => {
+        try {
+          await result.current.submitTodo('');
+        } catch (error) {
+          // Expected to throw
+        }
       });
+      
+      // Should have validation errors set
       expect(result.current.validationErrors.title).toBeTruthy();
 
+      // Then valid input should clear errors
       act(() => {
-        // Then valid
         result.current.validateTitle('Valid title');
       });
       expect(result.current.validationErrors).toEqual({});
@@ -134,6 +139,7 @@ describe('useTodoFormViewModel', () => {
       });
       expect(result.current.isSubmitting).toBe(false);
       expect(result.current.validationErrors).toEqual({});
+      expect(result.current.shouldShowValidationErrors).toBe(false);
     });
 
     it('should trim title before submitting', async () => {
@@ -184,14 +190,22 @@ describe('useTodoFormViewModel', () => {
     it('should throw error for invalid title', async () => {
       const { result } = renderHook(() => useTodoFormViewModel());
 
-      await expect(
-        act(async () => {
+      let error: Error | undefined;
+      await act(async () => {
+        try {
           await result.current.submitTodo('');
-        })
-      ).rejects.toThrow('Validation failed');
+        } catch (e) {
+          error = e as Error;
+        }
+      });
 
+      expect(error).toBeDefined();
+      expect(error?.message).toBe('Validation failed');
       expect(mockStore.createTodo).not.toHaveBeenCalled();
       expect(result.current.isSubmitting).toBe(false);
+      // Check that after failed submission, the flag should be set
+      expect(result.current.shouldShowValidationErrors).toBe(true);
+      expect(result.current.validationErrors.title).toBe('Title is required');
     });
 
     it('should handle submission errors', async () => {
@@ -292,9 +306,13 @@ describe('useTodoFormViewModel', () => {
       mockStore.createTodo.mockResolvedValue(undefined);
       const { result } = renderHook(() => useTodoFormViewModel());
 
-      // First set some validation errors
-      act(() => {
-        result.current.validateTitle('');
+      // First set some validation errors by attempting to submit invalid data
+      await act(async () => {
+        try {
+          await result.current.submitTodo('');
+        } catch (error) {
+          // Expected to throw
+        }
       });
       expect(result.current.validationErrors.title).toBeTruthy();
 
@@ -357,17 +375,23 @@ describe('useTodoFormViewModel', () => {
       expect(submitResult).toBe(true);
       expect(result.current.validationErrors).toEqual({});
       expect(result.current.isSubmitting).toBe(false);
+      expect(result.current.shouldShowValidationErrors).toBe(false);
     });
 
     it('should clear errors after successful submission', async () => {
       mockStore.createTodo.mockResolvedValue(undefined);
       const { result } = renderHook(() => useTodoFormViewModel());
 
-      // First, create validation error and check it was set
-      act(() => {
-        result.current.validateTitle('');
+      // First, create validation error by submitting invalid input
+      await act(async () => {
+        try {
+          await result.current.submitTodo('');
+        } catch (error) {
+          // Expected to throw
+        }
       });
       expect(result.current.validationErrors.title).toBeTruthy();
+      expect(result.current.shouldShowValidationErrors).toBe(true);
 
       // Then submit valid todo
       await act(async () => {
@@ -375,6 +399,61 @@ describe('useTodoFormViewModel', () => {
       });
 
       expect(result.current.validationErrors).toEqual({});
+      expect(result.current.shouldShowValidationErrors).toBe(false);
+    });
+
+    it('should show validation errors after failed submission attempt', async () => {
+      const { result } = renderHook(() => useTodoFormViewModel());
+
+      // Initially no errors should be shown
+      expect(result.current.shouldShowValidationErrors).toBe(false);
+      
+      // Validate invalid title - should not show errors yet
+      act(() => {
+        const isValid = result.current.validateTitle('a');
+        expect(isValid).toBe(false);
+      });
+      expect(result.current.validationErrors).toEqual({});
+
+      // Try to submit invalid title - should enable error display
+      await act(async () => {
+        try {
+          await result.current.submitTodo('a');
+        } catch (error) {
+          // Expected to throw
+        }
+      });
+
+      expect(result.current.shouldShowValidationErrors).toBe(true);
+      expect(result.current.validationErrors.title).toBe('Title must be at least 2 characters long');
+    });
+
+    it('should keep showing validation errors after submission until successful', async () => {
+      mockStore.createTodo.mockResolvedValue(undefined);
+      const { result } = renderHook(() => useTodoFormViewModel());
+
+      // First submission with invalid data
+      await act(async () => {
+        try {
+          await result.current.submitTodo('');
+        } catch (error) {
+          // Expected to throw
+        }
+      });
+      expect(result.current.shouldShowValidationErrors).toBe(true);
+
+      // Subsequent validation calls should now show errors
+      act(() => {
+        const isValid = result.current.validateTitle('a');
+        expect(isValid).toBe(false);
+      });
+      expect(result.current.validationErrors.title).toBe('Title must be at least 2 characters long');
+
+      // Successful submission should reset the flag
+      await act(async () => {
+        await result.current.submitTodo('Valid title');
+      });
+      expect(result.current.shouldShowValidationErrors).toBe(false);
     });
   });
 });

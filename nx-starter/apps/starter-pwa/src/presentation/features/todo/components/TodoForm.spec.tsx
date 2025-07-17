@@ -9,6 +9,7 @@ const mockViewModel = {
   isSubmitting: false,
   isGlobalLoading: false,
   validationErrors: {},
+  shouldShowValidationErrors: false,
   submitTodo: vi.fn(),
   validateTitle: vi.fn(),
 };
@@ -24,6 +25,7 @@ describe('TodoForm', () => {
     mockViewModel.isSubmitting = false;
     mockViewModel.isGlobalLoading = false;
     mockViewModel.validationErrors = {};
+    mockViewModel.shouldShowValidationErrors = false;
     mockViewModel.validateTitle.mockReturnValue(true);
   });
 
@@ -92,6 +94,7 @@ describe('TodoForm', () => {
     const user = userEvent.setup();
     mockViewModel.validateTitle.mockReturnValue(false);
     mockViewModel.validationErrors = { title: 'Title is required' };
+    mockViewModel.shouldShowValidationErrors = true;
 
     render(<TodoForm />);
 
@@ -108,6 +111,7 @@ describe('TodoForm', () => {
     const user = userEvent.setup();
     mockViewModel.validateTitle.mockReturnValue(false);
     mockViewModel.validationErrors = { title: 'Title cannot be empty' };
+    mockViewModel.shouldShowValidationErrors = true;
 
     render(<TodoForm />);
 
@@ -184,6 +188,7 @@ describe('TodoForm', () => {
   it('should show validation errors for required field', async () => {
     const user = userEvent.setup();
     mockViewModel.validationErrors = { title: 'Title is required' };
+    mockViewModel.shouldShowValidationErrors = true;
 
     render(<TodoForm />);
 
@@ -201,6 +206,7 @@ describe('TodoForm', () => {
   it('should apply error styling when validation fails', async () => {
     const user = userEvent.setup();
     mockViewModel.validationErrors = { title: 'Title is required' };
+    mockViewModel.shouldShowValidationErrors = true;
 
     render(<TodoForm />);
 
@@ -219,6 +225,7 @@ describe('TodoForm', () => {
     mockViewModel.validationErrors = {
       title: 'Title must be at least 2 characters long',
     };
+    mockViewModel.shouldShowValidationErrors = true;
 
     render(<TodoForm />);
 
@@ -232,6 +239,7 @@ describe('TodoForm', () => {
     mockViewModel.validationErrors = {
       title: 'Title cannot exceed 255 characters',
     };
+    mockViewModel.shouldShowValidationErrors = true;
 
     render(<TodoForm />);
 
@@ -243,6 +251,7 @@ describe('TodoForm', () => {
 
   it('should prioritize react-hook-form error over viewModel error', () => {
     mockViewModel.validationErrors = { title: 'ViewModel error' };
+    mockViewModel.shouldShowValidationErrors = true;
 
     render(<TodoForm />);
 
@@ -284,5 +293,57 @@ describe('TodoForm', () => {
 
     expect(input).toBeDisabled();
     expect(button).toBeDisabled();
+  });
+
+  it('should not show validation errors on typing before first submission', async () => {
+    const user = userEvent.setup();
+    
+    render(<TodoForm />);
+
+    const input = screen.getByPlaceholderText('What needs to be done?');
+    
+    // Type a single character (invalid length)
+    await user.type(input, 'a');
+    
+    // Should not show validation error yet
+    expect(screen.queryByTestId('todo-input-error')).not.toBeInTheDocument();
+    
+    // Type more characters but still invalid
+    await user.clear(input);
+    await user.type(input, 'b');
+    
+    // Should still not show validation error
+    expect(screen.queryByTestId('todo-input-error')).not.toBeInTheDocument();
+  });
+
+  it('should show validation errors on typing after first submission attempt', async () => {
+    const user = userEvent.setup();
+    mockViewModel.validateTitle.mockReturnValue(false);
+    mockViewModel.validationErrors = { title: 'Title must be at least 2 characters long' };
+    mockViewModel.shouldShowValidationErrors = true;
+    
+    render(<TodoForm />);
+
+    const input = screen.getByPlaceholderText('What needs to be done?');
+    const button = screen.getByRole('button', { name: 'Add Todo' });
+    
+    // First, try to submit with invalid input
+    await user.type(input, 'a');
+    await user.click(button);
+    
+    // Should show validation error after submission attempt
+    await waitFor(() => {
+      expect(screen.getByTestId('todo-input-error')).toBeInTheDocument();
+    });
+    
+    // Clear and type another invalid character
+    await user.clear(input);
+    mockViewModel.validationErrors = { title: 'Title must be at least 2 characters long' };
+    await user.type(input, 'b');
+    
+    // Should now show validation error immediately on typing after first submission
+    await waitFor(() => {
+      expect(screen.getByTestId('todo-input-error')).toBeInTheDocument();
+    });
   });
 });

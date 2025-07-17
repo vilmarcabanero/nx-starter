@@ -12,8 +12,30 @@ export const useTodoFormViewModel = (): TodoFormViewModel => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
+  const [shouldShowValidationErrors, setShouldShowValidationErrors] = useState(false);
 
   const validateTitle = useCallback((title: string): boolean => {
+    const errors: Record<string, string> = {};
+
+    if (!title) {
+      errors.title = 'Title is required';
+    } else if (title && !title.trim()) {
+      errors.title = 'Title cannot be empty';
+    } else if (title.trim().length < 2) {
+      errors.title = 'Title must be at least 2 characters long';
+    } else if (title.trim().length > 255) {
+      errors.title = 'Title cannot exceed 255 characters';
+    }
+
+    // Only set validation errors if we should show them
+    if (shouldShowValidationErrors) {
+      setValidationErrors(errors);
+    }
+    
+    return Object.keys(errors).length === 0;
+  }, [shouldShowValidationErrors]);
+
+  const validateTitleAndSetErrors = useCallback((title: string): boolean => {
     const errors: Record<string, string> = {};
 
     if (!title) {
@@ -32,7 +54,11 @@ export const useTodoFormViewModel = (): TodoFormViewModel => {
 
   const submitTodo = useCallback(
     async (title: string) => {
-      if (!validateTitle(title)) {
+      // Enable showing validation errors before validation
+      setShouldShowValidationErrors(true);
+      
+      // Always validate and set errors during submission
+      if (!validateTitleAndSetErrors(title)) {
         throw new Error('Validation failed');
       }
 
@@ -40,6 +66,8 @@ export const useTodoFormViewModel = (): TodoFormViewModel => {
       try {
         await store.createTodo({ title: title.trim() });
         setValidationErrors({});
+        // Reset the flag on successful submission
+        setShouldShowValidationErrors(false);
       } catch (error) {
         console.error('Failed to create todo:', error);
         throw error;
@@ -47,7 +75,7 @@ export const useTodoFormViewModel = (): TodoFormViewModel => {
         setIsSubmitting(false);
       }
     },
-    [store, validateTitle]
+    [store, validateTitleAndSetErrors]
   );
 
   const handleFormSubmit = useCallback(
@@ -68,6 +96,7 @@ export const useTodoFormViewModel = (): TodoFormViewModel => {
   return {
     isSubmitting,
     validationErrors,
+    shouldShowValidationErrors,
     isGlobalLoading: store.getIsLoading(),
     submitTodo,
     validateTitle,
