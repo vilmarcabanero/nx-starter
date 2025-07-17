@@ -5,9 +5,9 @@
   "projectType": "application",
   "tags": [],
   "implicitDependencies": [
-    "shared-domain",
-    "shared-application",
-    "shared-utils"
+    "domain-core",
+    "application-core",
+    "utils-core"
   ],
   "targets": {
     "serve": {

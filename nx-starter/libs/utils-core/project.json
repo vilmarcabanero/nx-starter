@@ -1,0 +1,27 @@
+{
+  "name": "utils-core",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/utils-core/src",
+  "projectType": "library",
+  "tags": ["type:util", "scope:shared"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/utils-core",
+        "main": "libs/utils-core/src/index.ts",
+        "tsConfig": "libs/utils-core/tsconfig.lib.json",
+        "assets": ["libs/utils-core/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/libs/utils-core"
+      }
+    }
+  }
+}

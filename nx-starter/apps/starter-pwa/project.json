@@ -5,10 +5,10 @@
   "projectType": "application",
   "tags": [],
   "implicitDependencies": [
-    "shared-domain",
-    "shared-application",
-    "shared-utils"
+    "domain-core",
+    "application-core",
+    "utils-core"
   ],
-  "// targets": "to see all targets run: nx show project frontend --web",
+  "// targets": "to see all targets run: nx show project starter-pwa --web",
   "targets": {}
 }

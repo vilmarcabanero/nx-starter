@@ -1,0 +1,27 @@
+{
+  "name": "domain-core",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/domain-core/src",
+  "projectType": "library",
+  "tags": ["type:domain", "scope:shared"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/domain-core",
+        "main": "libs/domain-core/src/index.ts",
+        "tsConfig": "libs/domain-core/tsconfig.lib.json",
+        "assets": ["libs/domain-core/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/libs/domain-core"
+      }
+    }
+  }
+}
