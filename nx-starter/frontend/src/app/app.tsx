@@ -1,13 +1,8 @@
-// Uncomment this line to use CSS modules
-// import styles from './app.module.css';
-import NxWelcome from './nx-welcome';
+import { TodoPage } from '../presentation/features/todo';
+import '../styles.css';
 
-export function App() {
-  return (
-    <div>
-      <NxWelcome title="frontend" />
-    </div>
-  );
+function App() {
+  return <TodoPage />;
 }
 
 export default App;

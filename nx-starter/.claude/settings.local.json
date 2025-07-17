@@ -14,7 +14,10 @@
       "Bash(nx g:*)",
       "Bash(npm install:*)",
       "Bash(rm:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(npm run test:frontend:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }
