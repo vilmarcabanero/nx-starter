@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useTodoStatsViewModel } from './useTodoStatsViewModel';
 import { Todo } from '@nx-starter/shared-domain';
-// import { TEST_UUIDS, generateTestUuid } from '@/test/test-helpers'; // TODO: Add test helpers to shared-utils
+import { TEST_UUIDS, generateTestUuid } from '../../../../test/test-helpers';
 
 // Mock the store
 const mockStore = {
