@@ -1,0 +1,254 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Card Component Snapshots > Card > renders basic card 1`] = `
+<div
+  class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"
+  data-slot="card"
+>
+  Basic Card Content
+</div>
+`;
+
+exports[`Card Component Snapshots > Card > renders card with custom className 1`] = `
+<div
+  class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm custom-card"
+  data-slot="card"
+>
+  Custom Card
+</div>
+`;
+
+exports[`Card Component Snapshots > CardAction > renders basic card action 1`] = `
+<div
+  class="col-start-2 row-span-2 row-start-1 self-start justify-self-end"
+  data-slot="card-action"
+>
+  Action Content
+</div>
+`;
+
+exports[`Card Component Snapshots > CardAction > renders card action with custom className 1`] = `
+<div
+  class="col-start-2 row-span-2 row-start-1 self-start justify-self-end custom-action"
+  data-slot="card-action"
+>
+  Custom Action
+</div>
+`;
+
+exports[`Card Component Snapshots > CardContent > renders basic card content 1`] = `
+<div
+  class="px-6"
+  data-slot="card-content"
+>
+  Card Content
+</div>
+`;
+
+exports[`Card Component Snapshots > CardContent > renders card content with custom className 1`] = `
+<div
+  class="px-6 custom-content"
+  data-slot="card-content"
+>
+  Custom Content
+</div>
+`;
+
+exports[`Card Component Snapshots > CardDescription > renders basic card description 1`] = `
+<div
+  class="text-muted-foreground text-sm"
+  data-slot="card-description"
+>
+  Card Description
+</div>
+`;
+
+exports[`Card Component Snapshots > CardDescription > renders card description with custom className 1`] = `
+<div
+  class="text-muted-foreground text-sm custom-description"
+  data-slot="card-description"
+>
+  Custom Description
+</div>
+`;
+
+exports[`Card Component Snapshots > CardFooter > renders basic card footer 1`] = `
+<div
+  class="flex items-center px-6 [.border-t]:pt-6"
+  data-slot="card-footer"
+>
+  Footer Content
+</div>
+`;
+
+exports[`Card Component Snapshots > CardFooter > renders card footer with custom className 1`] = `
+<div
+  class="flex items-center px-6 [.border-t]:pt-6 custom-footer"
+  data-slot="card-footer"
+>
+  Custom Footer
+</div>
+`;
+
+exports[`Card Component Snapshots > CardHeader > renders basic card header 1`] = `
+<div
+  class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6"
+  data-slot="card-header"
+>
+  Header Content
+</div>
+`;
+
+exports[`Card Component Snapshots > CardHeader > renders card header with custom className 1`] = `
+<div
+  class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 custom-header"
+  data-slot="card-header"
+>
+  Custom Header
+</div>
+`;
+
+exports[`Card Component Snapshots > CardTitle > renders basic card title 1`] = `
+<div
+  class="leading-none font-semibold"
+  data-slot="card-title"
+>
+  Card Title
+</div>
+`;
+
+exports[`Card Component Snapshots > CardTitle > renders card title with custom className 1`] = `
+<div
+  class="leading-none font-semibold custom-title"
+  data-slot="card-title"
+>
+  Custom Title
+</div>
+`;
+
+exports[`Card Component Snapshots > complete card compositions > renders card with header action 1`] = `
+<div
+  class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"
+  data-slot="card"
+>
+  <div
+    class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6"
+    data-slot="card-header"
+  >
+    <div
+      class="leading-none font-semibold"
+      data-slot="card-title"
+    >
+      Card with Action
+    </div>
+    <div
+      class="text-muted-foreground text-sm"
+      data-slot="card-description"
+    >
+      Description text
+    </div>
+    <div
+      class="col-start-2 row-span-2 row-start-1 self-start justify-self-end"
+      data-slot="card-action"
+    >
+      <button>
+        ×
+      </button>
+    </div>
+  </div>
+  <div
+    class="px-6"
+    data-slot="card-content"
+  >
+    Content here
+  </div>
+</div>
+`;
+
+exports[`Card Component Snapshots > complete card compositions > renders card with header, title and description 1`] = `
+<div
+  class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"
+  data-slot="card"
+>
+  <div
+    class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6"
+    data-slot="card-header"
+  >
+    <div
+      class="leading-none font-semibold"
+      data-slot="card-title"
+    >
+      Sample Title
+    </div>
+    <div
+      class="text-muted-foreground text-sm"
+      data-slot="card-description"
+    >
+      Sample description text
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Card Component Snapshots > complete card compositions > renders full card with all components 1`] = `
+<div
+  class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"
+  data-slot="card"
+>
+  <div
+    class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6"
+    data-slot="card-header"
+  >
+    <div
+      class="leading-none font-semibold"
+      data-slot="card-title"
+    >
+      Complete Card
+    </div>
+    <div
+      class="text-muted-foreground text-sm"
+      data-slot="card-description"
+    >
+      This is a complete card example
+    </div>
+    <div
+      class="col-start-2 row-span-2 row-start-1 self-start justify-self-end"
+      data-slot="card-action"
+    >
+      <button>
+        Action
+      </button>
+    </div>
+  </div>
+  <div
+    class="px-6"
+    data-slot="card-content"
+  >
+    <p>
+      This is the main content of the card.
+    </p>
+  </div>
+  <div
+    class="flex items-center px-6 [.border-t]:pt-6"
+    data-slot="card-footer"
+  >
+    <button>
+      Footer Action
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Card Component Snapshots > complete card compositions > renders minimal card with just content 1`] = `
+<div
+  class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"
+  data-slot="card"
+>
+  <div
+    class="px-6"
+    data-slot="card-content"
+  >
+    Just some content
+  </div>
+</div>
+`;

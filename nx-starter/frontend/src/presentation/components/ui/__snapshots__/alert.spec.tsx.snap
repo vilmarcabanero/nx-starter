@@ -1,0 +1,430 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Alert Component Snapshots > Alert components > renders Alert with only description 1`] = `
+<div
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current bg-card text-card-foreground"
+  data-slot="alert"
+  role="alert"
+>
+  <div
+    class="text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+    data-slot="alert-description"
+  >
+    Description only alert.
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > Alert components > renders Alert with only title 1`] = `
+<div
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current bg-card text-card-foreground"
+  data-slot="alert"
+  role="alert"
+>
+  <div
+    class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+    data-slot="alert-title"
+  >
+    Title Only Alert
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > Alert components > renders AlertDescription alone 1`] = `
+<div
+  class="text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+  data-slot="alert-description"
+>
+  Standalone description text.
+</div>
+`;
+
+exports[`Alert Component Snapshots > Alert components > renders AlertTitle alone 1`] = `
+<div
+  class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+  data-slot="alert-title"
+>
+  Standalone Title
+</div>
+`;
+
+exports[`Alert Component Snapshots > Alert variants > renders default alert 1`] = `
+<div
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current bg-card text-card-foreground"
+  data-slot="alert"
+  role="alert"
+>
+  <div
+    class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+    data-slot="alert-title"
+  >
+    Default Alert
+  </div>
+  <div
+    class="text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+    data-slot="alert-description"
+  >
+    This is a default alert message.
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > Alert variants > renders destructive alert 1`] = `
+<div
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 text-destructive bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90"
+  data-slot="alert"
+  role="alert"
+>
+  <div
+    class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+    data-slot="alert-title"
+  >
+    Destructive Alert
+  </div>
+  <div
+    class="text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+    data-slot="alert-description"
+  >
+    This is a destructive alert message.
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > Alert with icons > renders default alert with icon 1`] = `
+<div
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current bg-card text-card-foreground"
+  data-slot="alert"
+  role="alert"
+>
+  <svg
+    aria-hidden="true"
+    class="lucide lucide-circle-check"
+    fill="none"
+    height="24"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+    />
+    <path
+      d="m9 12 2 2 4-4"
+    />
+  </svg>
+  <div
+    class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+    data-slot="alert-title"
+  >
+    Success
+  </div>
+  <div
+    class="text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+    data-slot="alert-description"
+  >
+    Operation completed successfully.
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > Alert with icons > renders destructive alert with icon 1`] = `
+<div
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 text-destructive bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90"
+  data-slot="alert"
+  role="alert"
+>
+  <svg
+    aria-hidden="true"
+    class="lucide lucide-circle-alert"
+    fill="none"
+    height="24"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+    />
+    <line
+      x1="12"
+      x2="12"
+      y1="8"
+      y2="12"
+    />
+    <line
+      x1="12"
+      x2="12.01"
+      y1="16"
+      y2="16"
+    />
+  </svg>
+  <div
+    class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+    data-slot="alert-title"
+  >
+    Error
+  </div>
+  <div
+    class="text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+    data-slot="alert-description"
+  >
+    Something went wrong.
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > accessibility > renders Alert with custom aria attributes 1`] = `
+<div
+  aria-describedby="alert-desc"
+  aria-labelledby="alert-title"
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current bg-card text-card-foreground"
+  data-slot="alert"
+  role="alert"
+>
+  <div
+    class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+    data-slot="alert-title"
+    id="alert-title"
+  >
+    Accessible Alert
+  </div>
+  <div
+    class="text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+    data-slot="alert-description"
+    id="alert-desc"
+  >
+    This alert has proper accessibility attributes.
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > accessibility > renders Alert with custom role 1`] = `
+<div
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current bg-card text-card-foreground"
+  data-slot="alert"
+  role="status"
+>
+  <div
+    class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+    data-slot="alert-title"
+  >
+    Status Alert
+  </div>
+  <div
+    class="text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+    data-slot="alert-description"
+  >
+    Status update message.
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > combined variants and customization > renders default alert with custom styling and accessibility 1`] = `
+<div
+  aria-live="polite"
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current text-card-foreground bg-green-50 border-green-200"
+  data-slot="alert"
+  role="alert"
+>
+  <svg
+    aria-hidden="true"
+    class="lucide lucide-circle-check"
+    fill="none"
+    height="24"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+    />
+    <path
+      d="m9 12 2 2 4-4"
+    />
+  </svg>
+  <div
+    class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight text-green-800"
+    data-slot="alert-title"
+  >
+    Success Message
+  </div>
+  <div
+    class="col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed text-green-700"
+    data-slot="alert-description"
+  >
+    Your action was completed successfully.
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > combined variants and customization > renders destructive alert with icon and custom classes 1`] = `
+<div
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 text-destructive bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90 border-red-300"
+  data-slot="alert"
+  role="alert"
+>
+  <svg
+    aria-hidden="true"
+    class="lucide lucide-circle-alert"
+    fill="none"
+    height="24"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+    />
+    <line
+      x1="12"
+      x2="12"
+      y1="8"
+      y2="12"
+    />
+    <line
+      x1="12"
+      x2="12.01"
+      y1="16"
+      y2="16"
+    />
+  </svg>
+  <div
+    class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight text-red-700"
+    data-slot="alert-title"
+  >
+    Critical Error
+  </div>
+  <div
+    class="col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed text-red-600"
+    data-slot="alert-description"
+  >
+    A critical error has occurred and requires immediate attention.
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > content variations > renders Alert with HTML content in description 1`] = `
+<div
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current bg-card text-card-foreground"
+  data-slot="alert"
+  role="alert"
+>
+  <div
+    class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+    data-slot="alert-title"
+  >
+    HTML Content Alert
+  </div>
+  <div
+    class="text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+    data-slot="alert-description"
+  >
+    <p>
+      This description contains 
+      <strong>
+        bold text
+      </strong>
+       and 
+      <em>
+        italic text
+      </em>
+      .
+    </p>
+    <p>
+      It also has multiple paragraphs.
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > content variations > renders Alert with long description 1`] = `
+<div
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current bg-card text-card-foreground"
+  data-slot="alert"
+  role="alert"
+>
+  <div
+    class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+    data-slot="alert-title"
+  >
+    Long Content Alert
+  </div>
+  <div
+    class="text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+    data-slot="alert-description"
+  >
+    This is a very long alert description that contains multiple sentences and should test how the component handles longer content. It includes various types of information and formatting.
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > content variations > renders empty Alert 1`] = `
+<div
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current bg-card text-card-foreground"
+  data-slot="alert"
+  role="alert"
+/>
+`;
+
+exports[`Alert Component Snapshots > customization > renders Alert with custom className 1`] = `
+<div
+  class="relative w-full rounded-lg border px-4 py-3 text-sm grid has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] grid-cols-[0_1fr] has-[>svg]:gap-x-3 gap-y-0.5 items-start [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current bg-card text-card-foreground custom-alert"
+  data-slot="alert"
+  role="alert"
+>
+  <div
+    class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight"
+    data-slot="alert-title"
+  >
+    Custom Alert
+  </div>
+  <div
+    class="text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed"
+    data-slot="alert-description"
+  >
+    Custom styled alert.
+  </div>
+</div>
+`;
+
+exports[`Alert Component Snapshots > customization > renders AlertDescription with custom className 1`] = `
+<div
+  class="text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed custom-description"
+  data-slot="alert-description"
+>
+  Custom description with styling.
+</div>
+`;
+
+exports[`Alert Component Snapshots > customization > renders AlertTitle with custom className 1`] = `
+<div
+  class="col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight custom-title"
+  data-slot="alert-title"
+>
+  Custom Title
+</div>
+`;
