@@ -25,10 +25,14 @@ import { TOKENS } from '../di/tokens';
 @injectable()
 export class TodoCommandService implements ITodoCommandService {
   constructor(
-    @inject(TOKENS.CreateTodoUseCase) private createTodoUseCase: CreateTodoUseCase,
-    @inject(TOKENS.UpdateTodoUseCase) private updateTodoUseCase: UpdateTodoUseCase,
-    @inject(TOKENS.DeleteTodoUseCase) private deleteTodoUseCase: DeleteTodoUseCase,
-    @inject(TOKENS.ToggleTodoUseCase) private toggleTodoUseCase: ToggleTodoUseCase
+    @inject(TOKENS.CreateTodoUseCase)
+    private createTodoUseCase: CreateTodoUseCase,
+    @inject(TOKENS.UpdateTodoUseCase)
+    private updateTodoUseCase: UpdateTodoUseCase,
+    @inject(TOKENS.DeleteTodoUseCase)
+    private deleteTodoUseCase: DeleteTodoUseCase,
+    @inject(TOKENS.ToggleTodoUseCase)
+    private toggleTodoUseCase: ToggleTodoUseCase
   ) {}
 
   async createTodo(data: CreateTodoData): Promise<Todo> {

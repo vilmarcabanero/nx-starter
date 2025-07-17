@@ -24,7 +24,7 @@ test.describe('Todo Application', () => {
   test.describe('Adding Todos', () => {
     test('should add a new todo successfully', async () => {
       await todoPage.addTodo('Buy groceries');
-      
+
       await expect(todoPage.getTodoCount()).resolves.toBe(1);
       const todoItem = await todoPage.getTodoItem(0);
       await todoItem.expectTitle('Buy groceries');
@@ -36,14 +36,14 @@ test.describe('Todo Application', () => {
       await todoPage.addTodo('First todo');
       await todoPage.addTodo('Second todo');
       await todoPage.addTodo('Third todo');
-      
+
       await expect(todoPage.getTodoCount()).resolves.toBe(3);
       await todoPage.expectStats(3, 3, 0);
-      
+
       const firstTodo = await todoPage.getTodoItem(0);
       const secondTodo = await todoPage.getTodoItem(1);
       const thirdTodo = await todoPage.getTodoItem(2);
-      
+
       // Todos are displayed in reverse chronological order (newest first)
       await firstTodo.expectTitle('Third todo');
       await secondTodo.expectTitle('Second todo');
@@ -52,7 +52,7 @@ test.describe('Todo Application', () => {
 
     test('should trim whitespace from todo titles', async () => {
       await todoPage.addTodo('  Spaced todo  ');
-      
+
       const todoItem = await todoPage.getTodoItem(0);
       await todoItem.expectTitle('Spaced todo');
     });
@@ -60,7 +60,7 @@ test.describe('Todo Application', () => {
     test('should not add empty todos', async () => {
       await todoPage.addTodo('');
       await todoPage.expectEmptyState();
-      
+
       await todoPage.addTodo('   ');
       await todoPage.expectEmptyState();
     });
@@ -68,16 +68,16 @@ test.describe('Todo Application', () => {
     test('should show validation error for empty input', async ({ page }) => {
       const input = page.locator('[data-testid="todo-input"]');
       const button = page.locator('[data-testid="add-todo-button"]');
-      
+
       await input.fill('');
       await button.click();
-      
+
       await todoPage.expectTodoValidationError('Title is required');
     });
 
     test('should clear input after successful addition', async ({ page }) => {
       await todoPage.addTodo('Test todo');
-      
+
       const input = page.locator('[data-testid="todo-input"]');
       await expect(input).toHaveValue('');
     });
@@ -92,11 +92,11 @@ test.describe('Todo Application', () => {
       const todoItem = await todoPage.getTodoItem(0);
       await todoItem.expectActive();
       await todoPage.expectStats(1, 1, 0);
-      
+
       await todoItem.toggle();
       await todoItem.expectCompleted();
       await todoPage.expectStats(1, 0, 1);
-      
+
       await todoItem.toggle();
       await todoItem.expectActive();
       await todoPage.expectStats(1, 1, 0);
@@ -105,18 +105,18 @@ test.describe('Todo Application', () => {
     test('should handle multiple todos with different completion states', async () => {
       await todoPage.addTodo('Second todo');
       await todoPage.addTodo('Third todo');
-      
+
       const firstTodo = await todoPage.getTodoItem(0);
       const secondTodo = await todoPage.getTodoItem(1);
       const thirdTodo = await todoPage.getTodoItem(2);
-      
+
       await firstTodo.toggle();
       await thirdTodo.toggle();
-      
+
       await firstTodo.expectCompleted();
       await secondTodo.expectActive();
       await thirdTodo.expectCompleted();
-      
+
       await todoPage.expectStats(3, 1, 2);
     });
   });
@@ -128,10 +128,10 @@ test.describe('Todo Application', () => {
 
     test('should edit todo by clicking on title', async () => {
       const todoItem = await todoPage.getTodoItem(0);
-      
+
       await todoItem.startEdit();
       await todoItem.expectInEditMode();
-      
+
       await todoItem.saveEdit('Updated todo');
       await todoItem.expectNotInEditMode();
       await todoItem.expectTitle('Updated todo');
@@ -139,17 +139,17 @@ test.describe('Todo Application', () => {
 
     test('should edit todo using edit button', async () => {
       const todoItem = await todoPage.getTodoItem(0);
-      
+
       await todoItem.edit();
       await todoItem.expectInEditMode();
-      
+
       await todoItem.saveEdit('Button edited todo');
       await todoItem.expectTitle('Button edited todo');
     });
 
     test('should save edit with Enter key', async () => {
       const todoItem = await todoPage.getTodoItem(0);
-      
+
       await todoItem.startEdit();
       await todoItem.saveEditWithKeyboard('Keyboard saved todo');
       await todoItem.expectTitle('Keyboard saved todo');
@@ -157,7 +157,7 @@ test.describe('Todo Application', () => {
 
     test('should cancel edit with Escape key', async () => {
       const todoItem = await todoPage.getTodoItem(0);
-      
+
       await todoItem.startEdit();
       await todoItem.cancelEditWithKeyboard();
       await todoItem.expectNotInEditMode();
@@ -166,7 +166,7 @@ test.describe('Todo Application', () => {
 
     test('should cancel edit with cancel button', async () => {
       const todoItem = await todoPage.getTodoItem(0);
-      
+
       await todoItem.startEdit();
       await todoItem.cancelEdit();
       await todoItem.expectNotInEditMode();
@@ -175,19 +175,19 @@ test.describe('Todo Application', () => {
 
     test('should not save empty edit', async ({ page }) => {
       const todoItem = await todoPage.getTodoItem(0);
-      
+
       await todoItem.startEdit();
-      
+
       const input = page.locator('[data-testid="todo-edit-input"]');
       const saveButton = page.locator('[data-testid="save-todo"]');
-      
+
       await input.fill('');
       await expect(saveButton).toBeDisabled();
     });
 
     test('should trim whitespace when editing', async () => {
       const todoItem = await todoPage.getTodoItem(0);
-      
+
       await todoItem.startEdit();
       await todoItem.saveEdit('  Trimmed todo  ');
       await todoItem.expectTitle('Trimmed todo');
@@ -202,7 +202,7 @@ test.describe('Todo Application', () => {
     test('should delete todo', async () => {
       const todoItem = await todoPage.getTodoItem(0);
       await todoItem.delete();
-      
+
       await todoPage.expectEmptyState();
       await todoPage.expectStats(0, 0, 0);
     });
@@ -210,15 +210,15 @@ test.describe('Todo Application', () => {
     test('should delete specific todo from multiple todos', async () => {
       await todoPage.addTodo('Second todo');
       await todoPage.addTodo('Third todo');
-      
+
       const secondTodo = await todoPage.getTodoItem(1);
       await secondTodo.delete();
-      
+
       await expect(todoPage.getTodoCount()).resolves.toBe(2);
-      
+
       const firstTodo = await todoPage.getTodoItem(0);
       const remainingTodo = await todoPage.getTodoItem(1);
-      
+
       // After deleting the middle todo, remaining are in reverse chronological order
       await firstTodo.expectTitle('Third todo');
       await remainingTodo.expectTitle('Todo to delete');
@@ -227,12 +227,12 @@ test.describe('Todo Application', () => {
     test('should update stats after deletion', async () => {
       await todoPage.addTodo('Active todo');
       await todoPage.addTodo('Completed todo');
-      
+
       const completedTodo = await todoPage.getTodoItem(2);
       await completedTodo.toggle();
-      
+
       await todoPage.expectStats(3, 2, 1);
-      
+
       await completedTodo.delete();
       await todoPage.expectStats(2, 2, 0);
     });
@@ -243,13 +243,13 @@ test.describe('Todo Application', () => {
       await todoPage.addTodo('Active todo 1');
       await todoPage.addTodo('Active todo 2');
       await todoPage.addTodo('Completed todo');
-      
+
       // Wait for all todos to be added
       await expect(todoPage.getTodoCount()).resolves.toBe(3);
-      
+
       const completedTodo = await todoPage.getTodoItem(0);
       await completedTodo.toggle();
-      
+
       // Wait for the toggle to complete
       await completedTodo.expectCompleted();
     });
@@ -263,10 +263,10 @@ test.describe('Todo Application', () => {
       await todoPage.filterByActive();
       await expect(todoPage.getTodoCount()).resolves.toBe(2);
       await expect(todoPage.getActiveFilter()).resolves.toBe('active');
-      
+
       const firstTodo = await todoPage.getTodoItem(0);
       const secondTodo = await todoPage.getTodoItem(1);
-      
+
       // Active todos in reverse chronological order
       await firstTodo.expectTitle('Active todo 2');
       await secondTodo.expectTitle('Active todo 1');
@@ -278,7 +278,7 @@ test.describe('Todo Application', () => {
       await todoPage.filterByCompleted();
       await expect(todoPage.getTodoCount()).resolves.toBe(1);
       await expect(todoPage.getActiveFilter()).resolves.toBe('completed');
-      
+
       const todoItem = await todoPage.getTodoItem(0);
       await todoItem.expectTitle('Completed todo');
       await todoItem.expectCompleted();
@@ -287,7 +287,7 @@ test.describe('Todo Application', () => {
     test('should return to all todos', async () => {
       await todoPage.filterByActive();
       await expect(todoPage.getTodoCount()).resolves.toBe(2);
-      
+
       await todoPage.filterByAll();
       await expect(todoPage.getTodoCount()).resolves.toBe(3);
       await expect(todoPage.getActiveFilter()).resolves.toBe('all');
@@ -296,7 +296,7 @@ test.describe('Todo Application', () => {
     test('should maintain filter when adding new todos', async () => {
       await todoPage.filterByActive();
       await todoPage.addTodo('New active todo');
-      
+
       await expect(todoPage.getTodoCount()).resolves.toBe(3);
       await expect(todoPage.getActiveFilter()).resolves.toBe('active');
     });
@@ -304,7 +304,7 @@ test.describe('Todo Application', () => {
     test('should show correct stats regardless of filter', async () => {
       await todoPage.filterByActive();
       await todoPage.expectStats(3, 2, 1);
-      
+
       await todoPage.filterByCompleted();
       await todoPage.expectStats(3, 2, 1);
     });
@@ -318,7 +318,7 @@ test.describe('Todo Application', () => {
     test('should update stats when adding todos', async () => {
       await todoPage.addTodo('First todo');
       await todoPage.expectStats(1, 1, 0);
-      
+
       await todoPage.addTodo('Second todo');
       await todoPage.expectStats(2, 2, 0);
     });
@@ -327,11 +327,11 @@ test.describe('Todo Application', () => {
       await todoPage.addTodo('Todo 1');
       await todoPage.addTodo('Todo 2');
       await todoPage.expectStats(2, 2, 0);
-      
+
       const firstTodo = await todoPage.getTodoItem(0);
       await firstTodo.toggle();
       await todoPage.expectStats(2, 1, 1);
-      
+
       const secondTodo = await todoPage.getTodoItem(1);
       await secondTodo.toggle();
       await todoPage.expectStats(2, 0, 2);
@@ -340,11 +340,11 @@ test.describe('Todo Application', () => {
     test('should update stats when deleting todos', async () => {
       await todoPage.addTodo('Active todo');
       await todoPage.addTodo('Completed todo');
-      
+
       const completedTodo = await todoPage.getTodoItem(1);
       await completedTodo.toggle();
       await todoPage.expectStats(2, 1, 1);
-      
+
       await completedTodo.delete();
       await todoPage.expectStats(1, 1, 0);
     });

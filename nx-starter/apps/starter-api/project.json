@@ -4,11 +4,7 @@
   "sourceRoot": "apps/starter-api/src",
   "projectType": "application",
   "tags": [],
-  "implicitDependencies": [
-    "domain-core",
-    "application-core",
-    "utils-core"
-  ],
+  "implicitDependencies": ["domain-core", "application-core", "utils-core"],
   "targets": {
     "serve": {
       "continuous": true,

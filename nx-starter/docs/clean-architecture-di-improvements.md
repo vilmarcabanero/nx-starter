@@ -5,14 +5,16 @@
 Previously, the project had **Clean Architecture violations** where DI tokens were duplicated and placed in the wrong layers:
 
 ### Before (Violations):
+
 ```
 nx-starter/
-├── libs/application-core/src/tokens.ts          # ✅ Correct location 
+├── libs/application-core/src/tokens.ts          # ✅ Correct location
 ├── apps/starter-api/src/infrastructure/di/tokens.ts    # ❌ DUPLICATE + Wrong layer
 └── apps/starter-pwa/src/infrastructure/di/tokens.ts   # ❌ DUPLICATE + Wrong layer
 ```
 
 **Problems:**
+
 1. **Dependency Violation**: `starter-api` was importing tokens from its infrastructure layer, meaning the application layer depended on infrastructure
 2. **Code Duplication**: Multiple copies of the same tokens across different apps
 3. **Inconsistent Architecture**: `starter-pwa` correctly imported from application-core, but `starter-api` used local infrastructure tokens
@@ -20,7 +22,9 @@ nx-starter/
 ## Solution Applied
 
 ### 1. Centralized DI Tokens in Application Layer
+
 ✅ **Moved tokens to proper Clean Architecture location:**
+
 ```
 nx-starter/libs/application-core/src/di/
 ├── index.ts     # Exports tokens module
@@ -28,14 +32,18 @@ nx-starter/libs/application-core/src/di/
 ```
 
 ### 2. Removed Duplicate Files
+
 ✅ **Deleted infrastructure layer token duplicates:**
+
 - ❌ `apps/starter-api/src/infrastructure/di/tokens.ts` (removed)
 - ❌ `apps/starter-pwa/src/infrastructure/di/tokens.ts` (removed)
 
 ### 3. Fixed Import Dependencies
+
 ✅ **Updated all imports to follow Clean Architecture:**
 
 **starter-api container.ts:**
+
 ```typescript
 // Before: ❌ Infrastructure depending on infrastructure
 import { TOKENS } from './tokens';
@@ -45,6 +53,7 @@ import { TOKENS } from '@nx-starter/shared-application';
 ```
 
 **starter-api TodoController.ts:**
+
 ```typescript
 // Before: ❌ Presentation layer depending on infrastructure tokens
 import { TOKENS } from '../../infrastructure/di/tokens';
@@ -54,7 +63,9 @@ import { TOKENS } from '@nx-starter/shared-application';
 ```
 
 ### 4. Updated Internal References
+
 ✅ **Fixed all application-core internal imports:**
+
 - Updated use cases to import from `../di/tokens` or `../../di/tokens`
 - Updated services to import from `../di/tokens`
 - Maintained clean internal structure
@@ -62,6 +73,7 @@ import { TOKENS } from '@nx-starter/shared-application';
 ## Clean Architecture Benefits Achieved
 
 ### ✅ Correct Dependency Direction
+
 ```
 Domain ← Application ← Infrastructure
          ↑
@@ -70,17 +82,20 @@ Domain ← Application ← Infrastructure
 ```
 
 ### ✅ Single Source of Truth
+
 - All DI tokens defined once in `application-core/src/di/tokens.ts`
 - Both apps import from the same shared library
 - No code duplication
 
 ### ✅ Proper Layer Separation
-| Layer | Role | DI Token Responsibility |
-|-------|------|------------------------|
-| **Application** | Defines abstractions | **Declares what dependencies it needs** |
-| **Infrastructure** | Provides implementations | **Binds implementations to tokens** |
+
+| Layer              | Role                     | DI Token Responsibility                 |
+| ------------------ | ------------------------ | --------------------------------------- |
+| **Application**    | Defines abstractions     | **Declares what dependencies it needs** |
+| **Infrastructure** | Provides implementations | **Binds implementations to tokens**     |
 
 ### ✅ Framework Independence
+
 - Application layer remains technology-agnostic
 - Infrastructure can change without affecting business logic
 - DI tokens are abstract contracts, not implementation details
@@ -88,11 +103,13 @@ Domain ← Application ← Infrastructure
 ## Verification
 
 ✅ **All builds successful:**
+
 - `npx nx build application-core` ✅
-- `npx nx build starter-api` ✅  
+- `npx nx build starter-api` ✅
 - `npx nx build starter-pwa` ✅
 
 ✅ **Dependency graph correct:**
+
 - Infrastructure → Application (allowed)
 - Application ↛ Infrastructure (prevented)
 
