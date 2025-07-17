@@ -15,6 +15,7 @@ import { CreateTodoUseCase } from '../use-cases/commands/CreateTodoUseCase';
 import { UpdateTodoUseCase } from '../use-cases/commands/UpdateTodoUseCase';
 import { DeleteTodoUseCase } from '../use-cases/commands/DeleteTodoUseCase';
 import { ToggleTodoUseCase } from '../use-cases/commands/ToggleTodoUseCase';
+import { TOKENS } from '../tokens';
 
 /**
  * Command Service implementing Command Responsibility Segregation
@@ -24,10 +25,10 @@ import { ToggleTodoUseCase } from '../use-cases/commands/ToggleTodoUseCase';
 @injectable()
 export class TodoCommandService implements ITodoCommandService {
   constructor(
-    @inject('CreateTodoUseCase') private createTodoUseCase: CreateTodoUseCase,
-    @inject('UpdateTodoUseCase') private updateTodoUseCase: UpdateTodoUseCase,
-    @inject('DeleteTodoUseCase') private deleteTodoUseCase: DeleteTodoUseCase,
-    @inject('ToggleTodoUseCase') private toggleTodoUseCase: ToggleTodoUseCase
+    @inject(TOKENS.CreateTodoUseCase) private createTodoUseCase: CreateTodoUseCase,
+    @inject(TOKENS.UpdateTodoUseCase) private updateTodoUseCase: UpdateTodoUseCase,
+    @inject(TOKENS.DeleteTodoUseCase) private deleteTodoUseCase: DeleteTodoUseCase,
+    @inject(TOKENS.ToggleTodoUseCase) private toggleTodoUseCase: ToggleTodoUseCase
   ) {}
 
   async createTodo(data: CreateTodoData): Promise<Todo> {

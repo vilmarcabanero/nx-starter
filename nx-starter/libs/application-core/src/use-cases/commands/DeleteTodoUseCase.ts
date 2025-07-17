@@ -2,6 +2,7 @@ import { injectable, inject } from 'tsyringe';
 import { TodoNotFoundException } from '@nx-starter/shared-domain';
 import type { ITodoRepository } from '@nx-starter/shared-domain';
 import type { DeleteTodoCommand } from '../../dto/TodoCommands';
+import { TOKENS } from '../../tokens';
 
 /**
  * Use case for deleting an existing todo
@@ -10,7 +11,7 @@ import type { DeleteTodoCommand } from '../../dto/TodoCommands';
 @injectable()
 export class DeleteTodoUseCase {
   constructor(
-    @inject('TodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async execute(command: DeleteTodoCommand): Promise<void> {

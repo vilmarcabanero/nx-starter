@@ -2,6 +2,7 @@ import { injectable, inject } from 'tsyringe';
 import { Todo, TodoNotFoundException } from '@nx-starter/shared-domain';
 import type { ITodoRepository } from '@nx-starter/shared-domain';
 import type { ToggleTodoCommand } from '../../dto/TodoCommands';
+import { TOKENS } from '../../tokens';
 
 /**
  * Use case for toggling the completion state of a todo
@@ -10,7 +11,7 @@ import type { ToggleTodoCommand } from '../../dto/TodoCommands';
 @injectable()
 export class ToggleTodoUseCase {
   constructor(
-    @inject('TodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async execute(command: ToggleTodoCommand): Promise<Todo> {

@@ -2,11 +2,7 @@ import { injectable, inject } from 'tsyringe';
 import { Todo, TodoTitle } from '@nx-starter/shared-domain';
 import type { ITodoRepository } from '@nx-starter/shared-domain';
 import type { CreateTodoCommand } from '../../dto/TodoCommands';
-
-// Token interface for dependency injection
-export interface TodoApplicationTokens {
-  TodoRepository: symbol;
-}
+import { TOKENS } from '../../tokens';
 
 /**
  * Use case for creating a new todo
@@ -15,7 +11,7 @@ export interface TodoApplicationTokens {
 @injectable()
 export class CreateTodoUseCase {
   constructor(
-    @inject('TodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async execute(command: CreateTodoCommand): Promise<Todo> {

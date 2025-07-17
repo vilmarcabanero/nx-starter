@@ -13,6 +13,7 @@ import {
   GetTodoStatsQueryHandler,
   GetTodoByIdQueryHandler,
 } from '../use-cases/queries/TodoQueryHandlers';
+import { TOKENS } from '../tokens';
 
 /**
  * Query Service implementing Query Responsibility Segregation
@@ -22,17 +23,17 @@ import {
 @injectable()
 export class TodoQueryService implements ITodoQueryService {
   constructor(
-    @inject('GetAllTodosQueryHandler')
+    @inject(TOKENS.GetAllTodosQueryHandler)
     private getAllTodosHandler: GetAllTodosQueryHandler,
-    @inject('GetFilteredTodosQueryHandler')
+    @inject(TOKENS.GetFilteredTodosQueryHandler)
     private getFilteredTodosHandler: GetFilteredTodosQueryHandler,
-    @inject('GetActiveTodosQueryHandler')
+    @inject(TOKENS.GetActiveTodosQueryHandler)
     private getActiveTodosHandler: GetActiveTodosQueryHandler,
-    @inject('GetCompletedTodosQueryHandler')
+    @inject(TOKENS.GetCompletedTodosQueryHandler)
     private getCompletedTodosHandler: GetCompletedTodosQueryHandler,
-    @inject('GetTodoStatsQueryHandler')
+    @inject(TOKENS.GetTodoStatsQueryHandler)
     private getTodoStatsHandler: GetTodoStatsQueryHandler,
-    @inject('GetTodoByIdQueryHandler')
+    @inject(TOKENS.GetTodoByIdQueryHandler)
     private getTodoByIdHandler: GetTodoByIdQueryHandler
   ) {}
 

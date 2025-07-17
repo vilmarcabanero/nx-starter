@@ -13,6 +13,7 @@ import type {
   GetTodoByIdQuery,
   TodoStatsQueryResult,
 } from '../../dto/TodoQueries';
+import { TOKENS } from '../../tokens';
 
 /**
  * Query handler for getting all todos
@@ -20,7 +21,7 @@ import type {
 @injectable()
 export class GetAllTodosQueryHandler {
   constructor(
-    @inject('TodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async execute(): Promise<Todo[]> {
@@ -34,7 +35,7 @@ export class GetAllTodosQueryHandler {
 @injectable()
 export class GetFilteredTodosQueryHandler {
   constructor(
-    @inject('TodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async execute(query: GetFilteredTodosQuery): Promise<Todo[]> {
@@ -85,7 +86,7 @@ export class GetFilteredTodosQueryHandler {
 @injectable()
 export class GetActiveTodosQueryHandler {
   constructor(
-    @inject('TodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async execute(): Promise<Todo[]> {
@@ -99,7 +100,7 @@ export class GetActiveTodosQueryHandler {
 @injectable()
 export class GetCompletedTodosQueryHandler {
   constructor(
-    @inject('TodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async execute(): Promise<Todo[]> {
@@ -113,7 +114,7 @@ export class GetCompletedTodosQueryHandler {
 @injectable()
 export class GetTodoByIdQueryHandler {
   constructor(
-    @inject('TodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async execute(query: GetTodoByIdQuery): Promise<Todo | null> {
@@ -128,7 +129,7 @@ export class GetTodoByIdQueryHandler {
 @injectable()
 export class GetTodoStatsQueryHandler {
   constructor(
-    @inject('TodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async execute(): Promise<TodoStatsQueryResult> {

@@ -2,6 +2,7 @@ import { injectable, inject } from 'tsyringe';
 import { Todo, TodoNotFoundException } from '@nx-starter/shared-domain';
 import type { ITodoRepository } from '@nx-starter/shared-domain';
 import type { UpdateTodoCommand } from '../../dto/TodoCommands';
+import { TOKENS } from '../../tokens';
 
 /**
  * Use case for updating an existing todo
@@ -10,7 +11,7 @@ import type { UpdateTodoCommand } from '../../dto/TodoCommands';
 @injectable()
 export class UpdateTodoUseCase {
   constructor(
-    @inject('TodoRepository') private todoRepository: ITodoRepository
+    @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
   async execute(command: UpdateTodoCommand): Promise<Todo> {

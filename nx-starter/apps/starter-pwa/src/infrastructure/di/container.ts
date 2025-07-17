@@ -11,15 +11,17 @@ import {
   ToggleTodoUseCase,
   GetAllTodosQueryHandler,
   GetFilteredTodosQueryHandler,
+  GetActiveTodosQueryHandler,
+  GetCompletedTodosQueryHandler,
   GetTodoStatsQueryHandler,
   GetTodoByIdQueryHandler,
+  TOKENS,
 } from '@nx-starter/shared-application';
 import type { ITodoRepository } from '@nx-starter/shared-domain';
 import type {
   ITodoCommandService,
   ITodoQueryService,
 } from '@nx-starter/shared-application';
-import { TOKENS } from './tokens';
 
 // Check environment variable to determine data source
 const useApiBackend = import.meta.env.VITE_USE_API_BACKEND === 'true';
@@ -55,6 +57,14 @@ export const configureDI = () => {
   container.registerSingleton(
     TOKENS.GetFilteredTodosQueryHandler,
     GetFilteredTodosQueryHandler
+  );
+  container.registerSingleton(
+    TOKENS.GetActiveTodosQueryHandler,
+    GetActiveTodosQueryHandler
+  );
+  container.registerSingleton(
+    TOKENS.GetCompletedTodosQueryHandler,
+    GetCompletedTodosQueryHandler
   );
   container.registerSingleton(
     TOKENS.GetTodoStatsQueryHandler,
