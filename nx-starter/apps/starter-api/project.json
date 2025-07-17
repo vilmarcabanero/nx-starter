@@ -1,0 +1,41 @@
+{
+  "name": "starter-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/starter-api/src",
+  "projectType": "application",
+  "tags": [],
+  "implicitDependencies": [
+    "shared-domain",
+    "shared-application",
+    "shared-utils"
+  ],
+  "targets": {
+    "serve": {
+      "continuous": true,
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["build"],
+      "options": {
+        "buildTarget": "starter-api:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "starter-api:build:development"
+        },
+        "production": {
+          "buildTarget": "starter-api:build:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{workspaceRoot}/coverage/apps/starter-api"],
+      "options": {
+        "configFile": "apps/starter-api/vitest.config.ts",
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/apps/starter-api"
+      }
+    }
+  }
+}
