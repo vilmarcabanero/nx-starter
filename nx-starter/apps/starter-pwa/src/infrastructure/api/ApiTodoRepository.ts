@@ -16,7 +16,7 @@ export class ApiTodoRepository implements ITodoRepository {
 
   constructor() {
     // Get API base URL from environment variable or default to localhost
-    this.baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+    this.baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
   }
 
   async getAll(): Promise<Todo[]> {

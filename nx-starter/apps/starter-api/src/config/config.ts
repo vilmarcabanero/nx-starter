@@ -24,7 +24,7 @@ interface AppConfig {
 export const config: AppConfig = {
   port: parseInt(process.env.PORT || '3333', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
-  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:4200',
+  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   database: {
     type: (process.env.DB_TYPE as any) || 'memory',
     orm: (process.env.DB_ORM as any) || 'native',

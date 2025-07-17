@@ -487,7 +487,7 @@ services:
     
   backend:
     build: ./dist/apps/backend
-    ports: ["3001:3001"]
+    ports: ["4000:4000"]
     depends_on: [postgres, redis]
     
   user-service:

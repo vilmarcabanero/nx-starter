@@ -3,7 +3,7 @@ import { ApiTodoRepository } from '@/core/infrastructure/todo/persistence/ApiTod
 import { Todo } from '@/core/domain/todo/entities/Todo';
 
 // Integration test for API TodoRepository
-// NOTE: This test requires the server to be running on port 3001
+// NOTE: This test requires the server to be running on port 4000
 describe('ApiTodoRepository Integration Tests', () => {
   let repository: ApiTodoRepository;
   let createdTodoIds: string[] = [];
@@ -13,12 +13,12 @@ describe('ApiTodoRepository Integration Tests', () => {
     
     // Test if the server is running
     try {
-      const response = await fetch('http://localhost:3001/api/health');
+      const response = await fetch('http://localhost:4000/api/health');
       if (!response.ok) {
         throw new Error('Server health check failed');
       }
     } catch (error) {
-      console.warn('⚠️  Server not running on localhost:3001. Skipping integration tests.');
+      console.warn('⚠️  Server not running on localhost:4000. Skipping integration tests.');
       console.warn('To run integration tests, start the server with: cd server && npm run dev');
       throw new Error('Server not available for integration testing');
     }

@@ -8,7 +8,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:3001",
+      "value": "http://localhost:4000",
       "type": "string",
       "description": "Base URL for the Task App API server"
     },

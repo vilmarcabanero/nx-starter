@@ -35,7 +35,7 @@ npm install
 npm run dev
 ```
 
-The server will start on http://localhost:3001
+The server will start on http://localhost:4000
 
 ### Production
 
@@ -300,7 +300,7 @@ The system automatically handles ID generation. MongoDB uses ObjectId while othe
 #### **Port Already in Use**
 
 ```
-ERROR: Port 3001 is already in use
+ERROR: Port 4000 is already in use
 ```
 
 **Solution**: Change the port in your `.env` file:
@@ -335,7 +335,7 @@ The collection includes 30+ requests organized by operation type with comprehens
 ### Base URL
 
 ```
-http://localhost:3001/api
+http://localhost:4000/api
 ```
 
 ### Endpoints
@@ -549,7 +549,7 @@ Copy `.env.example` to `.env` and configure:
 
 ```env
 NODE_ENV=development
-PORT=3001
+PORT=4000
 CORS_ORIGIN=http://localhost:5173
 DB_TYPE=memory
 ```
@@ -616,7 +616,7 @@ services:
       DATABASE_URL: postgresql://task_user:secure_password@postgres:5432/task_app
       NODE_ENV: production
     ports:
-      - '3001:3001'
+      - '4000:4000'
     depends_on:
       - postgres
 

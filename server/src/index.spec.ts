@@ -21,7 +21,7 @@ vi.mock('@/core/infrastructure/di/container', () => ({
 // Mock the config module
 vi.mock('@/config/config', () => ({
   config: {
-    port: 3001,
+    port: 4000,
     nodeEnv: 'test',
   },
 }));
@@ -64,7 +64,7 @@ describe('Server Index', () => {
     await startServer();
 
     // Verify console.log was called with server start messages
-    expect(consoleSpy).toHaveBeenCalledWith('🚀 Task App API Server running on port 3001');
+    expect(consoleSpy).toHaveBeenCalledWith('🚀 Task App API Server running on port 4000');
     expect(consoleSpy).toHaveBeenCalledWith('🌍 Environment: test');
   });
 
@@ -133,7 +133,7 @@ describe('Server Index', () => {
       await import('./index');
 
       // Verify the server started
-      expect(consoleSpy).toHaveBeenCalledWith('🚀 Task App API Server running on port 3001');
+      expect(consoleSpy).toHaveBeenCalledWith('🚀 Task App API Server running on port 4000');
     } finally {
       process.argv = originalArgv;
     }

@@ -12,7 +12,7 @@ The data source is controlled by environment variables:
 VITE_USE_API_BACKEND=false
 
 # API Base URL (when using API backend)
-VITE_API_BASE_URL=http://localhost:3001
+VITE_API_BASE_URL=http://localhost:4000
 ```
 
 ## Data Source Options
@@ -101,7 +101,7 @@ To use the API backend:
    npm run dev
    ```
 
-2. The server will run on `http://localhost:3001`
+2. The server will run on `http://localhost:4000`
 
 3. Update client environment:
    ```bash

@@ -67,13 +67,13 @@ npm install
 npm run dev
 ```
 
-The server will start on `http://localhost:3001` by default.
+The server will start on `http://localhost:4000` by default.
 
 ### 3. Configure Environment Variables
 
 The collection uses environment variables for flexibility:
 
-- `baseUrl`: API server base URL (default: `http://localhost:3001`)
+- `baseUrl`: API server base URL (default: `http://localhost:4000`)
 - `sampleTodoId`: Sample todo ID for testing (default: `todo-123`)
 
 **To update these:**
@@ -131,7 +131,7 @@ if (pm.response.code === 201) {
 ### Base URL
 
 ```
-http://localhost:3001
+http://localhost:4000
 ```
 
 ### Endpoints
@@ -232,7 +232,7 @@ http://localhost:3001
 
 ```json
 {
-  "baseUrl": "http://localhost:3001",
+  "baseUrl": "http://localhost:4000",
   "sampleTodoId": "todo-123"
 }
 ```
