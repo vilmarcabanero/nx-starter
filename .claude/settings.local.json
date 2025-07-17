@@ -42,7 +42,8 @@
       "Bash(nx build:*)",
       "Bash(nx serve:*)",
       "Bash(nx test:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npx playwright:*)"
     ],
     "deny": []
   }

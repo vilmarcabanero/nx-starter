@@ -24,7 +24,7 @@ export default defineConfig({
   },
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npx nx run starter-pwa:preview',
+    command: 'npx nx run starter-pwa:serve',
     url: 'http://localhost:3000',
     reuseExistingServer: true,
     cwd: workspaceRoot,
