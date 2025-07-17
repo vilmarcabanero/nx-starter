@@ -1273,6 +1273,38 @@
       "item": [
         {
           "name": "Update Todo - Happy Path (Full Update)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "});",
+                  "",
+                  "pm.test('Response message indicates success', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.equal('Todo updated successfully');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [
@@ -1332,6 +1364,38 @@
         },
         {
           "name": "Update Todo - Partial Update",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "});",
+                  "",
+                  "pm.test('Response message indicates success', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.equal('Todo updated successfully');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [
@@ -1391,6 +1455,40 @@
         },
         {
           "name": "Update Todo - Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "});",
+                  "",
+                  "pm.test('Error indicates todo not found', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.error).to.equal('Todo not found');",
+                  "    pm.expect(responseJson.code).to.equal('TODO_NOT_FOUND');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [
@@ -1450,6 +1548,55 @@
         },
         {
           "name": "Update Todo - Validation Error",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error indicates validation failed', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.error).to.equal('Validation failed');",
+                  "});",
+                  "",
+                  "pm.test('Error details include title and priority validation errors', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details).to.be.an('array');",
+                  "    pm.expect(responseJson.details.length).to.be.at.least(2);",
+                  "    ",
+                  "    const titleError = responseJson.details.find(detail => detail.path && detail.path.includes('title'));",
+                  "    pm.expect(titleError).to.exist;",
+                  "    pm.expect(titleError.code).to.equal('too_small');",
+                  "    pm.expect(titleError.message).to.equal('Title must be at least 2 characters');",
+                  "    ",
+                  "    const priorityError = responseJson.details.find(detail => detail.path && detail.path.includes('priority'));",
+                  "    pm.expect(priorityError).to.exist;",
+                  "    pm.expect(priorityError.code).to.equal('invalid_enum_value');",
+                  "    pm.expect(priorityError.received).to.equal('invalid');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [
@@ -1509,6 +1656,38 @@
         },
         {
           "name": "Toggle Todo Completion - Happy Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "});",
+                  "",
+                  "pm.test('Response message indicates success', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.equal('Todo toggled successfully');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PATCH",
             "header": [
@@ -1551,6 +1730,40 @@
         },
         {
           "name": "Toggle Todo Completion - Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "});",
+                  "",
+                  "pm.test('Error indicates todo not found', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.error).to.equal('Todo not found');",
+                  "    pm.expect(responseJson.code).to.equal('TODO_NOT_FOUND');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PATCH",
             "header": [
@@ -1599,6 +1812,38 @@
       "item": [
         {
           "name": "Delete Todo - Happy Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "});",
+                  "",
+                  "pm.test('Response message indicates success', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.message).to.equal('Todo deleted successfully');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
             "header": [
@@ -1641,6 +1886,40 @@
         },
         {
           "name": "Delete Todo - Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "});",
+                  "",
+                  "pm.test('Error indicates todo not found', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.error).to.equal('Todo not found');",
+                  "    pm.expect(responseJson.code).to.equal('TODO_NOT_FOUND');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
             "header": [
@@ -1689,6 +1968,40 @@
       "item": [
         {
           "name": "404 - Unknown Route",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('message');",
+                  "});",
+                  "",
+                  "pm.test('Error indicates route not found', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.error).to.equal('Route not found');",
+                  "    pm.expect(responseJson.message).to.equal('The requested endpoint does not exist');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [
@@ -1731,6 +2044,41 @@
         },
         {
           "name": "Rate Limit Test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 (under limit) or 429 (over limit)', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 429]);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response structure is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    if (pm.response.code === 200) {",
+                  "        // Normal response",
+                  "        pm.expect(responseJson).to.have.property('success', true);",
+                  "        pm.expect(responseJson).to.have.property('data');",
+                  "    } else if (pm.response.code === 429) {",
+                  "        // Rate limit response",
+                  "        pm.expect(responseJson).to.have.property('success', false);",
+                  "        pm.expect(responseJson).to.have.property('error');",
+                  "        pm.expect(responseJson.error).to.include('Too many requests');",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [
@@ -1773,6 +2121,38 @@
         },
         {
           "name": "Invalid JSON Body",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "});",
+                  "",
+                  "pm.test('Error indicates invalid JSON', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.error).to.equal('Invalid JSON in request body');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
