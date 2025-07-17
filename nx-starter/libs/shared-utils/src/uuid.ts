@@ -1,15 +1,18 @@
-/**
- * UUID generation utilities
- * TODO: Implement UUID generation functions
- */
+import { v4 as uuidv4 } from 'uuid';
 
-// TODO: Add uuid generation functions here
+/**
+ * Generates a unique identifier for entities
+ * Returns UUID without dashes
+ */
+export const generateId = (): string => {
+  return uuidv4().replace(/-/g, '');
+};
+
 export const generateUUID = (): string => {
-  // TODO: Implement UUID generation
-  return '';
+  return generateId();
 };
 
 export const isValidUUID = (uuid: string): boolean => {
-  // TODO: Implement UUID validation
-  return false;
+  const uuidRegex = /^[0-9a-f]{32}$/i;
+  return uuidRegex.test(uuid);
 };

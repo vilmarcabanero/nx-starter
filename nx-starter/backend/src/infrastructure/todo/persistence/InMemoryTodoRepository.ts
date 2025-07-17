@@ -2,7 +2,7 @@ import { injectable } from 'tsyringe';
 import { Todo } from '@nx-starter/shared-domain';
 import type { ITodoRepository } from '@nx-starter/shared-domain';
 import type { Specification } from '@nx-starter/shared-domain';
-import { generateUUID } from '@nx-starter/shared-utils';
+import { generateId } from '@nx-starter/shared-utils';
 
 /**
  * In-memory implementation of ITodoRepository
@@ -19,7 +19,7 @@ export class InMemoryTodoRepository implements ITodoRepository {
   }
 
   async create(todo: Todo): Promise<string> {
-    const id = generateUUID();
+    const id = generateId();
     const todoWithId = new Todo(
       todo.title.value,
       todo.completed,
