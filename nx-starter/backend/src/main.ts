@@ -1,26 +1,35 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
+import 'reflect-metadata';
+import dotenv from 'dotenv';
+import { createApp } from './config/app';
+import { configureDI } from './infrastructure/di/container';
+import { config } from './config/config';
 
-import express from 'express';
-import * as path from 'path';
+// Load environment variables
+dotenv.config();
 
-// Test import from shared libraries
-import { Todo } from '@nx-starter/shared-domain';
-import { TodoDto } from '@nx-starter/shared-application';
-import { generateUUID } from '@nx-starter/shared-utils';
+export async function startServer() {
+  try {
+    // Configure dependency injection (now async)
+    await configureDI();
 
-const app = express();
+    // Create Express app
+    const app = createApp();
 
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+    // Start server
+    app.listen(config.port, () => {
+      console.log(`🚀 Task App API Server running on port ${config.port}`);
+      console.log(`🌍 Environment: ${config.nodeEnv}`);
+      console.log(`📖 API documentation available at http://localhost:${config.port}`);
+      console.log(`🔍 Health check: http://localhost:${config.port}/api/health`);
+      console.log(`📝 Todos API: http://localhost:${config.port}/api/todos`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
 
-app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to backend!' });
-});
-
-const port = process.env.PORT || 3333;
-const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`);
-});
-server.on('error', console.error);
+// Start the server only if this module is being run directly
+if (require.main === module) {
+  startServer();
+}
