@@ -715,6 +715,65 @@
       "item": [
         {
           "name": "Create Todo - Happy Path (Minimal)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Created todo has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const todo = responseJson.data;",
+                  "    pm.expect(todo).to.have.property('id');",
+                  "    pm.expect(todo).to.have.property('title');",
+                  "    pm.expect(todo).to.have.property('completed');",
+                  "    pm.expect(todo).to.have.property('priority');",
+                  "    pm.expect(todo).to.have.property('createdAt');",
+                  "    pm.expect(todo.completed).to.be.false;",
+                  "    pm.expect(todo.priority).to.be.oneOf(['low', 'medium', 'high']);",
+                  "});",
+                  "",
+                  "pm.test('Todo title matches request', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const todo = responseJson.data;",
+                  "    pm.expect(todo.title).to.equal('New todo item');",
+                  "});",
+                  "",
+                  "pm.test('Todo priority matches request', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const todo = responseJson.data;",
+                  "    pm.expect(todo.priority).to.equal('medium');",
+                  "});",
+                  "",
+                  "pm.test('Todo ID is generated and set as variable', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const todo = responseJson.data;",
+                  "    pm.expect(todo.id).to.be.a('string');",
+                  "    pm.expect(todo.id).to.have.length.above(0);",
+                  "    pm.collectionVariables.set('createdTodoId', todo.id);",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -774,6 +833,72 @@
         },
         {
           "name": "Create Todo - Happy Path (All Fields)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Created todo has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const todo = responseJson.data;",
+                  "    pm.expect(todo).to.have.property('id');",
+                  "    pm.expect(todo).to.have.property('title');",
+                  "    pm.expect(todo).to.have.property('completed');",
+                  "    pm.expect(todo).to.have.property('priority');",
+                  "    pm.expect(todo).to.have.property('createdAt');",
+                  "    pm.expect(todo).to.have.property('dueDate');",
+                  "    pm.expect(todo.completed).to.be.false;",
+                  "    pm.expect(todo.priority).to.be.oneOf(['low', 'medium', 'high']);",
+                  "});",
+                  "",
+                  "pm.test('Todo title matches request', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const todo = responseJson.data;",
+                  "    pm.expect(todo.title).to.equal('Complete API documentation with examples');",
+                  "});",
+                  "",
+                  "pm.test('Todo priority matches request', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const todo = responseJson.data;",
+                  "    pm.expect(todo.priority).to.equal('high');",
+                  "});",
+                  "",
+                  "pm.test('Todo due date matches request', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const todo = responseJson.data;",
+                  "    pm.expect(todo.dueDate).to.equal('2024-01-25T18:00:00.000Z');",
+                  "});",
+                  "",
+                  "pm.test('Todo ID is generated and set as variable', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const todo = responseJson.data;",
+                  "    pm.expect(todo.id).to.be.a('string');",
+                  "    pm.expect(todo.id).to.have.length.above(0);",
+                  "    pm.collectionVariables.set('createdTodoWithDueDateId', todo.id);",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -833,6 +958,49 @@
         },
         {
           "name": "Create Todo - Missing Title (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error indicates validation failed', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.error).to.equal('Validation failed');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate title is required', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details).to.be.an('array');",
+                  "    pm.expect(responseJson.details.length).to.be.above(0);",
+                  "    ",
+                  "    const titleError = responseJson.details.find(detail => detail.path && detail.path.includes('title'));",
+                  "    pm.expect(titleError).to.exist;",
+                  "    pm.expect(titleError.message).to.equal('Required');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -892,6 +1060,50 @@
         },
         {
           "name": "Create Todo - Title Too Short (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error indicates validation failed', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.error).to.equal('Validation failed');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate title too short', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details).to.be.an('array');",
+                  "    pm.expect(responseJson.details.length).to.be.above(0);",
+                  "    ",
+                  "    const titleError = responseJson.details.find(detail => detail.path && detail.path.includes('title'));",
+                  "    pm.expect(titleError).to.exist;",
+                  "    pm.expect(titleError.code).to.equal('too_small');",
+                  "    pm.expect(titleError.message).to.equal('Title must be at least 2 characters');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -951,6 +1163,51 @@
         },
         {
           "name": "Create Todo - Invalid Priority (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error indicates validation failed', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.error).to.equal('Validation failed');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate invalid priority', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details).to.be.an('array');",
+                  "    pm.expect(responseJson.details.length).to.be.above(0);",
+                  "    ",
+                  "    const priorityError = responseJson.details.find(detail => detail.path && detail.path.includes('priority'));",
+                  "    pm.expect(priorityError).to.exist;",
+                  "    pm.expect(priorityError.code).to.equal('invalid_enum_value');",
+                  "    pm.expect(priorityError.options).to.include.members(['low', 'medium', 'high']);",
+                  "    pm.expect(priorityError.received).to.equal('urgent');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
