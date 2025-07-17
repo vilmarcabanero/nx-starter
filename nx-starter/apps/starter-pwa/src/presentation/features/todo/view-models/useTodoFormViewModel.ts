@@ -14,18 +14,25 @@ export const useTodoFormViewModel = (): TodoFormViewModel => {
   >({});
   const [shouldShowValidationErrors, setShouldShowValidationErrors] = useState(false);
 
-  const validateTitle = useCallback((title: string): boolean => {
+  const validateTitleLogic = useCallback((title: string): Record<string, string> => {
     const errors: Record<string, string> = {};
+    const trimmedTitle = title?.trim();
 
     if (!title) {
       errors.title = 'Title is required';
-    } else if (title && !title.trim()) {
+    } else if (!trimmedTitle) {
       errors.title = 'Title cannot be empty';
-    } else if (title.trim().length < 2) {
+    } else if (trimmedTitle.length < 2) {
       errors.title = 'Title must be at least 2 characters long';
-    } else if (title.trim().length > 255) {
+    } else if (trimmedTitle.length > 255) {
       errors.title = 'Title cannot exceed 255 characters';
     }
+
+    return errors;
+  }, []);
+
+  const validateTitle = useCallback((title: string): boolean => {
+    const errors = validateTitleLogic(title);
 
     // Only set validation errors if we should show them
     if (shouldShowValidationErrors) {
@@ -33,24 +40,13 @@ export const useTodoFormViewModel = (): TodoFormViewModel => {
     }
     
     return Object.keys(errors).length === 0;
-  }, [shouldShowValidationErrors]);
+  }, [shouldShowValidationErrors, validateTitleLogic]);
 
   const validateTitleAndSetErrors = useCallback((title: string): boolean => {
-    const errors: Record<string, string> = {};
-
-    if (!title) {
-      errors.title = 'Title is required';
-    } else if (title && !title.trim()) {
-      errors.title = 'Title cannot be empty';
-    } else if (title.trim().length < 2) {
-      errors.title = 'Title must be at least 2 characters long';
-    } else if (title.trim().length > 255) {
-      errors.title = 'Title cannot exceed 255 characters';
-    }
-
+    const errors = validateTitleLogic(title);
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
-  }, []);
+  }, [validateTitleLogic]);
 
   const submitTodo = useCallback(
     async (title: string) => {
