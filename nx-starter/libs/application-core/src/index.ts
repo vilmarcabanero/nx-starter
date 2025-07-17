@@ -9,4 +9,4 @@ export * from './use-cases';
 export * from './mappers';
 export * from './interfaces';
 export * from './services';
-export * from './tokens';
+export * from './di';

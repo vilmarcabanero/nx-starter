@@ -13,7 +13,7 @@ import type {
   GetTodoByIdQuery,
   TodoStatsQueryResult,
 } from '../../dto/TodoQueries';
-import { TOKENS } from '../../tokens';
+import { TOKENS } from '../../di/tokens';
 
 /**
  * Query handler for getting all todos

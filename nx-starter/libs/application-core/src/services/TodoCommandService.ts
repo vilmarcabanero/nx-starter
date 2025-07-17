@@ -15,7 +15,7 @@ import { CreateTodoUseCase } from '../use-cases/commands/CreateTodoUseCase';
 import { UpdateTodoUseCase } from '../use-cases/commands/UpdateTodoUseCase';
 import { DeleteTodoUseCase } from '../use-cases/commands/DeleteTodoUseCase';
 import { ToggleTodoUseCase } from '../use-cases/commands/ToggleTodoUseCase';
-import { TOKENS } from '../tokens';
+import { TOKENS } from '../di/tokens';
 
 /**
  * Command Service implementing Command Responsibility Segregation

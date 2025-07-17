@@ -2,7 +2,7 @@ import { injectable, inject } from 'tsyringe';
 import { Todo, TodoNotFoundException } from '@nx-starter/shared-domain';
 import type { ITodoRepository } from '@nx-starter/shared-domain';
 import type { UpdateTodoCommand } from '../../dto/TodoCommands';
-import { TOKENS } from '../../tokens';
+import { TOKENS } from '../../di/tokens';
 
 /**
  * Use case for updating an existing todo

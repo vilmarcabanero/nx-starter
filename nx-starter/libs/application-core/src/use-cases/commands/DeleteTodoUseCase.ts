@@ -2,7 +2,7 @@ import { injectable, inject } from 'tsyringe';
 import { TodoNotFoundException } from '@nx-starter/shared-domain';
 import type { ITodoRepository } from '@nx-starter/shared-domain';
 import type { DeleteTodoCommand } from '../../dto/TodoCommands';
-import { TOKENS } from '../../tokens';
+import { TOKENS } from '../../di/tokens';
 
 /**
  * Use case for deleting an existing todo

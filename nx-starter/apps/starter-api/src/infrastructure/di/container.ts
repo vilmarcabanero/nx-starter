@@ -15,9 +15,9 @@ import {
   GetCompletedTodosQueryHandler,
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
+  TOKENS,
 } from '@nx-starter/shared-application';
 import type { ITodoRepository } from '@nx-starter/shared-domain';
-import { TOKENS } from './tokens';
 import { getTypeOrmDataSource } from '../todo/persistence/typeorm/TypeOrmConnection';
 import { connectMongoDB } from '../todo/persistence/mongoose/MongooseConnection';
 import { getSequelizeInstance } from '../todo/persistence/sequelize/SequelizeConnection';

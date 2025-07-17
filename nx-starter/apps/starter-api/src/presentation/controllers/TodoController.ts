@@ -12,9 +12,9 @@ import {
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
   TodoMapper,
+  TOKENS,
 } from '@nx-starter/shared-application';
 import { DomainException } from '@nx-starter/shared-domain';
-import { TOKENS } from '../../infrastructure/di/tokens';
 import { asyncHandler } from '../../shared/middleware/ErrorHandler';
 
 /**

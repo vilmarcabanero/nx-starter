@@ -2,7 +2,7 @@ import { injectable, inject } from 'tsyringe';
 import { Todo, TodoTitle } from '@nx-starter/shared-domain';
 import type { ITodoRepository } from '@nx-starter/shared-domain';
 import type { CreateTodoCommand } from '../../dto/TodoCommands';
-import { TOKENS } from '../../tokens';
+import { TOKENS } from '../../di/tokens';
 
 /**
  * Use case for creating a new todo

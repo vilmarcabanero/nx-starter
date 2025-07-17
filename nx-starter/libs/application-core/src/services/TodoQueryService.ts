@@ -13,7 +13,7 @@ import {
   GetTodoStatsQueryHandler,
   GetTodoByIdQueryHandler,
 } from '../use-cases/queries/TodoQueryHandlers';
-import { TOKENS } from '../tokens';
+import { TOKENS } from '../di/tokens';
 
 /**
  * Query Service implementing Query Responsibility Segregation
