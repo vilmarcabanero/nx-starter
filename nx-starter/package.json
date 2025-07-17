@@ -13,6 +13,7 @@
     "axios": "^1.6.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dexie": "^4.0.11",
     "empty": "0.10.1",
     "express": "^4.21.2",
     "immer": "^10.1.1",
