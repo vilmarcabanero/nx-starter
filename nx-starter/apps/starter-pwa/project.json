@@ -1,0 +1,14 @@
+{
+  "name": "starter-pwa",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/starter-pwa/src",
+  "projectType": "application",
+  "tags": [],
+  "implicitDependencies": [
+    "shared-domain",
+    "shared-application",
+    "shared-utils"
+  ],
+  "// targets": "to see all targets run: nx show project frontend --web",
+  "targets": {}
+}
