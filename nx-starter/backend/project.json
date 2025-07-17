@@ -24,8 +24,12 @@
       }
     },
     "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{workspaceRoot}/coverage/backend"],
       "options": {
-        "passWithNoTests": true
+        "configFile": "backend/vitest.config.ts",
+        "passWithNoTests": true,
+        "reportsDirectory": "../coverage/backend"
       }
     }
   },
