@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { config } from '../../../../config/config';
 
 /**
  * Mongoose connection management
@@ -6,8 +7,18 @@ import mongoose from 'mongoose';
  */
 export const connectMongoDB = async (): Promise<void> => {
   try {
-    const mongoUrl =
-      process.env.MONGODB_URL || 'mongodb://localhost:27017/task_app';
+    let mongoUrl: string;
+    
+    if (config.database.url) {
+      // Use URL if provided
+      mongoUrl = config.database.url;
+    } else {
+      // Build URL from individual config properties
+      const host = config.database.host || 'localhost';
+      const port = config.database.port || 27017;
+      const database = config.database.database || 'task_app';
+      mongoUrl = `mongodb://${host}:${port}/${database}`;
+    }
 
     await mongoose.connect(mongoUrl, {
       // Modern Mongoose doesn't need these options anymore
