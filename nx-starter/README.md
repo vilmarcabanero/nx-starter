@@ -51,7 +51,7 @@ This workspace follows clean architecture principles with clear separation of co
 ### Prerequisites
 
 - Node.js (v18 or higher)
-- npm or yarn
+- pnpm
 
 ### Installation
 
@@ -61,26 +61,26 @@ git clone <repository-url>
 cd nx-starter
 
 # Install dependencies
-npm install
+pnpm install
 
 # Build all projects
-npx nx run-many --target=build --all
+pnpm nx run-many --target=build --all
 
 # Run tests
-npx nx run-many --target=test --all
+pnpm nx run-many --target=test --all
 ```
 
 ### Development
 
 ```bash
 # Start API development server
-npx nx serve starter-api
+pnpm nx serve starter-api
 
 # Start PWA development server
-npx nx serve starter-pwa
+pnpm nx serve starter-pwa
 
 # Run both in parallel
-npx nx run-many --target=serve --projects=starter-api,starter-pwa --parallel
+pnpm nx run-many --target=serve --projects=starter-api,starter-pwa --parallel
 ```
 
 ## 📋 Common Nx Commands
@@ -89,97 +89,97 @@ npx nx run-many --target=serve --projects=starter-api,starter-pwa --parallel
 
 ```bash
 # List all projects
-npx nx show projects
+pnpm nx show projects
 
 # Show project details
-npx nx show project <project-name>
+pnpm nx show project <project-name>
 
 # View dependency graph
-npx nx graph
+pnpm nx graph
 
 # View project graph in browser
-npx nx graph --view file
+pnpm nx graph --view file
 ```
 
 ### Development Workflow
 
 ```bash
 # Build a specific project
-npx nx build <project-name>
+pnpm nx build <project-name>
 
 # Build all projects
-npx nx run-many --target=build --all
+pnpm nx run-many --target=build --all
 
 # Test a specific project
-npx nx test <project-name>
+pnpm nx test <project-name>
 
 # Test all projects
-npx nx run-many --target=test --all
+pnpm nx run-many --target=test --all
 
 # Lint a specific project
-npx nx lint <project-name>
+pnpm nx lint <project-name>
 
 # Lint all projects
-npx nx run-many --target=lint --all
+pnpm nx run-many --target=lint --all
 ```
 
 ### Development Servers
 
 ```bash
 # Serve API (development)
-npx nx serve starter-api
+pnpm nx serve starter-api
 
 # Serve PWA (development)
-npx nx serve starter-pwa
+pnpm nx serve starter-pwa
 
 # Serve with specific configuration
-npx nx serve starter-api --configuration=production
+pnpm nx serve starter-api --configuration=production
 ```
 
 ### Testing
 
 ```bash
 # Run unit tests
-npx nx test <project-name>
+pnpm nx test <project-name>
 
 # Run e2e tests
-npx nx e2e starter-api-e2e
-npx nx e2e starter-pwa-e2e
+pnpm nx e2e starter-api-e2e
+pnpm nx e2e starter-pwa-e2e
 
 # Run tests with coverage
-npx nx test <project-name> --coverage
+pnpm nx test <project-name> --coverage
 
 # Run tests in watch mode
-npx nx test <project-name> --watch
+pnpm nx test <project-name> --watch
 ```
 
 ### Code Quality
 
 ```bash
 # Lint code
-npx nx lint <project-name>
+pnpm nx lint <project-name>
 
 # Format code
-npx nx format
+pnpm nx format
 
 # Check formatting
-npx nx format --check
+pnpm nx format --check
 ```
 
 ### Dependency Management
 
 ```bash
 # Show project dependencies
-npx nx graph
+pnpm nx graph
 
 # Check for circular dependencies
-npx nx graph --focus=<project-name>
+pnpm nx graph --focus=<project-name>
 
 # Show what's affected by changes
-npx nx affected --target=build
+pnpm nx affected --target=build
 
 # Test only affected projects
-npx nx affected --target=test
+pnpm nx affected --target=test
 ```
 
 ## 🛠️ Technology Stack
@@ -290,8 +290,8 @@ Copy these to `.env` and customize for your environment.
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/your-feature`
 3. Make your changes
-4. Run tests: `npx nx run-many --target=test --all`
-5. Run linting: `npx nx run-many --target=lint --all`
+4. Run tests: `pnpm nx run-many --target=test --all`
+5. Run linting: `pnpm nx run-many --target=lint --all`
 6. Commit your changes: `git commit -m 'Add some feature'`
 7. Push to the branch: `git push origin feature/your-feature`
 8. Submit a pull request
