@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nx serve starter-api",
     "start:api": "nx serve starter-api",
-    "start:web": "nx dev starter-pwa",
+    "start:web": "nx serve starter-pwa",
     "start:all": "nx run-many -t serve -p starter-api --parallel & nx run-many -t dev -p starter-pwa --parallel",
     "dev": "nx dev starter-pwa",
     "dev:api": "nx serve starter-api",
