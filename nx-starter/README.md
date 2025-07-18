@@ -60,13 +60,26 @@ This workspace follows clean architecture principles with clear separation of co
 git clone <repository-url>
 cd nx-starter
 
-# Install dependencies
+# Install dependencies and set up the project
+pnpm run setup
+
+# This runs:
+# 1. pnpm install (installs dependencies)
+# 2. pnpm run build:libs (builds shared libraries)
+# 3. pnpm run prepare (sets up git hooks for commit validation)
+```
+
+### Alternative Setup
+
+```bash
+# Manual setup if you prefer step-by-step
 pnpm install
+pnpm run build:libs
 
-# Build all projects
-pnpm nx run-many --target=build --all
+# Set up git hooks for commit message validation
+pnpm run prepare
 
-# Run tests
+# Run tests to verify everything works
 pnpm nx run-many --target=test --all
 ```
 
@@ -213,6 +226,8 @@ pnpm nx affected --target=test
 - **Jest** - Additional testing support
 - **Playwright** - E2E testing
 - **TSyringe** - Dependency injection
+- **Commitlint** - Commit message linting
+- **Husky** - Git hooks management
 
 ## 📁 Project Structure
 
@@ -292,9 +307,78 @@ Copy these to `.env` and customize for your environment.
 3. Make your changes
 4. Run tests: `pnpm nx run-many --target=test --all`
 5. Run linting: `pnpm nx run-many --target=lint --all`
-6. Commit your changes: `git commit -m 'Add some feature'`
+6. Commit your changes using conventional commits: `git commit -m 'feat(scope): description'`
 7. Push to the branch: `git push origin feature/your-feature`
 8. Submit a pull request
+
+### Commit Message Guidelines
+
+This project enforces conventional commit messages. All commits must follow this format:
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+**Types:**
+- `feat` - A new feature
+- `fix` - A bug fix
+- `docs` - Documentation changes
+- `style` - Code style changes (formatting, missing semi-colons, etc.)
+- `refactor` - Code refactoring
+- `perf` - Performance improvements
+- `test` - Adding or updating tests
+- `build` - Build system changes
+- `ci` - CI configuration changes
+- `chore` - Other maintenance changes
+- `revert` - Reverts a previous commit
+
+**Scopes (optional):**
+- `starter-api` - API application changes
+- `starter-pwa` - PWA application changes
+- `domain-core` - Domain library changes
+- `application-core` - Application library changes
+- `utils-core` - Utils library changes
+
+**Examples:**
+```bash
+# Valid commits (lowercase first letter, proper nouns/acronyms allowed, no period)
+feat(starter-api): add OAuth integration with GitHub API
+fix(starter-pwa): resolve JWT token validation issue
+docs: update API documentation for v2
+style(starter-api): format code with Prettier
+refactor(domain-core): improve Todo entity structure
+test(application-core): add unit tests for TodoService
+perf(starter-api): optimize database queries for PostgreSQL
+chore: update dependencies to latest versions
+
+# Invalid commits (will be rejected)
+feat(starter-api): Add OAuth integration  # ❌ First letter capitalized
+fix(starter-pwa): resolve login issue.     # ❌ Ends with period
+docs: Update API documentation            # ❌ First letter capitalized
+FEAT(api): add new feature               # ❌ Type not lowercase
+feat: add feature                        # ❌ Missing scope (optional but recommended)
+```
+
+**Validation Rules:**
+- **First letter**: Must be lowercase or a number (allows proper nouns/acronyms after)
+- **No periods**: Subject must not end with a period (.)
+- **Length**: Header must be 72 characters or less
+- **Type**: Must be one of the allowed types in lowercase
+- **Scope**: Must be in kebab-case if provided
+
+**Validation:**
+- Use `pnpm run commit-lint:check` to validate your last commit
+- Invalid commits will be rejected by the git hook
+- If git hooks aren't working, run `pnpm run prepare` to set them up
+
+**Troubleshooting:**
+- If commit validation isn't working after cloning, run `pnpm run prepare`
+- Make sure you're in the nx-starter directory when committing
+- The git hooks are automatically set up when you run `pnpm install` (via the `prepare` script)
 
 ## 📝 License
 
