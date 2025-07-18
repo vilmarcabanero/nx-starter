@@ -2,7 +2,11 @@
  * Base domain exception
  */
 export abstract class DomainException extends Error {
-  constructor(message: string, public readonly code: string) {
+  constructor(
+    message: string, 
+    public readonly code: string, 
+    public readonly statusCode = 400
+  ) {
     super(message);
     this.name = this.constructor.name;
   }
@@ -13,7 +17,7 @@ export abstract class DomainException extends Error {
  */
 export class TodoNotFoundException extends DomainException {
   constructor(id: string) {
-    super(`Todo with ID ${id} not found`, 'TODO_NOT_FOUND');
+    super(`Todo with ID ${id} not found`, 'TODO_NOT_FOUND', 404);
   }
 }
 

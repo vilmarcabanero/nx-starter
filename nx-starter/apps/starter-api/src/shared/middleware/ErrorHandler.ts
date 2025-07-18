@@ -28,7 +28,7 @@ export const handleControllerError = (
   console.error('Controller error:', error);
 
   if (error instanceof DomainException) {
-    res.status(400).json({
+    res.status(error.statusCode).json({
       success: false,
       error: error.message,
       code: error.code,

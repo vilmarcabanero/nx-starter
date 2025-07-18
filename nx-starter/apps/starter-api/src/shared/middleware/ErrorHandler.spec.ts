@@ -84,7 +84,7 @@ describe('Shared ErrorHandler', () => {
       );
 
       expect(consoleErrorSpy).toHaveBeenCalledWith('Controller error:', error);
-      expect(mockRes.status).toHaveBeenCalledWith(400);
+      expect(mockRes.status).toHaveBeenCalledWith(404);
       expect(mockRes.json).toHaveBeenCalledWith({
         success: false,
         error: error.message,
@@ -113,12 +113,14 @@ describe('Shared ErrorHandler', () => {
     });
 
     it('should handle ZodError validation errors', () => {
-      const zodError = {
-        name: 'ZodError',
-        errors: [
-          { path: ['title'], message: 'Required', code: 'invalid_type' },
-        ],
-      };
+      const zodError = new ZodError([
+        { 
+          path: ['title'], 
+          message: 'Invalid input: expected string, received undefined', 
+          code: 'invalid_type',
+          expected: 'string'
+        } as never,
+      ]);
 
       handleControllerError(
         zodError,
@@ -131,7 +133,7 @@ describe('Shared ErrorHandler', () => {
       expect(mockRes.json).toHaveBeenCalledWith({
         success: false,
         error: 'Validation failed',
-        details: zodError.errors,
+        details: zodError.issues,
       });
     });
 
