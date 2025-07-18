@@ -2,6 +2,12 @@
   "name": "@nx-starter/source",
   "version": "0.0.0",
   "license": "MIT",
+  "engines": {
+    "node": ">=22.16.0",
+    "pnpm": ">=10.13.1",
+    "npm": "please-use-pnpm",
+    "yarn": "please-use-pnpm"
+  },
   "scripts": {
     "start": "nx run-many -t serve -p starter-api --parallel & nx run-many -t serve -p starter-pwa --parallel",
     "start:api": "nx serve starter-api",

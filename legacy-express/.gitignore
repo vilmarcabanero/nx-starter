@@ -1,3 +1,7 @@
+# Lock files from other package managers (we use pnpm)
+package-lock.json
+yarn.lock
+
 # Dependencies
 node_modules/
 npm-debug.log*
