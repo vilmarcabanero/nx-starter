@@ -33,7 +33,7 @@ export default defineConfig(async () => {
     //  plugins: [ nxViteTsPaths() ],
     // },
     build: {
-      outDir: '../../dist/starter-pwa',
+      outDir: '../../dist/apps/starter-pwa',
       emptyOutDir: true,
       reportCompressedSize: true,
       commonjsOptions: {
