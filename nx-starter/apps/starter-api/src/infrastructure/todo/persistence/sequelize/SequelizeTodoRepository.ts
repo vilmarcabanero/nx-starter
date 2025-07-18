@@ -1,9 +1,9 @@
 import { injectable } from 'tsyringe';
-import { Todo } from '@nx-starter/shared-domain';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
-import type { Specification } from '@nx-starter/shared-domain';
+import { Todo } from '@nx-starter/domain-core';
+import type { ITodoRepository } from '@nx-starter/domain-core';
+import type { Specification } from '@nx-starter/domain-core';
 import { TodoSequelizeModel } from './TodoModel';
-import { generateUUID } from '@nx-starter/shared-utils';
+import { generateUUID } from '@nx-starter/utils-core';
 
 /**
  * Sequelize implementation of ITodoRepository

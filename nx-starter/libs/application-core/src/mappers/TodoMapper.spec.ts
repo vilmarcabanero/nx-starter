@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { TodoMapper } from './TodoMapper';
-import { Todo, TodoTitle } from '@nx-starter/shared-domain';
+import { Todo, TodoTitle } from '@nx-starter/domain-core';
 import type { TodoDto, CreateTodoDto } from '../dto/TodoDto';
 
 describe('TodoMapper', () => {

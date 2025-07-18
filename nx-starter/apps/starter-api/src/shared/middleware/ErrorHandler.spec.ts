@@ -10,7 +10,7 @@ import {
   DomainException,
   TodoNotFoundException,
   InvalidTodoTitleException,
-} from '@nx-starter/shared-domain';
+} from '@nx-starter/domain-core';
 
 describe('Shared ErrorHandler', () => {
   let mockReq: Partial<Request>;

@@ -1,7 +1,7 @@
 // Command DTOs for CQRS pattern
 // Unified version combining frontend and backend with optional validation
 
-import type { TodoPriorityLevel } from '@nx-starter/shared-domain';
+import type { TodoPriorityLevel } from '@nx-starter/domain-core';
 
 // Command interfaces
 export interface CreateTodoCommand {

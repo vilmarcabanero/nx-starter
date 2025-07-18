@@ -3,14 +3,14 @@ import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { container, TOKENS } from '../di/container';
-import { Todo } from '@nx-starter/shared-domain';
+import { Todo } from '@nx-starter/domain-core';
 import type { TodoStore } from './TodoStoreInterface';
 import type {
   ITodoCommandService,
   ITodoQueryService,
   CreateTodoData,
   UpdateTodoData,
-} from '@nx-starter/shared-application';
+} from '@nx-starter/application-core';
 
 export const useTodoStore = create<TodoStore>()(
   subscribeWithSelector(

@@ -4,8 +4,8 @@ import {
   Todo,
   TodoNotFoundException,
   TodoTitle,
-} from '@nx-starter/shared-domain';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
+} from '@nx-starter/domain-core';
+import type { ITodoRepository } from '@nx-starter/domain-core';
 import type { DeleteTodoCommand } from '../../dto/TodoCommands';
 
 describe('DeleteTodoUseCase', () => {

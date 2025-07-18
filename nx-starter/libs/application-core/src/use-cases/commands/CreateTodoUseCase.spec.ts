@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { CreateTodoUseCase } from './CreateTodoUseCase';
-import { Todo, InvalidTodoTitleException } from '@nx-starter/shared-domain';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
+import { Todo, InvalidTodoTitleException } from '@nx-starter/domain-core';
+import type { ITodoRepository } from '@nx-starter/domain-core';
 import type { CreateTodoCommand } from '../../dto/TodoCommands';
 
 describe('CreateTodoUseCase', () => {

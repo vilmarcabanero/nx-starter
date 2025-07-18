@@ -3,10 +3,10 @@ import path from 'path';
 
 export default defineConfig(() => ({
   root: __dirname,
-  cacheDir: '../node_modules/.vite/shared-domain',
+  cacheDir: '../node_modules/.vite/domain-core',
   resolve: {
     alias: {
-      '@nx-starter/shared-utils': path.resolve(__dirname, '../utils-core/src/index.ts'),
+      '@nx-starter/utils-core': path.resolve(__dirname, '../utils-core/src/index.ts'),
     },
   },
   test: {
@@ -16,7 +16,7 @@ export default defineConfig(() => ({
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],
     coverage: {
-      reportsDirectory: '../coverage/shared-domain',
+      reportsDirectory: '../coverage/domain-core',
       provider: 'v8' as const,
     },
   },

@@ -1,4 +1,4 @@
-import { Todo } from '@nx-starter/shared-domain';
+import { Todo } from '@nx-starter/domain-core';
 
 /**
  * View Model interfaces for presentation layer

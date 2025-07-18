@@ -1,8 +1,8 @@
 import { injectable } from 'tsyringe';
-import { Todo } from '@nx-starter/shared-domain';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
-import type { Specification } from '@nx-starter/shared-domain';
-import { generateId } from '@nx-starter/shared-utils';
+import { Todo } from '@nx-starter/domain-core';
+import type { ITodoRepository } from '@nx-starter/domain-core';
+import type { Specification } from '@nx-starter/domain-core';
+import { generateId } from '@nx-starter/utils-core';
 
 /**
  * In-memory implementation of ITodoRepository

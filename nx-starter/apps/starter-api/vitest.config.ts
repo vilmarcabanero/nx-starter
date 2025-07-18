@@ -50,17 +50,17 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@nx-starter/shared-domain': path.resolve(
+      '@nx-starter/domain-core': path.resolve(
         __dirname,
-        '../../libs/shared-domain/src/index.ts'
+        '../../libs/domain-core/src/index.ts'
       ),
-      '@nx-starter/shared-application': path.resolve(
+      '@nx-starter/application-core': path.resolve(
         __dirname,
-        '../../libs/shared-application/src/index.ts'
+        '../../libs/application-core/src/index.ts'
       ),
-      '@nx-starter/shared-utils': path.resolve(
+      '@nx-starter/utils-core': path.resolve(
         __dirname,
-        '../../libs/shared-utils/src/index.ts'
+        '../../libs/utils-core/src/index.ts'
       ),
     },
   },
