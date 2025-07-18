@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { DomainException } from '@nx-starter/shared-domain';
+import { ZodError } from 'zod';
 
 /**
  * Async error handler wrapper to avoid repetitive try-catch blocks
@@ -35,11 +36,11 @@ export const handleControllerError = (
     return;
   }
 
-  if (error.name === 'ZodError') {
+  if (error instanceof ZodError) {
     res.status(400).json({
       success: false,
       error: 'Validation failed',
-      details: error.errors,
+      details: error.issues,
     });
     return;
   }
