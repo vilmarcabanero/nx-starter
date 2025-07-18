@@ -50,7 +50,7 @@ export class InMemoryTodoRepository implements ITodoRepository {
       existingTodo.createdAt,
       id,
       changes.priority !== undefined
-        ? (changes.priority as any)
+        ? (changes.priority as any).level
         : existingTodo.priority.level,
       changes.dueDate !== undefined ? changes.dueDate : existingTodo.dueDate
     );
