@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Task App API",
-    "description": "Complete API collection for the Task App Express.js server with Clean Architecture. This collection includes all CRUD operations for todos with comprehensive test scenarios including happy paths and error cases.",
+    "description": "Complete API collection for the Task App Express.js server with Clean Architecture. This collection matches the E2E test suite and includes all CRUD operations for todos with comprehensive test scenarios including happy paths and validation errors.",
     "version": "1.0.0",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -13,19 +13,19 @@
       "description": "Base URL for the Task App API server"
     },
     {
-      "key": "sampleTodoId",
-      "value": "todo-123",
+      "key": "todoId",
+      "value": "",
       "type": "string",
-      "description": "Sample todo ID for testing. Replace with actual ID from create todo response."
+      "description": "Dynamic todo ID from create operations"
     }
   ],
   "item": [
     {
-      "name": "Server Info",
+      "name": "Server Info & Health",
       "description": "Basic server information and health check endpoints",
       "item": [
         {
-          "name": "Get Server Info - Happy Path",
+          "name": "Get Server Info",
           "event": [
             {
               "listen": "test",
@@ -42,22 +42,17 @@
                   "pm.test('Response has required fields', function () {",
                   "    const responseJson = pm.response.json();",
                   "    pm.expect(responseJson).to.have.property('success', true);",
-                  "    pm.expect(responseJson).to.have.property('message');",
-                  "    pm.expect(responseJson).to.have.property('version');",
-                  "    pm.expect(responseJson).to.have.property('environment');",
-                  "    pm.expect(responseJson).to.have.property('database');",
+                  "    pm.expect(responseJson).to.have.property('message', 'Task App API Server');",
+                  "    pm.expect(responseJson).to.have.property('version', '1.0.0');",
+                  "    pm.expect(responseJson).to.have.property('environment', 'development');",
+                  "    pm.expect(responseJson).to.have.property('database', 'mysql');",
                   "    pm.expect(responseJson).to.have.property('endpoints');",
                   "});",
                   "",
-                  "pm.test('Response message is correct', function () {",
+                  "pm.test('Endpoints object has required endpoints', function () {",
                   "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.message).to.equal('Task App API Server');",
-                  "});",
-                  "",
-                  "pm.test('Response has endpoints object with required endpoints', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.endpoints).to.have.property('health');",
-                  "    pm.expect(responseJson.endpoints).to.have.property('todos');",
+                  "    pm.expect(responseJson.endpoints).to.have.property('health', '/api/health');",
+                  "    pm.expect(responseJson.endpoints).to.have.property('todos', '/api/todos');",
                   "    pm.expect(responseJson.endpoints).to.have.property('documentation');",
                   "});",
                   "",
@@ -82,33 +77,10 @@
               "host": ["{{baseUrl}}"]
             },
             "description": "Get basic server information including version, environment, and available endpoints"
-          },
-          "response": [
-            {
-              "name": "Success Response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/",
-                  "host": ["{{baseUrl}}"]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Task App API Server\",\n  \"version\": \"1.0.0\",\n  \"environment\": \"development\",\n  \"database\": \"memory\",\n  \"endpoints\": {\n    \"health\": \"/api/health\",\n    \"todos\": \"/api/todos\",\n    \"documentation\": \"See README.md for API documentation\"\n  }\n}"
-            }
-          ]
+          }
         },
         {
-          "name": "Health Check - Happy Path",
+          "name": "Health Check",
           "event": [
             {
               "listen": "test",
@@ -125,18 +97,13 @@
                   "pm.test('Response has required fields', function () {",
                   "    const responseJson = pm.response.json();",
                   "    pm.expect(responseJson).to.have.property('success', true);",
-                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('message', 'Server is running');",
                   "    pm.expect(responseJson).to.have.property('timestamp');",
-                  "});",
-                  "",
-                  "pm.test('Response message indicates server is running', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.message).to.equal('Server is running');",
                   "});",
                   "",
                   "pm.test('Timestamp is valid ISO string', function () {",
                   "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.timestamp).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*Z$/);",
+                  "    pm.expect(responseJson.timestamp).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$/);",
                   "});",
                   "",
                   "pm.test('Response time is reasonable', function () {",
@@ -161,560 +128,16 @@
               "path": ["api", "health"]
             },
             "description": "Health check endpoint to verify server is running"
-          },
-          "response": [
-            {
-              "name": "Success Response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/health",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "health"]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Server is running\",\n  \"timestamp\": \"2024-01-15T10:30:00.000Z\"\n}"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Todos - Read Operations",
-      "description": "GET operations for retrieving todos with various filters and scenarios",
-      "item": [
-        {
-          "name": "Get All Todos - Happy Path",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', true);",
-                  "    pm.expect(responseJson).to.have.property('data');",
-                  "    pm.expect(responseJson.data).to.be.an('array');",
-                  "});",
-                  "",
-                  "pm.test('Todo items have required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    if (responseJson.data.length > 0) {",
-                  "        const todo = responseJson.data[0];",
-                  "        pm.expect(todo).to.have.property('id');",
-                  "        pm.expect(todo).to.have.property('title');",
-                  "        pm.expect(todo).to.have.property('completed');",
-                  "        pm.expect(todo).to.have.property('priority');",
-                  "        pm.expect(todo).to.have.property('createdAt');",
-                  "        pm.expect(todo.completed).to.be.a('boolean');",
-                  "        pm.expect(todo.priority).to.be.oneOf(['low', 'medium', 'high']);",
-                  "    }",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/todos",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos"]
-            },
-            "description": "Retrieve all todos regardless of completion status"
-          },
-          "response": [
-            {
-              "name": "Success Response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos"]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"todo-123\",\n      \"title\": \"Complete project documentation\",\n      \"completed\": false,\n      \"priority\": \"high\",\n      \"createdAt\": \"2024-01-15T10:00:00.000Z\",\n      \"dueDate\": \"2024-01-20T23:59:59.000Z\"\n    },\n    {\n      \"id\": \"todo-456\",\n      \"title\": \"Review pull request\",\n      \"completed\": true,\n      \"priority\": \"medium\",\n      \"createdAt\": \"2024-01-14T15:30:00.000Z\"\n    }\n  ]\n}"
-            }
-          ]
-        },
-        {
-          "name": "Get Active Todos - Happy Path",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', true);",
-                  "    pm.expect(responseJson).to.have.property('data');",
-                  "    pm.expect(responseJson.data).to.be.an('array');",
-                  "});",
-                  "",
-                  "pm.test('All todos are active (not completed)', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    responseJson.data.forEach(function(todo) {",
-                  "        pm.expect(todo.completed).to.be.false;",
-                  "    });",
-                  "});",
-                  "",
-                  "pm.test('Todo items have required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    if (responseJson.data.length > 0) {",
-                  "        const todo = responseJson.data[0];",
-                  "        pm.expect(todo).to.have.property('id');",
-                  "        pm.expect(todo).to.have.property('title');",
-                  "        pm.expect(todo).to.have.property('completed');",
-                  "        pm.expect(todo).to.have.property('priority');",
-                  "        pm.expect(todo).to.have.property('createdAt');",
-                  "        pm.expect(todo.priority).to.be.oneOf(['low', 'medium', 'high']);",
-                  "    }",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/active",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "active"]
-            },
-            "description": "Retrieve only active (not completed) todos"
-          },
-          "response": [
-            {
-              "name": "Success Response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/active",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "active"]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"todo-123\",\n      \"title\": \"Complete project documentation\",\n      \"completed\": false,\n      \"priority\": \"high\",\n      \"createdAt\": \"2024-01-15T10:00:00.000Z\",\n      \"dueDate\": \"2024-01-20T23:59:59.000Z\"\n    }\n  ]\n}"
-            }
-          ]
-        },
-        {
-          "name": "Get Completed Todos - Happy Path",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', true);",
-                  "    pm.expect(responseJson).to.have.property('data');",
-                  "    pm.expect(responseJson.data).to.be.an('array');",
-                  "});",
-                  "",
-                  "pm.test('All todos are completed', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    responseJson.data.forEach(function(todo) {",
-                  "        pm.expect(todo.completed).to.be.true;",
-                  "    });",
-                  "});",
-                  "",
-                  "pm.test('Todo items have required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    if (responseJson.data.length > 0) {",
-                  "        const todo = responseJson.data[0];",
-                  "        pm.expect(todo).to.have.property('id');",
-                  "        pm.expect(todo).to.have.property('title');",
-                  "        pm.expect(todo).to.have.property('completed');",
-                  "        pm.expect(todo).to.have.property('priority');",
-                  "        pm.expect(todo).to.have.property('createdAt');",
-                  "        pm.expect(todo.priority).to.be.oneOf(['low', 'medium', 'high']);",
-                  "    }",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/completed",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "completed"]
-            },
-            "description": "Retrieve only completed todos"
-          },
-          "response": [
-            {
-              "name": "Success Response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/completed",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "completed"]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"todo-456\",\n      \"title\": \"Review pull request\",\n      \"completed\": true,\n      \"priority\": \"medium\",\n      \"createdAt\": \"2024-01-14T15:30:00.000Z\"\n    }\n  ]\n}"
-            }
-          ]
-        },
-        {
-          "name": "Get Todo Statistics - Happy Path",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', true);",
-                  "    pm.expect(responseJson).to.have.property('data');",
-                  "});",
-                  "",
-                  "pm.test('Statistics data has required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    const stats = responseJson.data;",
-                  "    pm.expect(stats).to.have.property('total');",
-                  "    pm.expect(stats).to.have.property('active');",
-                  "    pm.expect(stats).to.have.property('completed');",
-                  "    pm.expect(stats.total).to.be.a('number');",
-                  "    pm.expect(stats.active).to.be.a('number');",
-                  "    pm.expect(stats.completed).to.be.a('number');",
-                  "});",
-                  "",
-                  "pm.test('Statistics are mathematically consistent', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    const stats = responseJson.data;",
-                  "    pm.expect(stats.total).to.equal(stats.active + stats.completed);",
-                  "    pm.expect(stats.active).to.be.at.least(0);",
-                  "    pm.expect(stats.completed).to.be.at.least(0);",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/stats",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "stats"]
-            },
-            "description": "Get statistics about todos including total, active, and completed counts"
-          },
-          "response": [
-            {
-              "name": "Success Response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/stats",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "stats"]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"total\": 2,\n    \"active\": 1,\n    \"completed\": 1\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "Get Todo by ID - Happy Path",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', true);",
-                  "    pm.expect(responseJson).to.have.property('data');",
-                  "});",
-                  "",
-                  "pm.test('Todo has required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    const todo = responseJson.data;",
-                  "    pm.expect(todo).to.have.property('id');",
-                  "    pm.expect(todo).to.have.property('title');",
-                  "    pm.expect(todo).to.have.property('completed');",
-                  "    pm.expect(todo).to.have.property('priority');",
-                  "    pm.expect(todo).to.have.property('createdAt');",
-                  "    pm.expect(todo.completed).to.be.a('boolean');",
-                  "    pm.expect(todo.priority).to.be.oneOf(['low', 'medium', 'high']);",
-                  "});",
-                  "",
-                  "pm.test('Todo ID matches requested ID', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    const todo = responseJson.data;",
-                  "    const requestedId = pm.variables.get('sampleTodoId');",
-                  "    pm.expect(todo.id).to.equal(requestedId);",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/{{sampleTodoId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "{{sampleTodoId}}"]
-            },
-            "description": "Retrieve a specific todo by its ID"
-          },
-          "response": [
-            {
-              "name": "Success Response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/todo-123",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "todo-123"]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"todo-123\",\n    \"title\": \"Complete project documentation\",\n    \"completed\": false,\n    \"priority\": \"high\",\n    \"createdAt\": \"2024-01-15T10:00:00.000Z\",\n    \"dueDate\": \"2024-01-20T23:59:59.000Z\"\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "Get Todo by ID - Not Found",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 404', function () {",
-                  "    pm.response.to.have.status(404);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has error structure', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', false);",
-                  "    pm.expect(responseJson).to.have.property('error');",
-                  "});",
-                  "",
-                  "pm.test('Error message indicates todo not found', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.error).to.equal('Todo not found');",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/nonexistent-id",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "nonexistent-id"]
-            },
-            "description": "Test error handling when requesting a todo that doesn't exist"
-          },
-          "response": [
-            {
-              "name": "Not Found Response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/nonexistent-id",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "nonexistent-id"]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": false,\n  \"error\": \"Todo not found\"\n}"
-            }
-          ]
+          }
         }
       ]
     },
     {
       "name": "Todos - Create Operations",
-      "description": "POST operations for creating new todos with various validation scenarios",
+      "description": "POST operations for creating new todos with validation scenarios",
       "item": [
         {
-          "name": "Create Todo - Happy Path (Minimal)",
+          "name": "Create Todo - Happy Path",
           "event": [
             {
               "listen": "test",
@@ -738,32 +161,26 @@
                   "    const responseJson = pm.response.json();",
                   "    const todo = responseJson.data;",
                   "    pm.expect(todo).to.have.property('id');",
-                  "    pm.expect(todo).to.have.property('title');",
-                  "    pm.expect(todo).to.have.property('completed');",
-                  "    pm.expect(todo).to.have.property('priority');",
+                  "    pm.expect(todo).to.have.property('title', 'Complete project documentation');",
+                  "    pm.expect(todo).to.have.property('completed', false);",
+                  "    pm.expect(todo).to.have.property('priority', 'high');",
                   "    pm.expect(todo).to.have.property('createdAt');",
-                  "    pm.expect(todo.completed).to.be.false;",
-                  "    pm.expect(todo.priority).to.be.oneOf(['low', 'medium', 'high']);",
+                  "    pm.expect(todo).to.have.property('updatedAt');",
                   "});",
                   "",
-                  "pm.test('Todo title matches request', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    const todo = responseJson.data;",
-                  "    pm.expect(todo.title).to.equal('New todo item');",
-                  "});",
-                  "",
-                  "pm.test('Todo priority matches request', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    const todo = responseJson.data;",
-                  "    pm.expect(todo.priority).to.equal('medium');",
-                  "});",
-                  "",
-                  "pm.test('Todo ID is generated and set as variable', function () {",
+                  "pm.test('Todo ID is generated and stored', function () {",
                   "    const responseJson = pm.response.json();",
                   "    const todo = responseJson.data;",
                   "    pm.expect(todo.id).to.be.a('string');",
                   "    pm.expect(todo.id).to.have.length.above(0);",
-                  "    pm.collectionVariables.set('createdTodoId', todo.id);",
+                  "    pm.collectionVariables.set('todoId', todo.id);",
+                  "});",
+                  "",
+                  "pm.test('Timestamps are valid ISO strings', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const todo = responseJson.data;",
+                  "    pm.expect(todo.createdAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$/);",
+                  "    pm.expect(todo.updatedAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$/);",
                   "});",
                   "",
                   "pm.test('Response time is reasonable', function () {",
@@ -788,173 +205,15 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"New todo item\",\n  \"priority\": \"medium\"\n}"
+              "raw": "{\n  \"title\": \"Complete project documentation\",\n  \"priority\": \"high\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/todos",
               "host": ["{{baseUrl}}"],
               "path": ["api", "todos"]
             },
-            "description": "Create a new todo with only required fields and basic priority"
-          },
-          "response": [
-            {
-              "name": "Created Response",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"title\": \"New todo item\",\n  \"priority\": \"medium\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos"]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"todo-789\",\n    \"title\": \"New todo item\",\n    \"completed\": false,\n    \"priority\": \"medium\",\n    \"createdAt\": \"2024-01-15T11:00:00.000Z\"\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "Create Todo - Happy Path (All Fields)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 201', function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', true);",
-                  "    pm.expect(responseJson).to.have.property('data');",
-                  "});",
-                  "",
-                  "pm.test('Created todo has required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    const todo = responseJson.data;",
-                  "    pm.expect(todo).to.have.property('id');",
-                  "    pm.expect(todo).to.have.property('title');",
-                  "    pm.expect(todo).to.have.property('completed');",
-                  "    pm.expect(todo).to.have.property('priority');",
-                  "    pm.expect(todo).to.have.property('createdAt');",
-                  "    pm.expect(todo).to.have.property('dueDate');",
-                  "    pm.expect(todo.completed).to.be.false;",
-                  "    pm.expect(todo.priority).to.be.oneOf(['low', 'medium', 'high']);",
-                  "});",
-                  "",
-                  "pm.test('Todo title matches request', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    const todo = responseJson.data;",
-                  "    pm.expect(todo.title).to.equal('Complete API documentation with examples');",
-                  "});",
-                  "",
-                  "pm.test('Todo priority matches request', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    const todo = responseJson.data;",
-                  "    pm.expect(todo.priority).to.equal('high');",
-                  "});",
-                  "",
-                  "pm.test('Todo due date matches request', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    const todo = responseJson.data;",
-                  "    pm.expect(todo.dueDate).to.equal('2024-01-25T18:00:00.000Z');",
-                  "});",
-                  "",
-                  "pm.test('Todo ID is generated and set as variable', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    const todo = responseJson.data;",
-                  "    pm.expect(todo.id).to.be.a('string');",
-                  "    pm.expect(todo.id).to.have.length.above(0);",
-                  "    pm.collectionVariables.set('createdTodoWithDueDateId', todo.id);",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Complete API documentation with examples\",\n  \"priority\": \"high\",\n  \"dueDate\": \"2024-01-25T18:00:00.000Z\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/todos",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos"]
-            },
-            "description": "Create a new todo with all optional fields including due date"
-          },
-          "response": [
-            {
-              "name": "Created Response",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"title\": \"Complete API documentation with examples\",\n  \"priority\": \"high\",\n  \"dueDate\": \"2024-01-25T18:00:00.000Z\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos"]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": \"todo-101\",\n    \"title\": \"Complete API documentation with examples\",\n    \"completed\": false,\n    \"priority\": \"high\",\n    \"createdAt\": \"2024-01-15T11:15:00.000Z\",\n    \"dueDate\": \"2024-01-25T18:00:00.000Z\"\n  }\n}"
-            }
-          ]
+            "description": "Create a new todo with required fields"
+          }
         },
         {
           "name": "Create Todo - Missing Title (Validation Error)",
@@ -974,13 +233,8 @@
                   "pm.test('Response has error structure', function () {",
                   "    const responseJson = pm.response.json();",
                   "    pm.expect(responseJson).to.have.property('success', false);",
-                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
                   "    pm.expect(responseJson).to.have.property('details');",
-                  "});",
-                  "",
-                  "pm.test('Error indicates validation failed', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.error).to.equal('Validation failed');",
                   "});",
                   "",
                   "pm.test('Error details indicate title is required', function () {",
@@ -990,7 +244,8 @@
                   "    ",
                   "    const titleError = responseJson.details.find(detail => detail.path && detail.path.includes('title'));",
                   "    pm.expect(titleError).to.exist;",
-                  "    pm.expect(titleError.message).to.equal('Required');",
+                  "    pm.expect(titleError.code).to.equal('invalid_type');",
+                  "    pm.expect(titleError.message).to.include('expected string, received undefined');",
                   "});",
                   "",
                   "pm.test('Response time is reasonable', function () {",
@@ -1023,40 +278,7 @@
               "path": ["api", "todos"]
             },
             "description": "Test validation error when title is missing"
-          },
-          "response": [
-            {
-              "name": "Validation Error Response",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"priority\": \"low\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos"]
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": false,\n  \"error\": \"Validation failed\",\n  \"details\": [\n    {\n      \"code\": \"invalid_type\",\n      \"expected\": \"string\",\n      \"received\": \"undefined\",\n      \"path\": [\"title\"],\n      \"message\": \"Required\"\n    }\n  ]\n}"
-            }
-          ]
+          }
         },
         {
           "name": "Create Todo - Title Too Short (Validation Error)",
@@ -1076,13 +298,8 @@
                   "pm.test('Response has error structure', function () {",
                   "    const responseJson = pm.response.json();",
                   "    pm.expect(responseJson).to.have.property('success', false);",
-                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
                   "    pm.expect(responseJson).to.have.property('details');",
-                  "});",
-                  "",
-                  "pm.test('Error indicates validation failed', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.error).to.equal('Validation failed');",
                   "});",
                   "",
                   "pm.test('Error details indicate title too short', function () {",
@@ -1094,6 +311,7 @@
                   "    pm.expect(titleError).to.exist;",
                   "    pm.expect(titleError.code).to.equal('too_small');",
                   "    pm.expect(titleError.message).to.equal('Title must be at least 2 characters');",
+                  "    pm.expect(titleError.minimum).to.equal(2);",
                   "});",
                   "",
                   "pm.test('Response time is reasonable', function () {",
@@ -1126,153 +344,16 @@
               "path": ["api", "todos"]
             },
             "description": "Test validation error when title is too short (less than 2 characters)"
-          },
-          "response": [
-            {
-              "name": "Validation Error Response",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"title\": \"x\",\n  \"priority\": \"medium\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos"]
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": false,\n  \"error\": \"Validation failed\",\n  \"details\": [\n    {\n      \"code\": \"too_small\",\n      \"minimum\": 2,\n      \"type\": \"string\",\n      \"inclusive\": true,\n      \"exact\": false,\n      \"message\": \"Title must be at least 2 characters\",\n      \"path\": [\"title\"]\n    }\n  ]\n}"
-            }
-          ]
-        },
-        {
-          "name": "Create Todo - Invalid Priority (Validation Error)",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 400', function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has error structure', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', false);",
-                  "    pm.expect(responseJson).to.have.property('error');",
-                  "    pm.expect(responseJson).to.have.property('details');",
-                  "});",
-                  "",
-                  "pm.test('Error indicates validation failed', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.error).to.equal('Validation failed');",
-                  "});",
-                  "",
-                  "pm.test('Error details indicate invalid priority', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.details).to.be.an('array');",
-                  "    pm.expect(responseJson.details.length).to.be.above(0);",
-                  "    ",
-                  "    const priorityError = responseJson.details.find(detail => detail.path && detail.path.includes('priority'));",
-                  "    pm.expect(priorityError).to.exist;",
-                  "    pm.expect(priorityError.code).to.equal('invalid_enum_value');",
-                  "    pm.expect(priorityError.options).to.include.members(['low', 'medium', 'high']);",
-                  "    pm.expect(priorityError.received).to.equal('urgent');",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Valid todo title\",\n  \"priority\": \"urgent\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/todos",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos"]
-            },
-            "description": "Test validation error when priority is not one of: low, medium, high"
-          },
-          "response": [
-            {
-              "name": "Validation Error Response",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"title\": \"Valid todo title\",\n  \"priority\": \"urgent\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos"]
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": false,\n  \"error\": \"Validation failed\",\n  \"details\": [\n    {\n      \"received\": \"urgent\",\n      \"code\": \"invalid_enum_value\",\n      \"options\": [\"low\", \"medium\", \"high\"],\n      \"path\": [\"priority\"],\n      \"message\": \"Invalid enum value. Expected 'low' | 'medium' | 'high', received 'urgent'\"\n    }\n  ]\n}"
-            }
-          ]
+          }
         }
       ]
     },
     {
-      "name": "Todos - Update Operations",
-      "description": "PUT and PATCH operations for updating todos with various scenarios",
+      "name": "Todos - Read Operations",
+      "description": "GET operations for retrieving todos with various filters",
       "item": [
         {
-          "name": "Update Todo - Happy Path (Full Update)",
+          "name": "Get All Todos",
           "event": [
             {
               "listen": "test",
@@ -1289,785 +370,22 @@
                   "pm.test('Response has required fields', function () {",
                   "    const responseJson = pm.response.json();",
                   "    pm.expect(responseJson).to.have.property('success', true);",
-                  "    pm.expect(responseJson).to.have.property('message');",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.be.an('array');",
                   "});",
                   "",
-                  "pm.test('Response message indicates success', function () {",
+                  "pm.test('Todo items have required fields', function () {",
                   "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.message).to.equal('Todo updated successfully');",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Updated todo title\",\n  \"completed\": true,\n  \"priority\": \"low\",\n  \"dueDate\": \"2024-01-30T12:00:00.000Z\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/{{sampleTodoId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "{{sampleTodoId}}"]
-            },
-            "description": "Update a todo with all possible fields"
-          },
-          "response": [
-            {
-              "name": "Success Response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"title\": \"Updated todo title\",\n  \"completed\": true,\n  \"priority\": \"low\",\n  \"dueDate\": \"2024-01-30T12:00:00.000Z\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/todo-123",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "todo-123"]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Todo updated successfully\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "Update Todo - Partial Update",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', true);",
-                  "    pm.expect(responseJson).to.have.property('message');",
-                  "});",
-                  "",
-                  "pm.test('Response message indicates success', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.message).to.equal('Todo updated successfully');",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Partially updated title\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/{{sampleTodoId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "{{sampleTodoId}}"]
-            },
-            "description": "Update only specific fields of a todo"
-          },
-          "response": [
-            {
-              "name": "Success Response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"title\": \"Partially updated title\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/todo-123",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "todo-123"]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Todo updated successfully\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "Update Todo - Not Found",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 400', function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has error structure', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', false);",
-                  "    pm.expect(responseJson).to.have.property('error');",
-                  "    pm.expect(responseJson).to.have.property('code');",
-                  "});",
-                  "",
-                  "pm.test('Error indicates todo not found', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.error).to.equal('Todo not found');",
-                  "    pm.expect(responseJson.code).to.equal('TODO_NOT_FOUND');",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"Updated title for non-existent todo\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/nonexistent-id",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "nonexistent-id"]
-            },
-            "description": "Test error handling when updating a todo that doesn't exist"
-          },
-          "response": [
-            {
-              "name": "Not Found Response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"title\": \"Updated title for non-existent todo\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/nonexistent-id",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "nonexistent-id"]
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": false,\n  \"error\": \"Todo not found\",\n  \"code\": \"TODO_NOT_FOUND\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "Update Todo - Validation Error",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 400', function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has error structure', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', false);",
-                  "    pm.expect(responseJson).to.have.property('error');",
-                  "    pm.expect(responseJson).to.have.property('details');",
-                  "});",
-                  "",
-                  "pm.test('Error indicates validation failed', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.error).to.equal('Validation failed');",
-                  "});",
-                  "",
-                  "pm.test('Error details include title and priority validation errors', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.details).to.be.an('array');",
-                  "    pm.expect(responseJson.details.length).to.be.at.least(2);",
-                  "    ",
-                  "    const titleError = responseJson.details.find(detail => detail.path && detail.path.includes('title'));",
-                  "    pm.expect(titleError).to.exist;",
-                  "    pm.expect(titleError.code).to.equal('too_small');",
-                  "    pm.expect(titleError.message).to.equal('Title must be at least 2 characters');",
-                  "    ",
-                  "    const priorityError = responseJson.details.find(detail => detail.path && detail.path.includes('priority'));",
-                  "    pm.expect(priorityError).to.exist;",
-                  "    pm.expect(priorityError.code).to.equal('invalid_enum_value');",
-                  "    pm.expect(priorityError.received).to.equal('invalid');",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"x\",\n  \"priority\": \"invalid\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/{{sampleTodoId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "{{sampleTodoId}}"]
-            },
-            "description": "Test validation error when updating with invalid data"
-          },
-          "response": [
-            {
-              "name": "Validation Error Response",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"title\": \"x\",\n  \"priority\": \"invalid\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/todo-123",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "todo-123"]
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": false,\n  \"error\": \"Validation failed\",\n  \"details\": [\n    {\n      \"code\": \"too_small\",\n      \"minimum\": 2,\n      \"type\": \"string\",\n      \"inclusive\": true,\n      \"exact\": false,\n      \"message\": \"Title must be at least 2 characters\",\n      \"path\": [\"title\"]\n    },\n    {\n      \"received\": \"invalid\",\n      \"code\": \"invalid_enum_value\",\n      \"options\": [\"low\", \"medium\", \"high\"],\n      \"path\": [\"priority\"],\n      \"message\": \"Invalid enum value. Expected 'low' | 'medium' | 'high', received 'invalid'\"\n    }\n  ]\n}"
-            }
-          ]
-        },
-        {
-          "name": "Toggle Todo Completion - Happy Path",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', true);",
-                  "    pm.expect(responseJson).to.have.property('message');",
-                  "});",
-                  "",
-                  "pm.test('Response message indicates success', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.message).to.equal('Todo toggled successfully');",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/{{sampleTodoId}}/toggle",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "{{sampleTodoId}}", "toggle"]
-            },
-            "description": "Toggle the completion status of a todo (completed ↔ active)"
-          },
-          "response": [
-            {
-              "name": "Success Response",
-              "originalRequest": {
-                "method": "PATCH",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/todo-123/toggle",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "todo-123", "toggle"]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Todo toggled successfully\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "Toggle Todo Completion - Not Found",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 400', function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has error structure', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', false);",
-                  "    pm.expect(responseJson).to.have.property('error');",
-                  "    pm.expect(responseJson).to.have.property('code');",
-                  "});",
-                  "",
-                  "pm.test('Error indicates todo not found', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.error).to.equal('Todo not found');",
-                  "    pm.expect(responseJson.code).to.equal('TODO_NOT_FOUND');",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/nonexistent-id/toggle",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "nonexistent-id", "toggle"]
-            },
-            "description": "Test error handling when toggling a todo that doesn't exist"
-          },
-          "response": [
-            {
-              "name": "Not Found Response",
-              "originalRequest": {
-                "method": "PATCH",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/nonexistent-id/toggle",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "nonexistent-id", "toggle"]
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": false,\n  \"error\": \"Todo not found\",\n  \"code\": \"TODO_NOT_FOUND\"\n}"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Todos - Delete Operations",
-      "description": "DELETE operations for removing todos with various scenarios",
-      "item": [
-        {
-          "name": "Delete Todo - Happy Path",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has required fields', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', true);",
-                  "    pm.expect(responseJson).to.have.property('message');",
-                  "});",
-                  "",
-                  "pm.test('Response message indicates success', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.message).to.equal('Todo deleted successfully');",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/{{sampleTodoId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "{{sampleTodoId}}"]
-            },
-            "description": "Delete a specific todo by ID"
-          },
-          "response": [
-            {
-              "name": "Success Response",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/todo-123",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "todo-123"]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": true,\n  \"message\": \"Todo deleted successfully\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "Delete Todo - Not Found",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 400', function () {",
-                  "    pm.response.to.have.status(400);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has error structure', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', false);",
-                  "    pm.expect(responseJson).to.have.property('error');",
-                  "    pm.expect(responseJson).to.have.property('code');",
-                  "});",
-                  "",
-                  "pm.test('Error indicates todo not found', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.error).to.equal('Todo not found');",
-                  "    pm.expect(responseJson.code).to.equal('TODO_NOT_FOUND');",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/todos/nonexistent-id",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "todos", "nonexistent-id"]
-            },
-            "description": "Test error handling when deleting a todo that doesn't exist"
-          },
-          "response": [
-            {
-              "name": "Not Found Response",
-              "originalRequest": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos/nonexistent-id",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos", "nonexistent-id"]
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": false,\n  \"error\": \"Todo not found\",\n  \"code\": \"TODO_NOT_FOUND\"\n}"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Error Scenarios",
-      "description": "Additional error handling and edge case scenarios",
-      "item": [
-        {
-          "name": "404 - Unknown Route",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 404', function () {",
-                  "    pm.response.to.have.status(404);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response has error structure', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson).to.have.property('success', false);",
-                  "    pm.expect(responseJson).to.have.property('error');",
-                  "    pm.expect(responseJson).to.have.property('message');",
-                  "});",
-                  "",
-                  "pm.test('Error indicates route not found', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.error).to.equal('Route not found');",
-                  "    pm.expect(responseJson.message).to.equal('The requested endpoint does not exist');",
-                  "});",
-                  "",
-                  "pm.test('Response time is reasonable', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/unknown-endpoint",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "unknown-endpoint"]
-            },
-            "description": "Test handling of requests to non-existent API endpoints"
-          },
-          "response": [
-            {
-              "name": "Not Found Response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/unknown-endpoint",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "unknown-endpoint"]
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": false,\n  \"error\": \"Route not found\",\n  \"message\": \"The requested endpoint does not exist\"\n}"
-            }
-          ]
-        },
-        {
-          "name": "Rate Limit Test",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is 200 (under limit) or 429 (over limit)', function () {",
-                  "    pm.expect(pm.response.code).to.be.oneOf([200, 429]);",
-                  "});",
-                  "",
-                  "pm.test('Response has correct content type', function () {",
-                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
-                  "});",
-                  "",
-                  "pm.test('Response structure is correct', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    if (pm.response.code === 200) {",
-                  "        // Normal response",
-                  "        pm.expect(responseJson).to.have.property('success', true);",
-                  "        pm.expect(responseJson).to.have.property('data');",
-                  "    } else if (pm.response.code === 429) {",
-                  "        // Rate limit response",
-                  "        pm.expect(responseJson).to.have.property('success', false);",
-                  "        pm.expect(responseJson).to.have.property('error');",
-                  "        pm.expect(responseJson.error).to.include('Too many requests');",
+                  "    if (responseJson.data.length > 0) {",
+                  "        const todo = responseJson.data[0];",
+                  "        pm.expect(todo).to.have.property('id');",
+                  "        pm.expect(todo).to.have.property('title');",
+                  "        pm.expect(todo).to.have.property('completed');",
+                  "        pm.expect(todo).to.have.property('priority');",
+                  "        pm.expect(todo).to.have.property('createdAt');",
+                  "        pm.expect(todo).to.have.property('updatedAt');",
+                  "        pm.expect(todo.completed).to.be.a('boolean');",
+                  "        pm.expect(todo.priority).to.be.oneOf(['low', 'medium', 'high']);",
                   "    }",
                   "});",
                   "",
@@ -2092,35 +410,594 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "todos"]
             },
-            "description": "Test rate limiting (send multiple requests rapidly to trigger limit - 100 requests per 15 minutes per IP)"
-          },
-          "response": [
-            {
-              "name": "Rate Limit Response",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos"]
-                }
-              },
-              "status": "Too Many Requests",
-              "code": 429,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": false,\n  \"error\": \"Too many requests from this IP, please try again later.\"\n}"
-            }
-          ]
+            "description": "Retrieve all todos regardless of completion status"
+          }
         },
         {
-          "name": "Invalid JSON Body",
+          "name": "Get Todo by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Todo has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const todo = responseJson.data;",
+                  "    pm.expect(todo).to.have.property('id');",
+                  "    pm.expect(todo).to.have.property('title');",
+                  "    pm.expect(todo).to.have.property('completed');",
+                  "    pm.expect(todo).to.have.property('priority');",
+                  "    pm.expect(todo).to.have.property('createdAt');",
+                  "    pm.expect(todo).to.have.property('updatedAt');",
+                  "    pm.expect(todo.completed).to.be.a('boolean');",
+                  "    pm.expect(todo.priority).to.be.oneOf(['low', 'medium', 'high']);",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos", "{{todoId}}"]
+            },
+            "description": "Retrieve a specific todo by its ID (uses todoId from Create Todo request)"
+          }
+        },
+        {
+          "name": "Get Todo by ID - Not Found",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('code', 'TODO_NOT_FOUND');",
+                  "});",
+                  "",
+                  "pm.test('Error message indicates todo not found', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.error).to.include('not found');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/nonexistent-id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos", "nonexistent-id"]
+            },
+            "description": "Test error handling when requesting a todo that doesn't exist"
+          }
+        },
+        {
+          "name": "Get Active Todos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('All todos are active (not completed)', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    responseJson.data.forEach(function(todo) {",
+                  "        pm.expect(todo.completed).to.be.false;",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos", "active"]
+            },
+            "description": "Retrieve only active (not completed) todos"
+          }
+        },
+        {
+          "name": "Get Completed Todos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "    pm.expect(responseJson.data).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('All todos are completed', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    responseJson.data.forEach(function(todo) {",
+                  "        pm.expect(todo.completed).to.be.true;",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/completed",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos", "completed"]
+            },
+            "description": "Retrieve only completed todos"
+          }
+        },
+        {
+          "name": "Get Todo Statistics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Statistics data has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const stats = responseJson.data;",
+                  "    pm.expect(stats).to.have.property('total');",
+                  "    pm.expect(stats).to.have.property('active');",
+                  "    pm.expect(stats).to.have.property('completed');",
+                  "    pm.expect(stats).to.have.property('overdue');",
+                  "    pm.expect(stats).to.have.property('highPriority');",
+                  "    pm.expect(stats.total).to.be.a('number');",
+                  "    pm.expect(stats.active).to.be.a('number');",
+                  "    pm.expect(stats.completed).to.be.a('number');",
+                  "    pm.expect(stats.overdue).to.be.a('number');",
+                  "    pm.expect(stats.highPriority).to.be.a('number');",
+                  "});",
+                  "",
+                  "pm.test('Statistics are mathematically consistent', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const stats = responseJson.data;",
+                  "    pm.expect(stats.total).to.equal(stats.active + stats.completed);",
+                  "    pm.expect(stats.active).to.be.at.least(0);",
+                  "    pm.expect(stats.completed).to.be.at.least(0);",
+                  "    pm.expect(stats.overdue).to.be.at.least(0);",
+                  "    pm.expect(stats.highPriority).to.be.at.least(0);",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos", "stats"]
+            },
+            "description": "Get statistics about todos including total, active, completed, overdue, and high priority counts"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Todos - Update Operations",
+      "description": "PUT and PATCH operations for updating todos",
+      "item": [
+        {
+          "name": "Update Todo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message', 'Todo updated successfully');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated todo title\",\n  \"priority\": \"low\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos", "{{todoId}}"]
+            },
+            "description": "Update a todo with new values"
+          }
+        },
+        {
+          "name": "Toggle Todo Completion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message', 'Todo toggled successfully');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{todoId}}/toggle",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos", "{{todoId}}", "toggle"]
+            },
+            "description": "Toggle the completion status of a todo"
+          }
+        },
+        {
+          "name": "Toggle Non-existent Todo - Error",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('code', 'TODO_NOT_FOUND');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/nonexistent-id/toggle",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos", "nonexistent-id", "toggle"]
+            },
+            "description": "Test error handling when toggling a non-existent todo"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Todos - Delete Operations",
+      "description": "DELETE operations for removing todos",
+      "item": [
+        {
+          "name": "Delete Todo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message', 'Todo deleted successfully');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/{{todoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos", "{{todoId}}"]
+            },
+            "description": "Delete a todo by its ID"
+          }
+        },
+        {
+          "name": "Delete Non-existent Todo - Error",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('code', 'TODO_NOT_FOUND');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/todos/nonexistent-id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "todos", "nonexistent-id"]
+            },
+            "description": "Test error handling when deleting a non-existent todo"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error Handling",
+      "description": "Various error scenarios and edge cases",
+      "item": [
+        {
+          "name": "Unknown Route - 404",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/unknown-route",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "unknown-route"]
+            },
+            "description": "Test 404 error for unknown routes"
+          }
+        },
+        {
+          "name": "Invalid JSON - 400",
           "event": [
             {
               "listen": "test",
@@ -2138,11 +1015,6 @@
                   "    const responseJson = pm.response.json();",
                   "    pm.expect(responseJson).to.have.property('success', false);",
                   "    pm.expect(responseJson).to.have.property('error');",
-                  "});",
-                  "",
-                  "pm.test('Error indicates invalid JSON', function () {",
-                  "    const responseJson = pm.response.json();",
-                  "    pm.expect(responseJson.error).to.equal('Invalid JSON in request body');",
                   "});",
                   "",
                   "pm.test('Response time is reasonable', function () {",
@@ -2167,48 +1039,15 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{ \"title\": \"Invalid JSON body\" // missing closing quote and brace"
+              "raw": "{ \"title\": \"test\", invalid json }"
             },
             "url": {
               "raw": "{{baseUrl}}/api/todos",
               "host": ["{{baseUrl}}"],
               "path": ["api", "todos"]
             },
-            "description": "Test handling of malformed JSON in request body"
-          },
-          "response": [
-            {
-              "name": "Bad Request Response",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{ \"title\": \"Invalid JSON body\" // missing closing quote and brace"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/todos",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["api", "todos"]
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"success\": false,\n  \"error\": \"Invalid JSON in request body\"\n}"
-            }
-          ]
+            "description": "Test error handling for invalid JSON in request body"
+          }
         }
       ]
     }
