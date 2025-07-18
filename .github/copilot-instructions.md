@@ -2,7 +2,7 @@
 
 ## 0.1 Important!!
 1. We have a local copy of the documentations repository at:
-~/Documents/vilmarcabanero/code/personal/copilot/docs-context/
+~/workspace/docs-context/
 Always use this local copy to double check or verify any code, documentation or any output that you generate.
 2. There might be symlinks created in the `target` directory:
    - `./target/docs-context`

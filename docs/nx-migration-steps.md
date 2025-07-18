@@ -17,7 +17,7 @@ This document provides detailed, executable instructions for migrating from the 
 
 ```bash
 # Navigate to parent directory of current project
-cd /Users/vilmar.cabanero/Documents/vilmarcabanero/code/personal/
+cd /path/to/your/workspace/
 
 # Create new Nx workspace
 npx create-nx-workspace@latest task-app-nx --preset=empty --packageManager=pnpm
