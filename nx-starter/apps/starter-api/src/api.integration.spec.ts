@@ -158,7 +158,7 @@ describe('Todo API Integration Tests', () => {
 
         expect(response.body).toMatchObject({
           success: false,
-          error: 'Todo not found',
+          error: 'Todo with ID nonexistent-id not found',
         });
       });
     });
