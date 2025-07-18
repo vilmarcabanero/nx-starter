@@ -1,5 +1,5 @@
 {
-  "name": "@nx-starter/shared-application",
+  "name": "@nx-starter/application-core",
   "version": "0.0.1",
   "private": true,
   "type": "commonjs",

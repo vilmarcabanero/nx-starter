@@ -4,9 +4,9 @@ import {
   TodoPriorityLevel,
   Specification,
   ITodoRepository,
-} from '@nx-starter/shared-domain';
+} from '@nx-starter/domain-core';
 import { db, type TodoRecord } from './TodoDB';
-import { generateUUID } from '@nx-starter/shared-utils';
+import { generateUUID } from '@nx-starter/utils-core';
 
 @injectable()
 export class TodoRepository implements ITodoRepository {

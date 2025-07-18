@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useTodoStore } from '../../../../infrastructure/state/TodoStore';
-import { Todo } from '@nx-starter/shared-domain';
+import { Todo } from '@nx-starter/domain-core';
 import type { TodoItemViewModel } from './interfaces/TodoViewModels';
 
 /**

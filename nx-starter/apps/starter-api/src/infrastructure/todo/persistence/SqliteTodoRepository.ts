@@ -1,9 +1,9 @@
 import Database from 'better-sqlite3';
 import { injectable } from 'tsyringe';
-import { Todo } from '@nx-starter/shared-domain';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
-import { TodoMapper } from '@nx-starter/shared-application';
-import { generateUUID } from '@nx-starter/shared-utils';
+import { Todo } from '@nx-starter/domain-core';
+import type { ITodoRepository } from '@nx-starter/domain-core';
+import { TodoMapper } from '@nx-starter/application-core';
+import { generateUUID } from '@nx-starter/utils-core';
 
 interface TodoRecord {
   id: string;

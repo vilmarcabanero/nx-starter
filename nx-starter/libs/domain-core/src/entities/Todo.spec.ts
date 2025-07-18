@@ -3,7 +3,7 @@ import { Todo } from './Todo';
 import { TodoTitle } from '../value-objects/TodoTitle';
 import { TodoId } from '../value-objects/TodoId';
 import { TodoAlreadyCompletedException } from '../exceptions/DomainExceptions';
-// TODO: Add test helpers to shared-utils or create local test constants
+// TODO: Add test helpers to utils-core or create local test constants
 const TEST_UUIDS = {
   VALID_UUID: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
   ANOTHER_UUID: '6ba7b810-9dad-11d1-80b4-00c04fd430c8',

@@ -1,5 +1,5 @@
 import { InMemoryTodoRepository } from './InMemoryTodoRepository';
-import { Todo, TodoTitle } from '@nx-starter/shared-domain';
+import { Todo, TodoTitle } from '@nx-starter/domain-core';
 
 describe('InMemoryTodoRepository', () => {
   let repository: InMemoryTodoRepository;

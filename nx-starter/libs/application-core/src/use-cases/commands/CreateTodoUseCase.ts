@@ -1,6 +1,6 @@
 import { injectable, inject } from 'tsyringe';
-import { Todo, TodoTitle } from '@nx-starter/shared-domain';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
+import { Todo, TodoTitle } from '@nx-starter/domain-core';
+import type { ITodoRepository } from '@nx-starter/domain-core';
 import type { CreateTodoCommand } from '../../dto/TodoCommands';
 import { TOKENS } from '../../di/tokens';
 

@@ -15,9 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@nx-starter/shared-application": ["libs/application-core/src/index.ts"],
-      "@nx-starter/shared-domain": ["libs/domain-core/src/index.ts"],
-      "@nx-starter/shared-utils": ["libs/utils-core/src/index.ts"]
+      "@nx-starter/application-core": ["libs/application-core/src/index.ts"],
+      "@nx-starter/domain-core": ["libs/domain-core/src/index.ts"],
+      "@nx-starter/utils-core": ["libs/utils-core/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

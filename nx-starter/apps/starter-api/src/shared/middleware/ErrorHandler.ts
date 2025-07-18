@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { DomainException } from '@nx-starter/shared-domain';
+import { DomainException } from '@nx-starter/domain-core';
 import { ZodError } from 'zod';
 
 /**

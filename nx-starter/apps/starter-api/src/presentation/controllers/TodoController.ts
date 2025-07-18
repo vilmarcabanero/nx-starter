@@ -13,8 +13,8 @@ import {
   GetTodoStatsQueryHandler,
   TodoMapper,
   TOKENS,
-} from '@nx-starter/shared-application';
-import { DomainException } from '@nx-starter/shared-domain';
+} from '@nx-starter/application-core';
+import { DomainException } from '@nx-starter/domain-core';
 import { asyncHandler } from '../../shared/middleware/ErrorHandler';
 
 /**

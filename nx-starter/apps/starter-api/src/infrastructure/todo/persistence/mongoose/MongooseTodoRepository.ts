@@ -1,8 +1,8 @@
 import { injectable } from 'tsyringe';
 import mongoose from 'mongoose';
-import { Todo } from '@nx-starter/shared-domain';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
-import type { Specification } from '@nx-starter/shared-domain';
+import { Todo } from '@nx-starter/domain-core';
+import type { ITodoRepository } from '@nx-starter/domain-core';
+import type { Specification } from '@nx-starter/domain-core';
 import { TodoModel } from './TodoSchema';
 
 /**

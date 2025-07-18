@@ -7,8 +7,8 @@ import {
   OverdueTodoSpecification,
   HighPriorityTodoSpecification,
   TodoNotFoundException,
-} from '@nx-starter/shared-domain';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
+} from '@nx-starter/domain-core';
+import type { ITodoRepository } from '@nx-starter/domain-core';
 import type {
   GetFilteredTodosQuery,
   GetTodoByIdQuery,

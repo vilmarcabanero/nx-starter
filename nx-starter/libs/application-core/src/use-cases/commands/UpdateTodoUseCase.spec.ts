@@ -5,8 +5,8 @@ import {
   TodoNotFoundException,
   TodoTitle,
   TodoPriority,
-} from '@nx-starter/shared-domain';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
+} from '@nx-starter/domain-core';
+import type { ITodoRepository } from '@nx-starter/domain-core';
 import type { UpdateTodoCommand } from '../../dto/TodoCommands';
 
 describe('UpdateTodoUseCase', () => {

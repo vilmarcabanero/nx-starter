@@ -16,12 +16,12 @@ import {
   GetTodoStatsQueryHandler,
   GetTodoByIdQueryHandler,
   TOKENS,
-} from '@nx-starter/shared-application';
-import type { ITodoRepository } from '@nx-starter/shared-domain';
+} from '@nx-starter/application-core';
+import type { ITodoRepository } from '@nx-starter/domain-core';
 import type {
   ITodoCommandService,
   ITodoQueryService,
-} from '@nx-starter/shared-application';
+} from '@nx-starter/application-core';
 
 // Check environment variable to determine data source
 const useApiBackend = import.meta.env.VITE_USE_API_BACKEND === 'true';

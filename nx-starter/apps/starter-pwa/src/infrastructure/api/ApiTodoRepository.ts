@@ -4,7 +4,7 @@ import {
   TodoPriorityLevel,
   Specification,
   ITodoRepository,
-} from '@nx-starter/shared-domain';
+} from '@nx-starter/domain-core';
 
 /**
  * API-based TodoRepository implementation
