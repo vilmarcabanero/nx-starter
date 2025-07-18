@@ -113,14 +113,6 @@ export class TodoController {
       const { id } = req.params;
       const todo = await this.getTodoByIdQueryHandler.execute({ id });
 
-      if (!todo) {
-        res.status(404).json({
-          success: false,
-          error: 'Todo not found',
-        });
-        return;
-      }
-
       const todoDto = TodoMapper.toDto(todo);
       res.json({
         success: true,

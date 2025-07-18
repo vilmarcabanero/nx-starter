@@ -6,6 +6,7 @@ import {
   CompletedTodoSpecification,
   OverdueTodoSpecification,
   HighPriorityTodoSpecification,
+  TodoNotFoundException,
 } from '@nx-starter/shared-domain';
 import type { ITodoRepository } from '@nx-starter/shared-domain';
 import type {
@@ -117,9 +118,12 @@ export class GetTodoByIdQueryHandler {
     @inject(TOKENS.TodoRepository) private todoRepository: ITodoRepository
   ) {}
 
-  async execute(query: GetTodoByIdQuery): Promise<Todo | null> {
+  async execute(query: GetTodoByIdQuery): Promise<Todo> {
     const todo = await this.todoRepository.getById(query.id);
-    return todo || null;
+    if (!todo) {
+      throw new TodoNotFoundException(query.id);
+    }
+    return todo;
   }
 }
 

@@ -7,7 +7,7 @@ import {
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
 } from './TodoQueryHandlers';
-import { Todo, TodoTitle, TodoDomainService } from '@nx-starter/shared-domain';
+import { Todo, TodoTitle, TodoDomainService, TodoNotFoundException } from '@nx-starter/shared-domain';
 import type { ITodoRepository } from '@nx-starter/shared-domain';
 import type {
   GetFilteredTodosQuery,
@@ -262,7 +262,7 @@ describe('TodoQueryHandlers', () => {
       );
     });
 
-    it('should return null when todo not found', async () => {
+    it('should throw TodoNotFoundException when todo not found', async () => {
       // Arrange
       const handler = new GetTodoByIdQueryHandler(mockRepository);
       vi.mocked(mockRepository.getById).mockResolvedValue(null);
@@ -270,11 +270,10 @@ describe('TodoQueryHandlers', () => {
         id: '12345678901234567890123456789999',
       };
 
-      // Act
-      const result = await handler.execute(query);
-
-      // Assert
-      expect(result).toBeNull();
+      // Act & Assert
+      await expect(handler.execute(query)).rejects.toThrow(
+        'Todo with ID 12345678901234567890123456789999 not found'
+      );
       expect(mockRepository.getById).toHaveBeenCalledWith(
         '12345678901234567890123456789999'
       );
