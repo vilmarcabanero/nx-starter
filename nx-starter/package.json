@@ -9,6 +9,8 @@
     "yarn": "please-use-pnpm"
   },
   "scripts": {
+    "api": "nx serve starter-api",
+    "web": "nx serve starter-pwa",
     "start": "nx run-many -t serve -p starter-api --parallel & nx run-many -t serve -p starter-pwa --parallel",
     "start:api": "nx serve starter-api",
     "start:web": "nx serve starter-pwa",
@@ -29,6 +31,8 @@
     "test:libs": "nx run-many -t test -p domain-core,application-core,utils-core",
     "test:watch": "nx run-many -t test --all --watch",
     "test:coverage": "nx run-many -t test --all --coverage",
+    "test:coverage:api": "nx test starter-api --coverage",
+    "test:coverage:web": "nx test starter-pwa --coverage",
     "test:affected": "nx affected -t test",
     "e2e": "nx run-many -t e2e -p starter-api-e2e,starter-pwa-e2e",
     "e2e:api": "nx e2e starter-api-e2e",
