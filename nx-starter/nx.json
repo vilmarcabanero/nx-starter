@@ -14,7 +14,7 @@
     ],
     "sharedGlobals": []
   },
-  "nxCloudId": "6877924a837e9b4ffadc41c1",
+
   "targetDefaults": {
     "@nx/js:tsc": {
       "cache": true,
