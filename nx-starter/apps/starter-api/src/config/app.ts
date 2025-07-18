@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import { createApiRoutes } from '../presentation/routes';
+import { useExpressServer, useContainer } from 'routing-controllers';
+import { container } from '../infrastructure/di/container';
+import { TodoController } from '../presentation/controllers/TodoController';
 import { errorMiddleware } from '../shared/middleware/ErrorHandler';
 import {
   notFoundHandler,
@@ -29,8 +31,26 @@ export const createApp = (): express.Application => {
   // Request logging
   app.use(requestLogger);
 
-  // API routes
-  app.use('/api', createApiRoutes());
+  // Health check endpoint (before routing-controllers)
+  app.get('/api/health', (req, res) => {
+    res.json({
+      success: true,
+      message: 'Server is running',
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+  // Configure routing-controllers to use our tsyringe container
+  useContainer({
+    get: (someClass: any) => container.resolve(someClass),
+  });
+
+  // Configure routing-controllers
+  useExpressServer(app, {
+    routePrefix: '/api',
+    controllers: [TodoController],
+    defaultErrorHandler: false, // We'll use our custom error handler
+  });
 
   // Root endpoint
   app.get('/', (req, res) => {
