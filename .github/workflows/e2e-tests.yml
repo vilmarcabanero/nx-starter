@@ -71,16 +71,21 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 20.x
-        cache: 'npm'
+        cache: 'pnpm'
+    
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
     
     - name: Install dependencies
-      run: npm ci
+      run: pnpm install --frozen-lockfile
     
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: pnpm exec playwright install --with-deps
     
     - name: Run Mobile E2E tests
-      run: npx playwright test --project="Mobile Chrome" --project="Mobile Safari"
+      run: pnpm exec playwright test --project="Mobile Chrome" --project="Mobile Safari"
     
     - name: Upload mobile test results
       uses: actions/upload-artifact@v4
@@ -101,16 +106,21 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: 20.x
-        cache: 'npm'
+        cache: 'pnpm'
+    
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
     
     - name: Install dependencies
-      run: npm ci
+      run: pnpm install --frozen-lockfile
     
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: pnpm exec playwright install --with-deps
     
     - name: Run Cross-browser E2E tests
-      run: npx playwright test --project=chromium --project=firefox --project=webkit
+      run: pnpm exec playwright test --project=chromium --project=firefox --project=webkit
     
     - name: Upload cross-browser test results
       uses: actions/upload-artifact@v4
