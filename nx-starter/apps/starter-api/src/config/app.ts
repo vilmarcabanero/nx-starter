@@ -3,11 +3,8 @@ import cors from 'cors';
 import { useExpressServer, useContainer } from 'routing-controllers';
 import { container } from '../infrastructure/di/container';
 import { TodoController } from '../presentation/controllers/TodoController';
-import { errorMiddleware } from '../shared/middleware/ErrorHandler';
-import {
-  notFoundHandler,
-  requestLogger,
-} from '../presentation/middleware/errorHandler';
+import { RoutingControllersErrorHandler } from '../shared/middleware/RoutingControllersErrorHandler';
+import { requestLogger } from '../presentation/middleware/errorHandler';
 import { config } from './config';
 
 /**
@@ -52,6 +49,12 @@ export const createApp = (): express.Application => {
     defaultErrorHandler: false, // We'll use our custom error handler
   });
 
+  // Add our custom error handler
+  app.use((error: any, req: any, res: any, next: any) => {
+    const errorHandler = new RoutingControllersErrorHandler();
+    errorHandler.error(error, req, res, next);
+  });
+
   // Root endpoint
   app.get('/', (req, res) => {
     res.json({
@@ -68,9 +71,19 @@ export const createApp = (): express.Application => {
     });
   });
 
-  // Error handling
-  app.use(notFoundHandler);
-  app.use(errorMiddleware);
+  // 404 handler for API routes not handled by routing-controllers  
+  app.use('/api', (req, res, next) => {
+    // Only handle 404 if no response was sent yet
+    if (!res.headersSent) {
+      res.status(404).json({
+        success: false,
+        error: 'Not found',
+        message: `Route ${req.method} ${req.path} not found`,
+      });
+    } else {
+      next();
+    }
+  });
 
   return app;
 };
