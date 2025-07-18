@@ -49,7 +49,7 @@ export class TodoQueryService implements ITodoQueryService {
     return await this.getCompletedTodosHandler.execute();
   }
 
-  async getTodoById(id: string): Promise<Todo | null> {
+  async getTodoById(id: string): Promise<Todo> {
     const query: GetTodoByIdQuery = { id };
     return await this.getTodoByIdHandler.execute(query);
   }

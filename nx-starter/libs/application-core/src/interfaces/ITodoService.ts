@@ -25,7 +25,7 @@ export interface ITodoQueryService {
   getAllTodos(): Promise<Todo[]>;
   getActiveTodos(): Promise<Todo[]>;
   getCompletedTodos(): Promise<Todo[]>;
-  getTodoById(id: string): Promise<Todo | null>;
+  getTodoById(id: string): Promise<Todo>;
   getFilteredTodos(
     filter: 'all' | 'active' | 'completed',
     sortBy?: 'priority' | 'createdAt' | 'urgency'
