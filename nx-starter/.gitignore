@@ -43,5 +43,9 @@ Thumbs.db
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 
+# Generated files
+static/
+dependency-graph.html
+
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
