@@ -1,4 +1,7 @@
-module.exports = {
+// TypeScript configuration for commitlint
+// Using a simpler approach without explicit type imports to avoid resolution issues
+
+const config = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [
@@ -20,13 +23,11 @@ module.exports = {
     ],
     'type-case': [2, 'always', 'lower-case'],
     'type-empty': [2, 'never'],
-    'scope-case': [2, 'always', 'kebab-case'],
+    'scope-case': [0], // Will use custom rule below
+    'scope-kebab-case': [2, 'always'],
     'subject-empty': [2, 'never'],
     'subject-case': [0], // Will use custom rule below
-    'subject-first-letter-lowercase': [
-      2,
-      'always'
-    ],
+    'subject-first-letter-lowercase': [2, 'always'],
     'subject-full-stop': [2, 'never', '.'],
     'header-max-length': [2, 'always', 72],
     'body-leading-blank': [2, 'always'],
@@ -35,19 +36,40 @@ module.exports = {
   plugins: [
     {
       rules: {
-        'subject-first-letter-lowercase': (parsed) => {
+        'scope-kebab-case': (parsed: any) => {
+          const scope = parsed.scope;
+          if (!scope) return [true];
+
+          // Check if scope follows kebab-case with numbers allowed
+          // Valid: api, user-api, starter-api-e2e, api-v2, test-123
+          // Invalid: API, userApi, starter_api, api-, -api, api--test
+          if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(scope)) {
+            return [
+              false,
+              'scope must be kebab-case (lowercase letters, numbers, and hyphens only)',
+            ];
+          }
+
+          return [true];
+        },
+        'subject-first-letter-lowercase': (parsed: any) => {
           const subject = parsed.subject;
           if (!subject) return [true];
-          
+
           // Check if first character is lowercase or a number
           const firstChar = subject.charAt(0);
           if (!/^[a-z0-9]/.test(firstChar)) {
-            return [false, 'subject must start with lowercase letter or number'];
+            return [
+              false,
+              'subject must start with lowercase letter or number',
+            ];
           }
-          
+
           return [true];
         },
       },
     },
   ],
-};
+} as const;
+
+export default config;
