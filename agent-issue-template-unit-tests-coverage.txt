@@ -1,0 +1,57 @@
+[starter-api] Update unit tests to achieve 100% coverage
+
+Follow the existing unit test patterns (or suggest better way to write tests, following best practices), then help me achieve 100% unit test coverage. I believe we can achieve that because of our clean architecture that follows SOLID principles.
+
+Use the script pnpm test:coverage:api to run the tests with coverage.
+
+Attached file contains the current coverage report.
+
+[Attached file, dragged from VS Code, 1327150/20250719-1732-starter-api-coverage-tests.txt format]
+
+---
+
+[starter-pwa] Update unit tests to achieve 100% coverage
+
+Follow the existing unit test patterns (or suggest better way to write tests, following best practices), then help me achieve 100% unit test coverage. I believe we can achieve that because of our clean architecture that follows SOLID principles.
+
+Use the script pnpm test:coverage:web to run the tests with coverage.
+
+Attached file contains the current coverage report.
+
+[Attached file, dragged from VS Code, 1327150/20250719-1735-starter-pwa-coverage-tests.txt format]
+
+---
+
+[domain-core] Update unit tests to achieve 100% coverage
+
+Follow the existing unit test patterns (or suggest better way to write tests, following best practices), then help me achieve 100% unit test coverage. I believe we can achieve that because of our clean architecture that follows SOLID principles.
+
+Use the script pnpm test:coverage:application to run the tests with coverage.
+
+Attached file contains the current coverage report.
+
+[Attached file, dragged from VS Code, 20250719-1809-domain-core-coverage-tests.txt format]
+
+---
+
+[application-core] Update unit tests to achieve 100% coverage
+
+Follow the existing unit test patterns (or suggest better way to write tests, following best practices), then help me achieve 100% unit test coverage. I believe we can achieve that because of our clean architecture that follows SOLID principles.
+
+Use the script pnpm test:coverage:application to run the tests with coverage.
+
+Attached file contains the current coverage report.
+
+[Attached file, dragged from VS Code, 20250719-1809-application-core-coverage-tests.txt format]
+
+---
+
+[utils-core] Update unit tests to achieve 100% coverage
+
+Follow the existing unit test patterns (or suggest better way to write tests, following best practices), then help me achieve 100% unit test coverage. I believe we can achieve that because of our clean architecture that follows SOLID principles.
+
+Use the script pnpm test:coverage:application to run the tests with coverage.
+
+Attached file contains the current coverage report.
+
+[Attached file, dragged from VS Code, 20250719-1809-utils-core-coverage-tests.txt format]
