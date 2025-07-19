@@ -208,6 +208,28 @@ describe('TodoQueryHandlers', () => {
         result[2].createdAt.getTime()
       );
     });
+
+    it('should sort by createdAt in descending order when sortOrder is "desc"', async () => {
+      // Arrange
+      const handler = new GetFilteredTodosQueryHandler(mockRepository);
+      vi.mocked(mockRepository.getAll).mockResolvedValue(sampleTodos);
+      const query: GetFilteredTodosQuery = {
+        filter: 'all',
+        sortBy: 'createdAt',
+        sortOrder: 'desc',
+      };
+
+      // Act
+      const result = await handler.execute(query);
+
+      // Assert
+      expect(result[0].createdAt.getTime()).toBeGreaterThanOrEqual(
+        result[1].createdAt.getTime()
+      );
+      expect(result[1].createdAt.getTime()).toBeGreaterThanOrEqual(
+        result[2].createdAt.getTime()
+      );
+    });
   });
 
   describe('GetActiveTodosQueryHandler', () => {
