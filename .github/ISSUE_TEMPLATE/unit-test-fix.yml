@@ -1,0 +1,247 @@
+name: 🔧 Unit Test Fix
+description: Fix failing unit tests for a specific component or library
+title: "[COMPONENT] Fix failing unit tests"
+labels: ["testing", "bug", "unit-tests", "high-priority", "copilot"]
+assignees: ["copilot"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component/Library
+      description: Select the component or library with failing tests
+      options:
+        - starter-api
+        - starter-pwa
+        - domain-core
+        - application-core
+        - utils-core
+    validations:
+      required: true
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency Level
+      description: How critical are these failing tests?
+      options:
+        - Critical - Blocking deployments/CI pipeline
+        - High - Breaking existing functionality
+        - Medium - Intermittent failures
+        - Low - Minor test issues
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-failure-output
+    attributes:
+      label: Test Failure Output
+      description: |
+        Paste the complete test failure output here. 
+        Run the appropriate test command and copy the error messages.
+      placeholder: |
+        Example:
+        ```
+        pnpm test:api
+        
+        FAIL src/services/user.service.spec.ts
+          ● UserService › should create user
+        
+            TypeError: Cannot read property 'save' of undefined
+              at UserService.createUser (src/services/user.service.ts:15:25)
+              at Object.<anonymous> (src/services/user.service.spec.ts:25:18)
+        
+        Test Suites: 1 failed, 3 passed, 4 total
+        Tests:       2 failed, 8 passed, 10 total
+        ```
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: failing-tests-list
+    attributes:
+      label: Specific Failing Tests
+      description: |
+        List the specific test files and test cases that are failing
+      placeholder: |
+        Example:
+        - src/services/user.service.spec.ts
+          - "should create user" test
+          - "should validate email" test
+        - src/controllers/auth.controller.spec.ts
+          - "should handle login" test
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: failure-categories
+    attributes:
+      label: Failure Categories
+      description: What type of test failures are you experiencing? (Check all that apply)
+      options:
+        - label: Mock/Stub issues (dependencies not properly mocked)
+          required: false
+        - label: Async/Promise handling problems
+          required: false
+        - label: Type errors or TypeScript compilation issues
+          required: false
+        - label: Module import/export problems
+          required: false
+        - label: Test environment setup issues
+          required: false
+        - label: Database/external service connection issues
+          required: false
+        - label: Test data or fixture problems
+          required: false
+        - label: Timing/race condition issues
+          required: false
+        - label: Configuration or environment variable issues
+          required: false
+
+  - type: textarea
+    id: recent-changes
+    attributes:
+      label: Recent Changes
+      description: |
+        What recent changes might have caused these test failures?
+        (code changes, dependency updates, configuration changes, etc.)
+      placeholder: |
+        - Updated user.service.ts to use new validation logic
+        - Upgraded Jest from v29.0 to v29.5
+        - Changed database configuration
+        - Modified authentication middleware
+    validations:
+      required: false
+
+  - type: textarea
+    id: error-analysis
+    attributes:
+      label: Initial Error Analysis
+      description: |
+        Any initial analysis of what might be causing the failures?
+        (optional - can be filled during investigation)
+      placeholder: |
+        - Error suggests mock repository is undefined
+        - Seems like async operation isn't being awaited properly
+        - Type mismatch between expected and actual values
+    validations:
+      required: false
+
+  - type: textarea
+    id: test-commands
+    attributes:
+      label: Test Commands Reference
+      description: Relevant test commands for debugging (auto-populated based on selection)
+      value: |
+        **Run Failing Tests:**
+        - `pnpm test:[component]` - Run all tests for component
+        - `pnpm test:[component] --verbose` - Run tests with detailed output
+        - `pnpm test:[component] --watch` - Run tests in watch mode for debugging
+        - `pnpm test:[component] --coverage` - Run with coverage to see what's tested
+        
+        **Debug Commands by Component:**
+        - **starter-api**: `pnpm test:api`, `pnpm test:api --verbose`
+        - **starter-pwa**: `pnpm test:web`, `pnpm test:web --verbose`
+        - **domain-core**: `pnpm test:domain`, `pnpm test:domain --verbose`
+        - **application-core**: `pnpm test:application`, `pnpm test:application --verbose`
+        - **utils-core**: `pnpm test:utils`, `pnpm test:utils --verbose`
+        
+        **Additional Debug Options:**
+        - `--detectOpenHandles` - Detect handles that prevent Jest from exiting
+        - `--forceExit` - Force Jest to exit after tests complete
+        - `--runInBand` - Run tests serially instead of in parallel
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What needs to be accomplished to close this issue?
+      value: |
+        ## Acceptance Criteria
+        
+        ### Test Execution
+        - [ ] All previously failing tests now pass
+        - [ ] No new test failures introduced
+        - [ ] Tests run successfully in CI environment
+        - [ ] Tests pass consistently (not flaky)
+        
+        ### Root Cause Resolution
+        - [ ] Root cause of failures identified and documented
+        - [ ] Underlying issue fixed (not just test workarounds)
+        - [ ] Similar issues prevented in other parts of codebase
+        
+        ### Code Quality
+        - [ ] Test fixes follow existing patterns and best practices
+        - [ ] No degradation in test coverage
+        - [ ] Tests properly mock external dependencies
+        - [ ] Tests are maintainable and well-documented
+        
+        ### Documentation
+        - [ ] Document any test patterns or practices learned
+        - [ ] Update test documentation if patterns changed
+        - [ ] Add comments for complex test scenarios if needed
+        
+        ### Verification
+        - [ ] Run full test suite to ensure no regressions
+        - [ ] Verify tests pass in clean environment
+        - [ ] Confirm CI pipeline runs successfully
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: debugging-approach
+    attributes:
+      label: Debugging Strategy
+      description: Systematic approach to fixing the tests
+      options:
+        - label: Run tests in isolation to identify specific failures
+          required: true
+        - label: Check test environment setup and configuration
+          required: true
+        - label: Verify all mocks and stubs are properly configured
+          required: true
+        - label: Review recent code changes that might affect tests
+          required: true
+        - label: Ensure all dependencies are properly imported/injected
+          required: true
+        - label: Check for timing issues with async operations
+          required: false
+        - label: Validate test data and fixtures are correct
+          required: false
+        - label: Review Jest configuration and setup files
+          required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Any additional information that would be helpful for debugging these test failures?
+      placeholder: |
+        - Tests were working before specific commit/PR
+        - Failures only occur in CI, not locally
+        - Intermittent failures vs consistent failures
+        - Related to specific feature or functionality
+        - Performance or timeout issues observed
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: clean-architecture-validation
+    attributes:
+      label: Clean Architecture Validation
+      description: Ensure fixes maintain architectural integrity
+      options:
+        - label: Test fixes don't violate dependency inversion principle
+          required: true
+        - label: Tests still properly isolate units under test
+          required: true
+        - label: Mocking strategy aligns with clean architecture boundaries
+          required: true
+        - label: Tests validate business rules independently of infrastructure
+          required: true

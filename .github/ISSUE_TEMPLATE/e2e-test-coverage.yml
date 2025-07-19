@@ -1,0 +1,243 @@
+name: 🎭 E2E Test Coverage
+description: Improve end-to-end test coverage for API or PWA components
+title: "[COMPONENT] Update E2E tests to achieve comprehensive coverage"
+labels: ["testing", "e2e", "coverage", "enhancement", "copilot"]
+assignees: ["copilot"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: E2E Test App
+      description: Select the E2E test application that needs coverage improvement
+      options:
+        - starter-api-e2e (API Integration Tests)
+        - starter-pwa-e2e (PWA UI Tests)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: test-type
+    attributes:
+      label: Test Type Focus
+      description: What type of E2E scenarios need coverage?
+      options:
+        - Integration - API endpoints and data flow
+        - UI/UX - User interface interactions
+        - Performance - Response times and load testing
+        - Security - Authentication and authorization
+        - Error Handling - Edge cases and error scenarios
+        - Cross-browser - Browser compatibility
+        - Mobile - Mobile device testing
+        - All - Comprehensive coverage
+      default: 7
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How urgent is this E2E coverage improvement?
+      options:
+        - High - Critical for production readiness
+        - Medium - Important for user experience
+        - Low - Nice to have improvement
+      default: 1
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-coverage
+    attributes:
+      label: Current E2E Coverage Status
+      description: |
+        What's the current E2E test coverage? 
+        Run the appropriate E2E command and paste the results here.
+      placeholder: |
+        Example:
+        ```
+        pnpm e2e:api
+        
+        Test Results:
+        ✓ API Health Check
+        ✓ Todo CRUD Operations
+        ✗ Error Handling (missing)
+        ✗ Authentication Flow (missing)
+        
+        5 passing tests, 3 missing scenarios
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: missing-scenarios
+    attributes:
+      label: Missing E2E Scenarios
+      description: |
+        Which user flows, API endpoints, or UI interactions lack E2E coverage?
+      placeholder: |
+        **API E2E (starter-api-e2e):**
+        - User registration flow
+        - Password reset workflow
+        - File upload endpoints
+        - Pagination and filtering
+        - Rate limiting behavior
+        
+        **PWA E2E (starter-pwa-e2e):**
+        - Mobile responsive design
+        - Offline functionality
+        - Push notifications
+        - Service worker updates
+        - Cross-browser compatibility
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: e2e-categories
+    attributes:
+      label: E2E Test Categories
+      description: What types of E2E tests should be added? (Check all that apply)
+      options:
+        - label: Happy path user flows (main user journeys)
+          required: true
+        - label: Error handling and edge cases
+          required: true
+        - label: Authentication and authorization flows
+          required: false
+        - label: Data validation and form submissions
+          required: false
+        - label: API integration and data persistence
+          required: false
+        - label: Performance and load testing
+          required: false
+        - label: Cross-browser compatibility
+          required: false
+        - label: Mobile and responsive design
+          required: false
+        - label: Accessibility testing
+          required: false
+        - label: Security testing (XSS, CSRF, etc.)
+          required: false
+
+  - type: textarea
+    id: user-stories
+    attributes:
+      label: User Stories to Test
+      description: |
+        List the user stories or scenarios that need E2E coverage
+      placeholder: |
+        Example:
+        - As a user, I want to create a todo item and see it persist after page refresh
+        - As an admin, I want to bulk delete todos and receive confirmation
+        - As a mobile user, I want to use the app offline and sync when online
+        - As an API consumer, I want to handle rate limiting gracefully
+    validations:
+      required: false
+
+  - type: textarea
+    id: test-commands
+    attributes:
+      label: E2E Test Commands Reference
+      description: Relevant commands for E2E testing (auto-populated based on selection)
+      value: |
+        **Run E2E Tests:**
+        - `pnpm e2e` - Run all E2E tests
+        - `pnpm e2e:api` - Run API integration tests (starter-api-e2e)
+        - `pnpm e2e:web` - Run PWA UI tests (starter-pwa-e2e)
+        - `pnpm e2e:headed` - Run tests with browser UI visible
+        
+        **Development & Debugging:**
+        - API E2E: Uses **Vitest** framework
+        - PWA E2E: Uses **Playwright** framework
+        - `--watch` - Run tests in watch mode
+        - `--headed` - Show browser during Playwright tests
+        - `--debug` - Enable debug mode for step-by-step execution
+        
+        **Test Organization:**
+        - **starter-api-e2e/src/api/**: API endpoint tests
+        - **starter-pwa-e2e/src/**: UI interaction tests
+        - **fixtures/**: Test data and helpers
+        - **pages/**: Page object models (Playwright)
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What needs to be accomplished to close this issue?
+      value: |
+        ## Acceptance Criteria
+        
+        ### Test Coverage Goals
+        - [ ] All critical user journeys have E2E coverage
+        - [ ] Happy path and error scenarios are tested
+        - [ ] Cross-browser compatibility verified (if applicable)
+        - [ ] Mobile responsiveness tested (for PWA)
+        - [ ] API integration points validated
+        
+        ### Test Quality
+        - [ ] Tests are reliable and not flaky
+        - [ ] Tests use proper page objects and fixtures
+        - [ ] Tests have clear assertions and error messages
+        - [ ] Tests run efficiently without unnecessary delays
+        - [ ] Tests clean up properly after execution
+        
+        ### Code Organization
+        - [ ] Tests follow existing patterns and structure
+        - [ ] Shared utilities and fixtures are properly used
+        - [ ] Test data management is consistent
+        - [ ] Page objects are maintained (for UI tests)
+        
+        ### Documentation
+        - [ ] New test scenarios are documented
+        - [ ] Test setup instructions are updated
+        - [ ] Complex test flows have explanatory comments
+        
+        ### Validation
+        - [ ] All E2E tests pass in CI environment
+        - [ ] Tests pass on different browsers (if applicable)
+        - [ ] No performance degradation in test execution
+        - [ ] Integration with existing test suite is seamless
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: testing-best-practices
+    attributes:
+      label: E2E Testing Best Practices
+      description: Ensure E2E tests follow industry standards
+      options:
+        - label: Use page object model for UI tests (Playwright)
+          required: true
+        - label: Implement proper test data setup and teardown
+          required: true
+        - label: Use explicit waits instead of implicit delays
+          required: true
+        - label: Create reusable fixtures and test utilities
+          required: true
+        - label: Implement proper error handling in tests
+          required: true
+        - label: Use meaningful test descriptions and assertions
+          required: false
+        - label: Optimize tests for parallel execution
+          required: false
+        - label: Implement visual regression testing (if applicable)
+          required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Any additional information for implementing E2E tests?
+      placeholder: |
+        - Specific browsers or devices to target
+        - Performance benchmarks to maintain
+        - External services that need mocking
+        - Security scenarios to validate
+        - Accessibility requirements to test
+    validations:
+      required: false

@@ -1,0 +1,299 @@
+name: 📮 Postman Test Coverage
+description: Improve Postman collection and API testing coverage
+title: "[API] Update Postman tests to achieve comprehensive API coverage"
+labels: ["testing", "postman", "api", "coverage", "enhancement", "copilot"]
+assignees: ["copilot"]
+body:
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Postman Testing Scope
+      description: What aspect of Postman testing needs improvement?
+      options:
+        - Collection Update - Add new API endpoints to collection
+        - Test Coverage - Add/improve Postman test scripts
+        - Environment Setup - Update environment variables and configurations
+        - Documentation - Improve API documentation in collection
+        - All - Comprehensive Postman testing improvement
+      default: 4
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How urgent is this Postman testing improvement?
+      options:
+        - High - Critical for API validation
+        - Medium - Important for development workflow
+        - Low - Nice to have improvement
+      default: 1
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-collection-status
+    attributes:
+      label: Current Postman Collection Status
+      description: |
+        What's the current state of the Postman collection and tests?
+        Run Newman to check current test coverage.
+      placeholder: |
+        Example:
+        ```
+        pnpm newman run apps/starter-api/postman-collection.json.backup -e apps/starter-api/postman-environment.json --reporters cli
+        
+        Collection: Starter API Tests
+        Environment: Local Development
+        
+        ✓ Health Check - GET /health
+        ✓ Create Todo - POST /api/todos
+        ✗ Update Todo - PUT /api/todos/:id (missing)
+        ✗ Delete Todo - DELETE /api/todos/:id (missing)
+        ✗ Error Handling Tests (missing)
+        
+        10 requests, 7 tests passing, 3 missing
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: missing-endpoints
+    attributes:
+      label: Missing API Endpoints
+      description: |
+        Which API endpoints are missing from the Postman collection?
+      placeholder: |
+        **CRUD Operations:**
+        - PUT /api/todos/:id - Update existing todo
+        - DELETE /api/todos/:id - Delete todo
+        - GET /api/todos?filter=completed - Filtered queries
+        
+        **Authentication:**
+        - POST /api/auth/login - User login
+        - POST /api/auth/register - User registration
+        - POST /api/auth/refresh - Token refresh
+        
+        **Error Scenarios:**
+        - Invalid data validation endpoints
+        - Unauthorized access endpoints
+        - Rate limiting endpoints
+    validations:
+      required: false
+
+  - type: textarea
+    id: missing-tests
+    attributes:
+      label: Missing Postman Test Scripts
+      description: |
+        Which test scenarios need to be added to existing requests?
+      placeholder: |
+        **Response Validation:**
+        - Status code assertions
+        - Response schema validation
+        - Response time checks
+        - Header validation
+        
+        **Data Validation:**
+        - Created resource ID extraction
+        - Response data structure tests
+        - Error message validation
+        - Pagination response tests
+        
+        **Environment Management:**
+        - Dynamic variable setting from responses
+        - Token extraction and storage
+        - Test data cleanup scripts
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: postman-test-categories
+    attributes:
+      label: Postman Test Categories
+      description: What types of API tests should be included? (Check all that apply)
+      options:
+        - label: Happy path API endpoint testing
+          required: true
+        - label: Error handling and validation testing
+          required: true
+        - label: Authentication and authorization flows
+          required: false
+        - label: Response schema validation
+          required: false
+        - label: Performance and response time testing
+          required: false
+        - label: Data persistence and CRUD operations
+          required: false
+        - label: Edge cases and boundary testing
+          required: false
+        - label: API versioning and compatibility
+          required: false
+        - label: Rate limiting and throttling
+          required: false
+        - label: Security testing (SQL injection, XSS)
+          required: false
+
+  - type: textarea
+    id: environment-updates
+    attributes:
+      label: Environment Configuration Updates
+      description: |
+        What environment variables or configurations need to be updated?
+      placeholder: |
+        **Environment Variables:**
+        - baseUrl: {{base_url}} - API base URL
+        - authToken: {{auth_token}} - Authentication token
+        - testUserId: {{test_user_id}} - Test user identifier
+        
+        **Configuration Updates:**
+        - Update local development URLs
+        - Add staging environment configuration
+        - Include test data variables
+        - Configure timeout settings
+    validations:
+      required: false
+
+  - type: textarea
+    id: test-commands
+    attributes:
+      label: Postman/Newman Commands Reference
+      description: Relevant commands for Postman testing
+      value: |
+        **Run Postman Tests:**
+        - `pnpm newman run apps/starter-api/postman-collection.json.backup -e apps/starter-api/postman-environment.json --reporters cli`
+        - `pnpm newman run apps/starter-api/postman-collection.json -e apps/starter-api/postman-environment.json --reporters json,cli`
+        
+        **Newman Command Options:**
+        - `--reporters cli,json,html` - Multiple output formats
+        - `--reporter-html-export report.html` - Generate HTML report
+        - `--timeout-request 30000` - Set request timeout (30 seconds)
+        - `--delay-request 100` - Add delay between requests
+        - `--iteration-count 3` - Run collection multiple times
+        - `--verbose` - Detailed output for debugging
+        
+        **Collection Management:**
+        - Export from Postman app to update collection file
+        - Update environment variables in JSON file
+        - Version control collection and environment files
+        
+        **File Locations:**
+        - Collection: `apps/starter-api/postman-collection.json`
+        - Backup: `apps/starter-api/postman-collection.json.backup`
+        - Environment: `apps/starter-api/postman-environment.json`
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What needs to be accomplished to close this issue?
+      value: |
+        ## Acceptance Criteria
+        
+        ### Collection Completeness
+        - [ ] All API endpoints are included in Postman collection
+        - [ ] Request examples include proper headers and body data
+        - [ ] Collection is organized with clear folder structure
+        - [ ] API documentation is complete within collection
+        
+        ### Test Coverage
+        - [ ] Every request has appropriate test scripts
+        - [ ] Status code assertions are comprehensive
+        - [ ] Response schema validation is implemented
+        - [ ] Error scenarios are properly tested
+        - [ ] Environment variables are utilized effectively
+        
+        ### Test Quality
+        - [ ] Tests are reliable and consistent
+        - [ ] Dynamic data handling works correctly
+        - [ ] Test cleanup prevents data pollution
+        - [ ] Performance benchmarks are reasonable
+        
+        ### Environment Management
+        - [ ] Environment variables are properly configured
+        - [ ] Local and staging environments are supported
+        - [ ] Authentication tokens are managed correctly
+        - [ ] Test data variables are maintained
+        
+        ### Documentation & Maintenance
+        - [ ] Collection includes clear API documentation
+        - [ ] Test scripts have explanatory comments
+        - [ ] Environment setup instructions are documented
+        - [ ] Collection versioning is maintained
+        
+        ### Validation
+        - [ ] Newman runs successfully with all tests passing
+        - [ ] Collection can be imported and run by other developers
+        - [ ] CI integration works if implemented
+        - [ ] Performance benchmarks are met
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: postman-best-practices
+    attributes:
+      label: Postman Testing Best Practices
+      description: Ensure Postman tests follow industry standards
+      options:
+        - label: Use environment variables for dynamic data
+          required: true
+        - label: Implement proper test script assertions
+          required: true
+        - label: Use pre-request scripts for setup when needed
+          required: true
+        - label: Organize collection with logical folder structure
+          required: true
+        - label: Include comprehensive API documentation
+          required: true
+        - label: Use test data management strategies
+          required: false
+        - label: Implement response schema validation
+          required: false
+        - label: Add performance and response time checks
+          required: false
+
+  - type: textarea
+    id: api-endpoints-checklist
+    attributes:
+      label: API Endpoints Checklist
+      description: |
+        List of API endpoints that should be covered in the collection
+      placeholder: |
+        **Core CRUD Operations:**
+        - [ ] GET /api/todos - List all todos
+        - [ ] POST /api/todos - Create new todo
+        - [ ] GET /api/todos/:id - Get specific todo
+        - [ ] PUT /api/todos/:id - Update todo
+        - [ ] DELETE /api/todos/:id - Delete todo
+        
+        **Authentication:**
+        - [ ] POST /api/auth/login - User login
+        - [ ] POST /api/auth/logout - User logout
+        - [ ] POST /api/auth/refresh - Token refresh
+        
+        **Health & Status:**
+        - [ ] GET /health - Health check
+        - [ ] GET /api/status - API status
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Any additional information for Postman test implementation?
+      placeholder: |
+        - Specific API authentication requirements
+        - Performance benchmarks to maintain
+        - External services that need to be considered
+        - Specific error scenarios to test
+        - Integration with CI/CD pipeline requirements
+        - Custom header requirements or API versioning
+    validations:
+      required: false

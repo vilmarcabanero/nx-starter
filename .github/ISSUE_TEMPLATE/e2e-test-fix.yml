@@ -1,0 +1,288 @@
+name: 🎭🔧 E2E Test Fix
+description: Fix failing end-to-end tests for API or PWA components
+title: "[COMPONENT] Fix failing E2E tests"
+labels: ["testing", "e2e", "bug", "high-priority", "copilot"]
+assignees: ["copilot"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: E2E Test App
+      description: Select the E2E test application with failing tests
+      options:
+        - starter-api-e2e (API Integration Tests)
+        - starter-pwa-e2e (PWA UI Tests)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency Level
+      description: How critical are these failing E2E tests?
+      options:
+        - Critical - Blocking deployments/releases
+        - High - Breaking user workflows
+        - Medium - Intermittent failures
+        - Low - Minor test issues
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-failure-output
+    attributes:
+      label: E2E Test Failure Output
+      description: |
+        Paste the complete E2E test failure output here. 
+        Run the appropriate E2E command and copy the error messages.
+      placeholder: |
+        Example:
+        ```
+        pnpm e2e:web
+        
+        Running 5 tests using 1 worker
+        
+        ✓ [chromium] › todo.spec.ts:12:5 › should create todo
+        ✗ [chromium] › todo.spec.ts:25:5 › should delete todo
+        
+        Error: Timeout 30000ms exceeded.
+        =========================== logs ===========================
+        waiting for selector "[data-testid='delete-button']"
+        =============================================================
+        
+        ✗ [chromium] › error-handling.spec.ts:15:5 › should show error message
+        
+        Expected: "Error: Failed to save todo"
+        Received: "Todo created successfully"
+        
+        2 failed, 3 passed, 5 total
+        ```
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: failing-tests-list
+    attributes:
+      label: Specific Failing E2E Tests
+      description: |
+        List the specific E2E test files and test cases that are failing
+      placeholder: |
+        **API E2E Tests (starter-api-e2e):**
+        - src/api/todos.spec.ts
+          - "should create todo via API" test
+          - "should handle validation errors" test
+        - src/api/error-handling.spec.ts
+          - "should return 404 for non-existent todos" test
+        
+        **PWA E2E Tests (starter-pwa-e2e):**
+        - src/todo.spec.ts
+          - "should persist todos after refresh" test
+        - src/responsive.spec.ts
+          - "should work on mobile devices" test
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: failure-categories
+    attributes:
+      label: E2E Failure Categories
+      description: What type of E2E test failures are you experiencing? (Check all that apply)
+      options:
+        - label: Timeout issues (elements not found, slow loading)
+          required: false
+        - label: Selector/element location problems
+          required: false
+        - label: Async operation timing issues
+          required: false
+        - label: Cross-browser compatibility failures
+          required: false
+        - label: API response/data inconsistencies
+          required: false
+        - label: Authentication/session management issues
+          required: false
+        - label: Test environment setup problems
+          required: false
+        - label: Flaky tests (intermittent failures)
+          required: false
+        - label: Performance/load related failures
+          required: false
+        - label: Mobile/responsive design issues
+          required: false
+
+  - type: textarea
+    id: recent-changes
+    attributes:
+      label: Recent Changes
+      description: |
+        What recent changes might have caused these E2E test failures?
+      placeholder: |
+        - Updated UI components or layouts
+        - Changed API endpoints or response formats
+        - Modified authentication flow
+        - Updated test selectors or page objects
+        - Changed build configuration or deployment process
+        - Updated browser or Playwright versions
+        - Modified test environment setup
+    validations:
+      required: false
+
+  - type: textarea
+    id: browser-environment
+    attributes:
+      label: Browser & Environment Details
+      description: |
+        What browsers, devices, or environments are the tests failing on?
+      placeholder: |
+        - Chrome 115+ on macOS (local development)
+        - Firefox 116+ on Ubuntu (CI pipeline)
+        - Mobile Safari on iOS 16+ (device testing)
+        - Headless mode vs headed mode differences
+        - Local environment vs CI environment differences
+    validations:
+      required: false
+
+  - type: textarea
+    id: error-analysis
+    attributes:
+      label: Initial Error Analysis
+      description: |
+        Any initial analysis of what might be causing the E2E failures?
+      placeholder: |
+        - Timeout suggests elements are loading slower than expected
+        - Selector might have changed after UI update
+        - API endpoint seems to be returning different response format
+        - Authentication token might be expiring during test
+        - Test data might not be properly cleaned up between tests
+    validations:
+      required: false
+
+  - type: textarea
+    id: test-commands
+    attributes:
+      label: E2E Debug Commands Reference
+      description: Relevant commands for debugging E2E failures
+      value: |
+        **Run Failing Tests:**
+        - `pnpm e2e:api` - Run API integration tests
+        - `pnpm e2e:web` - Run PWA UI tests
+        - `pnpm e2e:headed` - Run tests with browser UI visible (debugging)
+        
+        **Debug Commands:**
+        - **API E2E (Vitest):**
+          - `pnpm e2e:api --reporter=verbose` - Detailed output
+          - `pnpm e2e:api --run` - Run once (no watch mode)
+          - `nx test starter-api-e2e --verbose` - Direct nx command
+        
+        - **PWA E2E (Playwright):**
+          - `pnpm e2e:web --headed` - Show browser during tests
+          - `pnpm e2e:web --debug` - Step through tests interactively
+          - `pnpm e2e:web --trace on` - Generate execution traces
+          - `npx playwright show-trace` - View test traces
+          - `npx playwright codegen` - Generate test selectors
+        
+        **Additional Debug Options:**
+        - `--max-failures=1` - Stop after first failure
+        - `--timeout=60000` - Increase timeout for slow operations
+        - `--retries=0` - Disable retries to see pure failures
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What needs to be accomplished to close this issue?
+      value: |
+        ## Acceptance Criteria
+        
+        ### Test Execution
+        - [ ] All previously failing E2E tests now pass
+        - [ ] No new E2E test failures introduced
+        - [ ] Tests pass consistently (not flaky)
+        - [ ] Tests run successfully in CI environment
+        - [ ] Cross-browser compatibility maintained
+        
+        ### Root Cause Resolution
+        - [ ] Root cause of failures identified and documented
+        - [ ] Underlying issue fixed (not just test workarounds)
+        - [ ] Similar issues prevented in other E2E tests
+        - [ ] Test reliability improved
+        
+        ### Performance & Reliability
+        - [ ] Test execution time is reasonable
+        - [ ] Tests use proper waits and assertions
+        - [ ] Test data cleanup is working correctly
+        - [ ] Selectors and page objects are robust
+        
+        ### Documentation
+        - [ ] Document any E2E patterns or practices learned
+        - [ ] Update test documentation if patterns changed
+        - [ ] Add comments for complex test scenarios
+        
+        ### Verification
+        - [ ] Run full E2E suite to ensure no regressions
+        - [ ] Verify tests pass in different browsers (if applicable)
+        - [ ] Confirm CI pipeline runs successfully
+        - [ ] Test stability verified over multiple runs
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: debugging-approach
+    attributes:
+      label: E2E Debugging Strategy
+      description: Systematic approach to fixing the E2E tests
+      options:
+        - label: Run tests in headed mode to observe browser behavior
+          required: true
+        - label: Check test environment setup and configuration
+          required: true
+        - label: Verify selectors and page objects are up to date
+          required: true
+        - label: Review recent code changes that might affect tests
+          required: true
+        - label: Validate API responses and data consistency
+          required: true
+        - label: Check timing and async operation handling
+          required: false
+        - label: Test across different browsers and environments
+          required: false
+        - label: Review CI/CD pipeline configuration
+          required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Any additional information that would be helpful for debugging these E2E test failures?
+      placeholder: |
+        - Tests were working before specific deployment/release
+        - Failures only occur in CI, not locally
+        - Intermittent failures vs consistent failures
+        - Related to specific features or user workflows
+        - Performance or timeout issues observed
+        - Browser-specific behavior differences
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: e2e-quality-validation
+    attributes:
+      label: E2E Test Quality Validation
+      description: Ensure fixes maintain test quality and reliability
+      options:
+        - label: Tests use proper page object model patterns
+          required: true
+        - label: Tests have appropriate waits and assertions
+          required: true
+        - label: Test data setup and cleanup is reliable
+          required: true
+        - label: Tests are isolated and don't depend on each other
+          required: true
+        - label: Selectors are robust and maintainable
+          required: true

@@ -1,0 +1,175 @@
+name: 🧪 Unit Test Coverage Task
+description: Improve unit test coverage for a specific component or library
+title: "[COMPONENT] Update unit tests to achieve 100% coverage"
+labels: ["testing", "coverage", "enhancement", "copilot"]
+assignees: ["copilot"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component/Library
+      description: Select the component or library that needs test coverage improvement
+      options:
+        - starter-api
+        - starter-pwa
+        - domain-core
+        - application-core
+        - utils-core
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How urgent is this coverage improvement?
+      options:
+        - High - Critical for production readiness
+        - Medium - Important for code quality
+        - Low - Nice to have improvement
+      default: 1
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-coverage
+    attributes:
+      label: Current Coverage Status
+      description: |
+        What's the current test coverage percentage? 
+        Run the appropriate coverage command and paste the results here.
+      placeholder: |
+        Example:
+        ```
+        pnpm test:coverage:api
+        
+        Coverage Summary:
+        Statements: 78.5% (123/157)
+        Branches: 65.2% (45/69)
+        Functions: 82.1% (23/28)
+        Lines: 79.3% (119/150)
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: uncovered-areas
+    attributes:
+      label: Specific Areas Lacking Coverage
+      description: |
+        Which files, functions, or code paths are currently uncovered?
+        You can use coverage reports or tools to identify these.
+      placeholder: |
+        Example:
+        - src/services/user.service.ts - error handling paths
+        - src/controllers/auth.controller.ts - edge cases
+        - src/utils/validation.helper.ts - input sanitization
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: test-patterns
+    attributes:
+      label: Testing Approach
+      description: What testing patterns should be followed? (Check all that apply)
+      options:
+        - label: Follow existing unit test patterns in the codebase
+          required: true
+        - label: Apply clean architecture testing principles
+          required: true
+        - label: Focus on SOLID principles compliance in tests
+          required: true
+        - label: Include edge case testing
+          required: false
+        - label: Add integration test scenarios where appropriate
+          required: false
+        - label: Mock external dependencies properly
+          required: false
+        - label: Test error handling and validation paths
+          required: false
+
+  - type: textarea
+    id: test-commands
+    attributes:
+      label: Test Commands Reference
+      description: Relevant commands for this component (auto-populated based on selection)
+      value: |
+        **Run Tests:**
+        - `pnpm test:[component]` - Run unit tests
+        - `pnpm test:coverage:[component]` - Run tests with coverage
+        - `pnpm test:watch` - Run tests in watch mode
+        
+        **Coverage Commands by Component:**
+        - **starter-api**: `pnpm test:coverage:api`
+        - **starter-pwa**: `pnpm test:coverage:web`
+        - **domain-core**: `pnpm test:coverage:domain`
+        - **application-core**: `pnpm test:coverage:application`
+        - **utils-core**: `pnpm test:coverage:utils`
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What needs to be accomplished to close this issue?
+      value: |
+        ## Acceptance Criteria
+        
+        ### Coverage Goals
+        - [ ] Achieve 100% statement coverage (or specify target %)
+        - [ ] Achieve 100% branch coverage (or specify target %)
+        - [ ] Achieve 100% function coverage (or specify target %)
+        - [ ] Achieve 100% line coverage (or specify target %)
+        
+        ### Code Quality
+        - [ ] All tests follow existing patterns and best practices
+        - [ ] Tests properly mock external dependencies
+        - [ ] Edge cases and error scenarios are covered
+        - [ ] Tests are maintainable and well-documented
+        - [ ] No regression in existing functionality
+        
+        ### Documentation
+        - [ ] Update any relevant documentation
+        - [ ] Add comments for complex test scenarios
+        - [ ] Ensure test names clearly describe what they're testing
+        
+        ### Validation
+        - [ ] All tests pass consistently
+        - [ ] Coverage reports show target percentage achieved
+        - [ ] No performance degradation in test execution
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Any additional information that would be helpful for implementing this task?
+      placeholder: |
+        - Specific files or functions that are particularly complex
+        - Known edge cases that should be tested
+        - Dependencies that need special mocking considerations
+        - Performance considerations for the tests
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: clean-architecture
+    attributes:
+      label: Clean Architecture Compliance
+      description: Ensure tests align with clean architecture principles
+      options:
+        - label: Tests respect dependency inversion (test interfaces, not implementations)
+          required: true
+        - label: Domain layer tests are independent of infrastructure concerns
+          required: true
+        - label: Application layer tests properly mock domain and infrastructure dependencies
+          required: true
+        - label: Tests demonstrate single responsibility principle
+          required: true
+        - label: Tests follow open/closed principle (extensible without modification)
+          required: true

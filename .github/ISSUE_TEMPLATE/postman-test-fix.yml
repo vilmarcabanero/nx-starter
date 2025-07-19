@@ -1,0 +1,326 @@
+name: 📮🔧 Postman Test Fix
+description: Fix failing Postman collection tests and API issues
+title: "[API] Fix failing Postman tests"
+labels: ["testing", "postman", "api", "bug", "high-priority", "copilot"]
+assignees: ["copilot"]
+body:
+  - type: dropdown
+    id: failure-type
+    attributes:
+      label: Postman Failure Type
+      description: What type of Postman issues are you experiencing?
+      options:
+        - Collection Errors - Requests failing to execute
+        - Test Script Failures - Assertion and validation errors
+        - Environment Issues - Variable or configuration problems
+        - Authentication Problems - Token or auth flow issues
+        - Performance Issues - Timeout or slow response problems
+        - All - Multiple types of failures
+      default: 5
+    validations:
+      required: true
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency Level
+      description: How critical are these failing Postman tests?
+      options:
+        - Critical - Blocking API validation and releases
+        - High - Breaking development workflow
+        - Medium - Intermittent failures affecting testing
+        - Low - Minor test issues
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: newman-failure-output
+    attributes:
+      label: Newman Test Failure Output
+      description: |
+        Paste the complete Newman test failure output here. 
+        Run the Newman command and copy the error messages.
+      placeholder: |
+        Example:
+        ```
+        pnpm newman run apps/starter-api/postman-collection.json.backup -e apps/starter-api/postman-environment.json --reporters cli
+        
+        Starter API Tests
+        
+        ✓ Health Check
+        ✗ Create Todo
+          1. Expected status code to be 201 but got 500
+          2. JSONError in test-script: Unexpected token 'u' at position 0
+        
+        ✗ Get Todo List
+          1. Request timeout: ESOCKETTIMEDOUT
+          2. Test script failed: ReferenceError: response is not defined
+        
+        ✓ Update Todo
+        
+        Iteration: 1/1
+        Requests: 4, Failed: 2
+        Test Scripts: 8, Failed: 3
+        Assertions: 12, Failed: 3
+        ```
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: failing-requests
+    attributes:
+      label: Specific Failing Requests
+      description: |
+        List the specific Postman requests and tests that are failing
+      placeholder: |
+        **Collection: apps/starter-api/postman-collection.json.backup**
+        
+        **Failing Requests:**
+        - "Create Todo" - POST /api/todos
+          - Status code assertion failing (expects 201, gets 500)
+          - Response parsing error in test script
+        
+        - "Get Todo List" - GET /api/todos
+          - Request timeout after 30 seconds
+          - Test script reference error
+        
+        - "Delete Todo" - DELETE /api/todos/{{todoId}}
+          - Variable {{todoId}} not defined
+          - Authentication token expired
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: failure-categories
+    attributes:
+      label: Postman Failure Categories
+      description: What type of Postman failures are you experiencing? (Check all that apply)
+      options:
+        - label: HTTP status code assertion failures
+          required: false
+        - label: Response parsing or JSON errors
+          required: false
+        - label: Test script syntax or logic errors
+          required: false
+        - label: Environment variable undefined or incorrect
+          required: false
+        - label: Authentication token expired or invalid
+          required: false
+        - label: Request timeout or connection issues
+          required: false
+        - label: Response schema validation failures
+          required: false
+        - label: Dynamic variable extraction problems
+          required: false
+        - label: Pre-request script execution errors
+          required: false
+        - label: Collection organization or folder issues
+          required: false
+
+  - type: textarea
+    id: recent-changes
+    attributes:
+      label: Recent Changes
+      description: |
+        What recent changes might have caused these Postman test failures?
+      placeholder: |
+        - Updated API endpoints or response formats
+        - Changed authentication mechanism or token format
+        - Modified request/response data structures
+        - Updated environment variables or configuration
+        - Changed server URLs or deployment configuration
+        - Updated Postman collection or Newman version
+        - Modified test scripts or assertions
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment-details
+    attributes:
+      label: Environment & Configuration Details
+      description: |
+        What environment or configuration issues might be affecting the tests?
+      placeholder: |
+        **Environment File:** apps/starter-api/postman-environment.json
+        - Base URL: {{base_url}} = http://localhost:3000
+        - Auth Token: {{auth_token}} = (check if expired)
+        - Test User ID: {{test_user_id}} = (verify exists)
+        
+        **Server Status:**
+        - Local API server running on correct port
+        - Database connection and test data available
+        - Authentication service accessible
+    validations:
+      required: false
+
+  - type: textarea
+    id: error-analysis
+    attributes:
+      label: Initial Error Analysis
+      description: |
+        Any initial analysis of what might be causing the Postman failures?
+      placeholder: |
+        - 500 status code suggests server-side error in API
+        - JSON parsing error indicates malformed response
+        - Timeout suggests API performance issues or server not running
+        - Variable undefined indicates environment configuration problem
+        - Authentication failure suggests token management issue
+    validations:
+      required: false
+
+  - type: textarea
+    id: debug-commands
+    attributes:
+      label: Newman Debug Commands Reference
+      description: Commands for debugging Postman test failures
+      value: |
+        **Basic Newman Execution:**
+        ```bash
+        pnpm newman run apps/starter-api/postman-collection.json.backup -e apps/starter-api/postman-environment.json --reporters cli
+        ```
+        
+        **Debug Options:**
+        - `--verbose` - Detailed output including request/response data
+        - `--reporter-cli-no-assertions` - Hide assertion details for cleaner output  
+        - `--reporter-cli-no-summary` - Hide summary for focus on errors
+        - `--timeout-request 60000` - Increase timeout to 60 seconds
+        - `--delay-request 500` - Add 500ms delay between requests
+        
+        **Output Formats:**
+        - `--reporters json,cli --reporter-json-export results.json` - Export detailed JSON
+        - `--reporters html,cli --reporter-html-export report.html` - Generate HTML report
+        
+        **Debugging Specific Issues:**
+        - Check environment variables: Review `apps/starter-api/postman-environment.json`
+        - Validate collection: Import into Postman app for visual debugging
+        - Test individual requests: Run single requests to isolate failures
+        - Check API server: Verify `pnpm start:api` is running successfully
+        
+        **File Management:**
+        - Main collection: `apps/starter-api/postman-collection.json`
+        - Backup collection: `apps/starter-api/postman-collection.json.backup`
+        - Environment: `apps/starter-api/postman-environment.json`
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What needs to be accomplished to close this issue?
+      value: |
+        ## Acceptance Criteria
+        
+        ### Request Execution
+        - [ ] All Postman requests execute successfully
+        - [ ] No HTTP connection or timeout errors
+        - [ ] Proper status codes returned from API endpoints
+        - [ ] Response data is valid and parseable
+        
+        ### Test Script Resolution
+        - [ ] All test script syntax errors resolved
+        - [ ] Assertions pass with correct expected values
+        - [ ] Environment variables are properly defined and used
+        - [ ] Dynamic variable extraction works correctly
+        
+        ### Environment Configuration
+        - [ ] Environment variables point to correct endpoints
+        - [ ] Authentication tokens are valid and properly managed
+        - [ ] Test data variables are correctly configured
+        - [ ] Different environments (local, staging) work properly
+        
+        ### Collection Organization
+        - [ ] Collection structure is logical and maintainable
+        - [ ] Request dependencies are properly managed
+        - [ ] Pre-request scripts execute without errors
+        - [ ] Collection documentation is accurate
+        
+        ### Performance & Reliability
+        - [ ] Response times meet acceptable benchmarks
+        - [ ] Tests run consistently without flaky failures
+        - [ ] Error handling scenarios work as expected
+        - [ ] Collection can be run multiple times reliably
+        
+        ### Validation
+        - [ ] Newman runs successfully with all tests passing
+        - [ ] Collection works in both Postman app and Newman CLI
+        - [ ] No regressions in previously working requests
+        - [ ] Integration with development workflow is smooth
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: debugging-approach
+    attributes:
+      label: Postman Debugging Strategy
+      description: Systematic approach to fixing the Postman tests
+      options:
+        - label: Verify API server is running and accessible
+          required: true
+        - label: Check environment variable configuration
+          required: true
+        - label: Test individual requests in Postman app
+          required: true
+        - label: Review and validate test script syntax
+          required: true
+        - label: Verify authentication token validity
+          required: true
+        - label: Check API response formats and schemas
+          required: false
+        - label: Review request headers and body data
+          required: false
+        - label: Validate pre-request script execution
+          required: false
+
+  - type: textarea
+    id: collection-backup-strategy
+    attributes:
+      label: Collection Backup & Version Management
+      description: |
+        How should collection changes be managed and backed up?
+      placeholder: |
+        - Create backup before making changes
+        - Document changes made to collection
+        - Version control collection and environment files
+        - Test changes in development before updating main collection
+        - Consider using collection.json vs collection.json.backup naming
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Any additional information that would be helpful for debugging these Postman failures?
+      placeholder: |
+        - Tests were working before specific API changes
+        - Failures only occur in specific environments
+        - Intermittent failures vs consistent failures
+        - Related to specific API features or endpoints
+        - Performance degradation observed
+        - Authentication or authorization changes
+        - Database or test data issues
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: api-validation
+    attributes:
+      label: API & Integration Validation
+      description: Ensure fixes maintain API testing integrity
+      options:
+        - label: API endpoints return expected status codes
+          required: true
+        - label: Response data matches expected schema
+          required: true
+        - label: Authentication flows work correctly
+          required: true
+        - label: Error scenarios are properly handled
+          required: true
+        - label: Performance benchmarks are maintained
+          required: true
