@@ -50,8 +50,8 @@ This workspace follows clean architecture principles with clear separation of co
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- pnpm
+- Node.js (v20 or higher)
+- pnpm (v10.13.1 or higher)
 
 ### Installation
 
@@ -242,7 +242,7 @@ nx-starter/
 │   ├── application-core/     # Application services & use cases
 │   ├── domain-core/          # Domain entities & business logic
 │   └── utils-core/           # Shared utilities
-├── docs/                     # Documentation
+├── legacy/                   # Legacy code and migration documentation
 ├── nx.json                   # Nx workspace configuration
 ├── package.json              # Dependencies and scripts
 └── tsconfig.base.json        # TypeScript configuration
@@ -377,7 +377,7 @@ feat: add feature                        # ❌ Missing scope (optional but recom
 
 **Troubleshooting:**
 - If commit validation isn't working after cloning, run `pnpm run prepare`
-- Make sure you're in the nx-starter directory when committing
+- Make sure you're in the project root directory when committing
 - The git hooks are automatically set up when you run `pnpm install` (via the `prepare` script)
 
 ## 📝 License
