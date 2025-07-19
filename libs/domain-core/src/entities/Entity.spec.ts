@@ -154,7 +154,7 @@ describe('DomainEvent', () => {
     it('should create unique timestamps for different events', async () => {
       const event1 = new TestDomainEvent('event-1');
       // Small delay to ensure different timestamps
-      await new Promise((resolve) => setTimeout(resolve, 1));
+      await new Promise((resolve) => setTimeout(resolve, 2));
       const event2 = new TestDomainEvent('event-2');
 
       expect(event2.occurredOn.getTime()).toBeGreaterThan(
