@@ -21,6 +21,7 @@ import type { ITodoRepository } from '@nx-starter/domain-core';
 import { getTypeOrmDataSource } from '../todo/persistence/typeorm/TypeOrmConnection';
 import { connectMongoDB } from '../todo/persistence/mongoose/MongooseConnection';
 import { getSequelizeInstance } from '../todo/persistence/sequelize/SequelizeConnection';
+import { config } from '../../config/config';
 
 // Register dependencies following Clean Architecture layers
 export const configureDI = async () => {
@@ -61,8 +62,8 @@ export const configureDI = async () => {
 };
 
 async function getRepositoryImplementation(): Promise<ITodoRepository> {
-  const dbType = process.env.DB_TYPE || 'memory';
-  const ormType = process.env.ORM_TYPE || 'native';
+  const dbType = config.database.type;
+  const ormType = config.database.orm || 'native';
 
   console.log(`📦 Using ${ormType} ORM with ${dbType} database`);
 
