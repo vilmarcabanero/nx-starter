@@ -1,13 +1,13 @@
 name: 🎭 E2E Test Coverage
-description: Improve end-to-end test coverage for API or PWA components
-title: "[COMPONENT] Update E2E tests to achieve comprehensive coverage"
+description: Improve end-to-end test coverage for API or PWA applications
+title: "Update E2E tests to achieve comprehensive coverage"
 labels: ["testing", "e2e", "coverage", "enhancement", "copilot"]
 assignees: ["copilot"]
 body:
   - type: dropdown
     id: component
     attributes:
-      label: E2E Test App
+      label: E2E Test Application
       description: Select the E2E test application that needs coverage improvement
       options:
         - starter-api-e2e (API Integration Tests)
@@ -92,32 +92,38 @@ body:
     validations:
       required: false
 
-  - type: checkboxes
+  - type: textarea
     id: e2e-categories
     attributes:
-      label: E2E Test Categories
-      description: What types of E2E tests should be added? (Check all that apply)
-      options:
-        - label: Happy path user flows (main user journeys)
-          required: true
-        - label: Error handling and edge cases
-          required: true
-        - label: Authentication and authorization flows
-          required: false
-        - label: Data validation and form submissions
-          required: false
-        - label: API integration and data persistence
-          required: false
-        - label: Performance and load testing
-          required: false
-        - label: Cross-browser compatibility
-          required: false
-        - label: Mobile and responsive design
-          required: false
-        - label: Accessibility testing
-          required: false
-        - label: Security testing (XSS, CSRF, etc.)
-          required: false
+      label: E2E Test Categories for Coding Agent
+      description: Types of E2E tests the coding agent should implement
+      value: |
+        ## E2E Testing Guidelines for Coding Agent
+        
+        **Essential E2E Tests:**
+        - [ ] Happy path user flows (main user journeys)
+        - [ ] Error handling and edge cases
+        
+        **Additional E2E Coverage:**
+        - [ ] Authentication and authorization flows
+        - [ ] Data validation and form submissions
+        - [ ] API integration and data persistence
+        - [ ] Performance and load testing
+        - [ ] Cross-browser compatibility
+        - [ ] Mobile and responsive design
+        - [ ] Accessibility testing
+        - [ ] Security testing (XSS, CSRF, etc.)
+        
+        **E2E Best Practices:**
+        - Use page object models for maintainable UI tests
+        - Implement proper test data setup and teardown
+        - Use explicit waits instead of implicit delays
+        - Create reusable fixtures and utilities
+        - Test real user scenarios end-to-end
+        - Validate both UI and API integration points
+      render: markdown
+    validations:
+      required: false
 
   - type: textarea
     id: user-stories
@@ -140,7 +146,11 @@ body:
       label: E2E Test Commands Reference
       description: Relevant commands for E2E testing (auto-populated based on selection)
       value: |
-        **Run E2E Tests:**
+        **Run E2E Tests (Short Commands):**
+        - `pnpm endapi` - Run API E2E tests (starter-api-e2e)
+        - `pnpm endweb` - Run PWA E2E tests (starter-pwa-e2e)
+        
+        **Full E2E Commands:**
         - `pnpm e2e` - Run all E2E tests
         - `pnpm e2e:api` - Run API integration tests (starter-api-e2e)
         - `pnpm e2e:web` - Run PWA UI tests (starter-pwa-e2e)
@@ -149,13 +159,12 @@ body:
         **Development & Debugging:**
         - API E2E: Uses **Vitest** framework
         - PWA E2E: Uses **Playwright** framework
-        - `--watch` - Run tests in watch mode
         - `--headed` - Show browser during Playwright tests
         - `--debug` - Enable debug mode for step-by-step execution
         
         **Test Organization:**
-        - **starter-api-e2e/src/api/**: API endpoint tests
-        - **starter-pwa-e2e/src/**: UI interaction tests
+        - **apps/starter-api-e2e/src/api/**: API endpoint tests
+        - **apps/starter-pwa-e2e/src/**: UI interaction tests
         - **fixtures/**: Test data and helpers
         - **pages/**: Page object models (Playwright)
       render: markdown
@@ -204,28 +213,35 @@ body:
     validations:
       required: false
 
-  - type: checkboxes
+  - type: textarea
     id: testing-best-practices
     attributes:
-      label: E2E Testing Best Practices
+      label: E2E Testing Best Practices for Coding Agent
       description: Ensure E2E tests follow industry standards
-      options:
-        - label: Use page object model for UI tests (Playwright)
-          required: true
-        - label: Implement proper test data setup and teardown
-          required: true
-        - label: Use explicit waits instead of implicit delays
-          required: true
-        - label: Create reusable fixtures and test utilities
-          required: true
-        - label: Implement proper error handling in tests
-          required: true
-        - label: Use meaningful test descriptions and assertions
-          required: false
-        - label: Optimize tests for parallel execution
-          required: false
-        - label: Implement visual regression testing (if applicable)
-          required: false
+      value: |
+        ## E2E Testing Standards for Coding Agent
+        
+        **Required Practices:**
+        - [ ] Use page object model for UI tests (Playwright)
+        - [ ] Implement proper test data setup and teardown
+        - [ ] Use explicit waits instead of implicit delays
+        - [ ] Create reusable fixtures and test utilities
+        - [ ] Implement proper error handling in tests
+        
+        **Quality Guidelines:**
+        - [ ] Use meaningful test descriptions and assertions
+        - [ ] Optimize tests for parallel execution
+        - [ ] Implement visual regression testing (if applicable)
+        
+        **Framework-Specific Guidelines:**
+        - **Playwright (PWA)**: Use page objects, proper selectors, and async/await
+        - **Vitest (API)**: Use proper mocking, test isolation, and cleanup
+        - Ensure tests are deterministic and reliable
+        - Use data-testid attributes for stable selectors
+        - Implement proper screenshot and trace collection on failure
+      render: markdown
+    validations:
+      required: false
 
   - type: textarea
     id: additional-context

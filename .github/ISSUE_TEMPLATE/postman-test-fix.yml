@@ -92,27 +92,22 @@ body:
     validations:
       required: true
 
-  - type: checkboxes
-    id: failure-categories
+  - type: textarea
+    id: recent-changes
     attributes:
-      label: Postman Failure Categories
-      description: What type of Postman failures are you experiencing? (Check all that apply)
-      options:
-        - label: HTTP status code assertion failures
-          required: false
-        - label: Response parsing or JSON errors
-          required: false
-        - label: Test script syntax or logic errors
-          required: false
-        - label: Environment variable undefined or incorrect
-          required: false
-        - label: Authentication token expired or invalid
-          required: false
-        - label: Request timeout or connection issues
-          required: false
-        - label: Response schema validation failures
-          required: false
-        - label: Dynamic variable extraction problems
+      label: Recent Changes
+      description: |
+        What recent changes might have caused these Postman test failures?
+      placeholder: |
+        - Updated API endpoints or response formats
+        - Changed authentication mechanisms or token handling
+        - Modified environment variables or configuration
+        - Updated Postman collection or test scripts
+        - Changed server configuration or deployment
+        - Updated database schema or test data
+        - Modified request/response schemas
+    validations:
+      required: false
           required: false
         - label: Pre-request script execution errors
           required: false
@@ -253,28 +248,45 @@ body:
     validations:
       required: false
 
-  - type: checkboxes
-    id: debugging-approach
+  - type: textarea
+    id: debugging-guidance
     attributes:
-      label: Postman Debugging Strategy
-      description: Systematic approach to fixing the Postman tests
-      options:
-        - label: Verify API server is running and accessible
-          required: true
-        - label: Check environment variable configuration
-          required: true
-        - label: Test individual requests in Postman app
-          required: true
-        - label: Review and validate test script syntax
-          required: true
-        - label: Verify authentication token validity
-          required: true
-        - label: Check API response formats and schemas
-          required: false
-        - label: Review request headers and body data
-          required: false
-        - label: Validate pre-request script execution
-          required: false
+      label: Postman Debugging Guidance for Coding Agent
+      description: |
+        Systematic approach the coding agent should follow to fix Postman tests:
+      value: |
+        **1. Infrastructure Validation (Critical):**
+        - Verify API server is running and accessible
+        - Check network connectivity and firewall settings
+        - Validate API base URL and endpoint availability
+        - Test API health check endpoints first
+
+        **2. Configuration Analysis (Essential):**
+        - Check environment variable configuration
+        - Verify all required variables are defined and correct
+        - Validate authentication tokens and credentials
+        - Review environment variable scope and inheritance
+
+        **3. Request Validation (Important):**
+        - Test individual requests in Postman app
+        - Review and validate test script syntax
+        - Check request headers, body data, and parameters
+        - Validate pre-request script execution
+
+        **4. Response Analysis (Critical):**
+        - Check API response formats and schemas
+        - Verify response status codes and headers
+        - Validate response data structure and content
+        - Analyze error responses and status messages
+
+        **5. Authentication & Security:**
+        - Verify authentication token validity and expiration
+        - Check authorization headers and bearer tokens
+        - Validate API key configuration
+        - Review authentication flow and refresh mechanisms
+      render: markdown
+    validations:
+      required: false
 
   - type: textarea
     id: collection-backup-strategy
@@ -347,19 +359,42 @@ body:
     validations:
       required: false
 
-  - type: checkboxes
-    id: api-validation
+  - type: textarea
+    id: api-validation-guidance
     attributes:
-      label: API & Integration Validation
-      description: Ensure fixes maintain API testing integrity
-      options:
-        - label: API endpoints return expected status codes
-          required: true
-        - label: Response data matches expected schema
-          required: true
-        - label: Authentication flows work correctly
-          required: true
-        - label: Error scenarios are properly handled
-          required: true
-        - label: Performance benchmarks are maintained
-          required: true
+      label: API & Integration Validation Guidance
+      description: |
+        Quality standards the coding agent should ensure when fixing Postman tests:
+      value: |
+        **1. Status Code Validation (Required):**
+        - API endpoints return expected status codes
+        - Success responses use 2xx codes appropriately
+        - Error responses use 4xx/5xx codes correctly
+        - Status codes match API documentation
+
+        **2. Data Schema Validation (Essential):**
+        - Response data matches expected schema
+        - Required fields are present in responses
+        - Data types match specification
+        - Nested objects and arrays are properly structured
+
+        **3. Authentication Testing (Critical):**
+        - Authentication flows work correctly
+        - Token-based authentication validates properly
+        - Authorization headers are correctly formatted
+        - Session management works as expected
+
+        **4. Error Handling Validation (Important):**
+        - Error scenarios are properly handled
+        - Error responses include meaningful messages
+        - Validation errors are properly formatted
+        - Edge cases return appropriate responses
+
+        **5. Performance Standards (Monitoring):**
+        - Performance benchmarks are maintained
+        - Response times stay within acceptable limits
+        - API throughput meets requirements
+        - No significant performance degradation
+      render: markdown
+    validations:
+      required: false

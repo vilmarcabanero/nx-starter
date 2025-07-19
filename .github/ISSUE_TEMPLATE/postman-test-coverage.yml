@@ -108,26 +108,45 @@ body:
     validations:
       required: false
 
-  - type: checkboxes
-    id: postman-test-categories
+  - type: textarea
+    id: postman-test-guidance
     attributes:
-      label: Postman Test Categories
-      description: What types of API tests should be included? (Check all that apply)
-      options:
-        - label: Happy path API endpoint testing
-          required: true
-        - label: Error handling and validation testing
-          required: true
-        - label: Authentication and authorization flows
-          required: false
-        - label: Response schema validation
-          required: false
-        - label: Performance and response time testing
-          required: false
-        - label: Data persistence and CRUD operations
-          required: false
-        - label: Edge cases and boundary testing
-          required: false
+      label: Postman Test Categories Guidance
+      description: |
+        Types of API tests the coding agent should include in the Postman collection:
+      value: |
+        **1. Core API Testing (Required):**
+        - Happy path API endpoint testing
+        - Error handling and validation testing
+        - Response status code validation
+        - Basic request/response structure verification
+
+        **2. Security and Authentication (Essential):**
+        - Authentication and authorization flows
+        - Token validation and refresh mechanisms
+        - Role-based access control testing
+        - Security header validation
+
+        **3. Data Validation (Important):**
+        - Response schema validation
+        - Request payload validation
+        - Data type and format checking
+        - Required field validation
+
+        **4. Performance and Reliability:**
+        - Performance and response time testing
+        - Timeout and retry behavior
+        - Load testing scenarios
+        - API rate limiting validation
+
+        **5. Business Logic Testing:**
+        - Data persistence and CRUD operations
+        - Edge cases and boundary testing
+        - Workflow and integration scenarios
+        - Business rule validation
+      render: markdown
+    validations:
+      required: false
         - label: API versioning and compatibility
           required: false
         - label: Rate limiting and throttling
@@ -234,28 +253,45 @@ body:
     validations:
       required: false
 
-  - type: checkboxes
-    id: postman-best-practices
+  - type: textarea
+    id: postman-best-practices-guidance
     attributes:
-      label: Postman Testing Best Practices
-      description: Ensure Postman tests follow industry standards
-      options:
-        - label: Use environment variables for dynamic data
-          required: true
-        - label: Implement proper test script assertions
-          required: true
-        - label: Use pre-request scripts for setup when needed
-          required: true
-        - label: Organize collection with logical folder structure
-          required: true
-        - label: Include comprehensive API documentation
-          required: true
-        - label: Use test data management strategies
-          required: false
-        - label: Implement response schema validation
-          required: false
-        - label: Add performance and response time checks
-          required: false
+      label: Postman Testing Best Practices Guidance
+      description: |
+        Best practices the coding agent should follow when creating Postman tests:
+      value: |
+        **1. Environment and Configuration (Essential):**
+        - Use environment variables for dynamic data (URLs, tokens, IDs)
+        - Set up proper environment hierarchy (dev, staging, production)
+        - Configure authentication variables securely
+        - Use global variables for common test data
+
+        **2. Test Script Quality (Required):**
+        - Implement proper test script assertions (pm.test)
+        - Use descriptive test names and clear assertions
+        - Validate response status, headers, and body content
+        - Add meaningful error messages for failed assertions
+
+        **3. Collection Organization (Important):**
+        - Use pre-request scripts for setup when needed
+        - Organize collection with logical folder structure
+        - Group related endpoints in folders
+        - Use consistent naming conventions
+
+        **4. Documentation and Maintainability:**
+        - Include comprehensive API documentation
+        - Add descriptions to requests and folders
+        - Document required parameters and headers
+        - Provide example requests and responses
+
+        **5. Advanced Testing Features:**
+        - Use test data management strategies
+        - Implement response schema validation
+        - Add performance and response time checks
+        - Set up data-driven testing with CSV/JSON
+      render: markdown
+    validations:
+      required: false
 
   - type: textarea
     id: api-endpoints-checklist

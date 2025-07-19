@@ -1,13 +1,13 @@
 name: 🎭🔧 E2E Test Fix
-description: Fix failing end-to-end tests for API or PWA components
-title: "[COMPONENT] Fix failing E2E tests"
+description: Fix failing end-to-end tests for API or PWA applications
+title: "Fix failing E2E tests"
 labels: ["testing", "e2e", "bug", "high-priority", "copilot"]
 assignees: ["copilot"]
 body:
   - type: dropdown
     id: component
     attributes:
-      label: E2E Test App
+      label: E2E Test Application
       description: Select the E2E test application with failing tests
       options:
         - starter-api-e2e (API Integration Tests)
@@ -34,12 +34,12 @@ body:
     attributes:
       label: E2E Test Failure Output
       description: |
-        Paste the complete E2E test failure output here. 
-        Run the appropriate E2E command and copy the error messages.
+        Paste the complete E2E test failure output here (optional - coding agent can analyze failing tests).
+        Run the appropriate E2E command and copy the error messages if available.
       placeholder: |
         Example:
         ```
-        pnpm e2e:web
+        pnpm endweb
         
         Running 5 tests using 1 worker
         
@@ -51,30 +51,23 @@ body:
         waiting for selector "[data-testid='delete-button']"
         =============================================================
         
-        ✗ [chromium] › error-handling.spec.ts:15:5 › should show error message
-        
-        Expected: "Error: Failed to save todo"
-        Received: "Todo created successfully"
-        
         2 failed, 3 passed, 5 total
         ```
       render: shell
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: failing-tests-list
     attributes:
       label: Specific Failing E2E Tests
       description: |
-        List the specific E2E test files and test cases that are failing
+        List specific E2E test files and cases that are failing (optional - coding agent can identify these)
       placeholder: |
         **API E2E Tests (starter-api-e2e):**
         - src/api/todos.spec.ts
           - "should create todo via API" test
           - "should handle validation errors" test
-        - src/api/error-handling.spec.ts
-          - "should return 404 for non-existent todos" test
         
         **PWA E2E Tests (starter-pwa-e2e):**
         - src/todo.spec.ts
@@ -82,34 +75,7 @@ body:
         - src/responsive.spec.ts
           - "should work on mobile devices" test
     validations:
-      required: true
-
-  - type: checkboxes
-    id: failure-categories
-    attributes:
-      label: E2E Failure Categories
-      description: What type of E2E test failures are you experiencing? (Check all that apply)
-      options:
-        - label: Timeout issues (elements not found, slow loading)
-          required: false
-        - label: Selector/element location problems
-          required: false
-        - label: Async operation timing issues
-          required: false
-        - label: Cross-browser compatibility failures
-          required: false
-        - label: API response/data inconsistencies
-          required: false
-        - label: Authentication/session management issues
-          required: false
-        - label: Test environment setup problems
-          required: false
-        - label: Flaky tests (intermittent failures)
-          required: false
-        - label: Performance/load related failures
-          required: false
-        - label: Mobile/responsive design issues
-          required: false
+      required: false
 
   - type: textarea
     id: recent-changes
@@ -164,25 +130,25 @@ body:
       label: E2E Debug Commands Reference
       description: Relevant commands for debugging E2E failures
       value: |
-        **Run Failing Tests:**
-        - `pnpm e2e:api` - Run API integration tests
-        - `pnpm e2e:web` - Run PWA UI tests
-        - `pnpm e2e:headed` - Run tests with browser UI visible (debugging)
+        **Run E2E Tests (Short Commands):**
+        - `pnpm endapi` - Run API E2E tests (starter-api-e2e)
+        - `pnpm endweb` - Run PWA E2E tests (starter-pwa-e2e)
         
         **Debug Commands:**
         - **API E2E (Vitest):**
-          - `pnpm e2e:api --reporter=verbose` - Detailed output
-          - `pnpm e2e:api --run` - Run once (no watch mode)
-          - `nx test starter-api-e2e --verbose` - Direct nx command
+          - `pnpm e2e:api` - Run API integration tests
+          - `nx test starter-api-e2e --verbose` - Direct nx command with verbose
         
         - **PWA E2E (Playwright):**
-          - `pnpm e2e:web --headed` - Show browser during tests
-          - `pnpm e2e:web --debug` - Step through tests interactively
-          - `pnpm e2e:web --trace on` - Generate execution traces
+          - `pnpm e2e:web` - Run PWA UI tests
+          - `pnpm e2e:headed` - Show browser during tests (debugging)
           - `npx playwright show-trace` - View test traces
           - `npx playwright codegen` - Generate test selectors
         
         **Additional Debug Options:**
+        - `--headed` - Show browser during Playwright tests
+        - `--debug` - Step through tests interactively
+        - `--trace on` - Generate execution traces
         - `--max-failures=1` - Stop after first failure
         - `--timeout=60000` - Increase timeout for slow operations
         - `--retries=0` - Disable retries to see pure failures
@@ -231,28 +197,45 @@ body:
     validations:
       required: false
 
-  - type: checkboxes
-    id: debugging-approach
+  - type: textarea
+    id: debugging-guidance
     attributes:
-      label: E2E Debugging Strategy
-      description: Systematic approach to fixing the E2E tests
-      options:
-        - label: Run tests in headed mode to observe browser behavior
-          required: true
-        - label: Check test environment setup and configuration
-          required: true
-        - label: Verify selectors and page objects are up to date
-          required: true
-        - label: Review recent code changes that might affect tests
-          required: true
-        - label: Validate API responses and data consistency
-          required: true
-        - label: Check timing and async operation handling
-          required: false
-        - label: Test across different browsers and environments
-          required: false
-        - label: Review CI/CD pipeline configuration
-          required: false
+      label: E2E Debugging Guidance for Coding Agent
+      description: |
+        Systematic approach the coding agent should follow to fix E2E tests:
+      value: |
+        **1. Test Environment Analysis:**
+        - Run tests in headed mode to observe browser behavior
+        - Check test environment setup and configuration
+        - Verify browser versions and Playwright configuration
+        - Validate test data and database state
+
+        **2. Selector and Page Object Validation:**
+        - Verify selectors and page objects are up to date
+        - Check for DOM changes that might affect element location
+        - Ensure page object models are correctly implemented
+        - Use `npx playwright codegen` to generate new selectors if needed
+
+        **3. Code Change Impact Analysis:**
+        - Review recent code changes that might affect tests
+        - Analyze API changes and response format modifications
+        - Check for authentication or session management updates
+        - Validate routing or navigation changes
+
+        **4. API and Data Consistency:**
+        - Validate API responses and data consistency
+        - Check for timing issues with async operations
+        - Review test data setup and cleanup processes
+        - Ensure proper handling of async operations
+
+        **5. Cross-Environment Testing:**
+        - Test across different browsers and environments
+        - Review CI/CD pipeline configuration
+        - Compare local vs CI environment differences
+        - Validate timeout settings and network conditions
+      render: markdown
+    validations:
+      required: false
 
   - type: textarea
     id: additional-context
@@ -270,22 +253,45 @@ body:
     validations:
       required: false
 
-  - type: checkboxes
-    id: e2e-quality-validation
+  - type: textarea
+    id: quality-validation-guidance
     attributes:
-      label: E2E Test Quality Validation
-      description: Ensure fixes maintain test quality and reliability
-      options:
-        - label: Tests use proper page object model patterns
-          required: true
-        - label: Tests have appropriate waits and assertions
-          required: true
-        - label: Test data setup and cleanup is reliable
-          required: true
-        - label: Tests are isolated and don't depend on each other
-          required: true
-        - label: Selectors are robust and maintainable
-          required: true
+      label: E2E Test Quality Validation Guidance
+      description: |
+        Quality standards the coding agent should ensure when fixing E2E tests:
+      value: |
+        **1. Page Object Model Excellence:**
+        - Tests use proper page object model patterns
+        - Selectors are centralized and maintainable
+        - Page objects encapsulate UI interactions properly
+        - Common actions are abstracted into reusable methods
+
+        **2. Test Reliability Standards:**
+        - Tests have appropriate waits and assertions
+        - Use explicit waits instead of hard-coded delays
+        - Implement proper error handling for flaky elements
+        - Add retry logic for network-dependent operations
+
+        **3. Data Management Quality:**
+        - Test data setup and cleanup is reliable
+        - Tests don't interfere with each other's data
+        - Database state is properly reset between tests
+        - External dependencies are mocked when appropriate
+
+        **4. Test Isolation Requirements:**
+        - Tests are isolated and don't depend on each other
+        - Each test can run independently
+        - No shared state between test cases
+        - Proper setup and teardown for each test
+
+        **5. Selector Robustness:**
+        - Selectors are robust and maintainable
+        - Use data-testid attributes when possible
+        - Avoid brittle CSS selectors
+        - Implement fallback strategies for element location
+      render: markdown
+    validations:
+      required: false
 
   - type: textarea
     id: commit-message-guidelines

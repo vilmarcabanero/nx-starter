@@ -1,4 +1,22 @@
 name: 🧪 Unit Test Coverage Task
+description: Improve unit test coverage for a specific application or library
+title: "Update unit tests to achieve 100% coverage"
+labels: ["testing", "coverage", "enhancement", "copilot"]
+assignees: ["copilot"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Application/Library
+      description: Select the application or library that needs coverage improvement
+      options:
+        - starter-api
+        - starter-pwa
+        - domain-core
+        - application-core
+        - utils-core
+    validations:
+      required: trueCoverage Task
 description: Improve unit test coverage for a specific component or library
 title: "[COMPONENT] Update unit tests to achieve 100% coverage"
 labels: ["testing", "coverage", "enhancement", "copilot"]
@@ -67,26 +85,34 @@ body:
     validations:
       required: false
 
-  - type: checkboxes
+  - type: textarea
     id: test-patterns
     attributes:
-      label: Testing Approach
-      description: What testing patterns should be followed? (Check all that apply)
-      options:
-        - label: Follow existing unit test patterns in the codebase
-          required: true
-        - label: Apply clean architecture testing principles
-          required: true
-        - label: Focus on SOLID principles compliance in tests
-          required: true
-        - label: Include edge case testing
-          required: false
-        - label: Add integration test scenarios where appropriate
-          required: false
-        - label: Mock external dependencies properly
-          required: false
-        - label: Test error handling and validation paths
-          required: false
+      label: Testing Approach for Coding Agent
+      description: Testing patterns the coding agent should follow
+      value: |
+        ## Testing Guidelines for Coding Agent
+        
+        **Required Testing Patterns:**
+        - [ ] Follow existing unit test patterns in the codebase
+        - [ ] Apply clean architecture testing principles
+        - [ ] Focus on SOLID principles compliance in tests
+        
+        **Recommended Testing Practices:**
+        - [ ] Include edge case testing
+        - [ ] Add integration test scenarios where appropriate
+        - [ ] Mock external dependencies properly
+        - [ ] Test error handling and validation paths
+        
+        **Test Quality Standards:**
+        - Write clear, descriptive test names
+        - Use proper assertions and error messages
+        - Ensure tests are isolated and independent
+        - Mock at architectural boundaries
+        - Test business logic separate from infrastructure
+      render: markdown
+    validations:
+      required: false
 
   - type: textarea
     id: test-commands
@@ -94,17 +120,27 @@ body:
       label: Test Commands Reference
       description: Relevant commands for this component (auto-populated based on selection)
       value: |
-        **Run Tests:**
-        - `pnpm test:[component]` - Run unit tests
-        - `pnpm test:coverage:[component]` - Run tests with coverage
-        - `pnpm test:watch` - Run tests in watch mode
+        **Run Tests (Short Commands):**
+        - `pnpm api` - Start API server
+        - `pnpm web` - Start PWA server
+        - `pnpm domain` - Run domain-core tests
+        - `pnpm application` - Run application-core tests
+        - `pnpm utils` - Run utils-core tests
         
-        **Coverage Commands by Component:**
-        - **starter-api**: `pnpm test:coverage:api`
-        - **starter-pwa**: `pnpm test:coverage:web`
-        - **domain-core**: `pnpm test:coverage:domain`
-        - **application-core**: `pnpm test:coverage:application`
-        - **utils-core**: `pnpm test:coverage:utils`
+        **Coverage Commands (Short):**
+        - `pnpm covapi` - API coverage
+        - `pnpm covweb` - PWA coverage
+        - `pnpm covdomain` - Domain coverage
+        - `pnpm covapplication` - Application coverage
+        - `pnpm covutils` - Utils coverage
+        
+        **Full Commands:**
+        - `pnpm test:coverage:api` - Run API tests with coverage
+        - `pnpm test:coverage:web` - Run PWA tests with coverage
+        - `pnpm test:coverage:domain` - Run domain tests with coverage
+        - `pnpm test:coverage:application` - Run application tests with coverage
+        - `pnpm test:coverage:utils` - Run utils tests with coverage
+        - `pnpm test:watch` - Run all tests in watch mode
       render: markdown
     validations:
       required: false
@@ -196,19 +232,31 @@ body:
     validations:
       required: false
 
-  - type: checkboxes
+  - type: textarea
     id: clean-architecture
     attributes:
-      label: Clean Architecture Compliance
+      label: Clean Architecture Compliance for Coding Agent
       description: Ensure tests align with clean architecture principles
-      options:
-        - label: Tests respect dependency inversion (test interfaces, not implementations)
-          required: true
-        - label: Domain layer tests are independent of infrastructure concerns
-          required: true
-        - label: Application layer tests properly mock domain and infrastructure dependencies
-          required: true
-        - label: Tests demonstrate single responsibility principle
-          required: true
-        - label: Tests follow open/closed principle (extensible without modification)
-          required: true
+      value: |
+        ## Clean Architecture Testing Guidelines for Coding Agent
+        
+        **Architecture Testing Requirements:**
+        - [ ] Tests respect dependency inversion (test interfaces, not implementations)
+        - [ ] Domain layer tests are independent of infrastructure concerns
+        - [ ] Application layer tests properly mock domain and infrastructure dependencies
+        - [ ] Tests demonstrate single responsibility principle
+        - [ ] Tests follow open/closed principle (extensible without modification)
+        
+        **Layer-Specific Testing:**
+        - **Domain Core**: Pure business logic tests, no external dependencies
+        - **Application Core**: Test use cases with mocked domain/infrastructure
+        - **Infrastructure**: Test integration points and external service connections
+        
+        **Dependency Management:**
+        - Mock external services at architecture boundaries
+        - Use dependency injection in tests
+        - Test contracts between layers
+        - Validate architectural constraints are maintained
+      render: markdown
+    validations:
+      required: false
