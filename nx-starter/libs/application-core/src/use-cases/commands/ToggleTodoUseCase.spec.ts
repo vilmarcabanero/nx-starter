@@ -184,7 +184,7 @@ describe('ToggleTodoUseCase', () => {
 
       // Assert
       expect(mockRepository.getById).toHaveBeenCalledBefore(
-        mockRepository.update as any
+        vi.mocked(mockRepository.update)
       );
     });
 

@@ -109,10 +109,10 @@ describe('ITodoService Interfaces', () => {
       // This test verifies the interface structure exists and has the expected methods
       // We can't instantiate an interface, but we can verify its shape through type checking
       const mockCommandService: ITodoCommandService = {
-        createTodo: async () => ({} as any),
-        updateTodo: async () => ({} as any),
+        createTodo: async () => ({} as Todo),
+        updateTodo: async () => ({} as Todo),
         deleteTodo: async () => undefined,
-        toggleTodo: async () => ({} as any),
+        toggleTodo: async () => ({} as Todo),
       };
 
       expect(typeof mockCommandService.createTodo).toBe('function');
@@ -129,7 +129,7 @@ describe('ITodoService Interfaces', () => {
         getAllTodos: async () => [],
         getActiveTodos: async () => [],
         getCompletedTodos: async () => [],
-        getTodoById: async () => ({} as any),
+        getTodoById: async () => ({} as Todo),
         getFilteredTodos: async () => [],
         getTodoStats: async () => ({
           total: 0,
@@ -152,15 +152,15 @@ describe('ITodoService Interfaces', () => {
       // This test verifies that ITodoService includes all methods from both interfaces
       const mockTodoService: ITodoService = {
         // Command methods
-        createTodo: async () => ({} as any),
-        updateTodo: async () => ({} as any),
+        createTodo: async () => ({} as Todo),
+        updateTodo: async () => ({} as Todo),
         deleteTodo: async () => undefined,
-        toggleTodo: async () => ({} as any),
+        toggleTodo: async () => ({} as Todo),
         // Query methods
         getAllTodos: async () => [],
         getActiveTodos: async () => [],
         getCompletedTodos: async () => [],
-        getTodoById: async () => ({} as any),
+        getTodoById: async () => ({} as Todo),
         getFilteredTodos: async () => [],
         getTodoStats: async () => ({
           total: 0,

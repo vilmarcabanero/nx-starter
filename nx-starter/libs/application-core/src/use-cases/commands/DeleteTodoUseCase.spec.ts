@@ -118,7 +118,7 @@ describe('DeleteTodoUseCase', () => {
 
       // Assert
       expect(mockRepository.getById).toHaveBeenCalledBefore(
-        mockRepository.delete as any
+        vi.mocked(mockRepository.delete)
       );
     });
 

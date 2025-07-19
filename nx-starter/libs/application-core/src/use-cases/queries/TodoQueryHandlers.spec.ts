@@ -7,7 +7,7 @@ import {
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
 } from './TodoQueryHandlers';
-import { Todo, TodoTitle, TodoDomainService, TodoNotFoundException } from '@nx-starter/domain-core';
+import { Todo, TodoTitle, TodoDomainService } from '@nx-starter/domain-core';
 import type { ITodoRepository } from '@nx-starter/domain-core';
 import type {
   GetFilteredTodosQuery,

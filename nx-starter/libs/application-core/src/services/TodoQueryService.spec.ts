@@ -23,27 +23,27 @@ describe('TodoQueryService', () => {
     // Create mock query handlers
     mockGetAllTodosHandler = {
       execute: vi.fn(),
-    } as any;
+    } as unknown as GetAllTodosQueryHandler;
 
     mockGetFilteredTodosHandler = {
       execute: vi.fn(),
-    } as any;
+    } as unknown as GetFilteredTodosQueryHandler;
 
     mockGetActiveTodosHandler = {
       execute: vi.fn(),
-    } as any;
+    } as unknown as GetActiveTodosQueryHandler;
 
     mockGetCompletedTodosHandler = {
       execute: vi.fn(),
-    } as any;
+    } as unknown as GetCompletedTodosQueryHandler;
 
     mockGetTodoStatsHandler = {
       execute: vi.fn(),
-    } as any;
+    } as unknown as GetTodoStatsQueryHandler;
 
     mockGetTodoByIdHandler = {
       execute: vi.fn(),
-    } as any;
+    } as unknown as GetTodoByIdQueryHandler;
 
     // Create service with mocked dependencies
     service = new TodoQueryService(

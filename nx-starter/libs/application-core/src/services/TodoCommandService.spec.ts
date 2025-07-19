@@ -18,19 +18,19 @@ describe('TodoCommandService', () => {
     // Create mock use cases
     mockCreateTodoUseCase = {
       execute: vi.fn(),
-    } as any;
+    } as unknown as CreateTodoUseCase;
 
     mockUpdateTodoUseCase = {
       execute: vi.fn(),
-    } as any;
+    } as unknown as UpdateTodoUseCase;
 
     mockDeleteTodoUseCase = {
       execute: vi.fn(),
-    } as any;
+    } as unknown as DeleteTodoUseCase;
 
     mockToggleTodoUseCase = {
       execute: vi.fn(),
-    } as any;
+    } as unknown as ToggleTodoUseCase;
 
     // Create service with mocked dependencies
     service = new TodoCommandService(
