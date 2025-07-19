@@ -1,82 +1,29 @@
 // Command DTOs for CQRS pattern
-// Unified version combining frontend and backend with optional validation
+// TypeScript types are now generated from Zod schemas for consistency
 
-import type { TodoPriorityLevel } from '@nx-starter/domain-core';
+// Re-export command types from validation schemas
+export type {
+  CreateTodoCommand,
+  UpdateTodoCommand,
+  DeleteTodoCommand,
+  ToggleTodoCommand,
+} from '../validation/TodoValidationSchemas';
 
-// Command interfaces
-export interface CreateTodoCommand {
-  title: string;
-  priority?: TodoPriorityLevel;
-  dueDate?: Date;
-}
+// Re-export validation schemas for backward compatibility
+export {
+  CreateTodoCommandSchema,
+  UpdateTodoCommandSchema,
+  DeleteTodoCommandSchema,
+  ToggleTodoCommandSchema,
+  TodoValidationSchemas,
+} from '../validation/TodoValidationSchemas';
 
-export interface UpdateTodoCommand {
-  id: string;
-  title?: string;
-  completed?: boolean;
-  priority?: TodoPriorityLevel;
-  dueDate?: Date;
-}
-
-export interface DeleteTodoCommand {
-  id: string;
-}
-
-export interface ToggleTodoCommand {
-  id: string;
-}
-
-// Optional validation schemas (can be used when zod is available)
-// These are kept as optional to support both frontend and backend usage
+// Legacy function for backward compatibility - now returns required schemas
 export const createCommandValidationSchema = () => {
-  try {
-    // Dynamic import to avoid bundling zod when not needed
-    const { z } = require('zod');
-
-    return {
-      CreateTodoCommandSchema: z.object({
-        title: z
-          .string()
-          .min(2, 'Title must be at least 2 characters')
-          .max(255, 'Title cannot exceed 255 characters'),
-        priority: z.enum(['low', 'medium', 'high']).optional(),
-        dueDate: z
-          .string()
-          .datetime()
-          .optional()
-          .transform((val: string | undefined) =>
-            val ? new Date(val) : undefined
-          ),
-      }),
-
-      UpdateTodoCommandSchema: z.object({
-        id: z.string().min(1, 'ID is required'),
-        title: z
-          .string()
-          .min(2, 'Title must be at least 2 characters')
-          .max(255, 'Title cannot exceed 255 characters')
-          .optional(),
-        completed: z.boolean().optional(),
-        priority: z.enum(['low', 'medium', 'high']).optional(),
-        dueDate: z
-          .string()
-          .datetime()
-          .optional()
-          .transform((val: string | undefined) =>
-            val ? new Date(val) : undefined
-          ),
-      }),
-
-      DeleteTodoCommandSchema: z.object({
-        id: z.string().min(1, 'ID is required'),
-      }),
-
-      ToggleTodoCommandSchema: z.object({
-        id: z.string().min(1, 'ID is required'),
-      }),
-    };
-  } catch {
-    // Return empty object if zod is not available
-    return {};
-  }
+  return {
+    CreateTodoCommandSchema: require('../validation/TodoValidationSchemas').CreateTodoCommandSchema,
+    UpdateTodoCommandSchema: require('../validation/TodoValidationSchemas').UpdateTodoCommandSchema,
+    DeleteTodoCommandSchema: require('../validation/TodoValidationSchemas').DeleteTodoCommandSchema,
+    ToggleTodoCommandSchema: require('../validation/TodoValidationSchemas').ToggleTodoCommandSchema,
+  };
 };

@@ -16,6 +16,12 @@ import {
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
   TOKENS,
+  TodoValidationService,
+  CreateTodoValidationService,
+  UpdateTodoValidationService,
+  DeleteTodoValidationService,
+  ToggleTodoValidationService,
+  VALIDATION_TOKENS,
 } from '@nx-starter/application-core';
 import type { ITodoRepository } from '@nx-starter/domain-core';
 import { getTypeOrmDataSource } from '../todo/persistence/typeorm/TypeOrmConnection';
@@ -58,6 +64,28 @@ export const configureDI = async () => {
   container.registerSingleton(
     TOKENS.GetTodoStatsQueryHandler,
     GetTodoStatsQueryHandler
+  );
+
+  // Application Layer - Validation Services
+  container.registerSingleton(
+    VALIDATION_TOKENS.CreateTodoValidationService,
+    CreateTodoValidationService
+  );
+  container.registerSingleton(
+    VALIDATION_TOKENS.UpdateTodoValidationService,
+    UpdateTodoValidationService
+  );
+  container.registerSingleton(
+    VALIDATION_TOKENS.DeleteTodoValidationService,
+    DeleteTodoValidationService
+  );
+  container.registerSingleton(
+    VALIDATION_TOKENS.ToggleTodoValidationService,
+    ToggleTodoValidationService
+  );
+  container.registerSingleton(
+    VALIDATION_TOKENS.TodoValidationService,
+    TodoValidationService
   );
 };
 

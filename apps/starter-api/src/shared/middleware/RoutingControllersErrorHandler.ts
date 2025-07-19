@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Middleware, ExpressErrorMiddlewareInterface } from 'routing-controllers';
 import { DomainException } from '@nx-starter/domain-core';
 import { ZodError } from 'zod';
+import { ValidationError } from '@nx-starter/application-core';
 
 /**
  * Custom error handler for routing-controllers
@@ -23,6 +24,21 @@ export class RoutingControllersErrorHandler implements ExpressErrorMiddlewareInt
         success: false,
         error: error.message,
         code: error.code,
+      });
+      return;
+    }
+
+    // Handle our custom ValidationError (from OOP validation services)
+    if (error instanceof ValidationError) {
+      response.status(400).json({
+        success: false,
+        error: 'Validation failed',
+        code: 'VALIDATION_ERROR',
+        details: {
+          message: error.message,
+          issues: error.issues,
+          fieldErrors: error.getIssuesByField(),
+        },
       });
       return;
     }

@@ -12,7 +12,6 @@ import {
   HttpCode,
 } from 'routing-controllers';
 import {
-  createCommandValidationSchema,
   CreateTodoUseCase,
   UpdateTodoUseCase,
   DeleteTodoUseCase,
@@ -24,6 +23,13 @@ import {
   GetTodoStatsQueryHandler,
   TodoMapper,
   TOKENS,
+  TodoValidationService,
+  VALIDATION_TOKENS,
+  CreateTodoCommandSchema,
+  UpdateTodoCommandSchema,
+  DeleteTodoCommandSchema,
+  ToggleTodoCommandSchema,
+  TodoIdSchema,
 } from '@nx-starter/application-core';
 
 /**
@@ -33,8 +39,6 @@ import {
 @Controller('/todos')
 @injectable()
 export class TodoController {
-  private validationSchemas = createCommandValidationSchema();
-
   constructor(
     @inject(TOKENS.CreateTodoUseCase)
     private createTodoUseCase: CreateTodoUseCase,
@@ -53,7 +57,9 @@ export class TodoController {
     @inject(TOKENS.GetTodoByIdQueryHandler)
     private getTodoByIdQueryHandler: GetTodoByIdQueryHandler,
     @inject(TOKENS.GetTodoStatsQueryHandler)
-    private getTodoStatsQueryHandler: GetTodoStatsQueryHandler
+    private getTodoStatsQueryHandler: GetTodoStatsQueryHandler,
+    @inject(VALIDATION_TOKENS.TodoValidationService)
+    private validationService: TodoValidationService
   ) {}
 
   /**
@@ -116,7 +122,9 @@ export class TodoController {
    */
   @Get('/:id')
   async getTodoById(@Param('id') id: string): Promise<any> {
-    const todo = await this.getTodoByIdQueryHandler.execute({ id });
+    // Validate the ID parameter
+    const validatedId = TodoIdSchema.parse(id);
+    const todo = await this.getTodoByIdQueryHandler.execute({ id: validatedId });
     const todoDto = TodoMapper.toDto(todo);
     return {
       success: true,
@@ -130,9 +138,7 @@ export class TodoController {
   @Post('/')
   @HttpCode(201)
   async createTodo(@Body() body: any): Promise<any> {
-    const validatedData = this.validationSchemas.CreateTodoCommandSchema
-      ? this.validationSchemas.CreateTodoCommandSchema.parse(body)
-      : body;
+    const validatedData = this.validationService.validateCreateCommand(body);
     const todo = await this.createTodoUseCase.execute(validatedData);
     const todoDto = TodoMapper.toDto(todo);
 
@@ -147,12 +153,11 @@ export class TodoController {
    */
   @Put('/:id')
   async updateTodo(@Param('id') id: string, @Body() body: any): Promise<any> {
-    const validatedData = this.validationSchemas.UpdateTodoCommandSchema
-      ? this.validationSchemas.UpdateTodoCommandSchema.parse({
-          ...body,
-          id,
-        })
-      : { ...body, id };
+    // Validate the combined data (body + id) using the validation service
+    const validatedData = this.validationService.validateUpdateCommand({
+      ...body,
+      id,
+    });
 
     await this.updateTodoUseCase.execute(validatedData);
 
@@ -167,9 +172,7 @@ export class TodoController {
    */
   @Patch('/:id/toggle')
   async toggleTodo(@Param('id') id: string): Promise<any> {
-    const validatedData = this.validationSchemas.ToggleTodoCommandSchema
-      ? this.validationSchemas.ToggleTodoCommandSchema.parse({ id })
-      : { id };
+    const validatedData = this.validationService.validateToggleCommand({ id });
 
     await this.toggleTodoUseCase.execute(validatedData);
 
@@ -184,9 +187,7 @@ export class TodoController {
    */
   @Delete('/:id')
   async deleteTodo(@Param('id') id: string): Promise<any> {
-    const validatedData = this.validationSchemas.DeleteTodoCommandSchema
-      ? this.validationSchemas.DeleteTodoCommandSchema.parse({ id })
-      : { id };
+    const validatedData = this.validationService.validateDeleteCommand({ id });
 
     await this.deleteTodoUseCase.execute(validatedData);
 
