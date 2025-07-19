@@ -1,18 +1,19 @@
 import { Sequelize } from 'sequelize';
 import { initTodoModel } from './TodoModel';
+import { config } from '../../../../config/config';
 
 /**
  * Sequelize connection management
  * Supports multiple SQL databases
  */
 export const createSequelizeInstance = (): Sequelize => {
-  const dbType = process.env.DB_TYPE || 'sqlite';
+  const dbType = config.database.type || 'sqlite';
   let sequelize: Sequelize;
 
-  if (process.env.DATABASE_URL) {
+  if (config.database.url) {
     // Use connection URL if provided
-    sequelize = new Sequelize(process.env.DATABASE_URL, {
-      logging: process.env.NODE_ENV === 'development' ? console.log : false,
+    sequelize = new Sequelize(config.database.url, {
+      logging: config.nodeEnv === 'development' ? console.log : false,
       dialectOptions:
         dbType === 'sqlite'
           ? {
@@ -22,7 +23,7 @@ export const createSequelizeInstance = (): Sequelize => {
           ? {
               // PostgreSQL specific options
               ssl:
-                process.env.NODE_ENV === 'production'
+                config.nodeEnv === 'production'
                   ? {
                       require: true,
                       rejectUnauthorized: false,
@@ -34,7 +35,7 @@ export const createSequelizeInstance = (): Sequelize => {
           : {
               // MySQL specific options
               ssl:
-                process.env.NODE_ENV === 'production'
+                config.nodeEnv === 'production'
                   ? {
                       require: true,
                       rejectUnauthorized: false,
@@ -56,20 +57,20 @@ export const createSequelizeInstance = (): Sequelize => {
       sequelize = new Sequelize({
         dialect: 'sqlite',
         storage: './data/todos.db',
-        logging: process.env.NODE_ENV === 'development' ? console.log : false,
+        logging: config.nodeEnv === 'development' ? console.log : false,
       });
     } else {
       const dialectOptions: any = {};
 
       if (dialect === 'postgres') {
         dialectOptions.prependSearchPath = false;
-        if (process.env.NODE_ENV === 'production') {
+        if (config.nodeEnv === 'production') {
           dialectOptions.ssl = {
             require: true,
             rejectUnauthorized: false,
           };
         }
-      } else if (process.env.NODE_ENV === 'production') {
+      } else if (config.nodeEnv === 'production') {
         dialectOptions.ssl = {
           require: true,
           rejectUnauthorized: false,
@@ -78,14 +79,12 @@ export const createSequelizeInstance = (): Sequelize => {
 
       sequelize = new Sequelize({
         dialect: dialect as any,
-        host: process.env.DB_HOST || 'localhost',
-        port: parseInt(
-          process.env.DB_PORT || (dialect === 'mysql' ? '3306' : '5432')
-        ),
-        username: process.env.DB_USERNAME!,
-        password: process.env.DB_PASSWORD!,
-        database: process.env.DB_NAME || 'task_app',
-        logging: process.env.NODE_ENV === 'development' ? console.log : false,
+        host: config.database.host || 'localhost',
+        port: config.database.port || (dialect === 'mysql' ? 3306 : 5432),
+        username: config.database.username!,
+        password: config.database.password!,
+        database: config.database.database || 'task_app',
+        logging: config.nodeEnv === 'development' ? console.log : false,
         dialectOptions,
       });
     }
@@ -134,7 +133,7 @@ export const getSequelizeInstance = async (): Promise<Sequelize> => {
       }
 
       // Sync models (create tables if they don't exist)
-      if (process.env.NODE_ENV === 'development') {
+      if (config.nodeEnv === 'development') {
         await sequelize.sync({ alter: true });
         console.log('📦 Sequelize models synchronized');
       }
