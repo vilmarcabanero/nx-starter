@@ -73,7 +73,7 @@ body:
         - TypeScript to version 5.x
         - React to version 18.x
         - Node.js types to match runtime version
-        - Testing libraries (Jest, Vitest, Playwright)
+        - Testing libraries (Vitest, Playwright)
         - Security-related packages with known vulnerabilities
     validations:
       required: false
@@ -112,7 +112,7 @@ body:
         - TypeScript 5.0 removes support for Node.js 14
         - React 18 changes behavior of automatic batching
         - Express 5.0 has changes to middleware error handling
-        - Jest 29 requires Node.js 16+ minimum
+        - Vitest 1.0+ requires Node.js 18+ minimum
         - Nx 16 changes to project configuration format
     validations:
       required: false
@@ -224,10 +224,12 @@ body:
   - type: textarea
     id: commit-message-guidelines
     attributes:
-      label: Commit Message Guidelines
-      description: Follow the project's commit message conventions
+      label: "⚠️ CRITICAL: Commit Message Guidelines"
+      description: "**IMPORTANT**: Following these rules is mandatory - commits will FAIL if not followed!"
       value: |
-        ## Commit Message Format
+        ## ⚠️ MANDATORY Commit Message Format
+        
+        **🚨 FAILURE TO FOLLOW THESE RULES WILL CAUSE COMMIT FAILURES! 🚨**
         
         **Format:** `type(scope): subject`
         
@@ -245,17 +247,20 @@ body:
         - `docs` - Documentation updates for dependency changes
         
         **Scope Rules:**
+        **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
         - Examples: `deps`, `nx`, `typescript`, `react`, `security`
         - Can omit scope for global dependency updates
         
-        **Subject Rules:**
+        **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Maximum 72 characters for the entire header
         - Be descriptive about what was updated
         
-        **Reference:** See `commitlint.config.ts` for complete rules
+        **Reference:** See `commitlint.config.ts` and `.husky/commit-msg` for complete rules
+        
+        **⚠️ Your commits will be automatically rejected if they don't follow these rules!**
       render: markdown
     validations:
       required: false

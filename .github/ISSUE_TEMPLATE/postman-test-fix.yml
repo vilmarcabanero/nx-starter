@@ -1,7 +1,7 @@
 name: 📮🔧 Postman Test Fix
 description: Fix failing Postman collection tests and API issues
 title: "[API] Fix failing Postman tests"
-labels: ["testing", "postman", "api", "bug", "high-priority", "copilot"]
+labels: ["testing", "postman", "api", "test", "high-priority", "copilot"]
 assignees: ["copilot"]
 body:
   - type: dropdown
@@ -323,20 +323,22 @@ body:
   - type: textarea
     id: commit-message-guidelines
     attributes:
-      label: Commit Message Guidelines
-      description: Follow the project's commit message conventions
+      label: "⚠️ CRITICAL: Commit Message Guidelines"
+      description: "**IMPORTANT**: Following these rules is mandatory - commits will FAIL if not followed!"
       value: |
-        ## Commit Message Format
+        ## ⚠️ MANDATORY Commit Message Format
+        
+        **🚨 FAILURE TO FOLLOW THESE RULES WILL CAUSE COMMIT FAILURES! 🚨**
         
         **Format:** `type(scope): subject`
         
-        **Example:** `fix(starter-api): resolve postman test failures in authentication flow`
+        **Example:** `fix(starter-api): resolve authentication issues in postman tests`
         
         **Available Types:**
         - `fix` - A bug fix (for fixing failing Postman tests)
         - `test` - Adding missing tests or correcting existing tests
         - `refactor` - Code changes that neither fix bugs nor add features
-        - `feat` - A new feature (for new API endpoints)
+        - `feat` - A new feature  
         - `docs` - Documentation only changes
         - `perf` - Performance improvements
         - `style` - Formatting changes
@@ -344,17 +346,19 @@ body:
         - `ci` - CI configuration changes
         - `chore` - Other changes
         
-        **Scope Rules:**
+        **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
-        - Examples: `starter-api`, `postman`, `api-tests`
+        - Examples: `starter-api`, `starter-pwa`, `domain-core`, `application-core`, `utils-core`
         
-        **Subject Rules:**
+        **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Maximum 72 characters for the entire header
         - Be descriptive and specific
         
-        **Reference:** See `commitlint.config.ts` for complete rules
+        **Reference:** See `commitlint.config.ts` and `.husky/commit-msg` for complete rules
+        
+        **⚠️ Your commits will be automatically rejected if they don't follow these rules!**
       render: markdown
     validations:
       required: false

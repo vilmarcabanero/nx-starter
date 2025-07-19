@@ -1,7 +1,7 @@
 name: 🔧 Unit Test Fix
 description: Fix failing unit tests for a specific application or library
 title: "Fix failing unit tests"
-labels: ["testing", "bug", "unit-tests", "high-priority", "copilot"]
+labels: ["testing", "test", "unit-tests", "high-priority", "copilot"]
 assignees: ["copilot"]
 body:
   - type: dropdown
@@ -54,6 +54,8 @@ body:
         Test Suites: 1 failed, 3 passed, 4 total
         Tests:       2 failed, 8 passed, 10 total
         ```
+        
+        Or use "_No response_" if no output available.
       render: shell
     validations:
       required: false
@@ -71,6 +73,8 @@ body:
           - "should validate email" test
         - src/controllers/auth.controller.spec.ts
           - "should handle login" test
+        
+        Or use "_No response_" if not available.
     validations:
       required: false
 
@@ -83,9 +87,11 @@ body:
         (code changes, dependency updates, configuration changes, etc.)
       placeholder: |
         - Updated user.service.ts to use new validation logic
-        - Upgraded Jest from v29.0 to v29.5
+        - Upgraded Vitest from v1.0 to v1.5
         - Changed database configuration
         - Modified authentication middleware
+        
+        Or use "_No response_" if no recent changes known.
     validations:
       required: false
 
@@ -100,6 +106,8 @@ body:
         - Error suggests mock repository is undefined
         - Seems like async operation isn't being awaited properly
         - Type mismatch between expected and actual values
+        
+        Or use "_No response_" if no initial analysis available.
     validations:
       required: false
 
@@ -130,9 +138,10 @@ body:
         
         **Additional Options:**
         - `pnpm test:watch` - Run all tests in watch mode for debugging
-        - Add `--detectOpenHandles` - Detect handles preventing Jest exit
-        - Add `--forceExit` - Force Jest to exit after tests complete
-        - Add `--runInBand` - Run tests serially instead of parallel
+        - Add `--no-coverage` - Skip coverage collection for faster execution
+        - Add `--run` - Run tests once (disable watch mode)
+        - Add `--reporter=verbose` - Show detailed test output
+        - Add `--threads=false` - Run tests in single thread for debugging
       render: markdown
     validations:
       required: false
@@ -193,7 +202,7 @@ body:
         **Additional Investigation:**
         - [ ] Check for timing issues with async operations
         - [ ] Validate test data and fixtures are correct
-        - [ ] Review Jest configuration and setup files
+        - [ ] Review Vitest configuration and setup files
         
         **Common Failure Types to Consider:**
         - Mock/Stub issues (dependencies not properly mocked)
@@ -221,16 +230,20 @@ body:
         - Intermittent failures vs consistent failures
         - Related to specific feature or functionality
         - Performance or timeout issues observed
+        
+        Or use "_No response_" if no additional context available.
     validations:
       required: false
 
   - type: textarea
     id: commit-message-guidelines
     attributes:
-      label: Commit Message Guidelines
-      description: Follow the project's commit message conventions
+      label: "⚠️ CRITICAL: Commit Message Guidelines"
+      description: "**IMPORTANT**: Following these rules is mandatory - commits will FAIL if not followed!"
       value: |
-        ## Commit Message Format
+        ## ⚠️ MANDATORY Commit Message Format
+        
+        **🚨 FAILURE TO FOLLOW THESE RULES WILL CAUSE COMMIT FAILURES! 🚨**
         
         **Format:** `type(scope): subject`
         
@@ -248,17 +261,19 @@ body:
         - `ci` - CI configuration changes
         - `chore` - Other changes
         
-        **Scope Rules:**
+        **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
         - Examples: `starter-api`, `starter-pwa`, `domain-core`, `application-core`, `utils-core`
         
-        **Subject Rules:**
+        **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Maximum 72 characters for the entire header
         - Be descriptive and specific
         
-        **Reference:** See `commitlint.config.ts` for complete rules
+        **Reference:** See `commitlint.config.ts` and `.husky/commit-msg` for complete rules
+        
+        **⚠️ Your commits will be automatically rejected if they don't follow these rules!**
       render: markdown
     validations:
       required: false

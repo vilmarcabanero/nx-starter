@@ -255,10 +255,12 @@ body:
   - type: textarea
     id: commit-message-guidelines
     attributes:
-      label: Commit Message Guidelines
-      description: Follow the project's commit message conventions
+      label: "⚠️ CRITICAL: Commit Message Guidelines"
+      description: "**IMPORTANT**: Following these rules is mandatory - commits will FAIL if not followed!"
       value: |
-        ## Commit Message Format
+        ## ⚠️ MANDATORY Commit Message Format
+        
+        **🚨 FAILURE TO FOLLOW THESE RULES WILL CAUSE COMMIT FAILURES! 🚨**
         
         **Format:** `type(scope): subject`
         
@@ -272,15 +274,20 @@ body:
         - `style` - Documentation formatting changes
         - `chore` - Other documentation maintenance
         
-        **Scope Rules:**
+        **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
         - Examples: `readme`, `api`, `setup`, `contributing`, `architecture`
         - Component scopes: `starter-api`, `starter-pwa`, `domain-core`
         
-        **Subject Rules:**
+        **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Maximum 72 characters for the entire header
+        - Be descriptive about what was documented
+        
+        **Reference:** See `commitlint.config.ts` and `.husky/commit-msg` for complete rules
+        
+        **⚠️ Your commits will be automatically rejected if they don't follow these rules!**
         - Be specific about what documentation was updated
         
         **Reference:** See `commitlint.config.ts` for complete rules

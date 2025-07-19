@@ -40,8 +40,10 @@ body:
         2. Click on '....'
         3. Scroll down to '....'
         4. See error
+        
+        Or use "_No response_" if steps are not available or obvious.
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: expected-behavior
@@ -82,3 +84,46 @@ body:
         - Low - Cosmetic issues
     validations:
       required: true
+
+  - type: textarea
+    id: commit-message-guidelines
+    attributes:
+      label: "⚠️ CRITICAL: Commit Message Guidelines"
+      description: "**IMPORTANT**: Following these rules is mandatory - commits will FAIL if not followed!"
+      value: |
+        ## ⚠️ MANDATORY Commit Message Format
+        
+        **🚨 FAILURE TO FOLLOW THESE RULES WILL CAUSE COMMIT FAILURES! 🚨**
+        
+        **Format:** `type(scope): subject`
+        
+        **Example:** `fix(starter-api): resolve memory leak in todo service`
+        
+        **Available Types:**
+        - `fix` - A bug fix (for fixing bugs reported in this issue)
+        - `feat` - A new feature  
+        - `refactor` - Code changes that neither fix bugs nor add features
+        - `test` - Adding missing tests or correcting existing tests
+        - `docs` - Documentation only changes
+        - `perf` - Performance improvements
+        - `style` - Formatting changes
+        - `build` - Build system or dependency changes
+        - `ci` - CI configuration changes
+        - `chore` - Other changes
+        
+        **Scope Rules (REQUIRED):**
+        - Use kebab-case (lowercase with hyphens)
+        - Examples: `starter-api`, `starter-pwa`, `domain-core`, `application-core`, `utils-core`
+        
+        **Subject Rules (REQUIRED):**
+        - Start with lowercase letter or number
+        - No period at the end
+        - Maximum 72 characters for the entire header
+        - Be descriptive and specific
+        
+        **Reference:** See `commitlint.config.ts` and `.husky/commit-msg` for complete rules
+        
+        **⚠️ Your commits will be automatically rejected if they don't follow these rules!**
+      render: markdown
+    validations:
+      required: false
