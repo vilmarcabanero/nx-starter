@@ -2,13 +2,14 @@ import { describe, it, expect } from 'vitest';
 import { TodoMapper } from './TodoMapper';
 import { Todo, TodoTitle } from '@nx-starter/domain-core';
 import type { TodoDto, CreateTodoDto } from '../dto/TodoDto';
+import { TEST_UUIDS } from '@nx-starter/utils-core';
 
 describe('TodoMapper', () => {
   const sampleTodo = new Todo(
     new TodoTitle('Sample todo'),
     false,
     new Date('2025-01-01T00:00:00.000Z'),
-    '12345678901234567890123456789029',
+    TEST_UUIDS.MAPPER_TODO_1,
     'high',
     new Date('2025-12-31T23:59:59.000Z')
   );
@@ -20,7 +21,7 @@ describe('TodoMapper', () => {
 
       // Assert
       expect(dto).toEqual({
-        id: '12345678901234567890123456789029',
+        id: TEST_UUIDS.MAPPER_TODO_1,
         title: 'Sample todo',
         completed: false,
         priority: 'high',
@@ -79,7 +80,7 @@ describe('TodoMapper', () => {
     it('should convert TodoDto to Todo entity', () => {
       // Arrange
       const dto: TodoDto = {
-        id: '12345678901234567890123456789030',
+        id: TEST_UUIDS.MAPPER_TODO_2,
         title: 'DTO todo',
         completed: true,
         priority: 'low',
@@ -97,7 +98,7 @@ describe('TodoMapper', () => {
       expect(todo.priority.level).toBe('low');
       expect(todo.createdAt).toEqual(new Date('2025-01-01T00:00:00.000Z'));
       expect(todo.dueDate).toEqual(new Date('2025-12-31T23:59:59.000Z'));
-      expect(todo.id?.value).toBe('12345678901234567890123456789030');
+      expect(todo.id?.value).toBe(TEST_UUIDS.MAPPER_TODO_2);
     });
 
     it('should handle dto without ID and dueDate', () => {
@@ -162,7 +163,7 @@ describe('TodoMapper', () => {
     it('should convert plain object to Todo entity', () => {
       // Arrange
       const plainObject = {
-        id: '12345678901234567890123456789031',
+        id: TEST_UUIDS.MAPPER_TODO_3,
         title: 'Plain object todo',
         completed: true,
         createdAt: new Date('2025-01-01T00:00:00.000Z'),
@@ -179,13 +180,13 @@ describe('TodoMapper', () => {
       expect(todo.priority.level).toBe('high');
       expect(todo.createdAt).toEqual(new Date('2025-01-01T00:00:00.000Z'));
       expect(todo.dueDate).toEqual(new Date('2025-12-31T23:59:59.000Z'));
-      expect(todo.id?.value).toBe('12345678901234567890123456789031');
+      expect(todo.id?.value).toBe(TEST_UUIDS.MAPPER_TODO_3);
     });
 
     it('should use default priority when not provided', () => {
       // Arrange
       const plainObject = {
-        id: '12345678901234567890123456789032',
+        id: TEST_UUIDS.TODO_2,
         title: 'Todo without priority',
         completed: false,
         createdAt: new Date('2025-01-01T00:00:00.000Z'),
@@ -216,14 +217,14 @@ describe('TodoMapper', () => {
 
     it('should include ID when provided', () => {
       // Arrange
-      const id = '12345678901234567890123456789033';
+      const id = TEST_UUIDS.TODO_3;
 
       // Act
       const plainObject = TodoMapper.toPlainObject(sampleTodo, id);
 
       // Assert
       expect(plainObject).toEqual({
-        id: '12345678901234567890123456789033',
+        id: TEST_UUIDS.TODO_3,
         title: 'Sample todo',
         completed: false,
         createdAt: sampleTodo.createdAt,
@@ -238,7 +239,7 @@ describe('TodoMapper', () => {
         new TodoTitle('No due date todo'),
         false,
         new Date('2025-01-01T00:00:00.000Z'),
-        '12345678901234567890123456789034',
+        TEST_UUIDS.TODO_4,
         'low',
         undefined
       );

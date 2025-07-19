@@ -7,6 +7,7 @@ import {
 } from '@nx-starter/domain-core';
 import type { ITodoRepository } from '@nx-starter/domain-core';
 import type { DeleteTodoCommand } from '../../dto/TodoCommands';
+import { TEST_UUIDS } from '@nx-starter/utils-core';
 
 describe('DeleteTodoUseCase', () => {
   let useCase: DeleteTodoUseCase;
@@ -30,7 +31,7 @@ describe('DeleteTodoUseCase', () => {
       new TodoTitle('Existing todo'),
       false,
       new Date('2025-01-01'),
-      '12345678901234567890123456789019',
+      TEST_UUIDS.DELETE_TODO,
       'medium',
       undefined
     );
@@ -42,7 +43,7 @@ describe('DeleteTodoUseCase', () => {
     it('should delete existing todo', async () => {
       // Arrange
       const command: DeleteTodoCommand = {
-        id: '12345678901234567890123456789019',
+        id: TEST_UUIDS.DELETE_TODO,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
 
@@ -51,19 +52,19 @@ describe('DeleteTodoUseCase', () => {
 
       // Assert
       expect(mockRepository.getById).toHaveBeenCalledWith(
-        '12345678901234567890123456789019'
+        TEST_UUIDS.DELETE_TODO
       );
       expect(mockRepository.delete).toHaveBeenCalledWith(
-        '12345678901234567890123456789019'
+        TEST_UUIDS.DELETE_TODO
       );
     });
 
     it('should throw TodoNotFoundException when todo does not exist', async () => {
       // Arrange
       const command: DeleteTodoCommand = {
-        id: '12345678901234567890123456789020',
+        id: TEST_UUIDS.NONEXISTENT_TODO,
       };
-      vi.mocked(mockRepository.getById).mockResolvedValue(null);
+      vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
 
       // Act & Assert
       await expect(useCase.execute(command)).rejects.toThrow(
@@ -75,7 +76,7 @@ describe('DeleteTodoUseCase', () => {
     it('should handle repository errors during getById', async () => {
       // Arrange
       const command: DeleteTodoCommand = {
-        id: '12345678901234567890123456789019',
+        id: TEST_UUIDS.DELETE_TODO,
       };
       const error = new Error('Repository error');
       vi.mocked(mockRepository.getById).mockRejectedValue(error);
@@ -90,7 +91,7 @@ describe('DeleteTodoUseCase', () => {
     it('should handle repository errors during delete', async () => {
       // Arrange
       const command: DeleteTodoCommand = {
-        id: '12345678901234567890123456789019',
+        id: TEST_UUIDS.DELETE_TODO,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
       const error = new Error('Delete error');
@@ -99,17 +100,17 @@ describe('DeleteTodoUseCase', () => {
       // Act & Assert
       await expect(useCase.execute(command)).rejects.toThrow('Delete error');
       expect(mockRepository.getById).toHaveBeenCalledWith(
-        '12345678901234567890123456789019'
+        TEST_UUIDS.DELETE_TODO
       );
       expect(mockRepository.delete).toHaveBeenCalledWith(
-        '12345678901234567890123456789019'
+        TEST_UUIDS.DELETE_TODO
       );
     });
 
     it('should check todo existence before deletion', async () => {
       // Arrange
       const command: DeleteTodoCommand = {
-        id: '12345678901234567890123456789019',
+        id: TEST_UUIDS.DELETE_TODO,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
 
@@ -118,7 +119,7 @@ describe('DeleteTodoUseCase', () => {
 
       // Assert
       expect(mockRepository.getById).toHaveBeenCalledBefore(
-        mockRepository.delete as any
+        vi.mocked(mockRepository.delete)
       );
     });
 
@@ -128,12 +129,12 @@ describe('DeleteTodoUseCase', () => {
         new TodoTitle('Completed todo'),
         true,
         new Date('2025-01-01'),
-        '12345678901234567890123456789021',
+        TEST_UUIDS.TODO_1,
         'high',
         new Date('2025-12-31')
       );
       const command: DeleteTodoCommand = {
-        id: '12345678901234567890123456789021',
+        id: TEST_UUIDS.TODO_1,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(completedTodo);
 
@@ -142,7 +143,7 @@ describe('DeleteTodoUseCase', () => {
 
       // Assert
       expect(mockRepository.delete).toHaveBeenCalledWith(
-        '12345678901234567890123456789021'
+        TEST_UUIDS.TODO_1
       );
     });
   });
