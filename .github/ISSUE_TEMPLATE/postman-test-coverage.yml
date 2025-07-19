@@ -297,3 +297,42 @@ body:
         - Custom header requirements or API versioning
     validations:
       required: false
+
+  - type: textarea
+    id: commit-message-guidelines
+    attributes:
+      label: Commit Message Guidelines
+      description: Follow the project's commit message conventions
+      value: |
+        ## Commit Message Format
+        
+        **Format:** `type(scope): subject`
+        
+        **Example:** `test(starter-api): update postman collection with comprehensive api tests`
+        
+        **Available Types:**
+        - `test` - Adding missing tests or correcting existing tests
+        - `feat` - A new feature (for new API endpoints)
+        - `fix` - A bug fix
+        - `docs` - Documentation only changes (for API docs)
+        - `refactor` - Code changes that neither fix bugs nor add features
+        - `perf` - Performance improvements
+        - `style` - Formatting changes
+        - `build` - Build system or dependency changes
+        - `ci` - CI configuration changes
+        - `chore` - Other changes
+        
+        **Scope Rules:**
+        - Use kebab-case (lowercase with hyphens)
+        - Examples: `starter-api`, `postman`, `api-tests`
+        
+        **Subject Rules:**
+        - Start with lowercase letter or number
+        - No period at the end
+        - Maximum 72 characters for the entire header
+        - Be descriptive and specific
+        
+        **Reference:** See `commitlint.config.ts` for complete rules
+      render: markdown
+    validations:
+      required: false

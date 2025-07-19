@@ -231,6 +231,45 @@ body:
     validations:
       required: false
 
+  - type: textarea
+    id: commit-message-guidelines
+    attributes:
+      label: Commit Message Guidelines
+      description: Follow the project's commit message conventions
+      value: |
+        ## Commit Message Format
+        
+        **Format:** `type(scope): subject`
+        
+        **Example:** `fix(starter-api): resolve failing unit tests in todo service`
+        
+        **Available Types:**
+        - `fix` - A bug fix (for fixing failing tests)
+        - `test` - Adding missing tests or correcting existing tests
+        - `refactor` - Code changes that neither fix bugs nor add features
+        - `feat` - A new feature  
+        - `docs` - Documentation only changes
+        - `perf` - Performance improvements
+        - `style` - Formatting changes
+        - `build` - Build system or dependency changes
+        - `ci` - CI configuration changes
+        - `chore` - Other changes
+        
+        **Scope Rules:**
+        - Use kebab-case (lowercase with hyphens)
+        - Examples: `starter-api`, `starter-pwa`, `domain-core`, `application-core`, `utils-core`
+        
+        **Subject Rules:**
+        - Start with lowercase letter or number
+        - No period at the end
+        - Maximum 72 characters for the entire header
+        - Be descriptive and specific
+        
+        **Reference:** See `commitlint.config.ts` for complete rules
+      render: markdown
+    validations:
+      required: false
+
   - type: checkboxes
     id: clean-architecture-validation
     attributes:
