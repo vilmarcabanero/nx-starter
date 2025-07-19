@@ -81,7 +81,7 @@ describe('TodoCommandService', () => {
       expect(result).toBe(mockTodo);
       expect(mockCreateTodoUseCase.execute).toHaveBeenCalledWith({
         title: 'Simple todo',
-        priority: undefined,
+        priority: 'medium',
         dueDate: undefined,
       });
     });

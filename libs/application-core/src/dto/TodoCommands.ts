@@ -1,6 +1,13 @@
 // Command DTOs for CQRS pattern
 // TypeScript types are now generated from Zod schemas for consistency
 
+import {
+  CreateTodoCommandSchema,
+  UpdateTodoCommandSchema,
+  DeleteTodoCommandSchema,
+  ToggleTodoCommandSchema,
+} from '../validation/TodoValidationSchemas';
+
 // Re-export command types from validation schemas
 export type {
   CreateTodoCommand,
@@ -20,10 +27,16 @@ export {
 
 // Legacy function for backward compatibility - now returns required schemas
 export const createCommandValidationSchema = () => {
-  return {
-    CreateTodoCommandSchema: require('../validation/TodoValidationSchemas').CreateTodoCommandSchema,
-    UpdateTodoCommandSchema: require('../validation/TodoValidationSchemas').UpdateTodoCommandSchema,
-    DeleteTodoCommandSchema: require('../validation/TodoValidationSchemas').DeleteTodoCommandSchema,
-    ToggleTodoCommandSchema: require('../validation/TodoValidationSchemas').ToggleTodoCommandSchema,
-  };
+  try {
+    // Use proper ES6 imports since the module exists
+    return {
+      CreateTodoCommandSchema,
+      UpdateTodoCommandSchema,
+      DeleteTodoCommandSchema,
+      ToggleTodoCommandSchema,
+    };
+  } catch {
+    // Fallback in case of import issues
+    return {};
+  }
 };
