@@ -10,8 +10,6 @@ import {
   Param,
   Body,
   HttpCode,
-  NotFoundError,
-  BadRequestError,
 } from 'routing-controllers';
 import {
   createCommandValidationSchema,
@@ -27,7 +25,6 @@ import {
   TodoMapper,
   TOKENS,
 } from '@nx-starter/application-core';
-import { DomainException } from '@nx-starter/domain-core';
 
 /**
  * REST API Controller for Todo operations
@@ -119,19 +116,12 @@ export class TodoController {
    */
   @Get('/:id')
   async getTodoById(@Param('id') id: string): Promise<any> {
-    try {
-      const todo = await this.getTodoByIdQueryHandler.execute({ id });
-      const todoDto = TodoMapper.toDto(todo);
-      return {
-        success: true,
-        data: todoDto,
-      };
-    } catch (error) {
-      if (error instanceof DomainException) {
-        throw new NotFoundError(error.message);
-      }
-      throw error;
-    }
+    const todo = await this.getTodoByIdQueryHandler.execute({ id });
+    const todoDto = TodoMapper.toDto(todo);
+    return {
+      success: true,
+      data: todoDto,
+    };
   }
 
   /**
@@ -140,23 +130,16 @@ export class TodoController {
   @Post('/')
   @HttpCode(201)
   async createTodo(@Body() body: any): Promise<any> {
-    try {
-      const validatedData = this.validationSchemas.CreateTodoCommandSchema
-        ? this.validationSchemas.CreateTodoCommandSchema.parse(body)
-        : body;
-      const todo = await this.createTodoUseCase.execute(validatedData);
-      const todoDto = TodoMapper.toDto(todo);
+    const validatedData = this.validationSchemas.CreateTodoCommandSchema
+      ? this.validationSchemas.CreateTodoCommandSchema.parse(body)
+      : body;
+    const todo = await this.createTodoUseCase.execute(validatedData);
+    const todoDto = TodoMapper.toDto(todo);
 
-      return {
-        success: true,
-        data: todoDto,
-      };
-    } catch (error) {
-      if (error instanceof DomainException) {
-        throw new BadRequestError(error.message);
-      }
-      throw error;
-    }
+    return {
+      success: true,
+      data: todoDto,
+    };
   }
 
   /**
@@ -164,29 +147,19 @@ export class TodoController {
    */
   @Put('/:id')
   async updateTodo(@Param('id') id: string, @Body() body: any): Promise<any> {
-    try {
-      const validatedData = this.validationSchemas.UpdateTodoCommandSchema
-        ? this.validationSchemas.UpdateTodoCommandSchema.parse({
-            ...body,
-            id,
-          })
-        : { ...body, id };
+    const validatedData = this.validationSchemas.UpdateTodoCommandSchema
+      ? this.validationSchemas.UpdateTodoCommandSchema.parse({
+          ...body,
+          id,
+        })
+      : { ...body, id };
 
-      await this.updateTodoUseCase.execute(validatedData);
+    await this.updateTodoUseCase.execute(validatedData);
 
-      return {
-        success: true,
-        message: 'Todo updated successfully',
-      };
-    } catch (error) {
-      if (error instanceof DomainException) {
-        if (error.message.includes('not found')) {
-          throw new NotFoundError(error.message);
-        }
-        throw new BadRequestError(error.message);
-      }
-      throw error;
-    }
+    return {
+      success: true,
+      message: 'Todo updated successfully',
+    };
   }
 
   /**
@@ -194,26 +167,16 @@ export class TodoController {
    */
   @Patch('/:id/toggle')
   async toggleTodo(@Param('id') id: string): Promise<any> {
-    try {
-      const validatedData = this.validationSchemas.ToggleTodoCommandSchema
-        ? this.validationSchemas.ToggleTodoCommandSchema.parse({ id })
-        : { id };
+    const validatedData = this.validationSchemas.ToggleTodoCommandSchema
+      ? this.validationSchemas.ToggleTodoCommandSchema.parse({ id })
+      : { id };
 
-      await this.toggleTodoUseCase.execute(validatedData);
+    await this.toggleTodoUseCase.execute(validatedData);
 
-      return {
-        success: true,
-        message: 'Todo toggled successfully',
-      };
-    } catch (error) {
-      if (error instanceof DomainException) {
-        if (error.message.includes('not found')) {
-          throw new NotFoundError(error.message);
-        }
-        throw new BadRequestError(error.message);
-      }
-      throw error;
-    }
+    return {
+      success: true,
+      message: 'Todo toggled successfully',
+    };
   }
 
   /**
@@ -221,25 +184,15 @@ export class TodoController {
    */
   @Delete('/:id')
   async deleteTodo(@Param('id') id: string): Promise<any> {
-    try {
-      const validatedData = this.validationSchemas.DeleteTodoCommandSchema
-        ? this.validationSchemas.DeleteTodoCommandSchema.parse({ id })
-        : { id };
+    const validatedData = this.validationSchemas.DeleteTodoCommandSchema
+      ? this.validationSchemas.DeleteTodoCommandSchema.parse({ id })
+      : { id };
 
-      await this.deleteTodoUseCase.execute(validatedData);
+    await this.deleteTodoUseCase.execute(validatedData);
 
-      return {
-        success: true,
-        message: 'Todo deleted successfully',
-      };
-    } catch (error) {
-      if (error instanceof DomainException) {
-        if (error.message.includes('not found')) {
-          throw new NotFoundError(error.message);
-        }
-        throw new BadRequestError(error.message);
-      }
-      throw error;
-    }
+    return {
+      success: true,
+      message: 'Todo deleted successfully',
+    };
   }
 }

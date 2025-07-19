@@ -46,13 +46,8 @@ export const createApp = (): express.Application => {
   useExpressServer(app, {
     routePrefix: '/api',
     controllers: [TodoController],
+    middlewares: [RoutingControllersErrorHandler],
     defaultErrorHandler: false, // We'll use our custom error handler
-  });
-
-  // Add our custom error handler
-  app.use((error: any, req: any, res: any, next: any) => {
-    const errorHandler = new RoutingControllersErrorHandler();
-    errorHandler.error(error, req, res, next);
   });
 
   // Root endpoint

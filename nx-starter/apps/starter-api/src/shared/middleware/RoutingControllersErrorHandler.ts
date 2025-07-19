@@ -17,26 +17,7 @@ export class RoutingControllersErrorHandler implements ExpressErrorMiddlewareInt
       return next(error);
     }
 
-    // Handle JSON parsing errors
-    if (error.type === 'entity.parse.failed') {
-      response.status(400).json({
-        success: false,
-        error: 'Invalid JSON format',
-        message: 'Request body contains invalid JSON',
-      });
-      return;
-    }
-
-    // Handle routing-controllers HTTP errors (NotFoundError, BadRequestError, etc.)
-    if (error.httpCode) {
-      response.status(error.httpCode).json({
-        success: false,
-        error: error.message,
-      });
-      return;
-    }
-
-    // Handle domain exceptions
+    // Handle domain exceptions FIRST (highest priority)
     if (error instanceof DomainException) {
       response.status(error.statusCode).json({
         success: false,
@@ -46,21 +27,56 @@ export class RoutingControllersErrorHandler implements ExpressErrorMiddlewareInt
       return;
     }
 
-    // Handle validation errors
+    // Handle validation errors (Zod)
     if (error instanceof ZodError) {
       response.status(400).json({
         success: false,
         error: 'Validation failed',
+        code: 'VALIDATION_ERROR',
         details: error.issues,
       });
       return;
     }
 
-    // Handle not found errors
+    // Handle JSON parsing errors
+    if (error.type === 'entity.parse.failed') {
+      response.status(400).json({
+        success: false,
+        error: 'Invalid JSON format',
+        code: 'INVALID_JSON',
+        message: 'Request body contains invalid JSON',
+      });
+      return;
+    }
+
+    // Handle routing-controllers HTTP errors (NotFoundError, BadRequestError, etc.)
+    if (error.httpCode) {
+      // Try to map to appropriate error codes
+      let code = 'UNKNOWN_ERROR';
+      if (error.httpCode === 404) {
+        code = 'NOT_FOUND';
+      } else if (error.httpCode === 400) {
+        code = 'BAD_REQUEST';
+      } else if (error.httpCode === 401) {
+        code = 'UNAUTHORIZED';
+      } else if (error.httpCode === 403) {
+        code = 'FORBIDDEN';
+      }
+
+      response.status(error.httpCode).json({
+        success: false,
+        error: error.message,
+        code: code,
+      });
+      return;
+    }
+
+    // Handle not found errors (fallback)
     if (error.message?.includes('not found')) {
       response.status(404).json({
         success: false,
         error: error.message,
+        code: 'NOT_FOUND',
       });
       return;
     }
@@ -70,6 +86,7 @@ export class RoutingControllersErrorHandler implements ExpressErrorMiddlewareInt
       response.status(400).json({
         success: false,
         error: 'Validation failed',
+        code: 'VALIDATION_ERROR',
         message: error.message,
       });
       return;
@@ -80,6 +97,7 @@ export class RoutingControllersErrorHandler implements ExpressErrorMiddlewareInt
       response.status(400).json({
         success: false,
         error: 'Invalid ID format',
+        code: 'INVALID_ID_FORMAT',
       });
       return;
     }
@@ -88,6 +106,7 @@ export class RoutingControllersErrorHandler implements ExpressErrorMiddlewareInt
     response.status(500).json({
       success: false,
       error: 'Internal server error',
+      code: 'INTERNAL_SERVER_ERROR',
       message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong',
     });
   }
