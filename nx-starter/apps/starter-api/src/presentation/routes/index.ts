@@ -1,20 +1,12 @@
 import { Router } from 'express';
-import { createTodoRoutes } from './todoRoutes';
 
+// NOTE: Most routes are now handled by routing-controllers decorators
+// This file is kept for any remaining manual routes that need to be configured
 export const createApiRoutes = (): Router => {
   const router = Router();
 
-  // Health check endpoint
-  router.get('/health', (req, res) => {
-    res.json({
-      success: true,
-      message: 'Server is running',
-      timestamp: new Date().toISOString(),
-    });
-  });
-
-  // API routes
-  router.use('/todos', createTodoRoutes());
-
+  // Additional manual routes can be added here if needed
+  // Most API routes are now handled by routing-controllers
+  
   return router;
 };

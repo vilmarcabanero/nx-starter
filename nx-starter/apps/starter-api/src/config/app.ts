@@ -1,11 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import { createApiRoutes } from '../presentation/routes';
-import { errorMiddleware } from '../shared/middleware/ErrorHandler';
-import {
-  notFoundHandler,
-  requestLogger,
-} from '../presentation/middleware/errorHandler';
+import { useExpressServer, useContainer } from 'routing-controllers';
+import { container } from '../infrastructure/di/container';
+import { TodoController } from '../presentation/controllers/TodoController';
+import { RoutingControllersErrorHandler } from '../shared/middleware/RoutingControllersErrorHandler';
+import { requestLogger } from '../presentation/middleware/errorHandler';
 import { config } from './config';
 
 /**
@@ -29,8 +28,27 @@ export const createApp = (): express.Application => {
   // Request logging
   app.use(requestLogger);
 
-  // API routes
-  app.use('/api', createApiRoutes());
+  // Health check endpoint (before routing-controllers)
+  app.get('/api/health', (req, res) => {
+    res.json({
+      success: true,
+      message: 'Server is running',
+      timestamp: new Date().toISOString(),
+    });
+  });
+
+  // Configure routing-controllers to use our tsyringe container
+  useContainer({
+    get: (someClass: any) => container.resolve(someClass),
+  });
+
+  // Configure routing-controllers
+  useExpressServer(app, {
+    routePrefix: '/api',
+    controllers: [TodoController],
+    middlewares: [RoutingControllersErrorHandler],
+    defaultErrorHandler: false, // We'll use our custom error handler
+  });
 
   // Root endpoint
   app.get('/', (req, res) => {
@@ -48,9 +66,19 @@ export const createApp = (): express.Application => {
     });
   });
 
-  // Error handling
-  app.use(notFoundHandler);
-  app.use(errorMiddleware);
+  // 404 handler for API routes not handled by routing-controllers  
+  app.use('/api', (req, res, next) => {
+    // Only handle 404 if no response was sent yet
+    if (!res.headersSent) {
+      res.status(404).json({
+        success: false,
+        error: 'Not found',
+        message: `Route ${req.method} ${req.path} not found`,
+      });
+    } else {
+      next();
+    }
+  });
 
   return app;
 };

@@ -1,24 +1,13 @@
 import { Router } from 'express';
-import { container } from '../../infrastructure/di/container';
-import { TodoController } from '../controllers/TodoController';
 
+// NOTE: Todo routes are now handled by routing-controllers decorators
+// in TodoController.ts. This file is kept for backwards compatibility
+// but could be removed in a future version.
 export const createTodoRoutes = (): Router => {
   const router = Router();
-  const todoController = container.resolve(TodoController);
-
-  // Bind controller methods to preserve 'this' context
-  const bindMethod = (method: Function) => method.bind(todoController);
-
-  // Todo CRUD routes
-  router.get('/', bindMethod(todoController.getAllTodos));
-  router.get('/active', bindMethod(todoController.getActiveTodos));
-  router.get('/completed', bindMethod(todoController.getCompletedTodos));
-  router.get('/stats', bindMethod(todoController.getTodoStats));
-  router.get('/:id', bindMethod(todoController.getTodoById));
-  router.post('/', bindMethod(todoController.createTodo));
-  router.put('/:id', bindMethod(todoController.updateTodo));
-  router.patch('/:id/toggle', bindMethod(todoController.toggleTodo));
-  router.delete('/:id', bindMethod(todoController.deleteTodo));
-
+  
+  // All routes are now handled by routing-controllers
+  // See TodoController.ts for the decorator-based routing implementation
+  
   return router;
 };
