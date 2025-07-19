@@ -1,0 +1,199 @@
+name: 🔄 Code Refactoring Task
+description: Refactor existing code to improve maintainability, performance, or architecture
+title: "[COMPONENT] Refactor code for improved [ASPECT]"
+labels: ["refactoring", "code-quality", "enhancement", "copilot"]
+assignees: ["copilot"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component/Library to Refactor
+      description: Select the component that needs refactoring
+      options:
+        - starter-api
+        - starter-pwa
+        - domain-core
+        - application-core
+        - utils-core
+        - build system
+        - all components
+    validations:
+      required: true
+
+  - type: dropdown
+    id: refactor-type
+    attributes:
+      label: Refactoring Focus
+      description: What aspect of the code needs refactoring?
+      options:
+        - Performance - Optimize speed and efficiency
+        - Architecture - Improve code structure and design patterns
+        - Maintainability - Improve code readability and organization
+        - Security - Address security vulnerabilities
+        - Type Safety - Improve TypeScript types and validation
+        - Dependencies - Update or consolidate dependencies
+        - Testing - Improve test structure and coverage
+        - Documentation - Improve code documentation
+      default: 1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority Level
+      description: How urgent is this refactoring?
+      options:
+        - High - Critical for performance/security
+        - Medium - Important for code quality
+        - Low - Nice to have improvement
+      default: 1
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-issues
+    attributes:
+      label: Current Code Issues
+      description: |
+        Describe the specific issues with the current code implementation
+      placeholder: |
+        Example:
+        - Large monolithic functions that are hard to test
+        - Repeated code patterns that could be abstracted
+        - Performance bottlenecks in data processing
+        - Unclear separation of concerns between layers
+        - Missing type definitions causing runtime errors
+        - Dependencies that are outdated or unused
+    validations:
+      required: true
+
+  - type: textarea
+    id: refactor-goals
+    attributes:
+      label: Refactoring Goals
+      description: |
+        What should the code look like after refactoring?
+      placeholder: |
+        Example:
+        - Break down large functions into smaller, testable units
+        - Extract common patterns into reusable utilities
+        - Implement proper error handling and validation
+        - Improve separation between domain, application, and infrastructure layers
+        - Add comprehensive type definitions
+        - Optimize database queries for better performance
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: refactor-principles
+    attributes:
+      label: Refactoring Principles
+      description: Which principles should guide this refactoring? (Check all that apply)
+      options:
+        - label: SOLID principles compliance
+          required: true
+        - label: Clean architecture boundaries
+          required: true
+        - label: DRY (Don't Repeat Yourself) principle
+          required: false
+        - label: Single responsibility principle
+          required: false
+        - label: Dependency inversion principle
+          required: false
+        - label: Open/closed principle
+          required: false
+        - label: Performance optimization
+          required: false
+        - label: Security best practices
+          required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: How will we know the refactoring is successful?
+      value: |
+        ## Acceptance Criteria
+        
+        ### Code Quality Improvements
+        - [ ] Code follows clean architecture principles
+        - [ ] Functions are smaller and more focused
+        - [ ] Code duplication is eliminated
+        - [ ] Type safety is improved with proper TypeScript types
+        - [ ] Error handling is comprehensive and consistent
+        
+        ### Performance & Maintainability
+        - [ ] Performance benchmarks are maintained or improved
+        - [ ] Code is more readable and self-documenting
+        - [ ] Dependencies are up-to-date and optimized
+        - [ ] Code organization follows established patterns
+        
+        ### Testing & Documentation
+        - [ ] Existing tests continue to pass
+        - [ ] New code is easily testable
+        - [ ] Code documentation is improved
+        - [ ] API contracts remain unchanged (if applicable)
+        
+        ### Architecture Compliance
+        - [ ] Clean architecture layers are properly separated
+        - [ ] SOLID principles are followed
+        - [ ] Dependency injection is properly implemented
+        - [ ] Domain logic is isolated from infrastructure concerns
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Refactoring Constraints
+      description: |
+        Any constraints or limitations for this refactoring?
+      placeholder: |
+        - Must maintain backward compatibility with existing API
+        - Cannot break existing test suite
+        - Should not require major dependency updates
+        - Must maintain current performance benchmarks
+        - Should not change public interfaces
+    validations:
+      required: false
+
+  - type: textarea
+    id: commit-message-guidelines
+    attributes:
+      label: Commit Message Guidelines
+      description: Follow the project's commit message conventions
+      value: |
+        ## Commit Message Format
+        
+        **Format:** `type(scope): subject`
+        
+        **Example:** `refactor(starter-api): improve service layer architecture and solid compliance`
+        
+        **Available Types:**
+        - `refactor` - Code changes that neither fix bugs nor add features (primary for refactoring)
+        - `perf` - Performance improvements
+        - `feat` - A new feature (if refactoring adds functionality)
+        - `fix` - A bug fix (if refactoring fixes issues)
+        - `style` - Formatting changes
+        - `docs` - Documentation only changes
+        - `test` - Adding missing tests or correcting existing tests
+        - `build` - Build system or dependency changes
+        - `ci` - CI configuration changes
+        - `chore` - Other changes
+        
+        **Scope Rules:**
+        - Use kebab-case (lowercase with hyphens)
+        - Examples: `starter-api`, `starter-pwa`, `domain-core`, `application-core`, `utils-core`
+        
+        **Subject Rules:**
+        - Start with lowercase letter or number
+        - No period at the end
+        - Maximum 72 characters for the entire header
+        - Be descriptive and specific
+        
+        **Reference:** See `commitlint.config.ts` for complete rules
+      render: markdown
+    validations:
+      required: false

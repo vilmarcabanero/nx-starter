@@ -1,0 +1,77 @@
+name: ✨ Feature Request
+description: Suggest an idea for this project
+title: "[FEATURE] "
+labels: ["feature", "enhancement"]
+assignees: []
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component/Area
+      description: Which component or area would this feature affect?
+      options:
+        - starter-api
+        - starter-pwa
+        - domain-core
+        - application-core
+        - utils-core
+        - build system
+        - deployment
+        - documentation
+        - other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-description
+    attributes:
+      label: Problem Description
+      description: Is your feature request related to a problem? Please describe.
+      placeholder: "I'm always frustrated when..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution-description
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like to see.
+      placeholder: "I would like to see..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Describe any alternative solutions or features you've considered.
+      placeholder: "Alternative approaches could be..."
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: architecture-compliance
+    attributes:
+      label: Architecture Compliance
+      description: Ensure the feature aligns with project principles
+      options:
+        - label: Feature follows clean architecture principles
+          required: true
+        - label: Feature maintains SOLID principles compliance
+          required: true
+        - label: Feature doesn't introduce unnecessary coupling
+          required: true
+        - label: Feature includes appropriate testing strategy
+          required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature?
+      options:
+        - High - Critical for project success
+        - Medium - Important improvement
+        - Low - Nice to have enhancement
+    validations:
+      required: true

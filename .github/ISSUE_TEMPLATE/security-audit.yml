@@ -1,0 +1,227 @@
+name: 🔒 Security Audit Task
+description: Perform security audit and implement security improvements
+title: "[SECURITY] Security audit and improvements - [SECURITY_AREA]"
+labels: ["security", "audit", "enhancement", "copilot"]
+assignees: ["copilot"]
+body:
+  - type: dropdown
+    id: security-scope
+    attributes:
+      label: Security Audit Scope
+      description: What area needs security review?
+      options:
+        - Authentication & Authorization
+        - Input Validation & Sanitization
+        - Data Protection & Privacy
+        - API Security
+        - Dependency Vulnerabilities
+        - Infrastructure Security
+        - Full Security Audit
+      default: 6
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Security Priority
+      description: How urgent is this security audit?
+      options:
+        - Critical - Active security vulnerabilities
+        - High - Potential security risks
+        - Medium - Security hardening
+        - Low - Proactive security improvements
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: security-concerns
+    attributes:
+      label: Identified Security Concerns
+      description: |
+        What specific security issues or concerns have been identified?
+      placeholder: |
+        Example:
+        - SQL injection vulnerabilities in query parameters
+        - Missing input validation on user-submitted data
+        - Weak authentication token management
+        - Exposed sensitive information in logs
+        - Outdated dependencies with known security issues
+        - Missing HTTPS enforcement
+        - Inadequate error handling revealing system information
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: security-areas
+    attributes:
+      label: Security Areas to Review
+      description: Which security aspects should be audited? (Check all that apply)
+      options:
+        - label: Authentication mechanisms and session management
+          required: false
+        - label: Authorization and access control
+          required: false
+        - label: Input validation and sanitization
+          required: false
+        - label: SQL injection and database security
+          required: false
+        - label: Cross-site scripting (XSS) prevention
+          required: false
+        - label: Cross-site request forgery (CSRF) protection
+          required: false
+        - label: Sensitive data handling and encryption
+          required: false
+        - label: API security and rate limiting
+          required: false
+        - label: Dependency vulnerability scanning
+          required: false
+        - label: Infrastructure and deployment security
+          required: false
+
+  - type: textarea
+    id: security-tools
+    attributes:
+      label: Security Audit Tools
+      description: Tools for security analysis and testing
+      value: |
+        **Dependency Scanning:**
+        - `pnpm audit` - Check for vulnerable dependencies
+        - `npm audit fix` - Auto-fix vulnerabilities where possible
+        - Snyk scanning for detailed vulnerability reports
+        
+        **Code Analysis:**
+        - ESLint security rules
+        - SonarQube security analysis
+        - CodeQL security scanning
+        - Semgrep for security patterns
+        
+        **API Security Testing:**
+        - OWASP ZAP for web application security
+        - Burp Suite for API testing
+        - Postman security testing scripts
+        - Custom penetration testing
+        
+        **Infrastructure Security:**
+        - Docker security scanning
+        - Kubernetes security policies
+        - Server configuration audits
+        - TLS/SSL configuration checks
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Security Acceptance Criteria
+      description: What security improvements need to be implemented?
+      value: |
+        ## Security Acceptance Criteria
+        
+        ### Vulnerability Resolution
+        - [ ] All identified security vulnerabilities are fixed
+        - [ ] No high or critical severity issues remain
+        - [ ] Dependencies are updated to secure versions
+        - [ ] Security patches are applied
+        
+        ### Security Controls
+        - [ ] Input validation is comprehensive and effective
+        - [ ] Authentication mechanisms are secure and robust
+        - [ ] Authorization checks are properly implemented
+        - [ ] Session management follows security best practices
+        
+        ### Data Protection
+        - [ ] Sensitive data is properly encrypted
+        - [ ] Data transmission is secured (HTTPS/TLS)
+        - [ ] Data storage follows security guidelines
+        - [ ] Personal data handling complies with privacy regulations
+        
+        ### Code Security
+        - [ ] Code follows secure coding practices
+        - [ ] Error handling doesn't expose sensitive information
+        - [ ] Security headers are properly configured
+        - [ ] Rate limiting and throttling are implemented
+        
+        ### Testing & Validation
+        - [ ] Security tests are implemented and passing
+        - [ ] Penetration testing shows no critical issues
+        - [ ] Security monitoring is implemented
+        - [ ] Incident response procedures are documented
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: security-standards
+    attributes:
+      label: Security Standards & Frameworks
+      description: Which security standards should be followed?
+      options:
+        - label: OWASP Top 10 security risks mitigation
+          required: true
+        - label: Secure coding practices and guidelines
+          required: true
+        - label: Data protection and privacy compliance (GDPR, CCPA)
+          required: false
+        - label: Industry-specific security standards
+          required: false
+        - label: Security monitoring and logging requirements
+          required: false
+        - label: Incident response and recovery procedures
+          required: false
+
+  - type: textarea
+    id: compliance-requirements
+    attributes:
+      label: Compliance Requirements
+      description: |
+        Any specific compliance or regulatory requirements?
+      placeholder: |
+        - GDPR compliance for EU user data
+        - HIPAA compliance for healthcare data
+        - SOC 2 compliance for enterprise customers
+        - PCI DSS compliance for payment processing
+        - Industry-specific security standards
+    validations:
+      required: false
+
+  - type: textarea
+    id: commit-message-guidelines
+    attributes:
+      label: Commit Message Guidelines
+      description: Follow the project's commit message conventions
+      value: |
+        ## Commit Message Format
+        
+        **Format:** `type(scope): subject`
+        
+        **Example:** `fix: resolve security vulnerabilities in authentication system`
+        
+        **Available Types:**
+        - `fix` - A bug fix (for security vulnerability fixes)
+        - `feat` - A new feature (for new security features)
+        - `refactor` - Security-related code improvements
+        - `build` - Security updates to dependencies
+        - `test` - Security test additions
+        - `docs` - Security documentation updates
+        - `ci` - Security configuration in CI/CD
+        - `chore` - Other security maintenance
+        
+        **Scope Rules:**
+        - Use kebab-case (lowercase with hyphens)
+        - Examples: `auth`, `validation`, `security`, `deps`, `api`
+        - Component scopes: `starter-api`, `starter-pwa`
+        
+        **Subject Rules:**
+        - Start with lowercase letter or number
+        - No period at the end
+        - Maximum 72 characters for the entire header
+        - Be specific about security improvements
+        - Consider using "resolve security vulnerability" for fixes
+        
+        **Reference:** See `commitlint.config.ts` for complete rules
+      render: markdown
+    validations:
+      required: false

@@ -1,0 +1,293 @@
+name: ⚡ Performance Optimization Task
+description: Optimize application performance for better user experience
+title: "[COMPONENT] Optimize performance - [PERFORMANCE_AREA]"
+labels: ["performance", "optimization", "enhancement", "copilot"]
+assignees: ["copilot"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component/Area to Optimize
+      description: Select the component that needs performance optimization
+      options:
+        - starter-api (Backend API)
+        - starter-pwa (Frontend Web App)
+        - domain-core (Domain Logic)
+        - application-core (Application Services)
+        - utils-core (Utility Functions)
+        - database queries
+        - build process
+        - all components
+    validations:
+      required: true
+
+  - type: dropdown
+    id: performance-area
+    attributes:
+      label: Performance Focus Area
+      description: What specific area needs optimization?
+      options:
+        - Load Time - Initial page/app loading speed
+        - Runtime Performance - Execution speed and responsiveness
+        - Memory Usage - Memory consumption and leaks
+        - Database Performance - Query optimization and caching
+        - Bundle Size - JavaScript/CSS bundle optimization
+        - Network Performance - API calls and data fetching
+        - Build Performance - Compilation and bundling speed
+        - All Areas - Comprehensive performance audit
+      default: 7
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Performance Priority
+      description: How critical is this performance issue?
+      options:
+        - Critical - Severe performance impact affecting users
+        - High - Noticeable performance degradation
+        - Medium - Performance could be better
+        - Low - Minor optimization opportunity
+      default: 1
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-performance
+    attributes:
+      label: Current Performance Metrics
+      description: |
+        Provide current performance measurements and benchmarks
+      placeholder: |
+        Example:
+        **Frontend (PWA):**
+        - First Contentful Paint: 2.5s (should be < 1.8s)
+        - Largest Contentful Paint: 4.2s (should be < 2.5s)
+        - Bundle size: 1.2MB (should be < 500KB)
+        - Lighthouse Performance Score: 65/100
+        
+        **Backend (API):**
+        - Average response time: 850ms (should be < 200ms)
+        - Database query time: 450ms average
+        - Memory usage: 512MB (increasing over time)
+        - P95 response time: 2.3s
+        
+        **Build Performance:**
+        - Full build time: 45 seconds (should be < 30s)
+        - Development rebuild: 8 seconds
+    validations:
+      required: false
+
+  - type: textarea
+    id: performance-issues
+    attributes:
+      label: Specific Performance Issues
+      description: |
+        Describe the specific performance problems identified
+      placeholder: |
+        Example:
+        - Large bundle size due to unnecessary dependencies
+        - Slow database queries without proper indexing
+        - Memory leaks in React components
+        - Inefficient API endpoints with N+1 query problems
+        - Unoptimized images and assets
+        - Synchronous operations blocking the event loop
+        - Missing caching strategies
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: optimization-strategies
+    attributes:
+      label: Optimization Strategies
+      description: Which optimization techniques should be applied? (Check all that apply)
+      options:
+        - label: Code splitting and lazy loading
+          required: false
+        - label: Bundle size reduction and tree shaking
+          required: false
+        - label: Database query optimization and indexing
+          required: false
+        - label: Caching implementation (memory, Redis, CDN)
+          required: false
+        - label: Image and asset optimization
+          required: false
+        - label: Memory leak detection and fixes
+          required: false
+        - label: API endpoint optimization
+          required: false
+        - label: Build process optimization
+          required: false
+
+  - type: textarea
+    id: performance-targets
+    attributes:
+      label: Performance Targets
+      description: |
+        What performance goals should be achieved?
+      placeholder: |
+        Example:
+        **Frontend Targets:**
+        - First Contentful Paint: < 1.8s
+        - Largest Contentful Paint: < 2.5s
+        - Bundle size: < 500KB
+        - Lighthouse Performance Score: > 90
+        
+        **Backend Targets:**
+        - Average API response time: < 200ms
+        - P95 response time: < 500ms
+        - Database queries: < 100ms average
+        - Memory usage: stable under 256MB
+        
+        **Build Targets:**
+        - Full build time: < 30 seconds
+        - Development rebuild: < 3 seconds
+    validations:
+      required: false
+
+  - type: textarea
+    id: measurement-tools
+    attributes:
+      label: Performance Measurement Tools
+      description: Tools and commands for measuring performance
+      value: |
+        **Frontend Performance:**
+        - Chrome DevTools Performance tab
+        - Lighthouse CLI: `npx lighthouse http://localhost:4200`
+        - Bundle Analyzer: `pnpm build:analyze`
+        - Core Web Vitals measurement
+        
+        **Backend Performance:**
+        - API response time monitoring
+        - Database query analysis tools
+        - Memory profiling with Node.js
+        - Load testing with tools like Artillery
+        
+        **Build Performance:**
+        - Build time measurement: `time pnpm build`
+        - Webpack Bundle Analyzer
+        - Nx build cache analysis
+        
+        **Monitoring Commands:**
+        - `pnpm build:stats` - Build statistics
+        - `pnpm test:performance` - Performance tests
+        - Memory usage: `node --inspect app.js`
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: How will we measure optimization success?
+      value: |
+        ## Acceptance Criteria
+        
+        ### Performance Metrics
+        - [ ] Load time targets are met or exceeded
+        - [ ] Runtime performance shows measurable improvement
+        - [ ] Memory usage is optimized and stable
+        - [ ] Database queries perform within target times
+        - [ ] Bundle sizes are reduced to target levels
+        
+        ### User Experience
+        - [ ] Application feels more responsive
+        - [ ] Page transitions are smooth
+        - [ ] No performance regressions introduced
+        - [ ] Mobile performance is optimized
+        - [ ] Accessibility is maintained or improved
+        
+        ### Code Quality
+        - [ ] Optimizations follow clean code principles
+        - [ ] Performance improvements are maintainable
+        - [ ] Code remains readable and well-documented
+        - [ ] Existing functionality is preserved
+        
+        ### Monitoring & Measurement
+        - [ ] Performance benchmarks are established
+        - [ ] Monitoring tools are implemented
+        - [ ] Performance regressions can be detected
+        - [ ] Optimization impact is measurable
+        
+        ### Build & Development
+        - [ ] Build times are improved
+        - [ ] Development workflow is not negatively impacted
+        - [ ] CI/CD pipeline performance is maintained
+        - [ ] Bundle optimization doesn't break functionality
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: optimization-principles
+    attributes:
+      label: Optimization Principles
+      description: Ensure optimizations align with best practices
+      options:
+        - label: Measure before and after optimization
+          required: true
+        - label: Focus on user-perceived performance
+          required: true
+        - label: Maintain code quality and readability
+          required: true
+        - label: Consider performance budget constraints
+          required: false
+        - label: Implement performance monitoring
+          required: false
+        - label: Document optimization decisions
+          required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Any additional information for performance optimization?
+      placeholder: |
+        - Specific user scenarios that are slow
+        - Performance issues reported by users
+        - Constraints or limitations to consider
+        - Third-party services affecting performance
+        - Mobile vs desktop performance differences
+    validations:
+      required: false
+
+  - type: textarea
+    id: commit-message-guidelines
+    attributes:
+      label: Commit Message Guidelines
+      description: Follow the project's commit message conventions
+      value: |
+        ## Commit Message Format
+        
+        **Format:** `type(scope): subject`
+        
+        **Example:** `perf(starter-pwa): optimize bundle size and loading performance`
+        
+        **Available Types:**
+        - `perf` - Performance improvements (primary for optimization tasks)
+        - `refactor` - Code changes for performance improvements
+        - `feat` - A new feature (if optimization adds new capabilities)
+        - `fix` - A bug fix (if fixing performance issues)
+        - `build` - Build system optimizations
+        - `style` - Code formatting for performance
+        - `test` - Performance test additions
+        - `ci` - CI performance improvements
+        - `chore` - Other performance-related maintenance
+        
+        **Scope Rules:**
+        - Use kebab-case (lowercase with hyphens)
+        - Examples: `starter-api`, `starter-pwa`, `database`, `bundle`, `api`
+        
+        **Subject Rules:**
+        - Start with lowercase letter or number
+        - No period at the end
+        - Maximum 72 characters for the entire header
+        - Be specific about what was optimized
+        
+        **Reference:** See `commitlint.config.ts` for complete rules
+      render: markdown
+    validations:
+      required: false

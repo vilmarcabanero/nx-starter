@@ -1,0 +1,289 @@
+name: 📚 Documentation Update Task
+description: Update, create, or improve project documentation
+title: "[DOCS] Update documentation - [DOC_AREA]"
+labels: ["documentation", "maintenance", "enhancement", "copilot"]
+assignees: ["copilot"]
+body:
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation Type
+      description: What type of documentation needs updating?
+      options:
+        - README files
+        - API Documentation
+        - Code Comments
+        - Architecture Documentation
+        - Setup/Installation Guide
+        - User Guide
+        - Developer Guide
+        - Contributing Guidelines
+        - All Documentation
+    validations:
+      required: true
+
+  - type: dropdown
+    id: doc-scope
+    attributes:
+      label: Documentation Scope
+      description: Which part of the project needs documentation updates?
+      options:
+        - starter-api
+        - starter-pwa
+        - domain-core
+        - application-core
+        - utils-core
+        - project root
+        - all components
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Documentation Priority
+      description: How urgent is this documentation update?
+      options:
+        - High - Critical for onboarding or compliance
+        - Medium - Important for maintainability
+        - Low - Nice to have improvement
+      default: 1
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-doc-issues
+    attributes:
+      label: Current Documentation Issues
+      description: |
+        What specific issues exist with the current documentation?
+      placeholder: |
+        Example:
+        - README.md is outdated and missing setup instructions
+        - API endpoints are not documented
+        - Code lacks inline comments explaining complex logic
+        - Architecture decisions are not documented
+        - Installation guide doesn't match current tech stack
+        - Examples in documentation don't work
+        - Missing troubleshooting section
+    validations:
+      required: true
+
+  - type: textarea
+    id: missing-documentation
+    attributes:
+      label: Missing Documentation
+      description: |
+        What documentation is completely missing?
+      placeholder: |
+        Example:
+        - API endpoint documentation with examples
+        - Database schema documentation
+        - Deployment guide for different environments
+        - Testing strategy documentation
+        - Code style guide
+        - Security best practices
+        - Performance tuning guide
+        - Contribution guidelines
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: doc-categories
+    attributes:
+      label: Documentation Categories
+      description: Which types of documentation should be updated? (Check all that apply)
+      options:
+        - label: Setup and installation instructions
+          required: false
+        - label: API documentation and examples
+          required: false
+        - label: Code architecture and design patterns
+          required: false
+        - label: Testing guidelines and examples
+          required: false
+        - label: Deployment and DevOps procedures
+          required: false
+        - label: Troubleshooting and FAQ
+          required: false
+        - label: Contributing guidelines
+          required: false
+        - label: Code comments and inline documentation
+          required: false
+
+  - type: textarea
+    id: target-audience
+    attributes:
+      label: Target Audience
+      description: |
+        Who is the primary audience for this documentation?
+      placeholder: |
+        Example:
+        - New developers joining the project
+        - External API consumers
+        - DevOps team managing deployments
+        - Product managers understanding features
+        - Community contributors
+        - End users of the application
+    validations:
+      required: false
+
+  - type: textarea
+    id: documentation-structure
+    attributes:
+      label: Desired Documentation Structure
+      description: |
+        How should the documentation be organized?
+      placeholder: |
+        Example:
+        **Project Root:**
+        - README.md - Project overview and quick start
+        - CONTRIBUTING.md - How to contribute
+        - ARCHITECTURE.md - System design and patterns
+        
+        **Component Documentation:**
+        - Each lib/app should have its own README
+        - API documentation in OpenAPI format
+        - Inline code comments for complex logic
+        
+        **Additional Docs:**
+        - docs/ folder for detailed guides
+        - Deployment and environment setup
+        - Testing strategies and patterns
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What needs to be accomplished for successful documentation updates?
+      value: |
+        ## Acceptance Criteria
+        
+        ### Content Quality
+        - [ ] Documentation is accurate and up-to-date
+        - [ ] Information is clear and easy to understand
+        - [ ] Examples work and are tested
+        - [ ] All links and references are valid
+        - [ ] Grammar and spelling are correct
+        
+        ### Completeness
+        - [ ] All identified gaps are filled
+        - [ ] Setup instructions are complete and tested
+        - [ ] API documentation covers all endpoints
+        - [ ] Code comments explain complex logic
+        - [ ] Troubleshooting section addresses common issues
+        
+        ### Organization
+        - [ ] Documentation follows consistent structure
+        - [ ] Information is easy to find and navigate
+        - [ ] Cross-references are properly linked
+        - [ ] Table of contents and indexes are updated
+        
+        ### Accessibility
+        - [ ] Documentation is accessible to target audience
+        - [ ] Technical jargon is explained when necessary
+        - [ ] Prerequisites are clearly stated
+        - [ ] Multiple learning styles are accommodated
+        
+        ### Maintenance
+        - [ ] Documentation can be easily maintained
+        - [ ] Update process is documented
+        - [ ] Ownership and responsibility is clear
+        - [ ] Version control is properly managed
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: documentation-standards
+    attributes:
+      label: Documentation Standards
+      description: Ensure documentation follows best practices
+      options:
+        - label: Use consistent formatting and style
+          required: true
+        - label: Include working code examples
+          required: true
+        - label: Provide clear setup and installation steps
+          required: true
+        - label: Include troubleshooting information
+          required: false
+        - label: Use diagrams and visuals where helpful
+          required: false
+        - label: Maintain version compatibility information
+          required: false
+
+  - type: textarea
+    id: documentation-tools
+    attributes:
+      label: Documentation Tools and Formats
+      description: |
+        What tools and formats should be used?
+      placeholder: |
+        **Formats:**
+        - Markdown for README and general docs
+        - OpenAPI/Swagger for API documentation
+        - JSDoc for code comments
+        - Mermaid diagrams for architecture
+        
+        **Tools:**
+        - GitHub Pages for hosting
+        - Swagger UI for API docs
+        - Documentation generators
+        - Automated documentation updates
+    validations:
+      required: false
+
+  - type: textarea
+    id: existing-resources
+    attributes:
+      label: Existing Resources to Reference
+      description: |
+        Any existing documentation or resources to build upon?
+      placeholder: |
+        - Current README files to update
+        - Existing code comments to expand
+        - Architecture documents to reference
+        - API specifications to formalize
+        - Team knowledge to document
+        - External documentation to link
+    validations:
+      required: false
+
+  - type: textarea
+    id: commit-message-guidelines
+    attributes:
+      label: Commit Message Guidelines
+      description: Follow the project's commit message conventions
+      value: |
+        ## Commit Message Format
+        
+        **Format:** `type(scope): subject`
+        
+        **Example:** `docs(starter-api): update api documentation and setup guide`
+        
+        **Available Types:**
+        - `docs` - Documentation only changes (primary for documentation tasks)
+        - `feat` - A new feature (if documentation describes new features)
+        - `fix` - A bug fix (if fixing incorrect documentation)
+        - `refactor` - Restructuring documentation organization
+        - `style` - Documentation formatting changes
+        - `chore` - Other documentation maintenance
+        
+        **Scope Rules:**
+        - Use kebab-case (lowercase with hyphens)
+        - Examples: `readme`, `api`, `setup`, `contributing`, `architecture`
+        - Component scopes: `starter-api`, `starter-pwa`, `domain-core`
+        
+        **Subject Rules:**
+        - Start with lowercase letter or number
+        - No period at the end
+        - Maximum 72 characters for the entire header
+        - Be specific about what documentation was updated
+        
+        **Reference:** See `commitlint.config.ts` for complete rules
+      render: markdown
+    validations:
+      required: false
