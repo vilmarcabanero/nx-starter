@@ -7,6 +7,9 @@ import type { ITodoRepository } from '@nx-starter/domain-core';
 // Mock the config module
 vi.mock('../../config/config', () => ({
   config: {
+    port: 4000,
+    nodeEnv: 'test',
+    corsOrigin: 'http://localhost:3000',
     database: {
       type: 'memory',
       orm: 'native'
@@ -160,8 +163,22 @@ describe('DI Container Configuration', () => {
 
   describe('getRepositoryImplementation - Memory Database', () => {
     it('should return InMemoryTodoRepository for memory database', async () => {
-      const { config } = await import('../../config/config');
-      vi.mocked(config).database = { type: 'memory', orm: 'native' };
+      // Mock config for Memory database (default)
+      vi.doMock('../../config/config', () => ({
+        config: {
+          port: 4000,
+          nodeEnv: 'test',
+          corsOrigin: 'http://localhost:3000',
+          database: {
+            type: 'memory',
+            orm: 'native'
+          }
+        }
+      }));
+      
+      // Clear modules and reimport
+      vi.resetModules();
+      const { configureDI } = await import('./container');
       
       await configureDI();
       
@@ -172,10 +189,24 @@ describe('DI Container Configuration', () => {
 
   describe('getRepositoryImplementation - MongoDB', () => {
     it('should return MongooseTodoRepository for mongodb database', async () => {
-      const { config } = await import('../../config/config');
       const { connectMongoDB } = await import('../todo/persistence/mongoose/MongooseConnection');
       
-      vi.mocked(config).database = { type: 'mongodb', orm: 'native' };
+      // Mock config for MongoDB
+      vi.doMock('../../config/config', () => ({
+        config: {
+          port: 4000,
+          nodeEnv: 'test',
+          corsOrigin: 'http://localhost:3000',
+          database: {
+            type: 'mongodb',
+            orm: 'native'
+          }
+        }
+      }));
+      
+      // Clear modules and reimport
+      vi.resetModules();
+      const { configureDI } = await import('./container');
       
       await configureDI();
       
@@ -187,10 +218,24 @@ describe('DI Container Configuration', () => {
 
   describe('getRepositoryImplementation - TypeORM', () => {
     it('should return TypeOrmTodoRepository for typeorm ORM', async () => {
-      const { config } = await import('../../config/config');
       const { getTypeOrmDataSource } = await import('../todo/persistence/typeorm/TypeOrmConnection');
       
-      vi.mocked(config).database = { type: 'postgres', orm: 'typeorm' };
+      // Mock config for TypeORM
+      vi.doMock('../../config/config', () => ({
+        config: {
+          port: 4000,
+          nodeEnv: 'test',
+          corsOrigin: 'http://localhost:3000',
+          database: {
+            type: 'postgresql',
+            orm: 'typeorm'
+          }
+        }
+      }));
+      
+      // Clear modules and reimport
+      vi.resetModules();
+      const { configureDI } = await import('./container');
       
       await configureDI();
       
@@ -202,10 +247,24 @@ describe('DI Container Configuration', () => {
 
   describe('getRepositoryImplementation - Sequelize', () => {
     it('should return SequelizeTodoRepository for sequelize ORM', async () => {
-      const { config } = await import('../../config/config');
       const { getSequelizeInstance } = await import('../todo/persistence/sequelize/SequelizeConnection');
       
-      vi.mocked(config).database = { type: 'postgres', orm: 'sequelize' };
+      // Mock config for Sequelize
+      vi.doMock('../../config/config', () => ({
+        config: {
+          port: 4000,
+          nodeEnv: 'test',
+          corsOrigin: 'http://localhost:3000',
+          database: {
+            type: 'postgresql',
+            orm: 'sequelize'
+          }
+        }
+      }));
+      
+      // Clear modules and reimport
+      vi.resetModules();
+      const { configureDI } = await import('./container');
       
       await configureDI();
       
@@ -217,9 +276,22 @@ describe('DI Container Configuration', () => {
 
   describe('getRepositoryImplementation - Native SQLite', () => {
     it('should return SqliteTodoRepository for native sqlite', async () => {
-      const { config } = await import('../../config/config');
+      // Mock config for Native SQLite
+      vi.doMock('../../config/config', () => ({
+        config: {
+          port: 4000,
+          nodeEnv: 'test',
+          corsOrigin: 'http://localhost:3000',
+          database: {
+            type: 'sqlite',
+            orm: 'native'
+          }
+        }
+      }));
       
-      vi.mocked(config).database = { type: 'sqlite', orm: 'native' };
+      // Clear modules and reimport
+      vi.resetModules();
+      const { configureDI } = await import('./container');
       
       await configureDI();
       
@@ -230,10 +302,24 @@ describe('DI Container Configuration', () => {
 
   describe('getRepositoryImplementation - Fallback to TypeORM', () => {
     it('should fallback to TypeORM for unsupported native databases', async () => {
-      const { config } = await import('../../config/config');
       const { getTypeOrmDataSource } = await import('../todo/persistence/typeorm/TypeOrmConnection');
       
-      vi.mocked(config).database = { type: 'mysql', orm: 'native' };
+      // Mock config for fallback case
+      vi.doMock('../../config/config', () => ({
+        config: {
+          port: 4000,
+          nodeEnv: 'test',
+          corsOrigin: 'http://localhost:3000',
+          database: {
+            type: 'mysql',
+            orm: 'native'
+          }
+        }
+      }));
+      
+      // Clear modules and reimport
+      vi.resetModules();
+      const { configureDI } = await import('./container');
       
       await configureDI();
       
@@ -243,10 +329,24 @@ describe('DI Container Configuration', () => {
     });
 
     it('should fallback to TypeORM for default case', async () => {
-      const { config } = await import('../../config/config');
       const { getTypeOrmDataSource } = await import('../todo/persistence/typeorm/TypeOrmConnection');
       
-      vi.mocked(config).database = { type: 'postgres', orm: undefined };
+      // Mock config for default case (no orm specified)
+      vi.doMock('../../config/config', () => ({
+        config: {
+          port: 4000,
+          nodeEnv: 'test',
+          corsOrigin: 'http://localhost:3000',
+          database: {
+            type: 'postgresql',
+            orm: undefined
+          }
+        }
+      }));
+      
+      // Clear modules and reimport
+      vi.resetModules();
+      const { configureDI } = await import('./container');
       
       await configureDI();
       
