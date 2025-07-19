@@ -1,0 +1,263 @@
+name: 📋 Comprehensive Plan Implementation
+description: Implement a comprehensive plan or detailed task specification
+title: "[PLAN] "
+labels: ["enhancement", "plan", "comprehensive", "copilot"]
+assignees: ["copilot"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Comprehensive Plan Description
+      description: |
+        Provide your complete plan, specification, or detailed task description here.
+        This should include all the context, requirements, and implementation details needed.
+      placeholder: |
+        Example:
+        ## Overview
+        Implement a comprehensive authentication system with the following components:
+        
+        ## Requirements
+        1. JWT-based authentication
+        2. Role-based access control
+        3. Password reset functionality
+        4. Two-factor authentication
+        
+        ## Implementation Plan
+        ### Phase 1: Core Authentication
+        - Create user model and database schema
+        - Implement login/logout endpoints
+        - Add JWT token generation and validation
+        
+        ### Phase 2: Authorization
+        - Implement role-based middleware
+        - Add permission checking
+        - Create admin dashboard
+        
+        ## Acceptance Criteria
+        - All endpoints are secured
+        - Tests cover all authentication flows
+        - Documentation is updated
+        
+        ## Technical Considerations
+        - Use bcrypt for password hashing
+        - Implement rate limiting for login attempts
+        - Add proper error handling and logging
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: What needs to be accomplished to close this issue?
+      value: |
+        ## Acceptance Criteria
+        
+        ### Implementation
+        - [ ] All features described in the plan are implemented
+        - [ ] Code follows existing patterns and best practices
+        - [ ] All functionality works as specified
+        - [ ] Integration with existing codebase is seamless
+        
+        ### Code Quality
+        - [ ] Code is clean, readable, and well-documented
+        - [ ] TypeScript types are properly defined
+        - [ ] Error handling is comprehensive
+        - [ ] Performance considerations are addressed
+        
+        ### Testing
+        - [ ] Unit tests cover all new functionality
+        - [ ] Integration tests verify end-to-end workflows
+        - [ ] E2E tests cover user-facing features
+        - [ ] All existing tests continue to pass
+        
+        ### Documentation
+        - [ ] Code is properly commented
+        - [ ] API documentation is updated
+        - [ ] README files are updated if needed
+        - [ ] Architecture decisions are documented
+        
+        ### Deployment & CI/CD
+        - [ ] Changes work in all environments
+        - [ ] CI/CD pipeline passes successfully
+        - [ ] No breaking changes introduced
+        - [ ] Database migrations (if any) are tested
+        
+        ### Clean Architecture Compliance
+        - [ ] Dependencies flow in the correct direction
+        - [ ] Business logic is separated from infrastructure
+        - [ ] Domain layer remains independent
+        - [ ] Proper abstraction layers are maintained
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: technical-guidelines
+    attributes:
+      label: Technical Implementation Guidelines
+      description: Technical standards and patterns to follow during implementation
+      value: |
+        ## Technical Guidelines for Implementation
+        
+        ### Clean Architecture Principles
+        **1. Dependency Direction:**
+        - Outer layers depend on inner layers only
+        - Domain layer has no external dependencies
+        - Application layer orchestrates domain logic
+        - Infrastructure implements interfaces from inner layers
+        
+        **2. Layer Organization:**
+        - **Domain Core**: Business entities, value objects, domain services
+        - **Application Core**: Use cases, application services, DTOs
+        - **Infrastructure**: Database, external APIs, framework-specific code
+        
+        **3. SOLID Principles:**
+        - Single Responsibility: Each class has one reason to change
+        - Open/Closed: Open for extension, closed for modification
+        - Liskov Substitution: Subtypes must be substitutable for base types
+        - Interface Segregation: Many specific interfaces vs few general ones
+        - Dependency Inversion: Depend on abstractions, not concretions
+        
+        ### Code Quality Standards
+        **1. TypeScript Usage:**
+        - Use strict mode and proper type definitions
+        - Avoid `any` type, use specific types or `unknown`
+        - Define interfaces for all data structures
+        - Use generic types appropriately
+        
+        **2. Error Handling:**
+        - Use Result/Either patterns for error handling
+        - Provide meaningful error messages
+        - Log errors at appropriate levels
+        - Handle edge cases and validation errors
+        
+        **3. Testing Strategy:**
+        - Unit tests for business logic (domain layer)
+        - Integration tests for application services
+        - E2E tests for complete user workflows
+        - Mock external dependencies appropriately
+        
+        ### Performance Considerations
+        - Use efficient algorithms and data structures
+        - Implement proper caching strategies
+        - Consider database query optimization
+        - Handle async operations properly
+        - Monitor memory usage and potential leaks
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation-commands
+    attributes:
+      label: Development Commands Reference
+      description: Common commands for development and testing
+      value: |
+        **Development Commands:**
+        - `pnpm dev` - Start development server
+        - `pnpm build` - Build the application
+        - `pnpm preview` - Preview the built application
+        
+        **Testing Commands:**
+        - `pnpm test` - Run all tests
+        - `pnpm test:watch` - Run tests in watch mode
+        - `pnpm test:coverage` - Run tests with coverage
+        - `pnpm domain` - Test domain-core
+        - `pnpm application` - Test application-core
+        - `pnpm utils` - Test utils-core
+        
+        **API Testing:**
+        - `pnpm test:api` - Run API tests
+        - `pnpm endapi` - Run API E2E tests
+        - `pnpm newman` - Run Postman tests
+        
+        **UI Testing:**
+        - `pnpm test:web` - Run PWA tests
+        - `pnpm endweb` - Run PWA E2E tests
+        - `pnpm playwright` - Run Playwright tests
+        
+        **Code Quality:**
+        - `pnpm lint` - Run linting
+        - `pnpm lint:fix` - Fix linting issues
+        - `pnpm format` - Format code
+        - `pnpm typecheck` - Check TypeScript types
+        
+        **Coverage Analysis:**
+        - `pnpm covapi` - API coverage
+        - `pnpm covweb` - PWA coverage
+        - `pnpm covdomain` - Domain coverage
+        - `pnpm covapplication` - Application coverage
+        - `pnpm covutils` - Utils coverage
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: commit-message-guidelines
+    attributes:
+      label: "⚠️ CRITICAL: Commit Message Guidelines"
+      description: "**IMPORTANT**: Following these rules is mandatory - commits will FAIL if not followed!"
+      value: |
+        ## ⚠️ MANDATORY Commit Message Format
+        
+        **🚨 FAILURE TO FOLLOW THESE RULES WILL CAUSE COMMIT FAILURES! 🚨**
+        
+        **Format:** `type(scope): subject`
+        
+        **Example:** `feat(starter-api): implement user authentication system`
+        
+        **Available Types:**
+        - `feat` - A new feature (most common for comprehensive plans)
+        - `fix` - A bug fix
+        - `refactor` - Code changes that neither fix bugs nor add features
+        - `perf` - Performance improvements
+        - `test` - Adding missing tests or correcting existing tests
+        - `docs` - Documentation only changes
+        - `style` - Formatting changes
+        - `build` - Build system or dependency changes
+        - `ci` - CI configuration changes
+        - `chore` - Other changes
+        
+        **Scope Rules (REQUIRED):**
+        - Use kebab-case (lowercase with hyphens)
+        - Examples: `starter-api`, `starter-pwa`, `domain-core`, `application-core`, `utils-core`
+        - Use `auth`, `api`, `ui`, `database` for feature-specific scopes
+        
+        **Subject Rules (REQUIRED):**
+        - Start with lowercase letter or number
+        - No period at the end
+        - Maximum 72 characters for the entire header
+        - Be descriptive and specific about what was implemented
+        
+        **Multi-commit Guidelines:**
+        For large implementations, break into logical commits:
+        - `feat(domain-core): add user entity and value objects`
+        - `feat(application-core): implement authentication use cases`
+        - `feat(starter-api): add authentication endpoints`
+        - `test(starter-api): add comprehensive auth tests`
+        
+        **Reference:** See `commitlint.config.ts` and `.husky/commit-msg` for complete rules
+        
+        **⚠️ Your commits will be automatically rejected if they don't follow these rules!**
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Any additional information, constraints, or considerations for this implementation?
+      placeholder: |
+        - Related issues or dependencies
+        - External system integrations
+        - Performance requirements
+        - Security considerations
+        - Timeline constraints
+        - Special testing requirements
+        
+        Or use "_No response_" if no additional context needed.
+    validations:
+      required: false

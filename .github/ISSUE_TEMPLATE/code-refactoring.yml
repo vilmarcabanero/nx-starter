@@ -65,8 +65,10 @@ body:
         - Unclear separation of concerns between layers
         - Missing type definitions causing runtime errors
         - Dependencies that are outdated or unused
+        
+        Or use "_No response_" if issues will be identified during analysis.
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: refactor-goals
@@ -82,8 +84,10 @@ body:
         - Improve separation between domain, application, and infrastructure layers
         - Add comprehensive type definitions
         - Optimize database queries for better performance
+        
+        Or use "_No response_" if goals will be determined during analysis.
     validations:
-      required: true
+      required: false
 
   - type: checkboxes
     id: refactor-principles
