@@ -13,6 +13,7 @@ import type {
   GetFilteredTodosQuery,
   GetTodoByIdQuery,
 } from '../../dto/TodoQueries';
+import { TEST_UUIDS } from '@nx-starter/utils-core';
 
 describe('TodoQueryHandlers', () => {
   let mockRepository: ITodoRepository;
@@ -36,7 +37,7 @@ describe('TodoQueryHandlers', () => {
         new TodoTitle('Active todo 1'),
         false,
         new Date('2025-01-01'),
-        '12345678901234567890123456789026',
+        TEST_UUIDS.QUERY_TODO_1,
         'high',
         undefined
       ),
@@ -44,7 +45,7 @@ describe('TodoQueryHandlers', () => {
         new TodoTitle('Completed todo 1'),
         true,
         new Date('2025-01-02'),
-        '12345678901234567890123456789027',
+        TEST_UUIDS.QUERY_TODO_2,
         'medium',
         undefined
       ),
@@ -52,7 +53,7 @@ describe('TodoQueryHandlers', () => {
         new TodoTitle('Active todo 2'),
         false,
         new Date('2025-01-03'),
-        '12345678901234567890123456789028',
+        TEST_UUIDS.QUERY_TODO_3,
         'low',
         new Date('2025-12-31')
       ),
@@ -271,7 +272,7 @@ describe('TodoQueryHandlers', () => {
       const expectedTodo = sampleTodos[0];
       vi.mocked(mockRepository.getById).mockResolvedValue(expectedTodo);
       const query: GetTodoByIdQuery = {
-        id: '12345678901234567890123456789026',
+        id: TEST_UUIDS.QUERY_TODO_1,
       };
 
       // Act
@@ -280,24 +281,24 @@ describe('TodoQueryHandlers', () => {
       // Assert
       expect(result).toEqual(expectedTodo);
       expect(mockRepository.getById).toHaveBeenCalledWith(
-        '12345678901234567890123456789026'
+        TEST_UUIDS.QUERY_TODO_1
       );
     });
 
     it('should throw TodoNotFoundException when todo not found', async () => {
       // Arrange
       const handler = new GetTodoByIdQueryHandler(mockRepository);
-      vi.mocked(mockRepository.getById).mockResolvedValue(null);
+      vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
       const query: GetTodoByIdQuery = {
-        id: '12345678901234567890123456789999',
+        id: TEST_UUIDS.NONEXISTENT_TODO,
       };
 
       // Act & Assert
       await expect(handler.execute(query)).rejects.toThrow(
-        'Todo with ID 12345678901234567890123456789999 not found'
+        `Todo with ID ${TEST_UUIDS.NONEXISTENT_TODO} not found`
       );
       expect(mockRepository.getById).toHaveBeenCalledWith(
-        '12345678901234567890123456789999'
+        TEST_UUIDS.NONEXISTENT_TODO
       );
     });
   });

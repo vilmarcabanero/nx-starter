@@ -3,6 +3,7 @@ import { CreateTodoUseCase } from './CreateTodoUseCase';
 import { Todo, InvalidTodoTitleException } from '@nx-starter/domain-core';
 import type { ITodoRepository } from '@nx-starter/domain-core';
 import type { CreateTodoCommand } from '../../dto/TodoCommands';
+import { TEST_UUIDS } from '@nx-starter/utils-core';
 
 describe('CreateTodoUseCase', () => {
   let useCase: CreateTodoUseCase;
@@ -30,7 +31,7 @@ describe('CreateTodoUseCase', () => {
         title: 'Valid todo title',
         priority: 'medium',
       };
-      const expectedId = '12345678901234567890123456789012';
+      const expectedId = TEST_UUIDS.CREATE_TODO;
       vi.mocked(mockRepository.create).mockResolvedValue(expectedId);
 
       // Act
@@ -51,7 +52,7 @@ describe('CreateTodoUseCase', () => {
       const command: CreateTodoCommand = {
         title: 'Todo without priority',
       };
-      const expectedId = '12345678901234567890123456789013';
+      const expectedId = TEST_UUIDS.TODO_1;
       vi.mocked(mockRepository.create).mockResolvedValue(expectedId);
 
       // Act
@@ -70,7 +71,7 @@ describe('CreateTodoUseCase', () => {
         priority: 'high',
         dueDate,
       };
-      const expectedId = '12345678901234567890123456789014';
+      const expectedId = TEST_UUIDS.TODO_2;
       vi.mocked(mockRepository.create).mockResolvedValue(expectedId);
 
       // Act
@@ -114,7 +115,7 @@ describe('CreateTodoUseCase', () => {
         title: 'Valid todo title',
         priority: 'high',
       };
-      const expectedId = '12345678901234567890123456789015';
+      const expectedId = TEST_UUIDS.TODO_3;
       vi.mocked(mockRepository.create).mockResolvedValue(expectedId);
 
       // Act

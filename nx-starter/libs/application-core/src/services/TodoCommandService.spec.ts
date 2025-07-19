@@ -6,6 +6,7 @@ import { UpdateTodoUseCase } from '../use-cases/commands/UpdateTodoUseCase';
 import { DeleteTodoUseCase } from '../use-cases/commands/DeleteTodoUseCase';
 import { ToggleTodoUseCase } from '../use-cases/commands/ToggleTodoUseCase';
 import type { CreateTodoData, UpdateTodoData } from '../interfaces/ITodoService';
+import { TEST_UUIDS } from '@nx-starter/utils-core';
 
 describe('TodoCommandService', () => {
   let service: TodoCommandService;
@@ -101,7 +102,7 @@ describe('TodoCommandService', () => {
   describe('updateTodo', () => {
     it('should update a todo with valid data', async () => {
       // Arrange
-      const id = '12345678901234567890123456789012';
+      const id = TEST_UUIDS.TODO_1;
       const updateData: UpdateTodoData = {
         title: 'Updated todo',
         completed: true,
@@ -127,7 +128,7 @@ describe('TodoCommandService', () => {
 
     it('should update a todo with partial data', async () => {
       // Arrange
-      const id = '12345678901234567890123456789012';
+      const id = TEST_UUIDS.TODO_1;
       const updateData: UpdateTodoData = {
         completed: true,
       };
@@ -150,7 +151,7 @@ describe('TodoCommandService', () => {
 
     it('should propagate errors from use case', async () => {
       // Arrange
-      const id = '12345678901234567890123456789012';
+      const id = TEST_UUIDS.TODO_1;
       const updateData: UpdateTodoData = { title: 'Updated' };
       const error = new Error('Update error');
       vi.mocked(mockUpdateTodoUseCase.execute).mockRejectedValue(error);
@@ -163,7 +164,7 @@ describe('TodoCommandService', () => {
   describe('deleteTodo', () => {
     it('should delete a todo by id', async () => {
       // Arrange
-      const id = '12345678901234567890123456789012';
+      const id = TEST_UUIDS.TODO_1;
       vi.mocked(mockDeleteTodoUseCase.execute).mockResolvedValue(undefined);
 
       // Act
@@ -176,7 +177,7 @@ describe('TodoCommandService', () => {
 
     it('should propagate errors from use case', async () => {
       // Arrange
-      const id = '12345678901234567890123456789012';
+      const id = TEST_UUIDS.TODO_1;
       const error = new Error('Delete error');
       vi.mocked(mockDeleteTodoUseCase.execute).mockRejectedValue(error);
 
@@ -188,7 +189,7 @@ describe('TodoCommandService', () => {
   describe('toggleTodo', () => {
     it('should toggle a todo by id', async () => {
       // Arrange
-      const id = '12345678901234567890123456789012';
+      const id = TEST_UUIDS.TODO_1;
       const mockTodo = new Todo('Toggled todo');
       vi.mocked(mockToggleTodoUseCase.execute).mockResolvedValue(mockTodo);
 
@@ -203,7 +204,7 @@ describe('TodoCommandService', () => {
 
     it('should propagate errors from use case', async () => {
       // Arrange
-      const id = '12345678901234567890123456789012';
+      const id = TEST_UUIDS.TODO_1;
       const error = new Error('Toggle error');
       vi.mocked(mockToggleTodoUseCase.execute).mockRejectedValue(error);
 

@@ -135,7 +135,7 @@ describe('TodoQueryService', () => {
     it('should return null when todo not found', async () => {
       // Arrange
       const todoId = generateTestUuid(999);
-      mockGetTodoByIdHandler.handle.mockResolvedValue(null);
+      mockGetTodoByIdHandler.handle.mockResolvedValue(undefined);
 
       // Act
       const result = await service.getTodoById(todoId);

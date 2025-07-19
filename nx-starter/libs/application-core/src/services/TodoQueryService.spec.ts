@@ -9,6 +9,7 @@ import {
   GetTodoStatsQueryHandler,
   GetTodoByIdQueryHandler,
 } from '../use-cases/queries/TodoQueryHandlers';
+import { TEST_UUIDS } from '@nx-starter/utils-core';
 
 describe('TodoQueryService', () => {
   let service: TodoQueryService;
@@ -119,7 +120,7 @@ describe('TodoQueryService', () => {
   describe('getTodoById', () => {
     it('should return todo by id', async () => {
       // Arrange
-      const id = '12345678901234567890123456789012';
+      const id = TEST_UUIDS.TODO_1;
       const mockTodo = new Todo('Found todo');
       vi.mocked(mockGetTodoByIdHandler.execute).mockResolvedValue(mockTodo);
 
@@ -134,7 +135,7 @@ describe('TodoQueryService', () => {
 
     it('should propagate errors from handler', async () => {
       // Arrange
-      const id = '12345678901234567890123456789012';
+      const id = TEST_UUIDS.TODO_1;
       const error = new Error('Todo not found');
       vi.mocked(mockGetTodoByIdHandler.execute).mockRejectedValue(error);
 

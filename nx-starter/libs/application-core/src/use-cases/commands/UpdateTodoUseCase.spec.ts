@@ -8,6 +8,7 @@ import {
 } from '@nx-starter/domain-core';
 import type { ITodoRepository } from '@nx-starter/domain-core';
 import type { UpdateTodoCommand } from '../../dto/TodoCommands';
+import { TEST_UUIDS } from '@nx-starter/utils-core';
 
 describe('UpdateTodoUseCase', () => {
   let useCase: UpdateTodoUseCase;
@@ -31,7 +32,7 @@ describe('UpdateTodoUseCase', () => {
       new TodoTitle('Existing todo'),
       false,
       new Date('2025-01-01'),
-      '12345678901234567890123456789016',
+      TEST_UUIDS.UPDATE_TODO,
       'medium',
       undefined
     );
@@ -43,7 +44,7 @@ describe('UpdateTodoUseCase', () => {
     it('should update todo title', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: '12345678901234567890123456789016',
+        id: TEST_UUIDS.UPDATE_TODO,
         title: 'Updated title',
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -54,7 +55,7 @@ describe('UpdateTodoUseCase', () => {
       // Assert
       expect(result.title.value).toBe('Updated title');
       expect(mockRepository.update).toHaveBeenCalledWith(
-        '12345678901234567890123456789016',
+        TEST_UUIDS.UPDATE_TODO,
         {
           title: expect.any(TodoTitle),
           completed: false,
@@ -67,7 +68,7 @@ describe('UpdateTodoUseCase', () => {
     it('should update todo completion status', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: '12345678901234567890123456789016',
+        id: TEST_UUIDS.UPDATE_TODO,
         completed: true,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -83,7 +84,7 @@ describe('UpdateTodoUseCase', () => {
     it('should update todo priority', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: '12345678901234567890123456789016',
+        id: TEST_UUIDS.UPDATE_TODO,
         priority: 'high',
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -100,7 +101,7 @@ describe('UpdateTodoUseCase', () => {
       // Arrange
       const dueDate = new Date('2025-12-31');
       const command: UpdateTodoCommand = {
-        id: '12345678901234567890123456789016',
+        id: TEST_UUIDS.UPDATE_TODO,
         dueDate,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -116,7 +117,7 @@ describe('UpdateTodoUseCase', () => {
     it('should update multiple fields at once', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: '12345678901234567890123456789016',
+        id: TEST_UUIDS.UPDATE_TODO,
         title: 'Updated title',
         completed: true,
         priority: 'high',
@@ -136,7 +137,7 @@ describe('UpdateTodoUseCase', () => {
     it('should handle toggling completion from false to true', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: '12345678901234567890123456789016',
+        id: TEST_UUIDS.UPDATE_TODO,
         completed: true,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -154,12 +155,12 @@ describe('UpdateTodoUseCase', () => {
         new TodoTitle('Completed todo'),
         true,
         new Date('2025-01-01'),
-        '12345678901234567890123456789017',
+        TEST_UUIDS.TODO_1,
         'medium',
         undefined
       );
       const command: UpdateTodoCommand = {
-        id: '12345678901234567890123456789017',
+        id: TEST_UUIDS.TODO_1,
         completed: false,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(completedTodo);
@@ -174,10 +175,10 @@ describe('UpdateTodoUseCase', () => {
     it('should throw TodoNotFoundException when todo does not exist', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: '12345678901234567890123456789018',
+        id: TEST_UUIDS.NONEXISTENT_TODO,
         title: 'Updated title',
       };
-      vi.mocked(mockRepository.getById).mockResolvedValue(null);
+      vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
 
       // Act & Assert
       await expect(useCase.execute(command)).rejects.toThrow(
@@ -189,7 +190,7 @@ describe('UpdateTodoUseCase', () => {
     it('should validate todo after updates', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: '12345678901234567890123456789016',
+        id: TEST_UUIDS.UPDATE_TODO,
         title: 'Updated title',
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);
@@ -205,7 +206,7 @@ describe('UpdateTodoUseCase', () => {
     it('should handle repository errors', async () => {
       // Arrange
       const command: UpdateTodoCommand = {
-        id: '12345678901234567890123456789016',
+        id: TEST_UUIDS.UPDATE_TODO,
         title: 'Updated title',
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(existingTodo);

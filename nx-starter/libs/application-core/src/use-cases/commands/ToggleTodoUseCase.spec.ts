@@ -7,6 +7,7 @@ import {
 } from '@nx-starter/domain-core';
 import type { ITodoRepository } from '@nx-starter/domain-core';
 import type { ToggleTodoCommand } from '../../dto/TodoCommands';
+import { TEST_UUIDS } from '@nx-starter/utils-core';
 
 describe('ToggleTodoUseCase', () => {
   let useCase: ToggleTodoUseCase;
@@ -31,7 +32,7 @@ describe('ToggleTodoUseCase', () => {
       new TodoTitle('Incomplete todo'),
       false,
       new Date('2025-01-01'),
-      '12345678901234567890123456789022',
+      TEST_UUIDS.TOGGLE_TODO,
       'medium',
       undefined
     );
@@ -40,7 +41,7 @@ describe('ToggleTodoUseCase', () => {
       new TodoTitle('Completed todo'),
       true,
       new Date('2025-01-01'),
-      '12345678901234567890123456789023',
+      TEST_UUIDS.TODO_1,
       'high',
       new Date('2025-12-31')
     );
@@ -52,7 +53,7 @@ describe('ToggleTodoUseCase', () => {
     it('should toggle incomplete todo to completed', async () => {
       // Arrange
       const command: ToggleTodoCommand = {
-        id: '12345678901234567890123456789022',
+        id: TEST_UUIDS.TOGGLE_TODO,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(incompleteTodo);
 
@@ -62,7 +63,7 @@ describe('ToggleTodoUseCase', () => {
       // Assert
       expect(result.completed).toBe(true);
       expect(mockRepository.update).toHaveBeenCalledWith(
-        '12345678901234567890123456789022',
+        TEST_UUIDS.TOGGLE_TODO,
         {
           completed: true,
         }
@@ -72,7 +73,7 @@ describe('ToggleTodoUseCase', () => {
     it('should toggle completed todo to incomplete', async () => {
       // Arrange
       const command: ToggleTodoCommand = {
-        id: '12345678901234567890123456789023',
+        id: TEST_UUIDS.TODO_1,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(completedTodo);
 
@@ -82,7 +83,7 @@ describe('ToggleTodoUseCase', () => {
       // Assert
       expect(result.completed).toBe(false);
       expect(mockRepository.update).toHaveBeenCalledWith(
-        '12345678901234567890123456789023',
+        TEST_UUIDS.TODO_1,
         {
           completed: false,
         }
@@ -92,9 +93,9 @@ describe('ToggleTodoUseCase', () => {
     it('should throw TodoNotFoundException when todo does not exist', async () => {
       // Arrange
       const command: ToggleTodoCommand = {
-        id: '12345678901234567890123456789024',
+        id: TEST_UUIDS.NONEXISTENT_TODO,
       };
-      vi.mocked(mockRepository.getById).mockResolvedValue(null);
+      vi.mocked(mockRepository.getById).mockResolvedValue(undefined);
 
       // Act & Assert
       await expect(useCase.execute(command)).rejects.toThrow(
@@ -106,7 +107,7 @@ describe('ToggleTodoUseCase', () => {
     it('should preserve other todo properties when toggling', async () => {
       // Arrange
       const command: ToggleTodoCommand = {
-        id: '12345678901234567890123456789022',
+        id: TEST_UUIDS.TOGGLE_TODO,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(incompleteTodo);
 
@@ -117,13 +118,13 @@ describe('ToggleTodoUseCase', () => {
       expect(result.title.value).toBe('Incomplete todo');
       expect(result.priority.level).toBe('medium');
       expect(result.createdAt).toEqual(incompleteTodo.createdAt);
-      expect(result.id?.value).toBe('12345678901234567890123456789022');
+      expect(result.id?.value).toBe(TEST_UUIDS.TOGGLE_TODO);
     });
 
     it('should validate todo after toggling', async () => {
       // Arrange
       const command: ToggleTodoCommand = {
-        id: '12345678901234567890123456789022',
+        id: TEST_UUIDS.TOGGLE_TODO,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(incompleteTodo);
 
@@ -138,7 +139,7 @@ describe('ToggleTodoUseCase', () => {
     it('should handle repository errors during getById', async () => {
       // Arrange
       const command: ToggleTodoCommand = {
-        id: '12345678901234567890123456789025',
+        id: TEST_UUIDS.TODO_2,
       };
       const error = new Error('Repository error');
       vi.mocked(mockRepository.getById).mockRejectedValue(error);
@@ -153,7 +154,7 @@ describe('ToggleTodoUseCase', () => {
     it('should handle repository errors during update', async () => {
       // Arrange
       const command: ToggleTodoCommand = {
-        id: '12345678901234567890123456789022',
+        id: TEST_UUIDS.TOGGLE_TODO,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(incompleteTodo);
       const error = new Error('Update error');
@@ -162,10 +163,10 @@ describe('ToggleTodoUseCase', () => {
       // Act & Assert
       await expect(useCase.execute(command)).rejects.toThrow('Update error');
       expect(mockRepository.getById).toHaveBeenCalledWith(
-        '12345678901234567890123456789022'
+        TEST_UUIDS.TOGGLE_TODO
       );
       expect(mockRepository.update).toHaveBeenCalledWith(
-        '12345678901234567890123456789022',
+        TEST_UUIDS.TOGGLE_TODO,
         {
           completed: true,
         }
@@ -175,7 +176,7 @@ describe('ToggleTodoUseCase', () => {
     it('should check todo existence before toggling', async () => {
       // Arrange
       const command: ToggleTodoCommand = {
-        id: '12345678901234567890123456789022',
+        id: TEST_UUIDS.TOGGLE_TODO,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(incompleteTodo);
 
@@ -191,7 +192,7 @@ describe('ToggleTodoUseCase', () => {
     it('should work with todos that have due dates', async () => {
       // Arrange
       const command: ToggleTodoCommand = {
-        id: '12345678901234567890123456789023',
+        id: TEST_UUIDS.TODO_1,
       };
       vi.mocked(mockRepository.getById).mockResolvedValue(completedTodo);
 
