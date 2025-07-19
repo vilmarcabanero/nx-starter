@@ -176,6 +176,7 @@
     "jiti": "2.4.2",
     "jsdom": "~22.1.0",
     "jsonc-eslint-parser": "^2.1.0",
+    "newman": "^6.2.1",
     "nx": "21.2.3",
     "postcss": "^8.5.6",
     "prettier": "^2.6.2",
