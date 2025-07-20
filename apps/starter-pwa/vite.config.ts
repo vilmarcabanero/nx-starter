@@ -23,6 +23,9 @@ export default defineConfig(async () => {
       nxViteTsPaths(),
       nxCopyAssetsPlugin(['*.md']),
     ],
+    optimizeDeps: {
+      exclude: ['routing-controllers'],
+    },
     resolve: {
       alias: {
         '@': '/src',
@@ -38,6 +41,9 @@ export default defineConfig(async () => {
       reportCompressedSize: true,
       commonjsOptions: {
         transformMixedEsModules: true,
+      },
+      rollupOptions: {
+        external: ['routing-controllers'],
       },
     },
     test: {
