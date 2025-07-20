@@ -170,7 +170,7 @@ body:
         **API Testing:**
         - `pnpm test:api` - Run API tests
         - `pnpm endapi` - Run API E2E tests
-        - `pnpm newman` - Run Postman tests
+        - `pnpm e2e:postman` - Run Postman tests
         
         **UI Testing:**
         - `pnpm test:web` - Run PWA tests

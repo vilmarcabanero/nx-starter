@@ -42,7 +42,7 @@ body:
       placeholder: |
         Example:
         ```
-        pnpm newman run apps/starter-api/postman-collection.json.backup -e apps/starter-api/postman-environment.json --reporters cli
+        pnpm e2e:postman
         
         Collection: Starter API Tests
         Environment: Local Development
@@ -181,8 +181,11 @@ body:
       description: Relevant commands for Postman testing
       value: |
         **Run Postman Tests:**
-        - `pnpm newman run apps/starter-api/postman-collection.json.backup -e apps/starter-api/postman-environment.json --reporters cli`
-        - `pnpm newman run apps/starter-api/postman-collection.json -e apps/starter-api/postman-environment.json --reporters json,cli`
+        - `pnpm e2e:postman`
+        
+        **Advanced Newman Options (when running directly):**
+        - `npx newman run apps/starter-api/postman-collection.json.backup -e apps/starter-api/postman-environment.json --reporters cli,html --reporter-html-export apps/starter-api/postman/report.html`
+        - `npx newman run apps/starter-api/postman-collection.json -e apps/starter-api/postman-environment.json --reporters json,cli`
         
         **Newman Command Options:**
         - `--reporters cli,json,html` - Multiple output formats
