@@ -2,6 +2,13 @@
 
 A modern, scalable monorepo starter built with [Nx](https://nx.dev) that demonstrates clean architecture principles and best practices for full-stack TypeScript development.
 
+## ⚠️ Disclaimer
+
+> This project is provided **as-is for educational and experimental purposes only**.
+> The author makes **no guarantees** regarding the correctness, security, or suitability of this code for use in production environments.
+>
+> **Use at your own risk**. You are responsible for reviewing and validating any generated or modified code before using it in real applications.
+
 ## 🏗️ Architecture Overview
 
 This workspace follows clean architecture principles with clear separation of concerns:
