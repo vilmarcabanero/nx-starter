@@ -255,7 +255,12 @@ body:
         **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
-        - Maximum 72 characters for the entire header
+        - Header length limits vary by scope:
+          - `starter-api-e2e`, `starter-pwa-e2e`, `application-core`: max 90 characters
+          - `domain-core`: max 85 characters  
+          - `starter-api`, `starter-pwa`: max 83 characters
+          - `utils-core`: max 80 characters
+          - All other scopes: max 72 characters
         - Be descriptive about what was updated
         
         **Reference:** See `commitlint.config.ts` and `.husky/commit-msg` for complete rules

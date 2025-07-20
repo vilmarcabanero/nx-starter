@@ -366,7 +366,12 @@ feat: add feature                        # ❌ Missing scope (optional but recom
 **Validation Rules:**
 - **First letter**: Must be lowercase or a number (allows proper nouns/acronyms after)
 - **No periods**: Subject must not end with a period (.)
-- **Length**: Header must be 72 characters or less
+- **Length**: Header length varies by scope:
+  - `starter-api-e2e`, `starter-pwa-e2e`, `application-core`: max 90 characters
+  - `domain-core`: max 85 characters
+  - `starter-api`, `starter-pwa`: max 83 characters
+  - `utils-core`: max 80 characters
+  - All other scopes: max 72 characters
 - **Type**: Must be one of the allowed types in lowercase
 - **Scope**: Must be in kebab-case if provided
 
