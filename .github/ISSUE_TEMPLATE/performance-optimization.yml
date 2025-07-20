@@ -1,6 +1,6 @@
 name: ⚡ Performance Optimization Task
 description: Optimize application performance for better user experience
-title: "[COMPONENT] Optimize performance - [PERFORMANCE_AREA]"
+title: "[component] Optimize performance - [PERFORMANCE_AREA]"
 labels: ["performance", "optimization", "enhancement", "copilot"]
 assignees: ["copilot"]
 body:

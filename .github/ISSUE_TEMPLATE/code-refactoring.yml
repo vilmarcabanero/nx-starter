@@ -1,6 +1,6 @@
 name: 🔄 Code Refactoring Task
 description: Refactor existing code to improve maintainability, performance, or architecture
-title: "[COMPONENT] Refactor code for improved [ASPECT]"
+title: "[component] Refactor code for improved [ASPECT]"
 labels: ["refactoring", "code-quality", "enhancement", "copilot"]
 assignees: ["copilot"]
 body:

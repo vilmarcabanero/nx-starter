@@ -1,6 +1,6 @@
 name: 📮🔧 Postman Test Fix
 description: Fix failing Postman collection tests and API issues
-title: "[API] Fix failing Postman tests"
+title: "[starter-api] Fix failing Postman tests"
 labels: ["testing", "postman", "api", "test", "high-priority", "copilot"]
 assignees: ["copilot"]
 body:

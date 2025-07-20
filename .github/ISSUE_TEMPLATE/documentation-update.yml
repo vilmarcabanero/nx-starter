@@ -1,6 +1,6 @@
 name: 📚 Documentation Update Task
 description: Update, create, or improve project documentation
-title: "[DOCS] Update documentation - [DOC_AREA]"
+title: "[component] [DOCS] Update documentation - [DOC_AREA]"
 labels: ["documentation", "maintenance", "enhancement", "copilot"]
 assignees: ["copilot"]
 body:

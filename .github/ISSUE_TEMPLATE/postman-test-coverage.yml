@@ -1,6 +1,6 @@
 name: 📮 Postman Test Coverage
 description: Improve Postman collection and API testing coverage
-title: "[API] Update Postman tests to achieve comprehensive API coverage"
+title: "[starter-api] Update Postman tests to achieve comprehensive API coverage"
 labels: ["testing", "postman", "api", "coverage", "enhancement", "copilot"]
 assignees: ["copilot"]
 body:

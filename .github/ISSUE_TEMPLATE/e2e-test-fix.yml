@@ -1,6 +1,6 @@
 name: 🎭🔧 E2E Test Fix
 description: Fix failing end-to-end tests for API or PWA applications
-title: "Fix failing E2E tests"
+title: "[component] Fix failing E2E tests"
 labels: ["testing", "e2e", "test", "high-priority", "copilot"]
 assignees: ["copilot"]
 body:

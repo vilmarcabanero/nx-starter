@@ -1,6 +1,6 @@
 name: 🎭 E2E Test Coverage
 description: Improve end-to-end test coverage for API or PWA applications
-title: "Update E2E tests to achieve comprehensive coverage"
+title: "[component] Update E2E tests to achieve comprehensive coverage"
 labels: ["testing", "e2e", "coverage", "enhancement", "copilot"]
 assignees: ["copilot"]
 body:

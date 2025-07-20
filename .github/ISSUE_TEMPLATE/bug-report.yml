@@ -1,6 +1,6 @@
 name: 🐛 Bug Report
 description: File a bug report to help us improve
-title: "[BUG] "
+title: "[component] [BUG] "
 labels: ["bug", "triage"]
 assignees: []
 body:

@@ -1,24 +1,6 @@
 name: 🧪 Unit Test Coverage Task
 description: Improve unit test coverage for a specific application or library
-title: "Update unit tests to achieve 100% coverage"
-labels: ["testing", "coverage", "enhancement", "copilot"]
-assignees: ["copilot"]
-body:
-  - type: dropdown
-    id: component
-    attributes:
-      label: Application/Library
-      description: Select the application or library that needs coverage improvement
-      options:
-        - starter-api
-        - starter-pwa
-        - domain-core
-        - application-core
-        - utils-core
-    validations:
-      required: trueCoverage Task
-description: Improve unit test coverage for a specific component or library
-title: "[COMPONENT] Update unit tests to achieve 100% coverage"
+title: "[component] Update unit tests to achieve 100% coverage"
 labels: ["testing", "coverage", "enhancement", "copilot"]
 assignees: ["copilot"]
 body:

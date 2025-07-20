@@ -1,6 +1,6 @@
 name: 🔧 Unit Test Fix
 description: Fix failing unit tests for a specific application or library
-title: "Fix failing unit tests"
+title: "[component] Fix failing unit tests"
 labels: ["testing", "test", "unit-tests", "high-priority", "copilot"]
 assignees: ["copilot"]
 body:

@@ -1,6 +1,6 @@
 name: 📋 Comprehensive Plan Implementation
 description: Implement a comprehensive plan or detailed task specification
-title: "[PLAN] "
+title: "[component] [PLAN] "
 labels: ["enhancement", "plan", "comprehensive", "copilot"]
 assignees: ["copilot"]
 body:
