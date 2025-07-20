@@ -24,7 +24,7 @@ export default defineConfig(async () => {
       nxCopyAssetsPlugin(['*.md']),
     ],
     optimizeDeps: {
-      exclude: ['routing-controllers'],
+      exclude: ['routing-controllers', 'class-validator', 'validator'],
     },
     resolve: {
       alias: {
@@ -43,7 +43,7 @@ export default defineConfig(async () => {
         transformMixedEsModules: true,
       },
       rollupOptions: {
-        external: ['routing-controllers'],
+        external: ['routing-controllers', 'class-validator', 'validator'],
       },
     },
     test: {
