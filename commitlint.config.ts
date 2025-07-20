@@ -29,7 +29,7 @@ const config = {
     'subject-case': [0], // Will use custom rule below
     'subject-first-letter-lowercase': [2, 'always'],
     'subject-full-stop': [2, 'never', '.'],
-    'header-max-length': [2, 'always', 72],
+    'conditional-header-max-length': [2, 'always'],
     'body-leading-blank': [2, 'always'],
     'footer-leading-blank': [2, 'always'],
   },
@@ -62,6 +62,36 @@ const config = {
             return [
               false,
               'subject must start with lowercase letter or number',
+            ];
+          }
+
+          return [true];
+        },
+        'conditional-header-max-length': (parsed: any) => {
+          const scope = parsed.scope;
+          const header = parsed.header;
+          if (!header) return [true];
+
+          // Define scope-specific length limits
+          const scopeLimits: Record<string, number> = {
+            // Apps
+            'starter-api-e2e': 90,
+            'starter-api': 83,
+            'starter-pwa-e2e': 90,
+            'starter-pwa': 83,
+            // Libs
+            'application-core': 90,
+            'domain-core': 85,
+            'utils-core': 80,
+          };
+
+          // Get the limit for this scope, default to 72
+          const limit = scope ? scopeLimits[scope] || 72 : 72;
+          
+          if (header.length > limit) {
+            return [
+              false,
+              `header must not be longer than ${limit} characters for scope "${scope || 'no scope'}", current length is ${header.length}`,
             ];
           }
 
