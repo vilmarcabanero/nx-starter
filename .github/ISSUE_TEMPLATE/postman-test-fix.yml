@@ -108,11 +108,6 @@ body:
         - Modified request/response schemas
     validations:
       required: false
-          required: false
-        - label: Pre-request script execution errors
-          required: false
-        - label: Collection organization or folder issues
-          required: false
 
   - type: textarea
     id: recent-changes

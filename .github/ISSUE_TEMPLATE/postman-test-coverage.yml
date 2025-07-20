@@ -147,12 +147,6 @@ body:
       render: markdown
     validations:
       required: false
-        - label: API versioning and compatibility
-          required: false
-        - label: Rate limiting and throttling
-          required: false
-        - label: Security testing (SQL injection, XSS)
-          required: false
 
   - type: textarea
     id: environment-updates
