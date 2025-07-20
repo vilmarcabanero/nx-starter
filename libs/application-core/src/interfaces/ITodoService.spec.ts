@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import type { Todo } from '@nx-starter/domain-core';
 import type {
   CreateTodoData,
   UpdateTodoData,
