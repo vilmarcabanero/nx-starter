@@ -11,9 +11,9 @@ A modern, scalable monorepo starter built with [Nx](https://nx.dev) that demonst
 
 ## 📖 Project Description
 
-> This project was primarily generated using AI coding assistants: **GitHub Copilot (Sonnet 4)** and **Claude Code (Sonnet 4)**. It serves as a **learning-focused template** for experimenting with monorepo architecture, clean code principles, and the capabilities (and limitations) of large language models when applied to real-world software development.
->
-> The goal is to explore how AI-assisted code generation can help developers produce production-grade applications—**when guided by architectural knowledge and developer judgment**.
+This project was primarily generated using AI coding assistants: **GitHub Copilot (Sonnet 4)** and **Claude Code (Sonnet 4)**. It serves as a **learning-focused template** for experimenting with monorepo architecture, clean code principles, and the capabilities (and limitations) of large language models when applied to real-world software development.
+
+The goal is to explore how AI-assisted code generation can help developers produce production-grade applications, **when guided by architectural knowledge and developer judgment**.
 
 ## 🏗️ Architecture Overview
 
