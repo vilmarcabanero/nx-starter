@@ -35,7 +35,7 @@ export class ValidationErrorMiddleware implements ExpressMiddlewareInterface {
  * Utility function to check if an error is a validation error
  */
 export function isValidationError(error: any): error is ValidationError {
-  return error instanceof ValidationError || error.name === 'ValidationError';
+  return !!(error instanceof ValidationError || (error && error.name === 'ValidationError'));
 }
 
 /**
