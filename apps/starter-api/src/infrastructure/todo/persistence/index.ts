@@ -1,5 +1,5 @@
-export * from './InMemoryTodoRepository';
-export * from './SqliteTodoRepository';
+export * from './in-memory/InMemoryTodoRepository';
+export * from './sqlite/SqliteTodoRepository';
 export * from './mongoose/MongooseTodoRepository';
 export * from './mongoose/MongooseConnection';
 export * from './mongoose/TodoSchema';

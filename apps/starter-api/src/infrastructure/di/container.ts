@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
-import { InMemoryTodoRepository } from '../todo/persistence/InMemoryTodoRepository';
-import { SqliteTodoRepository } from '../todo/persistence/SqliteTodoRepository';
+import { InMemoryTodoRepository } from '../todo/persistence/in-memory/InMemoryTodoRepository';
+import { SqliteTodoRepository } from '../todo/persistence/sqlite/SqliteTodoRepository';
 import { TypeOrmTodoRepository } from '../todo/persistence/typeorm/TypeOrmTodoRepository';
 import { MongooseTodoRepository } from '../todo/persistence/mongoose/MongooseTodoRepository';
 import { SequelizeTodoRepository } from '../todo/persistence/sequelize/SequelizeTodoRepository';
