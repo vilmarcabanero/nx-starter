@@ -23,9 +23,6 @@ export default defineConfig(async () => {
       nxViteTsPaths(),
       nxCopyAssetsPlugin(['*.md']),
     ],
-    optimizeDeps: {
-      exclude: ['routing-controllers', 'class-validator', 'validator', 'sequelize', 'class-transformer'],
-    },
     resolve: {
       alias: {
         '@': '/src',
@@ -42,13 +39,6 @@ export default defineConfig(async () => {
       commonjsOptions: {
         transformMixedEsModules: true,
       },
-      rollupOptions: {
-        external: ['routing-controllers', 'class-validator', 'validator', 'sequelize', 'class-transformer'],
-      },
-    },
-    ssr: {
-      noExternal: [],
-      external: ['routing-controllers', 'class-validator', 'validator', 'sequelize', 'class-transformer'],
     },
     test: {
       watch: false,
