@@ -9,9 +9,6 @@ export * from './TodoValidationService';
 
 // Note: Custom decorators for routing-controllers were removed in favor of manual validation
 
-// Validation middleware
-export * from './middleware/ValidationMiddleware';
-
 // Re-export commonly used validation schemas for convenience
 export {
   CreateTodoCommandSchema,
