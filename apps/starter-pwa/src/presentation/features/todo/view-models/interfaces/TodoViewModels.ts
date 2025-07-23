@@ -24,8 +24,8 @@ export interface TodoFormViewModel {
   submitTodo(title: string): Promise<void>;
   handleFormSubmit(title: string): Promise<boolean>;
   
-  // Legacy properties for backward compatibility
-  // Note: Validation is now handled by Zod resolver in the form layer
+  // Legacy properties for backward compatibility during transition
+  // TODO: Remove these after confirming no components depend on them
   validationErrors: Record<string, string>;
   shouldShowValidationErrors: boolean;
   validateTitle(title: string): boolean;

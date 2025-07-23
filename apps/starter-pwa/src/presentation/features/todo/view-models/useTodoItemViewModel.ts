@@ -3,6 +3,7 @@ import { useTodoStore } from '../../../../infrastructure/state/TodoStore';
 import { Todo } from '@nx-starter/domain-core';
 import { UpdateTodoCommandSchema } from '@nx-starter/application-core';
 import type { TodoItemViewModel } from './interfaces/TodoViewModels';
+import { getFieldError } from '../utils/ErrorMapping';
 
 /**
  * View Model for individual Todo Item component
@@ -46,8 +47,11 @@ export const useTodoItemViewModel = (todo: Todo): TodoItemViewModel => {
       });
       
       if (!validationResult.success) {
-        const firstError = validationResult.error.issues[0];
-        throw new Error(firstError.message);
+        // Use our error mapping utility for consistent error messages
+        const titleError = getFieldError(validationResult.error, 'title');
+        const idError = getFieldError(validationResult.error, 'id');
+        const errorMessage = titleError || idError || 'Validation failed';
+        throw new Error(errorMessage);
       }
 
       setIsUpdating(true);

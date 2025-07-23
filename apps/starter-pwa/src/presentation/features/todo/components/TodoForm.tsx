@@ -7,10 +7,7 @@ import { Input } from '../../../components/ui/input';
 import { Card, CardContent } from '../../../components/ui/card';
 import { Plus } from 'lucide-react';
 import { useTodoFormViewModel } from '../view-models/useTodoFormViewModel';
-
-interface FormData {
-  title: string;
-}
+import type { TodoFormData } from '../types/FormTypes';
 
 export const TodoForm: React.FC = () => {
   const {
@@ -18,12 +15,12 @@ export const TodoForm: React.FC = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<TodoFormData>({
     resolver: zodResolver(CreateTodoCommandSchema),
   });
   const viewModel = useTodoFormViewModel();
 
-  const onSubmit = handleSubmit(async (data: FormData) => {
+  const onSubmit = handleSubmit(async (data: TodoFormData) => {
     const success = await viewModel.handleFormSubmit(data.title);
     if (success) {
       reset();
