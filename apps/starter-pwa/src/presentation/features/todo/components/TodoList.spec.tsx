@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { TodoList } from './TodoList';
-import { Todo } from '@nx-starter/shared-domain';
+import { Todo } from '@nx-starter/domain-core';
 import { TEST_UUIDS } from '../../../../test/test-helpers';
 
 // Mock the view model

@@ -1,14 +1,13 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CreateTodoCommandSchema } from '@nx-starter/application-core';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Card, CardContent } from '../../../components/ui/card';
 import { Plus } from 'lucide-react';
 import { useTodoFormViewModel } from '../view-models/useTodoFormViewModel';
-
-interface FormData {
-  title: string;
-}
+import type { TodoFormData } from '../types/FormTypes';
 
 export const TodoForm: React.FC = () => {
   const {
@@ -16,10 +15,12 @@ export const TodoForm: React.FC = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<TodoFormData>({
+    resolver: zodResolver(CreateTodoCommandSchema),
+  });
   const viewModel = useTodoFormViewModel();
 
-  const onSubmit = handleSubmit(async (data: FormData) => {
+  const onSubmit = handleSubmit(async (data: TodoFormData) => {
     const success = await viewModel.handleFormSubmit(data.title);
     if (success) {
       reset();
@@ -32,30 +33,22 @@ export const TodoForm: React.FC = () => {
         <form onSubmit={onSubmit} className="flex gap-2">
           <div className="flex-1">
             <Input
-              {...register('title', {
-                required: 'Title is required',
-                validate: (value) => {
-                  viewModel.validateTitle(value);
-                  return viewModel.validationErrors.title
-                    ? viewModel.validationErrors.title
-                    : true;
-                },
-              })}
+              {...register('title')}
               placeholder="What needs to be done?"
               disabled={viewModel.isGlobalLoading || viewModel.isSubmitting}
               className={
-                errors.title || (viewModel.shouldShowValidationErrors && viewModel.validationErrors.title)
+                errors.title
                   ? 'border-destructive'
                   : ''
               }
               data-testid="todo-input"
             />
-            {(errors.title || (viewModel.shouldShowValidationErrors && viewModel.validationErrors.title)) && (
+            {errors.title && (
               <p
                 className="text-sm text-destructive mt-1"
                 data-testid="todo-input-error"
               >
-                {errors.title?.message || viewModel.validationErrors.title}
+                {errors.title.message}
               </p>
             )}
           </div>

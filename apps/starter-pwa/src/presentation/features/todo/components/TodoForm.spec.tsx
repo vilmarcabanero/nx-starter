@@ -8,10 +8,7 @@ const mockViewModel = {
   handleFormSubmit: vi.fn(),
   isSubmitting: false,
   isGlobalLoading: false,
-  validationErrors: {},
-  shouldShowValidationErrors: false,
   submitTodo: vi.fn(),
-  validateTitle: vi.fn(),
 };
 
 vi.mock('../view-models/useTodoFormViewModel', () => ({
@@ -24,9 +21,6 @@ describe('TodoForm', () => {
     mockViewModel.handleFormSubmit.mockResolvedValue(true);
     mockViewModel.isSubmitting = false;
     mockViewModel.isGlobalLoading = false;
-    mockViewModel.validationErrors = {};
-    mockViewModel.shouldShowValidationErrors = false;
-    mockViewModel.validateTitle.mockReturnValue(true);
   });
 
   it('should render form with input and button', () => {
@@ -90,42 +84,6 @@ describe('TodoForm', () => {
     });
   });
 
-  it('should not submit form with empty data', async () => {
-    const user = userEvent.setup();
-    mockViewModel.validateTitle.mockReturnValue(false);
-    mockViewModel.validationErrors = { title: 'Title is required' };
-    mockViewModel.shouldShowValidationErrors = true;
-
-    render(<TodoForm />);
-
-    const button = screen.getByRole('button', { name: 'Add Todo' });
-
-    await user.click(button);
-
-    // Wait a bit to ensure no submission happens
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    expect(mockViewModel.handleFormSubmit).not.toHaveBeenCalled();
-  });
-
-  it('should not submit form with only whitespace', async () => {
-    const user = userEvent.setup();
-    mockViewModel.validateTitle.mockReturnValue(false);
-    mockViewModel.validationErrors = { title: 'Title cannot be empty' };
-    mockViewModel.shouldShowValidationErrors = true;
-
-    render(<TodoForm />);
-
-    const input = screen.getByPlaceholderText('What needs to be done?');
-    const button = screen.getByRole('button', { name: 'Add Todo' });
-
-    await user.type(input, '   ');
-    await user.click(button);
-
-    // Wait a bit to ensure no submission happens
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    expect(mockViewModel.handleFormSubmit).not.toHaveBeenCalled();
-  });
-
   it('should reset form after successful submission', async () => {
     const user = userEvent.setup();
 
@@ -185,102 +143,6 @@ describe('TodoForm', () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it('should show validation errors for required field', async () => {
-    const user = userEvent.setup();
-    mockViewModel.validationErrors = { title: 'Title is required' };
-    mockViewModel.shouldShowValidationErrors = true;
-
-    render(<TodoForm />);
-
-    const button = screen.getByRole('button', { name: 'Add Todo' });
-
-    // Try to submit empty form
-    await user.click(button);
-
-    // Check for validation error
-    await waitFor(() => {
-      expect(screen.getByText('Title is required')).toBeInTheDocument();
-    });
-  });
-
-  it('should apply error styling when validation fails', async () => {
-    const user = userEvent.setup();
-    mockViewModel.validationErrors = { title: 'Title is required' };
-    mockViewModel.shouldShowValidationErrors = true;
-
-    render(<TodoForm />);
-
-    const input = screen.getByPlaceholderText('What needs to be done?');
-    const button = screen.getByRole('button', { name: 'Add Todo' });
-
-    // Try to submit empty form
-    await user.click(button);
-
-    await waitFor(() => {
-      expect(input).toHaveClass('border-destructive');
-    });
-  });
-
-  it('should show form validation error for title length constraints', () => {
-    mockViewModel.validationErrors = {
-      title: 'Title must be at least 2 characters long',
-    };
-    mockViewModel.shouldShowValidationErrors = true;
-
-    render(<TodoForm />);
-
-    const errorMessage = screen.getByTestId('todo-input-error');
-    expect(errorMessage).toHaveTextContent(
-      'Title must be at least 2 characters long'
-    );
-  });
-
-  it('should show form validation error for title too long', () => {
-    mockViewModel.validationErrors = {
-      title: 'Title cannot exceed 255 characters',
-    };
-    mockViewModel.shouldShowValidationErrors = true;
-
-    render(<TodoForm />);
-
-    const errorMessage = screen.getByTestId('todo-input-error');
-    expect(errorMessage).toHaveTextContent(
-      'Title cannot exceed 255 characters'
-    );
-  });
-
-  it('should prioritize react-hook-form error over viewModel error', () => {
-    mockViewModel.validationErrors = { title: 'ViewModel error' };
-    mockViewModel.shouldShowValidationErrors = true;
-
-    render(<TodoForm />);
-
-    screen.getByPlaceholderText('What needs to be done?');
-
-    // Simulate react-hook-form error (this would normally be set by the validation)
-    // We can't easily test this without triggering actual form validation
-    // but we can test that viewModel errors are shown when react-hook-form errors are not present
-    const errorMessage = screen.getByTestId('todo-input-error');
-    expect(errorMessage).toHaveTextContent('ViewModel error');
-  });
-
-  it('should call validateTitle on form submission', async () => {
-    const user = userEvent.setup();
-
-    render(<TodoForm />);
-
-    const input = screen.getByPlaceholderText('What needs to be done?');
-    const button = screen.getByRole('button', { name: 'Add Todo' });
-
-    await user.type(input, 'test');
-    await user.click(button);
-
-    // The validateTitle should be called through the form validation when submitting
-    await waitFor(() => {
-      expect(mockViewModel.validateTitle).toHaveBeenCalledWith('test');
-    });
-  });
-
   it('should disable form during external loading', () => {
     // This tests external loading (e.g., initial app load)
     // Form submissions themselves don't use loading states for fast IndexedDB operations
@@ -295,55 +157,7 @@ describe('TodoForm', () => {
     expect(button).toBeDisabled();
   });
 
-  it('should not show validation errors on typing before first submission', async () => {
-    const user = userEvent.setup();
-    
-    render(<TodoForm />);
-
-    const input = screen.getByPlaceholderText('What needs to be done?');
-    
-    // Type a single character (invalid length)
-    await user.type(input, 'a');
-    
-    // Should not show validation error yet
-    expect(screen.queryByTestId('todo-input-error')).not.toBeInTheDocument();
-    
-    // Type more characters but still invalid
-    await user.clear(input);
-    await user.type(input, 'b');
-    
-    // Should still not show validation error
-    expect(screen.queryByTestId('todo-input-error')).not.toBeInTheDocument();
-  });
-
-  it('should show validation errors on typing after first submission attempt', async () => {
-    const user = userEvent.setup();
-    mockViewModel.validateTitle.mockReturnValue(false);
-    mockViewModel.validationErrors = { title: 'Title must be at least 2 characters long' };
-    mockViewModel.shouldShowValidationErrors = true;
-    
-    render(<TodoForm />);
-
-    const input = screen.getByPlaceholderText('What needs to be done?');
-    const button = screen.getByRole('button', { name: 'Add Todo' });
-    
-    // First, try to submit with invalid input
-    await user.type(input, 'a');
-    await user.click(button);
-    
-    // Should show validation error after submission attempt
-    await waitFor(() => {
-      expect(screen.getByTestId('todo-input-error')).toBeInTheDocument();
-    });
-    
-    // Clear and type another invalid character
-    await user.clear(input);
-    mockViewModel.validationErrors = { title: 'Title must be at least 2 characters long' };
-    await user.type(input, 'b');
-    
-    // Should now show validation error immediately on typing after first submission
-    await waitFor(() => {
-      expect(screen.getByTestId('todo-input-error')).toBeInTheDocument();
-    });
-  });
+  // Note: Validation tests are now handled by react-hook-form with Zod resolver
+  // Form-level validation is tested through E2E tests
+  // View model validation behavior is tested in useTodoFormViewModel.spec.ts
 });
