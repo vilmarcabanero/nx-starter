@@ -107,6 +107,38 @@ describe('TypeOrmConnection', () => {
       });
     });
 
+    it('should create MySQL DataSource with default values when they are not provided', async () => {
+      const mockConfig = {
+        nodeEnv: 'production',
+        database: {
+          type: 'mysql',
+          url: 'mysql://user:pass@localhost:3306/testdb',
+          username: 'user',
+          password: 'pass',
+          // host, port, and database not provided to test defaults
+        },
+      };
+
+      vi.mocked(config).nodeEnv = mockConfig.nodeEnv;
+      vi.mocked(config).database = mockConfig.database as any;
+
+      const { createTypeOrmDataSource } = await import('./TypeOrmConnection');
+      createTypeOrmDataSource();
+
+      expect(MockedDataSource).toHaveBeenCalledWith({
+        type: 'mysql',
+        url: 'mysql://user:pass@localhost:3306/testdb',
+        host: 'localhost', // default
+        port: 3306, // default
+        username: 'user',
+        password: 'pass',
+        database: 'task_app', // default
+        entities: expect.any(Array),
+        synchronize: false,
+        logging: false,
+      });
+    });
+
     it('should create SQLite DataSource when type is sqlite', async () => {
       const mockConfig = {
         nodeEnv: 'test',
