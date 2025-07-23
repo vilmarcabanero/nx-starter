@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useTodoStore } from '../../../../infrastructure/state/TodoStore';
 import { Todo } from '@nx-starter/domain-core';
+import { UpdateTodoCommandSchema } from '@nx-starter/application-core';
 import type { TodoItemViewModel } from './interfaces/TodoViewModels';
 
 /**
@@ -37,8 +38,16 @@ export const useTodoItemViewModel = (todo: Todo): TodoItemViewModel => {
   const updateTitle = useCallback(
     async (newTitle: string) => {
       if (!todo.stringId) return;
-      if (!newTitle.trim()) {
-        throw new Error('Title cannot be empty');
+      
+      // Use Zod schema for validation instead of manual validation
+      const validationResult = UpdateTodoCommandSchema.safeParse({
+        id: todo.stringId,
+        title: newTitle
+      });
+      
+      if (!validationResult.success) {
+        const firstError = validationResult.error.issues[0];
+        throw new Error(firstError.message);
       }
 
       setIsUpdating(true);

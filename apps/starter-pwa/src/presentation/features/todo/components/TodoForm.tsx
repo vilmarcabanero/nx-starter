@@ -1,5 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CreateTodoCommandSchema } from '@nx-starter/application-core';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Card, CardContent } from '../../../components/ui/card';
@@ -16,7 +18,9 @@ export const TodoForm: React.FC = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<FormData>({
+    resolver: zodResolver(CreateTodoCommandSchema),
+  });
   const viewModel = useTodoFormViewModel();
 
   const onSubmit = handleSubmit(async (data: FormData) => {
@@ -32,30 +36,22 @@ export const TodoForm: React.FC = () => {
         <form onSubmit={onSubmit} className="flex gap-2">
           <div className="flex-1">
             <Input
-              {...register('title', {
-                required: 'Title is required',
-                validate: (value) => {
-                  viewModel.validateTitle(value);
-                  return viewModel.validationErrors.title
-                    ? viewModel.validationErrors.title
-                    : true;
-                },
-              })}
+              {...register('title')}
               placeholder="What needs to be done?"
               disabled={viewModel.isGlobalLoading || viewModel.isSubmitting}
               className={
-                errors.title || (viewModel.shouldShowValidationErrors && viewModel.validationErrors.title)
+                errors.title
                   ? 'border-destructive'
                   : ''
               }
               data-testid="todo-input"
             />
-            {(errors.title || (viewModel.shouldShowValidationErrors && viewModel.validationErrors.title)) && (
+            {errors.title && (
               <p
                 className="text-sm text-destructive mt-1"
                 data-testid="todo-input-error"
               >
-                {errors.title?.message || viewModel.validationErrors.title}
+                {errors.title.message}
               </p>
             )}
           </div>

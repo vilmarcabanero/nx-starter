@@ -19,13 +19,16 @@ export interface TodoListViewModel {
 export interface TodoFormViewModel {
   isSubmitting: boolean;
   isGlobalLoading: boolean;
-  validationErrors: Record<string, string>;
-  shouldShowValidationErrors: boolean;
-
+  
   // Actions
   submitTodo(title: string): Promise<void>;
-  validateTitle(title: string): boolean;
   handleFormSubmit(title: string): Promise<boolean>;
+  
+  // Legacy properties for backward compatibility
+  // Note: Validation is now handled by Zod resolver in the form layer
+  validationErrors: Record<string, string>;
+  shouldShowValidationErrors: boolean;
+  validateTitle(title: string): boolean;
 }
 
 export interface TodoStatsViewModel {

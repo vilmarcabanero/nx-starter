@@ -1,5 +1,5 @@
 import React from 'react';
-import { Todo } from '@nx-starter/shared-domain';
+import { Todo } from '@nx-starter/domain-core';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Card, CardContent } from '../../../components/ui/card';
