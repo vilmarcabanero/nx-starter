@@ -28,7 +28,7 @@ THE SYSTEM SHALL display a validation error message "Title cannot exceed 255 cha
 WHEN a user successfully creates a new todo  
 THE SYSTEM SHALL clear the input field and reset the form to its initial state
 
-### REQ-007: Loading State During Creation
+### REQ-007: Loading State During Creation [will not do]
 WHEN a user submits a valid todo form  
 THE SYSTEM SHALL disable the input field and submit button, and display "Adding..." text until the operation completes
 
