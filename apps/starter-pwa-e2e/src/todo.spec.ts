@@ -16,7 +16,7 @@ test.describe('Todo Application', () => {
     });
 
     test('should have correct page title and structure', async ({ page }) => {
-      await expect(page).toHaveTitle(/Vite \+ React \+ TS/);
+      await expect(page).toHaveTitle('Frontend');
       await expect(page.locator('[data-testid="todo-app"]')).toBeVisible();
     });
   });
