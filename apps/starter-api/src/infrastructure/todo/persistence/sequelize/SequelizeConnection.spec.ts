@@ -227,6 +227,37 @@ describe('SequelizeConnection', () => {
       });
     });
 
+    it('should create PostgreSQL instance with individual parameters in production', async () => {
+      vi.mocked(config).database.url = undefined;
+      vi.mocked(config).database.type = 'postgresql';
+      vi.mocked(config).database.host = 'prodhost';
+      vi.mocked(config).database.port = 5433;
+      vi.mocked(config).database.username = 'produser';
+      vi.mocked(config).database.password = 'prodpass';
+      vi.mocked(config).database.database = 'proddb';
+      vi.mocked(config).nodeEnv = 'production';
+
+      const { createSequelizeInstance } = await import('./SequelizeConnection');
+      createSequelizeInstance();
+
+      expect(MockedSequelize).toHaveBeenCalledWith({
+        dialect: 'postgres',
+        host: 'prodhost',
+        port: 5433,
+        username: 'produser',
+        password: 'prodpass',
+        database: 'proddb',
+        logging: false,
+        dialectOptions: {
+          prependSearchPath: false,
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
+      });
+    });
+
     it('should default to SQLite for unknown database type', async () => {
       vi.mocked(config).database.url = undefined;
       vi.mocked(config).database.type = 'unknown' as any;
