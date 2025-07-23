@@ -9,11 +9,58 @@ import type { TodoPriorityLevel } from '@nx-starter/domain-core';
 // Base Todo validation schemas
 export const TodoPrioritySchema = z.enum(['low', 'medium', 'high']);
 
+// Enhanced title validation with specific error messages
+const validateTitle = (title: string, ctx: z.RefinementCtx) => {
+  // Check if title is provided (not undefined/null)
+  if (title === undefined || title === null) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Title is required',
+    });
+    return;
+  }
+
+  // Check if title is empty string
+  if (title === '') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Title is required',
+    });
+    return;
+  }
+
+  // Check if title becomes empty after trimming (whitespace only)
+  if (title.trim() === '') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Title cannot be empty',
+    });
+    return;
+  }
+
+  // Check minimum length (after trimming)
+  if (title.trim().length < 2) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Title must be at least 2 characters',
+    });
+    return;
+  }
+
+  // Check maximum length
+  if (title.length > 255) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Title cannot exceed 255 characters',
+    });
+    return;
+  }
+};
+
 export const CreateTodoCommandSchema = z.object({
   title: z
     .string()
-    .min(2, 'Title must be at least 2 characters')
-    .max(255, 'Title cannot exceed 255 characters'),
+    .superRefine(validateTitle),
   priority: TodoPrioritySchema.optional(),
   dueDate: z
     .string()
@@ -29,8 +76,7 @@ export const UpdateTodoCommandSchema = z.object({
   id: z.string().min(1, 'ID cannot be empty'),
   title: z
     .string()
-    .min(2, 'Title must be at least 2 characters')
-    .max(255, 'Title cannot exceed 255 characters')
+    .superRefine(validateTitle)
     .optional(),
   completed: z.boolean().optional(),
   priority: TodoPrioritySchema.optional(),
