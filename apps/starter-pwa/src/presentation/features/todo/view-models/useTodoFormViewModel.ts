@@ -45,9 +45,5 @@ export const useTodoFormViewModel = (): TodoFormViewModel => {
     isGlobalLoading: store.getIsLoading(),
     submitTodo,
     handleFormSubmit,
-    // Legacy properties for backward compatibility with existing interface
-    validationErrors: {},
-    shouldShowValidationErrors: false,
-    validateTitle: () => true, // No-op since validation is now handled by Zod
   };
 };

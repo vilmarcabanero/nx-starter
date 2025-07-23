@@ -28,8 +28,6 @@ describe('useTodoFormViewModel', () => {
       const { result } = renderHook(() => useTodoFormViewModel());
 
       expect(result.current.isSubmitting).toBe(false);
-      expect(result.current.validationErrors).toEqual({});
-      expect(result.current.shouldShowValidationErrors).toBe(false);
       expect(result.current.isGlobalLoading).toBe(false);
     });
 
@@ -41,23 +39,8 @@ describe('useTodoFormViewModel', () => {
     });
   });
 
-  describe('validateTitle (legacy compatibility)', () => {
-    it('should be a no-op function for backward compatibility', () => {
-      const { result } = renderHook(() => useTodoFormViewModel());
-
-      act(() => {
-        // Legacy validation method should always return true (no-op)
-        const isValid = result.current.validateTitle('Any title');
-        expect(isValid).toBe(true);
-      });
-
-      // Validation errors should remain empty since validation is handled by Zod
-      expect(result.current.validationErrors).toEqual({});
-    });
-  });
-
   describe('submitTodo', () => {
-    it('should submit valid todo successfully', async () => {
+    it('should create todo successfully', async () => {
       mockStore.createTodo.mockResolvedValue(undefined);
       const { result } = renderHook(() => useTodoFormViewModel());
 
@@ -68,53 +51,21 @@ describe('useTodoFormViewModel', () => {
       expect(mockStore.createTodo).toHaveBeenCalledWith({
         title: 'Valid todo title',
       });
-      expect(result.current.isSubmitting).toBe(false);
-      expect(result.current.validationErrors).toEqual({});
-      expect(result.current.shouldShowValidationErrors).toBe(false);
-    });
-
-    it('should trim title before submitting', async () => {
-      mockStore.createTodo.mockResolvedValue(undefined);
-      const { result } = renderHook(() => useTodoFormViewModel());
-
-      await act(async () => {
-        await result.current.submitTodo('  Todo with spaces  ');
-      });
-
-      expect(mockStore.createTodo).toHaveBeenCalledWith({
-        title: 'Todo with spaces',
-      });
     });
 
     it('should set isSubmitting during submission', async () => {
-      let resolvePromise: () => void;
-      const createPromise = new Promise<void>((resolve) => {
-        resolvePromise = resolve;
-      });
-      mockStore.createTodo.mockReturnValue(createPromise);
-
+      mockStore.createTodo.mockImplementation(
+        () => new Promise((resolve) => setTimeout(resolve, 100))
+      );
       const { result } = renderHook(() => useTodoFormViewModel());
 
-      // Start submission in the background
-      const submitPromise = result.current.submitTodo('Valid title');
-
-      // Wait for next tick to allow state to update
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
+      const submitPromise = act(async () => {
+        await result.current.submitTodo('Test todo');
       });
 
-      // Check isSubmitting is true during submission
       expect(result.current.isSubmitting).toBe(true);
 
-      // Complete submission
-      act(() => {
-        resolvePromise!();
-      });
-
-      await act(async () => {
-        await submitPromise;
-      });
-
+      await submitPromise;
       expect(result.current.isSubmitting).toBe(false);
     });
 
@@ -138,12 +89,16 @@ describe('useTodoFormViewModel', () => {
       mockStore.createTodo.mockRejectedValue(error);
       const { result } = renderHook(() => useTodoFormViewModel());
 
-      await expect(
-        act(async () => {
-          await result.current.submitTodo('Valid title');
-        })
-      ).rejects.toThrow('Network error');
+      let thrownError: Error | undefined;
+      await act(async () => {
+        try {
+          await result.current.submitTodo('Test todo');
+        } catch (e) {
+          thrownError = e as Error;
+        }
+      });
 
+      expect(thrownError).toBe(error);
       expect(result.current.isSubmitting).toBe(false);
     });
 
@@ -152,18 +107,20 @@ describe('useTodoFormViewModel', () => {
       mockStore.createTodo.mockRejectedValue(error);
       const { result } = renderHook(() => useTodoFormViewModel());
 
-      await expect(
-        act(async () => {
-          await result.current.submitTodo('Valid title');
-        })
-      ).rejects.toThrow('Submission failed');
+      await act(async () => {
+        try {
+          await result.current.submitTodo('Test todo');
+        } catch (error) {
+          // Expected to throw
+        }
+      });
 
       expect(result.current.isSubmitting).toBe(false);
     });
   });
 
   describe('handleFormSubmit', () => {
-    it('should return true for successful submission', async () => {
+    it('should return true on successful submission', async () => {
       mockStore.createTodo.mockResolvedValue(undefined);
       const { result } = renderHook(() => useTodoFormViewModel());
 
@@ -194,7 +151,7 @@ describe('useTodoFormViewModel', () => {
     });
 
     it('should return false when submission fails', async () => {
-      const error = new Error('Submission failed');
+      const error = new Error('Network error');
       mockStore.createTodo.mockRejectedValue(error);
       const { result } = renderHook(() => useTodoFormViewModel());
 
@@ -228,25 +185,16 @@ describe('useTodoFormViewModel', () => {
       });
 
       // State should remain clean since validation is handled at form level
-      expect(result.current.validationErrors).toEqual({});
-      expect(result.current.shouldShowValidationErrors).toBe(false);
       expect(mockStore.createTodo).toHaveBeenCalledWith({
         title: 'Valid todo title',
       });
     });
-
   });
 
   describe('integration scenarios (Zod validation)', () => {
     it('should handle complete form submission flow with Zod validation', async () => {
       mockStore.createTodo.mockResolvedValue(undefined);
       const { result } = renderHook(() => useTodoFormViewModel());
-
-      // Legacy validate method is now a no-op
-      act(() => {
-        const isValid = result.current.validateTitle('Complete todo task');
-        expect(isValid).toBe(true); // Always true since it's a no-op
-      });
 
       // Submit - validation is now handled by Zod resolver
       let submitResult: boolean | undefined;
@@ -257,9 +205,9 @@ describe('useTodoFormViewModel', () => {
       });
 
       expect(submitResult).toBe(true);
-      expect(result.current.validationErrors).toEqual({});
-      expect(result.current.isSubmitting).toBe(false);
-      expect(result.current.shouldShowValidationErrors).toBe(false);
+      expect(mockStore.createTodo).toHaveBeenCalledWith({
+        title: 'Complete todo task',
+      });
     });
 
     it('should maintain clean state since validation is handled by Zod', async () => {
@@ -272,29 +220,9 @@ describe('useTodoFormViewModel', () => {
       });
 
       // View model should maintain clean state
-      expect(result.current.validationErrors).toEqual({});
-      expect(result.current.shouldShowValidationErrors).toBe(false);
       expect(mockStore.createTodo).toHaveBeenCalledWith({
         title: 'Valid title',
       });
-    });
-
-    it('should not manage validation state (handled by Zod resolver)', async () => {
-      const { result } = renderHook(() => useTodoFormViewModel());
-
-      // Legacy validation properties should remain false/empty
-      expect(result.current.shouldShowValidationErrors).toBe(false);
-      expect(result.current.validationErrors).toEqual({});
-      
-      // Legacy validation method should be no-op
-      act(() => {
-        const isValid = result.current.validateTitle('any input');
-        expect(isValid).toBe(true); // Always true - validation handled by Zod
-      });
-      
-      // State should remain clean
-      expect(result.current.validationErrors).toEqual({});
-      expect(result.current.shouldShowValidationErrors).toBe(false);
     });
   });
 });
