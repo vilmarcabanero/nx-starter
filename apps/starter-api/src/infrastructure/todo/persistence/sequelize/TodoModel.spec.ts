@@ -3,6 +3,7 @@ import { Sequelize, DataTypes } from 'sequelize';
 
 vi.mock('sequelize', () => ({
   Sequelize: vi.fn(),
+  Model: class Model {},
   DataTypes: {
     STRING: vi.fn(),
     BOOLEAN: vi.fn(),

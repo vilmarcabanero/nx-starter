@@ -114,7 +114,7 @@ describe('Server Index', () => {
     
     // Set require.main to simulate being run directly
     Object.defineProperty(require, 'main', {
-      value: require.cache[require.resolve('./main')],
+      value: module,
       configurable: true
     });
 

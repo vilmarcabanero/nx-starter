@@ -65,9 +65,15 @@ describe('RoutingControllersErrorHandler', () => {
     });
 
     it('should handle ValidationError from application layer', () => {
-      const validationError = new ValidationError('Validation failed', [
-        { field: 'title', message: 'Title is required' }
-      ]);
+      const validationError = new ValidationError([
+        { 
+          code: 'invalid_type',
+          path: ['title'], 
+          message: 'Title is required',
+          expected: 'string',
+          received: 'undefined'
+        }
+      ], 'Validation failed');
 
       errorHandler.error(validationError, mockReq as Request, mockRes as Response, mockNext);
 
