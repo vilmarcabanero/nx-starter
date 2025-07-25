@@ -41,8 +41,12 @@ const validateTitle = (title: string, ctx: z.RefinementCtx) => {
   // Check minimum length (after trimming)
   if (title.trim().length < 2) {
     ctx.addIssue({
-      code: z.ZodIssueCode.custom,
+      code: z.ZodIssueCode.too_small,
       message: 'Title must be at least 2 characters',
+      minimum: 2,
+      origin: 'string',
+      inclusive: true,
+      input: title,
     });
     return;
   }
