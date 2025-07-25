@@ -8,3 +8,4 @@ onlyBuiltDependencies:
   - mongodb-memory-server
   - nx
   - sqlite3
+  - unrs-resolver

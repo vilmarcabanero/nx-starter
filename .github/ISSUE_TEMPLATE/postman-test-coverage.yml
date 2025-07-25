@@ -19,6 +19,45 @@ body:
     validations:
       required: true
 
+  - type: textarea
+    id: setup-prerequisites
+    attributes:
+      label: "📋 Setup Prerequisites"
+      description: "**IMPORTANT**: Before working on this issue, ensure you have the correct package manager setup!"
+      value: |
+        ## 🚀 Required Setup Steps
+        
+        **⚠️ CRITICAL**: This project uses **pnpm** as the package manager. Using npm or yarn will cause issues!
+        
+        ### 1. Install pnpm globally (if not already installed)
+        ```bash
+        npm install -g pnpm
+        ```
+        
+        ### 2. Install project dependencies
+        ```bash
+        pnpm install
+        ```
+        
+        ### 3. Verify setup by running tests
+        ```bash
+        # For API components
+        pnpm nx test starter-api
+        
+        # For PWA components  
+        pnpm nx test starter-pwa
+        
+        # For library components
+        pnpm nx test domain-core
+        pnpm nx test application-core
+        pnpm nx test utils-core
+        ```
+        
+        **✅ You're ready to work on this issue once these commands run successfully!**
+      render: markdown
+    validations:
+      required: false
+
   - type: dropdown
     id: priority
     attributes:
