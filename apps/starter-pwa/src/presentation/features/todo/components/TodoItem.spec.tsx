@@ -4,15 +4,22 @@ import { TodoItem } from './TodoItem';
 import { Todo } from '@nx-starter/domain-core';
 import { TEST_UUIDS } from '../../../../test/test-helpers';
 
-// Mock the store
-const mockStore = {
-  toggleTodo: vi.fn(),
+// Mock the view model
+const mockViewModel = {
+  isEditing: false,
+  editTitle: '',
+  isUpdating: false,
+  toggleComplete: vi.fn(),
+  startEditing: vi.fn(),
+  cancelEditing: vi.fn(),
+  saveEdit: vi.fn(),
   deleteTodo: vi.fn(),
-  updateTodo: vi.fn(),
+  handleEditTitleChange: vi.fn(),
+  handleKeyDown: vi.fn(),
 };
 
-vi.mock('../../../infrastructure/state/TodoStore', () => ({
-  useTodoStore: () => mockStore,
+vi.mock('../view-models/useTodoItemViewModel', () => ({
+  useTodoItemViewModel: () => mockViewModel,
 }));
 
 describe('TodoItem', () => {
@@ -26,9 +33,9 @@ describe('TodoItem', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.spyOn(mockTodo, 'isOverdue').mockReturnValue(false);
-    mockStore.toggleTodo.mockResolvedValue(undefined);
-    mockStore.deleteTodo.mockResolvedValue(undefined);
-    mockStore.updateTodo.mockResolvedValue(undefined);
+    mockViewModel.isEditing = false;
+    mockViewModel.editTitle = mockTodo.titleValue;
+    mockViewModel.isUpdating = false;
   });
 
   it('should render todo item with checkbox, title, and buttons', () => {
@@ -53,125 +60,79 @@ describe('TodoItem', () => {
     expect(checkbox).toBeChecked();
   });
 
-  it('should call toggleTodo when checkbox is clicked', async () => {
+  it('should call toggleComplete when checkbox is clicked', async () => {
     render(<TodoItem todo={mockTodo} />);
 
     const checkbox = screen.getByRole('checkbox');
     fireEvent.click(checkbox);
 
-    await waitFor(() => {
-      expect(mockStore.toggleTodo).toHaveBeenCalledWith(mockTodo.numericId);
-    });
+    expect(mockViewModel.toggleComplete).toHaveBeenCalled();
   });
 
   it('should call deleteTodo when delete button is clicked', async () => {
     render(<TodoItem todo={mockTodo} />);
 
-    const deleteButton = screen.getByText('Delete');
+    const deleteButton = screen.getByTestId('delete-todo');
     fireEvent.click(deleteButton);
 
-    await waitFor(() => {
-      expect(mockStore.deleteTodo).toHaveBeenCalledWith(mockTodo.numericId);
-    });
+    expect(mockViewModel.deleteTodo).toHaveBeenCalled();
   });
 
-  it('should enter edit mode when edit button is clicked', () => {
+  it('should call startEditing when edit button is clicked', () => {
     render(<TodoItem todo={mockTodo} />);
 
-    const editButton = screen.getByText('Edit');
+    const editButton = screen.getByTestId('edit-todo');
     fireEvent.click(editButton);
 
-    expect(screen.getByDisplayValue(mockTodo.titleValue)).toBeInTheDocument();
-    expect(screen.getByText('Save')).toBeInTheDocument();
-    expect(screen.getByText('Cancel')).toBeInTheDocument();
+    expect(mockViewModel.startEditing).toHaveBeenCalled();
   });
 
-  it('should enter edit mode when title is clicked', () => {
+  it('should call startEditing when title is clicked', () => {
     render(<TodoItem todo={mockTodo} />);
 
-    const titleSpan = screen.getByText(mockTodo.titleValue);
+    const titleSpan = screen.getByTestId('todo-title');
     fireEvent.click(titleSpan);
 
-    expect(screen.getByDisplayValue(mockTodo.titleValue)).toBeInTheDocument();
-    expect(screen.getByText('Save')).toBeInTheDocument();
-    expect(screen.getByText('Cancel')).toBeInTheDocument();
+    expect(mockViewModel.startEditing).toHaveBeenCalled();
   });
 
-  it('should call updateTodo when save button is clicked in edit mode', async () => {
+  it('should render edit mode when isEditing is true', () => {
+    mockViewModel.isEditing = true;
     render(<TodoItem todo={mockTodo} />);
 
-    // Enter edit mode
-    const editButton = screen.getByText('Edit');
-    fireEvent.click(editButton);
-
-    // Change title and save
-    const input = screen.getByDisplayValue(mockTodo.titleValue);
-    fireEvent.change(input, { target: { value: 'Updated Todo' } });
-
-    const saveButton = screen.getByText('Save');
-    fireEvent.click(saveButton);
-
-    await waitFor(() => {
-      expect(mockStore.updateTodo).toHaveBeenCalledWith(mockTodo.numericId, {
-        title: 'Updated Todo',
-      });
-    });
+    expect(screen.getByTestId('todo-edit-input')).toBeInTheDocument();
+    expect(screen.getByTestId('save-todo')).toBeInTheDocument();
+    expect(screen.getByTestId('cancel-edit')).toBeInTheDocument();
   });
 
-  it('should cancel edit mode when cancel button is clicked', () => {
+  it('should call cancelEditing when cancel button is clicked', () => {
+    mockViewModel.isEditing = true;
     render(<TodoItem todo={mockTodo} />);
 
-    // Enter edit mode
-    const editButton = screen.getByText('Edit');
-    fireEvent.click(editButton);
-
-    // Change title
-    const input = screen.getByDisplayValue(mockTodo.titleValue);
-    fireEvent.change(input, { target: { value: 'Changed Title' } });
-
-    // Cancel
-    const cancelButton = screen.getByText('Cancel');
+    const cancelButton = screen.getByTestId('cancel-edit');
     fireEvent.click(cancelButton);
 
-    // Should exit edit mode and restore original title
-    expect(screen.getByText(mockTodo.titleValue)).toBeInTheDocument();
-    expect(screen.queryByDisplayValue('Changed Title')).not.toBeInTheDocument();
+    expect(mockViewModel.cancelEditing).toHaveBeenCalled();
   });
 
-  it('should save on Enter key press in edit mode', async () => {
+  it('should call handleKeyDown when key is pressed in edit input', () => {
+    mockViewModel.isEditing = true;
     render(<TodoItem todo={mockTodo} />);
 
-    // Enter edit mode
-    const editButton = screen.getByText('Edit');
-    fireEvent.click(editButton);
-
-    // Change title and press Enter
-    const input = screen.getByDisplayValue(mockTodo.titleValue);
-    fireEvent.change(input, { target: { value: 'Updated Todo' } });
+    const input = screen.getByTestId('todo-edit-input');
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    await waitFor(() => {
-      expect(mockStore.updateTodo).toHaveBeenCalledWith(mockTodo.numericId, {
-        title: 'Updated Todo',
-      });
-    });
+    expect(mockViewModel.handleKeyDown).toHaveBeenCalled();
   });
 
-  it('should cancel on Escape key press in edit mode', () => {
+  it('should call saveEdit when save button is clicked', () => {
+    mockViewModel.isEditing = true;
     render(<TodoItem todo={mockTodo} />);
 
-    // Enter edit mode
-    const editButton = screen.getByText('Edit');
-    fireEvent.click(editButton);
+    const saveButton = screen.getByTestId('save-todo');
+    fireEvent.click(saveButton);
 
-    // Change title and press Escape
-    const input = screen.getByDisplayValue(mockTodo.titleValue);
-    fireEvent.change(input, { target: { value: 'Changed Title' } });
-    fireEvent.keyDown(input, { key: 'Escape' });
-
-    // Should exit edit mode and restore original title
-    expect(screen.getByText(mockTodo.titleValue)).toBeInTheDocument();
-    expect(screen.queryByDisplayValue('Changed Title')).not.toBeInTheDocument();
+    expect(mockViewModel.saveEdit).toHaveBeenCalled();
   });
 
   it('should show overdue indicator when todo is overdue', () => {
@@ -200,170 +161,40 @@ describe('TodoItem', () => {
     expect(titleSpan).toHaveClass('line-through');
   });
 
-  it('should disable save button when edit title is empty', () => {
+  it('should disable save button when editTitle is empty', () => {
+    mockViewModel.isEditing = true;
+    mockViewModel.editTitle = '';
     render(<TodoItem todo={mockTodo} />);
 
-    // Enter edit mode
-    const editButton = screen.getByText('Edit');
-    fireEvent.click(editButton);
-
-    // Clear title
-    const input = screen.getByDisplayValue(mockTodo.titleValue);
-    fireEvent.change(input, { target: { value: '' } });
-
-    const saveButton = screen.getByText('Save');
+    const saveButton = screen.getByTestId('save-todo');
     expect(saveButton).toBeDisabled();
   });
 
-  it('should handle toggle error gracefully', async () => {
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    mockStore.toggleTodo.mockRejectedValue(new Error('Toggle failed'));
-
+  it('should call handleEditTitleChange when input changes', () => {
+    mockViewModel.isEditing = true;
     render(<TodoItem todo={mockTodo} />);
 
-    const checkbox = screen.getByRole('checkbox');
-    fireEvent.click(checkbox);
+    const input = screen.getByTestId('todo-edit-input');
+    fireEvent.change(input, { target: { value: 'New title' } });
 
-    await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Failed to toggle todo:',
-        expect.any(Error)
-      );
-    });
-
-    consoleSpy.mockRestore();
+    expect(mockViewModel.handleEditTitleChange).toHaveBeenCalledWith('New title');
   });
 
-  it('should handle update error gracefully', async () => {
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    mockStore.updateTodo.mockRejectedValue(new Error('Update failed'));
-
+  it('should show opacity when isUpdating is true', () => {
+    mockViewModel.isUpdating = true;
     render(<TodoItem todo={mockTodo} />);
 
-    // Enter edit mode and try to save
-    const editButton = screen.getByText('Edit');
-    fireEvent.click(editButton);
-
-    const saveButton = screen.getByText('Save');
-    fireEvent.click(saveButton);
-
-    await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Failed to save edit:',
-        expect.any(Error)
-      );
-    });
-
-    consoleSpy.mockRestore();
+    const todoItem = screen.getByTestId('todo-item');
+    expect(todoItem).toHaveClass('opacity-50');
   });
 
-  it('should handle delete error gracefully', async () => {
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    mockStore.deleteTodo.mockRejectedValue(new Error('Delete failed'));
-
+  it('should render edit input with current editTitle value', () => {
+    mockViewModel.isEditing = true;
+    mockViewModel.editTitle = 'Current edit title';
     render(<TodoItem todo={mockTodo} />);
 
-    const deleteButton = screen.getByText('Delete');
-    fireEvent.click(deleteButton);
-
-    await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Failed to delete todo:',
-        expect.any(Error)
-      );
-    });
-
-    consoleSpy.mockRestore();
+    const input = screen.getByTestId('todo-edit-input');
+    expect(input).toHaveValue('Current edit title');
   });
 
-  it('should not call toggleTodo when todo has no id', async () => {
-    const todoWithoutId = new Todo(
-      'Test Todo',
-      false,
-      new Date('2024-01-01T10:00:00Z')
-    );
-    // Create a todo without id by overriding the numericId property
-    Object.defineProperty(todoWithoutId, 'numericId', {
-      value: undefined,
-      writable: false,
-    });
-
-    render(<TodoItem todo={todoWithoutId} />);
-
-    const checkbox = screen.getByRole('checkbox');
-    fireEvent.click(checkbox);
-
-    await waitFor(() => {
-      expect(mockStore.toggleTodo).not.toHaveBeenCalled();
-    });
-  });
-
-  it('should not call deleteTodo when todo has no id', async () => {
-    const todoWithoutId = new Todo(
-      'Test Todo',
-      false,
-      new Date('2024-01-01T10:00:00Z')
-    );
-    // Create a todo without id by overriding the numericId property
-    Object.defineProperty(todoWithoutId, 'numericId', {
-      value: undefined,
-      writable: false,
-    });
-
-    render(<TodoItem todo={todoWithoutId} />);
-
-    const deleteButton = screen.getByText('Delete');
-    fireEvent.click(deleteButton);
-
-    await waitFor(() => {
-      expect(mockStore.deleteTodo).not.toHaveBeenCalled();
-    });
-  });
-
-  it('should not call updateTodo when todo has no id', async () => {
-    const todoWithoutId = new Todo(
-      'Test Todo',
-      false,
-      new Date('2024-01-01T10:00:00Z')
-    );
-    // Create a todo without id by overriding the numericId property
-    Object.defineProperty(todoWithoutId, 'numericId', {
-      value: undefined,
-      writable: false,
-    });
-
-    render(<TodoItem todo={todoWithoutId} />);
-
-    // Enter edit mode
-    const editButton = screen.getByText('Edit');
-    fireEvent.click(editButton);
-
-    // Try to save
-    const saveButton = screen.getByText('Save');
-    fireEvent.click(saveButton);
-
-    await waitFor(() => {
-      expect(mockStore.updateTodo).not.toHaveBeenCalled();
-    });
-  });
-
-  it('should not call updateTodo when edit title is empty after trim', async () => {
-    render(<TodoItem todo={mockTodo} />);
-
-    // Enter edit mode
-    const editButton = screen.getByText('Edit');
-    fireEvent.click(editButton);
-
-    // Set title to whitespace only
-    const input = screen.getByDisplayValue(mockTodo.titleValue);
-    fireEvent.change(input, { target: { value: '   ' } });
-
-    // Try to save
-    const saveButton = screen.getByText('Save');
-    fireEvent.click(saveButton);
-
-    await waitFor(() => {
-      expect(mockStore.updateTodo).not.toHaveBeenCalled();
-    });
-  });
 });

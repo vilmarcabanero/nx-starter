@@ -348,7 +348,8 @@ exports[`Alert Component Snapshots > content variations > renders Alert with HTM
       <strong>
         bold text
       </strong>
-       and 
+       and
+       
       <em>
         italic text
       </em>

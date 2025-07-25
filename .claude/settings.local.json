@@ -11,6 +11,7 @@
       "Bash(* build*)",
       "Bash(* test*)",
       "Bash(* dev*)",
+      "Bash(npx vitest run:*)",
 
       "🛠️ Utility commands",
       "Bash(ls *)",

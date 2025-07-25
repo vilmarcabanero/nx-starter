@@ -312,7 +312,7 @@ describe('useTodoStatsViewModel', () => {
         'High Priority Todo',
         false,
         new Date(),
-        generateTestUuid(200),
+        generateTestUuid(6),
         'high'
       ),
     ];
@@ -349,7 +349,7 @@ describe('useTodoStatsViewModel', () => {
   it('should handle todos with no priority', () => {
     // Arrange
     mockStore.todos = [
-      new Todo('No Priority Todo', false, new Date(), generateTestUuid(300)), // No priority specified
+      new Todo('No Priority Todo', false, new Date(), generateTestUuid(7)), // No priority specified
     ];
     mockStore.getStats.mockReturnValue({ total: 1, active: 1, completed: 0 });
 

@@ -8,7 +8,7 @@ vi.mock('../view-models/useTodoViewModel', () => ({
 }));
 
 // Mock the components
-vi.mock('../../layouts/MainLayout', () => ({
+vi.mock('../../../layouts/MainLayout', () => ({
   MainLayout: ({ children, ...props }: { children: React.ReactNode }) => (
     <div data-testid="main-layout" {...props}>
       {children}
@@ -28,7 +28,7 @@ vi.mock('../components/TodoStats', () => ({
   TodoStats: () => <div data-testid="todo-stats">TodoStats</div>,
 }));
 
-vi.mock('../../components/common/ErrorBanner', () => ({
+vi.mock('../../../components/common/ErrorBanner', () => ({
   ErrorBanner: () => <div data-testid="error-banner">ErrorBanner</div>,
 }));
 
