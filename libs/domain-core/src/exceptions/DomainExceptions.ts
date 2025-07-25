@@ -38,3 +38,48 @@ export class InvalidTodoPriorityException extends DomainException {
     super(`Invalid todo priority: ${priority}`, 'INVALID_TODO_PRIORITY');
   }
 }
+
+/**
+ * User-specific domain exceptions
+ */
+export class UserNotFoundException extends DomainException {
+  constructor(identifier: string) {
+    super(`User with identifier ${identifier} not found`, 'USER_NOT_FOUND', 404);
+  }
+}
+
+export class UserEmailAlreadyExistsException extends DomainException {
+  constructor(email: string) {
+    super(`Email address already registered`, 'REG_EMAIL_EXISTS', 409);
+  }
+}
+
+export class UserUsernameAlreadyExistsException extends DomainException {
+  constructor(username: string) {
+    super(`Username already taken`, 'REG_USERNAME_EXISTS', 409);
+  }
+}
+
+export class InvalidUserEmailException extends DomainException {
+  constructor(reason: string) {
+    super(`${reason}`, 'REG_INVALID_EMAIL');
+  }
+}
+
+export class InvalidUserPasswordException extends DomainException {
+  constructor(reason: string) {
+    super(`${reason}`, 'REG_WEAK_PASSWORD');
+  }
+}
+
+export class InvalidUserNameException extends DomainException {
+  constructor(reason: string) {
+    super(`${reason}`, 'REG_INVALID_NAME');
+  }
+}
+
+export class MissingRequiredFieldException extends DomainException {
+  constructor(field: string, errorCode: string) {
+    super(`${field} is required`, errorCode);
+  }
+}

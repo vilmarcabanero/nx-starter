@@ -4,7 +4,7 @@ import { InMemoryTodoRepository } from '../todo/persistence/in-memory/InMemoryTo
 import { SqliteTodoRepository } from '../todo/persistence/sqlite/SqliteTodoRepository';
 import { TypeOrmTodoRepository } from '../todo/persistence/typeorm/TypeOrmTodoRepository';
 import { MongooseTodoRepository } from '../todo/persistence/mongoose/MongooseTodoRepository';
-import { SequelizeTodoRepository } from '../todo/persistence/sequelize/SequelizeTodoRepository';
+import { InMemoryUserRepository, SqliteUserRepository, TypeOrmUserRepository, MongooseUserRepository } from '../user/persistence';
 import {
   CreateTodoUseCase,
   UpdateTodoUseCase,
@@ -15,27 +15,42 @@ import {
   GetCompletedTodosQueryHandler,
   GetTodoByIdQueryHandler,
   GetTodoStatsQueryHandler,
+  RegisterUserUseCase,
   TOKENS,
   TodoValidationService,
   CreateTodoValidationService,
   UpdateTodoValidationService,
   DeleteTodoValidationService,
   ToggleTodoValidationService,
-  VALIDATION_TOKENS,
+  UserValidationService,
+  RegisterUserValidationService,
+  BcryptPasswordHashingService,
 } from '@nx-starter/application-core';
-import type { ITodoRepository } from '@nx-starter/domain-core';
-import { getTypeOrmDataSource } from '../todo/persistence/typeorm/TypeOrmConnection';
-import { connectMongoDB } from '../todo/persistence/mongoose/MongooseConnection';
-import { getSequelizeInstance } from '../todo/persistence/sequelize/SequelizeConnection';
+import type { ITodoRepository, IUserRepository } from '@nx-starter/domain-core';
+import { UserDomainService } from '@nx-starter/domain-core';
+import { getTypeOrmDataSource } from '../database/connections/TypeOrmConnection';
+import { connectMongoDB } from '../database/connections/MongooseConnection';
 import { config } from '../../config/config';
 
 // Register dependencies following Clean Architecture layers
 export const configureDI = async () => {
   // Infrastructure Layer - Repository (choose based on config)
-  const repositoryImplementation = await getRepositoryImplementation();
+  const todoRepositoryImplementation = await getTodoRepositoryImplementation();
   container.registerInstance<ITodoRepository>(
     TOKENS.TodoRepository,
-    repositoryImplementation
+    todoRepositoryImplementation
+  );
+
+  const userRepositoryImplementation = await getUserRepositoryImplementation();
+  container.registerInstance<IUserRepository>(
+    TOKENS.UserRepository,
+    userRepositoryImplementation
+  );
+
+  // Infrastructure Layer - Services  
+  container.registerSingleton(
+    TOKENS.PasswordHashingService,
+    BcryptPasswordHashingService
   );
 
   // Application Layer - Use Cases (Commands)
@@ -43,6 +58,7 @@ export const configureDI = async () => {
   container.registerSingleton(TOKENS.UpdateTodoUseCase, UpdateTodoUseCase);
   container.registerSingleton(TOKENS.DeleteTodoUseCase, DeleteTodoUseCase);
   container.registerSingleton(TOKENS.ToggleTodoUseCase, ToggleTodoUseCase);
+  container.registerSingleton(TOKENS.RegisterUserUseCase, RegisterUserUseCase);
 
   // Application Layer - Use Cases (Queries)
   container.registerSingleton(
@@ -68,28 +84,39 @@ export const configureDI = async () => {
 
   // Application Layer - Validation Services
   container.registerSingleton(
-    VALIDATION_TOKENS.CreateTodoValidationService,
+    TOKENS.CreateTodoValidationService,
     CreateTodoValidationService
   );
   container.registerSingleton(
-    VALIDATION_TOKENS.UpdateTodoValidationService,
+    TOKENS.UpdateTodoValidationService,
     UpdateTodoValidationService
   );
   container.registerSingleton(
-    VALIDATION_TOKENS.DeleteTodoValidationService,
+    TOKENS.DeleteTodoValidationService,
     DeleteTodoValidationService
   );
   container.registerSingleton(
-    VALIDATION_TOKENS.ToggleTodoValidationService,
+    TOKENS.ToggleTodoValidationService,
     ToggleTodoValidationService
   );
   container.registerSingleton(
-    VALIDATION_TOKENS.TodoValidationService,
+    TOKENS.TodoValidationService,
     TodoValidationService
   );
+  container.registerSingleton(
+    TOKENS.RegisterUserValidationService,
+    RegisterUserValidationService
+  );
+  container.registerSingleton(
+    TOKENS.UserValidationService,
+    UserValidationService
+  );
+
+  // Domain Layer - Domain Services
+  // UserDomainService is instantiated manually in use cases (Clean Architecture best practice)
 };
 
-async function getRepositoryImplementation(): Promise<ITodoRepository> {
+async function getTodoRepositoryImplementation(): Promise<ITodoRepository> {
   const dbType = config.database.type;
   const ormType = config.database.orm || 'native';
 
@@ -116,11 +143,6 @@ async function getRepositoryImplementation(): Promise<ITodoRepository> {
       return new TypeOrmTodoRepository(dataSource);
     }
 
-    case 'sequelize': {
-      const sequelize = await getSequelizeInstance();
-      console.log(`📦 Using Sequelize repository with ${dbType}`);
-      return new SequelizeTodoRepository();
-    }
 
     case 'native':
     default: {
@@ -135,6 +157,50 @@ async function getRepositoryImplementation(): Promise<ITodoRepository> {
       );
       const dataSource = await getTypeOrmDataSource();
       return new TypeOrmTodoRepository(dataSource);
+    }
+  }
+}
+
+async function getUserRepositoryImplementation(): Promise<IUserRepository> {
+  const dbType = config.database.type;
+  const ormType = config.database.orm || 'native';
+
+  console.log(`📦 Using ${ormType} ORM with ${dbType} database for User repository`);
+
+  // Handle memory database (always uses in-memory repository)
+  if (dbType === 'memory') {
+    console.log('📦 Using in-memory user repository');
+    return new InMemoryUserRepository();
+  }
+
+  // Handle MongoDB (always uses Mongoose)
+  if (dbType === 'mongodb') {
+    await connectMongoDB();
+    console.log('📦 Using Mongoose user repository with MongoDB');
+    return new MongooseUserRepository();
+  }
+
+  // Handle SQL databases with different ORMs
+  switch (ormType) {
+    case 'typeorm': {
+      const dataSource = await getTypeOrmDataSource();
+      console.log(`📦 Using TypeORM user repository with ${dbType}`);
+      return new TypeOrmUserRepository(dataSource);
+    }
+
+    case 'native':
+    default: {
+      if (dbType === 'sqlite') {
+        console.log('📦 Using native SQLite user repository');
+        return new SqliteUserRepository();
+      }
+
+      // For other databases without native support, default to TypeORM
+      console.log(
+        `📦 No native support for ${dbType}, falling back to TypeORM for user repository`
+      );
+      const dataSource = await getTypeOrmDataSource();
+      return new TypeOrmUserRepository(dataSource);
     }
   }
 }

@@ -5,3 +5,4 @@
 
 // Export all mappers
 export * from './TodoMapper';
+export * from './UserMapper';

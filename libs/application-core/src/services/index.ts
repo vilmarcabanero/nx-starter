@@ -6,3 +6,4 @@
 // Export all services
 export * from './TodoCommandService';
 export * from './TodoQueryService';
+export * from './PasswordHashingService';

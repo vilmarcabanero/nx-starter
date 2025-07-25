@@ -4,6 +4,7 @@ import { Todo } from '@nx-starter/domain-core';
 import type { ITodoRepository } from '@nx-starter/domain-core';
 import { TodoMapper } from '@nx-starter/application-core';
 import { generateUUID } from '@nx-starter/utils-core';
+import { getSqliteDatabase } from '../../../database/connections/SqliteConnection';
 
 interface TodoRecord {
   id: string;
@@ -16,29 +17,15 @@ interface TodoRecord {
 
 /**
  * SQLite implementation of ITodoRepository using better-sqlite3
+ * Now uses shared database connection
  */
 @injectable()
 export class SqliteTodoRepository implements ITodoRepository {
   private db: Database.Database;
 
   constructor() {
-    // Use in-memory database for development
-    this.db = new Database(':memory:');
-    this.initializeDatabase();
-  }
-
-  private initializeDatabase(): void {
-    // Create todos table
-    this.db.exec(`
-      CREATE TABLE IF NOT EXISTS todos (
-        id TEXT PRIMARY KEY,
-        title TEXT NOT NULL,
-        completed INTEGER NOT NULL DEFAULT 0,
-        priority TEXT NOT NULL DEFAULT 'medium',
-        createdAt TEXT NOT NULL,
-        dueDate TEXT
-      )
-    `);
+    // Use shared SQLite database connection
+    this.db = getSqliteDatabase();
   }
 
   async getAll(): Promise<Todo[]> {
@@ -187,9 +174,7 @@ export class SqliteTodoRepository implements ITodoRepository {
   }
 
   /**
-   * Close the database connection
+   * Note: Database connection is managed by shared connection manager
+   * Individual repositories should not close the shared connection
    */
-  close(): void {
-    this.db.close();
-  }
 }

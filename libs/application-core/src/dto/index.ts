@@ -1,6 +1,6 @@
 /**
  * Data Transfer Objects
- * Application layer DTOs for todo operations
+ * Application layer DTOs for all operations
  */
 
 // Export all DTOs
@@ -9,3 +9,6 @@ export * from './TodoQueries';
 export * from './TodoDto';
 export * from './ApiResponse';
 export * from './TodoRequestDtos';
+export * from './UserCommands';
+export * from './UserDto';
+export * from './UserRequestDtos';

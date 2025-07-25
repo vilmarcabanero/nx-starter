@@ -6,6 +6,10 @@ export const TOKENS = {
   
   // Infrastructure Layer - Repositories
   TodoRepository: 'ITodoRepository',
+  UserRepository: 'IUserRepository',
+
+  // Infrastructure Layer - Services
+  PasswordHashingService: 'IPasswordHashingService',
 
   // Application Layer - CQRS Services (Interface-based for cleaner injection)
   TodoCommandService: 'ITodoCommandService',
@@ -16,6 +20,7 @@ export const TOKENS = {
   UpdateTodoUseCase: 'UpdateTodoUseCase',
   DeleteTodoUseCase: 'DeleteTodoUseCase',
   ToggleTodoUseCase: 'ToggleTodoUseCase',
+  RegisterUserUseCase: 'RegisterUserUseCase',
 
   // Application Layer - Use Cases (Queries)
   GetAllTodosQueryHandler: 'GetAllTodosQueryHandler',
@@ -27,6 +32,16 @@ export const TOKENS = {
 
   // Domain Layer - Services
   TodoDomainService: 'TodoDomainService',
+  UserDomainService: 'UserDomainService',
+
+  // Application Layer - Validation Services
+  CreateTodoValidationService: 'CreateTodoValidationService',
+  UpdateTodoValidationService: 'UpdateTodoValidationService', 
+  DeleteTodoValidationService: 'DeleteTodoValidationService',
+  ToggleTodoValidationService: 'ToggleTodoValidationService',
+  TodoValidationService: 'TodoValidationService',
+  RegisterUserValidationService: 'RegisterUserValidationService',
+  UserValidationService: 'UserValidationService',
 } as const;
 
 // Type-safe token keys

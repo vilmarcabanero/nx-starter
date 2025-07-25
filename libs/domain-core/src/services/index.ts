@@ -5,3 +5,4 @@
 
 // Domain services
 export * from './TodoDomainService';
+export * from './UserDomainService';

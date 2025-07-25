@@ -5,3 +5,4 @@
 
 // Repository interfaces
 export * from './ITodoRepository';
+export * from './IUserRepository';
