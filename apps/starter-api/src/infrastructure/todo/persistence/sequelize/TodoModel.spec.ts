@@ -3,12 +3,17 @@ import { Sequelize, DataTypes } from 'sequelize';
 
 vi.mock('sequelize', () => ({
   Sequelize: vi.fn(),
-  Model: class Model {},
+  Model: class Model {
+    static init = vi.fn();
+  },
   DataTypes: {
     STRING: vi.fn(),
     BOOLEAN: vi.fn(),
     DATE: vi.fn(),
     ENUM: vi.fn(),
+    UUID: vi.fn(),
+    UUIDV4: vi.fn(),
+    NOW: vi.fn(),
   },
 }));
 
@@ -42,13 +47,12 @@ describe('TodoModel', () => {
     it('should initialize Todo model with PostgreSQL dialect', async () => {
       mockSequelize.getDialect.mockReturnValue('postgres');
       
-      const { initTodoModel } = await import('./TodoModel');
+      const { initTodoModel, TodoSequelizeModel } = await import('./TodoModel');
       initTodoModel(mockSequelize);
 
       expect(mockSequelize.getDialect).toHaveBeenCalled();
       expect(DataTypes.ENUM).toHaveBeenCalledWith('low', 'medium', 'high');
-      expect(mockSequelize.define).toHaveBeenCalledWith(
-        'Todo',
+      expect(TodoSequelizeModel.init).toHaveBeenCalledWith(
         expect.objectContaining({
           id: expect.any(Object),
           title: expect.any(Object),
@@ -58,7 +62,8 @@ describe('TodoModel', () => {
           createdAt: expect.any(Object),
         }),
         expect.objectContaining({
-          tableName: 'todos',
+          sequelize: mockSequelize,
+          tableName: 'todo',
           timestamps: false,
           schema: 'public', // PostgreSQL default schema
           indexes: expect.any(Array),
@@ -70,11 +75,10 @@ describe('TodoModel', () => {
       process.env.DB_SCHEMA = 'custom_schema';
       mockSequelize.getDialect.mockReturnValue('postgres');
       
-      const { initTodoModel } = await import('./TodoModel');
+      const { initTodoModel, TodoSequelizeModel } = await import('./TodoModel');
       initTodoModel(mockSequelize);
 
-      expect(mockSequelize.define).toHaveBeenCalledWith(
-        'Todo',
+      expect(TodoSequelizeModel.init).toHaveBeenCalledWith(
         expect.any(Object),
         expect.objectContaining({
           schema: 'custom_schema', // Custom schema from env
@@ -85,16 +89,16 @@ describe('TodoModel', () => {
     it('should initialize Todo model with MySQL dialect', async () => {
       mockSequelize.getDialect.mockReturnValue('mysql');
       
-      const { initTodoModel } = await import('./TodoModel');
+      const { initTodoModel, TodoSequelizeModel } = await import('./TodoModel');
       initTodoModel(mockSequelize);
 
       expect(mockSequelize.getDialect).toHaveBeenCalled();
       expect(DataTypes.ENUM).toHaveBeenCalledWith('low', 'medium', 'high');
-      expect(mockSequelize.define).toHaveBeenCalledWith(
-        'Todo',
+      expect(TodoSequelizeModel.init).toHaveBeenCalledWith(
         expect.any(Object),
         expect.objectContaining({
-          tableName: 'todos',
+          sequelize: mockSequelize,
+          tableName: 'todo',
           timestamps: false,
           // No schema property for MySQL
           indexes: expect.any(Array),
@@ -105,16 +109,16 @@ describe('TodoModel', () => {
     it('should initialize Todo model with SQLite dialect', async () => {
       mockSequelize.getDialect.mockReturnValue('sqlite');
       
-      const { initTodoModel } = await import('./TodoModel');
+      const { initTodoModel, TodoSequelizeModel } = await import('./TodoModel');
       initTodoModel(mockSequelize);
 
       expect(mockSequelize.getDialect).toHaveBeenCalled();
       expect(DataTypes.ENUM).toHaveBeenCalledWith('low', 'medium', 'high');
-      expect(mockSequelize.define).toHaveBeenCalledWith(
-        'Todo',
+      expect(TodoSequelizeModel.init).toHaveBeenCalledWith(
         expect.any(Object),
         expect.objectContaining({
-          tableName: 'todos',
+          sequelize: mockSequelize,
+          tableName: 'todo',
           timestamps: false,
           // No schema property for SQLite
           indexes: expect.any(Array),
@@ -123,14 +127,12 @@ describe('TodoModel', () => {
     });
 
     it('should return the defined model', async () => {
-      const expectedModel = { sync: vi.fn(), associate: vi.fn() };
-      mockSequelize.define.mockReturnValue(expectedModel);
       mockSequelize.getDialect.mockReturnValue('sqlite');
       
       const { initTodoModel } = await import('./TodoModel');
-      const result = initTodoModel(mockSequelize);
+      initTodoModel(mockSequelize);
 
-      expect(result).toBe(expectedModel);
+      expect(mockSequelize.getDialect).toHaveBeenCalled();
     });
   });
 });

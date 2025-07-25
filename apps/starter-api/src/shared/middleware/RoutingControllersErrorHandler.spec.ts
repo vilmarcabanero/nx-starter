@@ -84,7 +84,13 @@ describe('RoutingControllersErrorHandler', () => {
         code: 'VALIDATION_ERROR',
         details: {
           message: 'Validation failed',
-          issues: [{ field: 'title', message: 'Title is required' }],
+          issues: [{ 
+            code: 'invalid_type',
+            path: ['title'], 
+            message: 'Title is required',
+            expected: 'string',
+            received: 'undefined'
+          }],
           fieldErrors: { title: ['Title is required'] },
         },
       });
