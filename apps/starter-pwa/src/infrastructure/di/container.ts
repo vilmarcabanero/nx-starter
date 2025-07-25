@@ -28,7 +28,10 @@ import type {
 } from '@nx-starter/application-core';
 
 // Check environment variable to determine data source
-const useApiBackend = import.meta.env.VITE_USE_API_BACKEND === 'true';
+// const useApiBackend = import.meta.env.VITE_USE_API_BACKEND === 'true';
+// Make this configurable via settings. Note that there are only selected repositories that can use the local DB.
+// Other repositories will always use the API backend like authentication.
+const useApiBackend = true 
 
 // Register dependencies following Clean Architecture layers
 export const configureDI = () => {
