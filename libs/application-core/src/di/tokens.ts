@@ -1,5 +1,9 @@
 // DI Container tokens following Clean Architecture layers
 export const TOKENS = {
+  // Infrastructure Layer - HTTP and API Services
+  HttpClient: 'IHttpClient',
+  TodoApiService: 'ITodoApiService',
+  
   // Infrastructure Layer - Repositories
   TodoRepository: 'ITodoRepository',
 

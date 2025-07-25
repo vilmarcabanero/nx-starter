@@ -1,4 +1,4 @@
-import { injectable } from 'tsyringe';
+import { injectable, inject } from 'tsyringe';
 import {
   Todo,
   TodoPriorityLevel,
@@ -6,36 +6,25 @@ import {
   ITodoRepository,
 } from '@nx-starter/domain-core';
 import {
-  TodoListResponse,
-  TodoResponse,
-  TodoStatsResponse,
   CreateTodoRequestDto,
   UpdateTodoRequestDto,
+  TodoDto,
+  TOKENS,
 } from '@nx-starter/application-core';
+import { ITodoApiService } from './ITodoApiService';
 
 /**
  * API-based TodoRepository implementation
- * Communicates with the Express server's /api/todos endpoints
+ * Uses ITodoApiService for HTTP communication following Clean Architecture principles
  */
 @injectable()
 export class ApiTodoRepository implements ITodoRepository {
-  private readonly baseUrl: string;
-
-  constructor() {
-    // Get API base URL from environment variable or default to localhost
-    this.baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
-  }
+  constructor(
+    @inject(TOKENS.TodoApiService) private readonly apiService: ITodoApiService
+  ) {}
 
   async getAll(): Promise<Todo[]> {
-    const response = await this.fetchWithErrorHandling(
-      `${this.baseUrl}/api/todos`
-    );
-    const data: TodoListResponse = await response.json();
-
-    if (!data.success) {
-      throw new Error('Failed to fetch todos');
-    }
-
+    const data = await this.apiService.getAllTodos();
     return data.data.map((dto) => this.mapDtoToTodo(dto));
   }
 
@@ -46,23 +35,7 @@ export class ApiTodoRepository implements ITodoRepository {
       dueDate: todo.dueDate?.toISOString(),
     };
 
-    const response = await this.fetchWithErrorHandling(
-      `${this.baseUrl}/api/todos`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(todoData),
-      }
-    );
-
-    const data: TodoResponse = await response.json();
-
-    if (!data.success) {
-      throw new Error('Failed to create todo');
-    }
-
+    const data = await this.apiService.createTodo(todoData);
     return data.data.id;
   }
 
@@ -88,54 +61,19 @@ export class ApiTodoRepository implements ITodoRepository {
       updateData.dueDate = changes.dueDate?.toISOString();
     }
 
-    const response = await this.fetchWithErrorHandling(
-      `${this.baseUrl}/api/todos/${id}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updateData),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to update todo');
-    }
+    await this.apiService.updateTodo(id, updateData);
   }
 
   async delete(id: string): Promise<void> {
-    const response = await this.fetchWithErrorHandling(
-      `${this.baseUrl}/api/todos/${id}`,
-      {
-        method: 'DELETE',
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to delete todo');
-    }
+    await this.apiService.deleteTodo(id);
   }
 
   async getById(id: string): Promise<Todo | undefined> {
     try {
-      const response = await this.fetchWithErrorHandling(
-        `${this.baseUrl}/api/todos/${id}`
-      );
-
-      if (response.status === 404) {
-        return undefined;
-      }
-
-      const data: TodoResponse = await response.json();
-
-      if (!data.success) {
-        throw new Error('Failed to fetch todo');
-      }
-
+      const data = await this.apiService.getTodoById(id);
       return this.mapDtoToTodo(data.data);
     } catch (error) {
-      if (error instanceof Error && error.message.includes('404')) {
+      if (error instanceof Error && error.message.includes('Todo not found')) {
         return undefined;
       }
       throw error;
@@ -143,29 +81,13 @@ export class ApiTodoRepository implements ITodoRepository {
   }
 
   async getActive(): Promise<Todo[]> {
-    const response = await this.fetchWithErrorHandling(
-      `${this.baseUrl}/api/todos/active`
-    );
-    const data: TodoListResponse = await response.json();
-
-    if (!data.success) {
-      throw new Error('Failed to fetch active todos');
-    }
-
+    const data = await this.apiService.getActiveTodos();
     return data.data.map((dto) => this.mapDtoToTodo(dto));
   }
 
   async getCompleted(): Promise<Todo[]> {
-    const response = await this.fetchWithErrorHandling(
-      `${this.baseUrl}/api/todos/completed`
-    );
-    const data: TodoListResponse = await response.json();
-
-    if (!data.success) {
-      throw new Error('Failed to fetch completed todos');
-    }
-
-    return data.data.map((dto: any) => this.mapDtoToTodo(dto));
+    const data = await this.apiService.getCompletedTodos();
+    return data.data.map((dto) => this.mapDtoToTodo(dto));
   }
 
   async findBySpecification(
@@ -180,7 +102,7 @@ export class ApiTodoRepository implements ITodoRepository {
   /**
    * Maps a DTO from the API to a Todo entity
    */
-  private mapDtoToTodo(dto: any): Todo {
+  private mapDtoToTodo(dto: TodoDto): Todo {
     return new Todo(
       dto.title,
       dto.completed,
@@ -191,30 +113,4 @@ export class ApiTodoRepository implements ITodoRepository {
     );
   }
 
-  /**
-   * Wrapper around fetch with error handling
-   */
-  private async fetchWithErrorHandling(
-    url: string,
-    options?: RequestInit
-  ): Promise<Response> {
-    try {
-      const response = await fetch(url, options);
-
-      // Don't throw for 404 in GET requests - let caller handle it
-      if (
-        !response.ok &&
-        !(response.status === 404 && options?.method === undefined)
-      ) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      return response;
-    } catch (error) {
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        throw new Error('Network error: Unable to connect to the API server');
-      }
-      throw error;
-    }
-  }
 }
