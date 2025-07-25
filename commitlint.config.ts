@@ -75,14 +75,14 @@ const config = {
           // Define scope-specific length limits
           const scopeLimits: Record<string, number> = {
             // Apps
-            'starter-api-e2e': 90,
-            'starter-api': 83,
-            'starter-pwa-e2e': 90,
-            'starter-pwa': 83,
+            'starter-api-e2e': 100,
+            'starter-api': 93,
+            'starter-pwa-e2e': 100,
+            'starter-pwa': 93,
             // Libs
-            'application-core': 90,
-            'domain-core': 85,
-            'utils-core': 80,
+            'application-core': 100,
+            'domain-core': 95,
+            'utils-core': 90,
           };
 
           // Get the limit for this scope, default to 72
