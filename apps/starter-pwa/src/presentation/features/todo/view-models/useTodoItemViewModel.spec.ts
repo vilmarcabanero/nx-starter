@@ -221,7 +221,7 @@ describe('useTodoItemViewModel', () => {
         act(async () => {
           await result.current.updateTitle('');
         })
-      ).rejects.toThrow('Title cannot be empty');
+      ).rejects.toThrow('Title is required');
 
       expect(mockStore.updateTodo).not.toHaveBeenCalled();
     });

@@ -54,18 +54,35 @@ describe('useTodoFormViewModel', () => {
     });
 
     it('should set isSubmitting during submission', async () => {
-      mockStore.createTodo.mockImplementation(
-        () => new Promise((resolve) => setTimeout(resolve, 100))
-      );
+      let resolvePromise: () => void;
+      const submitPromise = new Promise<void>((resolve) => {
+        resolvePromise = resolve;
+      });
+      mockStore.createTodo.mockReturnValue(submitPromise);
       const { result } = renderHook(() => useTodoFormViewModel());
 
-      const submitPromise = act(async () => {
-        await result.current.submitTodo('Test todo');
+      // Start the submission but don't await it yet
+      let submitCall: Promise<void>;
+      act(() => {
+        submitCall = result.current.submitTodo('Test todo');
+      });
+
+      // Wait for the next tick to let state updates propagate
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       expect(result.current.isSubmitting).toBe(true);
 
-      await submitPromise;
+      // Now resolve the promise and wait for completion
+      act(() => {
+        resolvePromise!();
+      });
+
+      await act(async () => {
+        await submitCall!;
+      });
+
       expect(result.current.isSubmitting).toBe(false);
     });
 
