@@ -1,5 +1,19 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
+import { configureDI } from '../infrastructure/di/container';
+import { configProvider } from '../infrastructure/config';
+
+// Initialize configuration and DI for tests
+beforeAll(async () => {
+  // Reset configuration for test environment
+  configProvider.reset();
+  
+  // Initialize configuration
+  configProvider.initialize();
+  
+  // Configure dependency injection
+  configureDI();
+});
 
 // Configure console error suppression for tests
 const originalError = console.error;
@@ -37,6 +51,9 @@ afterEach(() => {
   console.error = originalError;
   console.warn = originalWarn;
   vi.clearAllMocks();
+  
+  // Re-configure DI to ensure clean state between tests
+  configureDI();
 });
 
 // Global test utilities

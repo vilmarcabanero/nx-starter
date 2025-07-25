@@ -6,6 +6,7 @@ import { IHttpClient } from '../http/IHttpClient';
 import { AxiosHttpClient } from '../http/AxiosHttpClient';
 import { ITodoApiService } from '../api/ITodoApiService';
 import { TodoApiService } from '../api/TodoApiService';
+import { getFeatureFlags, configProvider } from '../config';
 import {
   TodoCommandService,
   TodoQueryService,
@@ -27,11 +28,11 @@ import type {
   ITodoQueryService,
 } from '@nx-starter/application-core';
 
-// Check environment variable to determine data source
-// const useApiBackend = import.meta.env.VITE_USE_API_BACKEND === 'true';
-// Make this configurable via settings. Note that there are only selected repositories that can use the local DB.
-// Other repositories will always use the API backend like authentication.
-const useApiBackend = true 
+// Initialize configuration before using it
+configProvider.initialize();
+
+// Get feature flags from centralized configuration
+const { useApiBackend } = getFeatureFlags(); 
 
 // Register dependencies following Clean Architecture layers
 export const configureDI = () => {

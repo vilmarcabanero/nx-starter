@@ -2,15 +2,18 @@ import axios, { AxiosInstance, AxiosResponse, AxiosError, AxiosRequestConfig } f
 import { injectable } from 'tsyringe';
 import { IHttpClient, HttpResponse, HttpRequestConfig } from './IHttpClient';
 import { ApiError } from '../api/errors/ApiError';
+import { getApiConfig } from '../config';
 
 @injectable()
 export class AxiosHttpClient implements IHttpClient {
   private readonly axiosInstance: AxiosInstance;
 
   constructor(baseURL?: string) {
+    const apiConfig = getApiConfig();
+    
     this.axiosInstance = axios.create({
-      baseURL: baseURL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000',
-      timeout: 10000,
+      baseURL: baseURL || apiConfig.baseUrl,
+      timeout: apiConfig.timeout,
       headers: {
         'Content-Type': 'application/json',
       },
