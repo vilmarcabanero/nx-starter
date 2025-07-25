@@ -19,5 +19,8 @@ export {
   TodoValidationSchemas,
 } from './TodoValidationSchemas';
 
-// Re-export validation service tokens
-export { VALIDATION_TOKENS } from './TodoValidationService';
+// Note: All validation service tokens are now in centralized TOKENS object from '../di/tokens'
+
+// Export user validation schemas and services
+export * from './UserValidationSchemas';
+export * from './UserValidationService';

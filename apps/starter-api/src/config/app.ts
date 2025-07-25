@@ -3,6 +3,7 @@ import cors from 'cors';
 import { useExpressServer, useContainer } from 'routing-controllers';
 import { container } from '../infrastructure/di/container';
 import { TodoController } from '../presentation/controllers/TodoController';
+import { AuthController } from '../presentation/controllers/AuthController';
 import { RoutingControllersErrorHandler } from '../shared/middleware/RoutingControllersErrorHandler';
 import { requestLogger } from '../presentation/middleware/errorHandler';
 import { config } from './config';
@@ -45,7 +46,7 @@ export const createApp = (): express.Application => {
   // Configure routing-controllers
   useExpressServer(app, {
     routePrefix: '/api',
-    controllers: [TodoController],
+    controllers: [TodoController, AuthController],
     middlewares: [RoutingControllersErrorHandler],
     defaultErrorHandler: false, // We'll use our custom error handler
   });
@@ -61,6 +62,8 @@ export const createApp = (): express.Application => {
       endpoints: {
         health: '/api/health',
         todos: '/api/todos',
+        auth: '/api/auth',
+        register: '/api/auth/register',
         documentation: 'See README.md for API documentation',
       },
     });

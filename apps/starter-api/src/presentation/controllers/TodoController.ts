@@ -23,7 +23,6 @@ import {
   TodoMapper,
   TOKENS,
   TodoValidationService,
-  VALIDATION_TOKENS,
   TodoIdSchema,
 } from '@nx-starter/application-core';
 import {
@@ -62,7 +61,7 @@ export class TodoController {
     private getTodoByIdQueryHandler: GetTodoByIdQueryHandler,
     @inject(TOKENS.GetTodoStatsQueryHandler)
     private getTodoStatsQueryHandler: GetTodoStatsQueryHandler,
-    @inject(VALIDATION_TOKENS.TodoValidationService)
+    @inject(TOKENS.TodoValidationService)
     private validationService: TodoValidationService
   ) {}
 

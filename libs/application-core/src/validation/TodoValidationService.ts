@@ -1,5 +1,6 @@
 import { injectable, inject } from 'tsyringe';
 import { ValidationService, IValidationService } from './ValidationService';
+import { TOKENS } from '../di/tokens';
 import {
   CreateTodoCommandSchema,
   UpdateTodoCommandSchema,
@@ -47,14 +48,6 @@ export class ToggleTodoValidationService extends ValidationService<unknown, Togg
   protected schema = ToggleTodoCommandSchema;
 }
 
-// Token symbols for dependency injection - defined before TodoValidationService
-export const VALIDATION_TOKENS = {
-  CreateTodoValidationService: Symbol('CreateTodoValidationService'),
-  UpdateTodoValidationService: Symbol('UpdateTodoValidationService'),
-  DeleteTodoValidationService: Symbol('DeleteTodoValidationService'),
-  ToggleTodoValidationService: Symbol('ToggleTodoValidationService'),
-  TodoValidationService: Symbol('TodoValidationService'),
-} as const;
 
 /**
  * Composite validation service that provides all Todo validation operations
@@ -63,13 +56,13 @@ export const VALIDATION_TOKENS = {
 @injectable()
 export class TodoValidationService {
   constructor(
-    @inject(VALIDATION_TOKENS.CreateTodoValidationService)
+    @inject(TOKENS.CreateTodoValidationService)
     private createValidator: CreateTodoValidationService,
-    @inject(VALIDATION_TOKENS.UpdateTodoValidationService)
+    @inject(TOKENS.UpdateTodoValidationService)
     private updateValidator: UpdateTodoValidationService,
-    @inject(VALIDATION_TOKENS.DeleteTodoValidationService)
+    @inject(TOKENS.DeleteTodoValidationService)
     private deleteValidator: DeleteTodoValidationService,
-    @inject(VALIDATION_TOKENS.ToggleTodoValidationService)
+    @inject(TOKENS.ToggleTodoValidationService)
     private toggleValidator: ToggleTodoValidationService
   ) {}
 
