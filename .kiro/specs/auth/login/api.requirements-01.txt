@@ -1,0 +1,42 @@
+Core Authentication:
+WHEN a client sends POST request to /api/auth/login with valid email and password in JSON format 
+THE SYSTEM SHALL authenticate the credentials and return HTTP 200 with JWT token and user profile
+
+WHEN a client sends POST request to /api/auth/login with valid username and password in JSON format
+THE SYSTEM SHALL authenticate the credentials and return HTTP 200 with JWT token and user profile
+
+WHEN a client sends authentication request with valid credentials 
+THE SYSTEM SHALL generate JWT token with 24-hour expiration and include user ID, email, and role claims
+
+---
+
+Request Validation:
+WHEN a client sends login request missing email/username field 
+THE SYSTEM SHALL return HTTP 400 with error code AUTH_MISSING_IDENTIFIER and message "Email or username is required"
+
+WHEN a client sends login request missing password field 
+THE SYSTEM SHALL return HTTP 400 with error code AUTH_MISSING_PASSWORD and message "Password is required"
+
+WHEN a client sends login request with malformed email format 
+THE SYSTEM SHALL return HTTP 400 with error code AUTH_INVALID_EMAIL and message "Please provide a valid email address"
+
+---
+
+Authentication Failures:
+WHEN a client sends authentication request with non-existent email or username 
+THE SYSTEM SHALL return HTTP 401 with error code AUTH_INVALID_CREDENTIALS and generic message "Invalid email/username or password"
+
+WHEN a client sends authentication request with incorrect password 
+THE SYSTEM SHALL return HTTP 401 with error code AUTH_INVALID_CREDENTIALS and generic message "Invalid email/username or password"
+
+WHEN authentication fails 
+THE SYSTEM SHALL increment failed attempt counter for the account and log the attempt with IP address and timestamp
+
+---
+
+Security Requirements
+THE SYSTEM SHALL hash all passwords using bcrypt with minimum 12 rounds before comparison 
+THE SYSTEM SHALL never log or store passwords in plaintext anywhere in the system 
+THE SYSTEM SHALL require HTTPS for all authentication endpoints 
+THE SYSTEM SHALL implement CSRF protection for authentication endpoints 
+THE SYSTEM SHALL log all authentication attempts with IP address, user agent, and timestamp

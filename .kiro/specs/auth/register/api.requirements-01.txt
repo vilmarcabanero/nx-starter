@@ -1,0 +1,42 @@
+Core Registration Processing:
+WHEN a client sends POST request to /api/auth/register with firstName, lastName, email, and password 
+THE SYSTEM SHALL validate all required fields, generate username from email prefix, create user account, and return HTTP 201 with user ID
+
+---
+
+Username Generation Logic:
+WHEN processing registration with email address 
+THE SYSTEM SHALL extract the portion before @ symbol as base username (e.g., "john.doe@example.com" → "john.doe")
+
+WHEN generated username already exists in system 
+THE SYSTEM SHALL append incremental number to make it unique (e.g., "john.doe" → "john.doe1", "john.doe2")
+
+---
+
+Input Validation:
+WHEN registration request is missing firstName field 
+THE SYSTEM SHALL return HTTP 400 with error code REG_MISSING_FIRSTNAME and message "First name is required"
+
+WHEN registration request is missing lastName field 
+THE SYSTEM SHALL return HTTP 400 with error code REG_MISSING_LASTNAME and message "Last name is required"
+
+WHEN registration request is missing email field 
+THE SYSTEM SHALL return HTTP 400 with error code REG_MISSING_EMAIL and message "Email address is required"
+
+WHEN registration request is missing password field 
+THE SYSTEM SHALL return HTTP 400 with error code REG_MISSING_PASSWORD and message "Password is required"
+
+WHEN registration request contains invalid email format 
+THE SYSTEM SHALL return HTTP 400 with error code REG_INVALID_EMAIL and message "Please provide a valid email address"
+
+---
+
+Business Rule Validation:
+WHEN registration request contains email that already exists 
+THE SYSTEM SHALL return HTTP 409 with error code REG_EMAIL_EXISTS and message "Email address already registered"
+
+WHEN password doesn't meet security requirements (minimum 8 characters, at least one uppercase, one lowercase, one number) 
+THE SYSTEM SHALL return HTTP 400 with error code REG_WEAK_PASSWORD and detailed requirement messages
+
+WHEN firstName or lastName contains invalid characters (numbers, special characters except ñ) 
+THE SYSTEM SHALL return HTTP 400 with error code REG_INVALID_NAME and message "Names can only contain letters, spaces, and hyphens"
