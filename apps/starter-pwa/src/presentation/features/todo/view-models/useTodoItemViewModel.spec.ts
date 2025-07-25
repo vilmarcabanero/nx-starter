@@ -9,7 +9,8 @@ import { TEST_UUIDS } from '../../../../test/test-helpers';
 vi.mock('../../../../infrastructure/state/TodoStore');
 
 // Mock console.error to avoid noise in tests
-const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+// Since setup.ts overrides console.error, we need to spy on it differently
+let consoleSpy: ReturnType<typeof vi.spyOn>;
 
 describe('useTodoItemViewModel', () => {
   let mockStore: {
@@ -21,6 +22,9 @@ describe('useTodoItemViewModel', () => {
   let mockTodo: Todo;
 
   beforeEach(() => {
+    // Create spy after setup.ts has run
+    consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
     mockStore = {
       toggleTodo: vi.fn(),
       updateTodo: vi.fn(),
