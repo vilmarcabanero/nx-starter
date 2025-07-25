@@ -5,6 +5,13 @@ import {
   Specification,
   ITodoRepository,
 } from '@nx-starter/domain-core';
+import {
+  TodoListResponse,
+  TodoResponse,
+  TodoStatsResponse,
+  CreateTodoRequestDto,
+  UpdateTodoRequestDto,
+} from '@nx-starter/application-core';
 
 /**
  * API-based TodoRepository implementation
@@ -23,17 +30,17 @@ export class ApiTodoRepository implements ITodoRepository {
     const response = await this.fetchWithErrorHandling(
       `${this.baseUrl}/api/todos`
     );
-    const data = await response.json();
+    const data: TodoListResponse = await response.json();
 
     if (!data.success) {
       throw new Error('Failed to fetch todos');
     }
 
-    return data.data.map((dto: any) => this.mapDtoToTodo(dto));
+    return data.data.map((dto) => this.mapDtoToTodo(dto));
   }
 
   async create(todo: Todo): Promise<string> {
-    const todoData = {
+    const todoData: CreateTodoRequestDto = {
       title: todo.titleValue,
       priority: todo.priority.level,
       dueDate: todo.dueDate?.toISOString(),
@@ -50,7 +57,7 @@ export class ApiTodoRepository implements ITodoRepository {
       }
     );
 
-    const data = await response.json();
+    const data: TodoResponse = await response.json();
 
     if (!data.success) {
       throw new Error('Failed to create todo');
@@ -60,7 +67,7 @@ export class ApiTodoRepository implements ITodoRepository {
   }
 
   async update(id: string, changes: Partial<Todo>): Promise<void> {
-    const updateData: any = {};
+    const updateData: UpdateTodoRequestDto = {};
 
     if (changes.title) {
       updateData.title =
@@ -120,7 +127,7 @@ export class ApiTodoRepository implements ITodoRepository {
         return undefined;
       }
 
-      const data = await response.json();
+      const data: TodoResponse = await response.json();
 
       if (!data.success) {
         throw new Error('Failed to fetch todo');
@@ -139,20 +146,20 @@ export class ApiTodoRepository implements ITodoRepository {
     const response = await this.fetchWithErrorHandling(
       `${this.baseUrl}/api/todos/active`
     );
-    const data = await response.json();
+    const data: TodoListResponse = await response.json();
 
     if (!data.success) {
       throw new Error('Failed to fetch active todos');
     }
 
-    return data.data.map((dto: any) => this.mapDtoToTodo(dto));
+    return data.data.map((dto) => this.mapDtoToTodo(dto));
   }
 
   async getCompleted(): Promise<Todo[]> {
     const response = await this.fetchWithErrorHandling(
       `${this.baseUrl}/api/todos/completed`
     );
-    const data = await response.json();
+    const data: TodoListResponse = await response.json();
 
     if (!data.success) {
       throw new Error('Failed to fetch completed todos');

@@ -86,7 +86,7 @@ const config = {
           };
 
           // Get the limit for this scope, default to 72
-          const limit = scope ? scopeLimits[scope] || 72 : 72;
+          const limit = scope ? scopeLimits[scope] || 82 : 82;
           
           if (header.length > limit) {
             return [

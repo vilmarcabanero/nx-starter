@@ -1,4 +1,3 @@
-import { Response } from 'express';
 import { injectable, inject } from 'tsyringe';
 import {
   Controller,
@@ -25,12 +24,17 @@ import {
   TOKENS,
   TodoValidationService,
   VALIDATION_TOKENS,
-  CreateTodoCommandSchema,
-  UpdateTodoCommandSchema,
-  DeleteTodoCommandSchema,
-  ToggleTodoCommandSchema,
   TodoIdSchema,
 } from '@nx-starter/application-core';
+import {
+  TodoListResponse,
+  TodoResponse,
+  TodoStatsResponse,
+  TodoOperationResponse,
+  CreateTodoRequestDto,
+  UpdateTodoRequestDto,
+} from '@nx-starter/application-core';
+import { ApiResponseBuilder } from '../dto/ApiResponse';
 
 /**
  * REST API Controller for Todo operations
@@ -66,70 +70,55 @@ export class TodoController {
    * GET /api/todos - Get all todos
    */
   @Get('/')
-  async getAllTodos(): Promise<any> {
+  async getAllTodos(): Promise<TodoListResponse> {
     const todos = await this.getAllTodosQueryHandler.execute();
     const todoDtos = TodoMapper.toDtoArray(todos);
 
-    return {
-      success: true,
-      data: todoDtos,
-    };
+    return ApiResponseBuilder.success(todoDtos);
   }
 
   /**
    * GET /api/todos/active - Get active todos
    */
   @Get('/active')
-  async getActiveTodos(): Promise<any> {
+  async getActiveTodos(): Promise<TodoListResponse> {
     const todos = await this.getActiveTodosQueryHandler.execute();
     const todoDtos = TodoMapper.toDtoArray(todos);
 
-    return {
-      success: true,
-      data: todoDtos,
-    };
+    return ApiResponseBuilder.success(todoDtos);
   }
 
   /**
    * GET /api/todos/completed - Get completed todos
    */
   @Get('/completed')
-  async getCompletedTodos(): Promise<any> {
+  async getCompletedTodos(): Promise<TodoListResponse> {
     const todos = await this.getCompletedTodosQueryHandler.execute();
     const todoDtos = TodoMapper.toDtoArray(todos);
 
-    return {
-      success: true,
-      data: todoDtos,
-    };
+    return ApiResponseBuilder.success(todoDtos);
   }
 
   /**
    * GET /api/todos/stats - Get todo statistics
    */
   @Get('/stats')
-  async getTodoStats(): Promise<any> {
+  async getTodoStats(): Promise<TodoStatsResponse> {
     const stats = await this.getTodoStatsQueryHandler.execute();
 
-    return {
-      success: true,
-      data: stats,
-    };
+    return ApiResponseBuilder.success(stats);
   }
 
   /**
    * GET /api/todos/:id - Get todo by ID
    */
   @Get('/:id')
-  async getTodoById(@Param('id') id: string): Promise<any> {
+  async getTodoById(@Param('id') id: string): Promise<TodoResponse> {
     // Validate the ID parameter
     const validatedId = TodoIdSchema.parse(id);
     const todo = await this.getTodoByIdQueryHandler.execute({ id: validatedId });
     const todoDto = TodoMapper.toDto(todo);
-    return {
-      success: true,
-      data: todoDto,
-    };
+    return ApiResponseBuilder.success(todoDto);
   }
 
   /**
@@ -137,22 +126,19 @@ export class TodoController {
    */
   @Post('/')
   @HttpCode(201)
-  async createTodo(@Body() body: any): Promise<any> {
+  async createTodo(@Body() body: CreateTodoRequestDto): Promise<TodoResponse> {
     const validatedData = this.validationService.validateCreateCommand(body);
     const todo = await this.createTodoUseCase.execute(validatedData);
     const todoDto = TodoMapper.toDto(todo);
 
-    return {
-      success: true,
-      data: todoDto,
-    };
+    return ApiResponseBuilder.success(todoDto);
   }
 
   /**
    * PUT /api/todos/:id - Update a todo
    */
   @Put('/:id')
-  async updateTodo(@Param('id') id: string, @Body() body: any): Promise<any> {
+  async updateTodo(@Param('id') id: string, @Body() body: UpdateTodoRequestDto): Promise<TodoOperationResponse> {
     // Validate the combined data (body + id) using the validation service
     const validatedData = this.validationService.validateUpdateCommand({
       ...body,
@@ -161,39 +147,30 @@ export class TodoController {
 
     await this.updateTodoUseCase.execute(validatedData);
 
-    return {
-      success: true,
-      message: 'Todo updated successfully',
-    };
+    return ApiResponseBuilder.successWithMessage('Todo updated successfully');
   }
 
   /**
    * PATCH /api/todos/:id/toggle - Toggle todo completion
    */
   @Patch('/:id/toggle')
-  async toggleTodo(@Param('id') id: string): Promise<any> {
+  async toggleTodo(@Param('id') id: string): Promise<TodoOperationResponse> {
     const validatedData = this.validationService.validateToggleCommand({ id });
 
     await this.toggleTodoUseCase.execute(validatedData);
 
-    return {
-      success: true,
-      message: 'Todo toggled successfully',
-    };
+    return ApiResponseBuilder.successWithMessage('Todo toggled successfully');
   }
 
   /**
    * DELETE /api/todos/:id - Delete a todo
    */
   @Delete('/:id')
-  async deleteTodo(@Param('id') id: string): Promise<any> {
+  async deleteTodo(@Param('id') id: string): Promise<TodoOperationResponse> {
     const validatedData = this.validationService.validateDeleteCommand({ id });
 
     await this.deleteTodoUseCase.execute(validatedData);
 
-    return {
-      success: true,
-      message: 'Todo deleted successfully',
-    };
+    return ApiResponseBuilder.successWithMessage('Todo deleted successfully');
   }
 }
