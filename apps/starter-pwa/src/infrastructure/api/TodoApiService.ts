@@ -1,6 +1,7 @@
 import { injectable, inject } from 'tsyringe';
 import { IHttpClient } from '../http/IHttpClient';
 import { ITodoApiService } from './ITodoApiService';
+import { getApiConfig } from './config/ApiConfig';
 import {
   TodoListResponse,
   TodoResponse,
@@ -11,12 +12,16 @@ import {
 
 @injectable()
 export class TodoApiService implements ITodoApiService {
+  private readonly apiConfig = getApiConfig();
+
   constructor(
     @inject(TOKENS.HttpClient) private readonly httpClient: IHttpClient
   ) {}
 
   async getAllTodos(): Promise<TodoListResponse> {
-    const response = await this.httpClient.get<TodoListResponse>('/api/todos');
+    const response = await this.httpClient.get<TodoListResponse>(
+      this.apiConfig.endpoints.todos.all
+    );
     
     if (!response.data.success) {
       throw new Error('Failed to fetch todos');
@@ -26,7 +31,10 @@ export class TodoApiService implements ITodoApiService {
   }
 
   async createTodo(todoData: CreateTodoRequestDto): Promise<TodoResponse> {
-    const response = await this.httpClient.post<TodoResponse>('/api/todos', todoData);
+    const response = await this.httpClient.post<TodoResponse>(
+      this.apiConfig.endpoints.todos.base,
+      todoData
+    );
     
     if (!response.data.success) {
       throw new Error('Failed to create todo');
@@ -36,7 +44,10 @@ export class TodoApiService implements ITodoApiService {
   }
 
   async updateTodo(id: string, updateData: UpdateTodoRequestDto): Promise<void> {
-    const response = await this.httpClient.put(`/api/todos/${id}`, updateData);
+    const response = await this.httpClient.put(
+      this.apiConfig.endpoints.todos.byId(id),
+      updateData
+    );
     
     if (response.status >= 400) {
       throw new Error('Failed to update todo');
@@ -44,7 +55,9 @@ export class TodoApiService implements ITodoApiService {
   }
 
   async deleteTodo(id: string): Promise<void> {
-    const response = await this.httpClient.delete(`/api/todos/${id}`);
+    const response = await this.httpClient.delete(
+      this.apiConfig.endpoints.todos.byId(id)
+    );
     
     if (response.status >= 400) {
       throw new Error('Failed to delete todo');
@@ -53,7 +66,9 @@ export class TodoApiService implements ITodoApiService {
 
   async getTodoById(id: string): Promise<TodoResponse> {
     try {
-      const response = await this.httpClient.get<TodoResponse>(`/api/todos/${id}`);
+      const response = await this.httpClient.get<TodoResponse>(
+        this.apiConfig.endpoints.todos.byId(id)
+      );
       
       if (response.status === 404) {
         throw new Error('Todo not found');
@@ -73,7 +88,9 @@ export class TodoApiService implements ITodoApiService {
   }
 
   async getActiveTodos(): Promise<TodoListResponse> {
-    const response = await this.httpClient.get<TodoListResponse>('/api/todos/active');
+    const response = await this.httpClient.get<TodoListResponse>(
+      this.apiConfig.endpoints.todos.active
+    );
     
     if (!response.data.success) {
       throw new Error('Failed to fetch active todos');
@@ -83,7 +100,9 @@ export class TodoApiService implements ITodoApiService {
   }
 
   async getCompletedTodos(): Promise<TodoListResponse> {
-    const response = await this.httpClient.get<TodoListResponse>('/api/todos/completed');
+    const response = await this.httpClient.get<TodoListResponse>(
+      this.apiConfig.endpoints.todos.completed
+    );
     
     if (!response.data.success) {
       throw new Error('Failed to fetch completed todos');

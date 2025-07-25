@@ -1,6 +1,7 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosInstance, AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
 import { injectable } from 'tsyringe';
 import { IHttpClient, HttpResponse, HttpRequestConfig } from './IHttpClient';
+import { ApiError } from '../api/errors/ApiError';
 
 @injectable()
 export class AxiosHttpClient implements IHttpClient {
@@ -52,92 +53,104 @@ export class AxiosHttpClient implements IHttpClient {
     );
   }
 
-  private mapResponse<T>(axiosResponse: AxiosResponse<T>): HttpResponse<T> {
+  /**
+   * Convert AxiosResponse to HttpResponse
+   */
+  private toHttpResponse<T>(response: AxiosResponse<T>): HttpResponse<T> {
     return {
-      data: axiosResponse.data,
-      status: axiosResponse.status,
-      statusText: axiosResponse.statusText,
-      headers: axiosResponse.headers as Record<string, string>,
+      data: response.data,
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers as Record<string, string>,
+    };
+  }
+
+  /**
+   * Convert custom HttpRequestConfig to AxiosRequestConfig
+   */
+  private toAxiosConfig(config?: HttpRequestConfig): AxiosRequestConfig | undefined {
+    if (!config) return undefined;
+
+    return {
+      headers: config.headers,
+      timeout: config.timeout,
+      params: config.params,
     };
   }
 
   async get<T = any>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
     try {
-      const response = await this.axiosInstance.get<T>(url, {
-        headers: config?.headers,
-        timeout: config?.timeout,
-        params: config?.params,
-      });
-      return this.mapResponse(response);
+      const response = await this.axiosInstance.get<T>(url, this.toAxiosConfig(config));
+      return this.toHttpResponse(response);
     } catch (error) {
-      throw this.handleError(error);
+      throw this.handleAxiosError(error);
     }
   }
 
   async post<T = any>(url: string, data?: any, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
     try {
-      const response = await this.axiosInstance.post<T>(url, data, {
-        headers: config?.headers,
-        timeout: config?.timeout,
-        params: config?.params,
-      });
-      return this.mapResponse(response);
+      const response = await this.axiosInstance.post<T>(url, data, this.toAxiosConfig(config));
+      return this.toHttpResponse(response);
     } catch (error) {
-      throw this.handleError(error);
+      throw this.handleAxiosError(error);
     }
   }
 
   async put<T = any>(url: string, data?: any, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
     try {
-      const response = await this.axiosInstance.put<T>(url, data, {
-        headers: config?.headers,
-        timeout: config?.timeout,
-        params: config?.params,
-      });
-      return this.mapResponse(response);
+      const response = await this.axiosInstance.put<T>(url, data, this.toAxiosConfig(config));
+      return this.toHttpResponse(response);
     } catch (error) {
-      throw this.handleError(error);
+      throw this.handleAxiosError(error);
     }
   }
 
   async delete<T = any>(url: string, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
     try {
-      const response = await this.axiosInstance.delete<T>(url, {
-        headers: config?.headers,
-        timeout: config?.timeout,
-        params: config?.params,
-      });
-      return this.mapResponse(response);
+      const response = await this.axiosInstance.delete<T>(url, this.toAxiosConfig(config));
+      return this.toHttpResponse(response);
     } catch (error) {
-      throw this.handleError(error);
+      throw this.handleAxiosError(error);
     }
   }
 
   async patch<T = any>(url: string, data?: any, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
     try {
-      const response = await this.axiosInstance.patch<T>(url, data, {
-        headers: config?.headers,
-        timeout: config?.timeout,
-        params: config?.params,
-      });
-      return this.mapResponse(response);
+      const response = await this.axiosInstance.patch<T>(url, data, this.toAxiosConfig(config));
+      return this.toHttpResponse(response);
     } catch (error) {
-      throw this.handleError(error);
+      throw this.handleAxiosError(error);
     }
   }
 
-  private handleError(error: unknown): Error {
+  /**
+   * Handle Axios errors and convert to ApiError
+   */
+  private handleAxiosError(error: unknown): ApiError {
     if (axios.isAxiosError(error)) {
       if (error.response) {
         // Server responded with error status
-        return new Error(`HTTP ${error.response.status}: ${error.response.statusText}`);
+        return new ApiError(
+          `HTTP ${error.response.status}: ${error.response.statusText}`,
+          error.response.status,
+          error.response.data
+        );
       } else if (error.request) {
-        // Request was made but no response received
-        return new Error('Network error: Unable to connect to the API server');
+        // Network error - no response received
+        return new ApiError(
+          'Network error: Unable to connect to the API server',
+          0,
+          { originalError: error.message }
+        );
       }
     }
     
-    // Something else happened
-    return error instanceof Error ? error : new Error('Unknown error occurred');
+    // Other error
+    const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+    return new ApiError(
+      message,
+      0,
+      { originalError: error instanceof Error ? error.message : 'Unknown error' }
+    );
   }
 }
