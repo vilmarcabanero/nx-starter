@@ -51,6 +51,17 @@ export const disconnectMongoDB = async (): Promise<void> => {
   }
 };
 
+/**
+ * Default MongooseConnection object for easier testing and imports
+ */
+export const MongooseConnection = {
+  connect: connectMongoDB,
+  disconnect: disconnectMongoDB,
+  get connection() {
+    return mongoose.connection;
+  }
+};
+
 // Graceful shutdown handler
 process.on('SIGINT', async () => {
   await disconnectMongoDB();

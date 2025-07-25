@@ -209,6 +209,98 @@ describe('InMemoryTodoRepository', () => {
     });
   });
 
+  describe('findBySpecification', () => {
+    it('should filter todos by specification', async () => {
+      const activeTodo = new Todo('Active Todo', false, new Date(), undefined, 'medium');
+      const completedTodo = new Todo('Completed Todo', true, new Date(), undefined, 'medium');
+
+      await repository.create(activeTodo);
+      await repository.create(completedTodo);
+
+      // Create a simple specification that matches completed todos
+      const completedSpecification = {
+        isSatisfiedBy: (todo: Todo) => todo.completed
+      };
+
+      const result = await repository.findBySpecification(completedSpecification);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].title.value).toBe('Completed Todo');
+      expect(result[0].completed).toBe(true);
+    });
+
+    it('should return empty array when no todos match specification', async () => {
+      const activeTodo = new Todo('Active Todo', false, new Date(), undefined, 'medium');
+      await repository.create(activeTodo);
+
+      const neverMatchSpecification = {
+        isSatisfiedBy: () => false
+      };
+
+      const result = await repository.findBySpecification(neverMatchSpecification);
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('should sort results by creation date (newest first)', async () => {
+      const firstTodo = new Todo('First Todo', false, new Date(2024, 0, 1), undefined, 'medium');
+      const secondTodo = new Todo('Second Todo', false, new Date(2024, 0, 2), undefined, 'medium');
+      
+      await repository.create(firstTodo);
+      await repository.create(secondTodo);
+
+      const allSpecification = {
+        isSatisfiedBy: () => true
+      };
+
+      const result = await repository.findBySpecification(allSpecification);
+
+      expect(result).toHaveLength(2);
+      // Should be sorted by creation date (newest first)
+      expect(result[0].title.value).toBe('Second Todo');
+      expect(result[1].title.value).toBe('First Todo');
+    });
+  });
+
+  describe('update method additional edge cases', () => {
+    it('should handle update without changing completed status', async () => {
+      const todo = new Todo('Original Todo', false, new Date(), undefined, 'medium');
+      const id = await repository.create(todo);
+
+      // Update only title, not completed status
+      await repository.update(id, { title: 'Updated Todo' });
+
+      const updatedTodo = await repository.getById(id);
+      expect(updatedTodo?.title.value).toBe('Updated Todo');
+      expect(updatedTodo?.completed).toBe(false); // Should remain unchanged
+    });
+
+    it('should handle update without changing priority', async () => {
+      const todo = new Todo('Original Todo', false, new Date(), undefined, 'high');
+      const id = await repository.create(todo);
+
+      // Update only title, not priority
+      await repository.update(id, { title: 'Updated Todo' });
+
+      const updatedTodo = await repository.getById(id);
+      expect(updatedTodo?.title.value).toBe('Updated Todo');
+      expect(updatedTodo?.priority.level).toBe('high'); // Should remain unchanged
+    });
+
+    it('should handle update without changing due date', async () => {
+      const dueDate = new Date('2024-12-31');
+      const todo = new Todo('Original Todo', false, new Date(), undefined, 'medium', dueDate);
+      const id = await repository.create(todo);
+
+      // Update only title, not due date
+      await repository.update(id, { title: 'Updated Todo' });
+
+      const updatedTodo = await repository.getById(id);
+      expect(updatedTodo?.title.value).toBe('Updated Todo');
+      expect(updatedTodo?.dueDate).toEqual(dueDate); // Should remain unchanged
+    });
+  });
+
   describe('count methods', () => {
     beforeEach(async () => {
       const activeTodo = new Todo(

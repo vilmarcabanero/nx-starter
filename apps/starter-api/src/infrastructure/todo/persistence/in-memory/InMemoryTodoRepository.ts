@@ -42,7 +42,11 @@ export class InMemoryTodoRepository implements ITodoRepository {
     // Create updated todo with changes
     const updatedTodo = new Todo(
       changes.title !== undefined
-        ? (changes.title as any).value
+        ? typeof changes.title === 'string'
+          ? changes.title
+          : changes.title && typeof changes.title === 'object' && 'value' in changes.title
+            ? (changes.title as any).value
+            : existingTodo.title.value
         : existingTodo.title.value,
       changes.completed !== undefined
         ? changes.completed
@@ -50,7 +54,11 @@ export class InMemoryTodoRepository implements ITodoRepository {
       existingTodo.createdAt,
       id,
       changes.priority !== undefined
-        ? (changes.priority as any).level
+        ? typeof changes.priority === 'string' 
+          ? changes.priority 
+          : (changes.priority as any).level !== undefined 
+            ? (changes.priority as any).level 
+            : existingTodo.priority.level
         : existingTodo.priority.level,
       changes.dueDate !== undefined ? changes.dueDate : existingTodo.dueDate
     );

@@ -252,6 +252,59 @@ describe('SqliteTodoRepository', () => {
     });
   });
 
+  describe('findBySpecification', () => {
+    it('should filter todos by specification', async () => {
+      const activeTodo = new Todo('Active Todo', false, new Date(), undefined, 'medium');
+      const completedTodo = new Todo('Completed Todo', true, new Date(), undefined, 'medium');
+
+      await repository.create(activeTodo);
+      await repository.create(completedTodo);
+
+      // Create a simple specification that matches completed todos
+      const completedSpecification = {
+        isSatisfiedBy: (todo: Todo) => todo.completed
+      };
+
+      const result = await repository.findBySpecification(completedSpecification);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].titleValue).toBe('Completed Todo');
+      expect(result[0].completed).toBe(true);
+    });
+
+    it('should return empty array when no todos match specification', async () => {
+      const activeTodo = new Todo('Active Todo', false, new Date(), undefined, 'medium');
+      await repository.create(activeTodo);
+
+      const neverMatchSpecification = {
+        isSatisfiedBy: () => false
+      };
+
+      const result = await repository.findBySpecification(neverMatchSpecification);
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('should sort results by creation date (newest first)', async () => {
+      const firstTodo = new Todo('First Todo', false, new Date(2024, 0, 1), undefined, 'medium');
+      const secondTodo = new Todo('Second Todo', false, new Date(2024, 0, 2), undefined, 'medium');
+      
+      await repository.create(firstTodo);
+      await repository.create(secondTodo);
+
+      const allSpecification = {
+        isSatisfiedBy: () => true
+      };
+
+      const result = await repository.findBySpecification(allSpecification);
+
+      expect(result).toHaveLength(2);
+      // Should be sorted by creation date (newest first)
+      expect(result[0].titleValue).toBe('Second Todo');
+      expect(result[1].titleValue).toBe('First Todo');
+    });
+  });
+
   describe('SQLite specific behavior', () => {
     it('should handle boolean values as integers', async () => {
       const activeTodo = new Todo('Active Todo', false, new Date(), undefined, 'medium');

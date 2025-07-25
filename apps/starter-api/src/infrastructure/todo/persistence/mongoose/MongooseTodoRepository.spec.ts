@@ -167,6 +167,51 @@ describe('MongooseTodoRepository', () => {
       expect(updatedTodo!.titleValue).toBe('Updated with 🎯 special chars & symbols');
     });
 
+    it('should handle title as object with value property', async () => {
+      const todo = new Todo('Original');
+      const id = await repository.create(todo);
+
+      // Test the case where title is passed as an object with value property
+      await repository.update(id, { title: { value: 'Object title' } as any });
+
+      const updatedTodo = await repository.getById(id);
+      expect(updatedTodo!.titleValue).toBe('Object title');
+    });
+
+    it('should handle priority as object with level property', async () => {
+      const todo = new Todo('Test todo', false, new Date(), undefined, 'low');
+      const id = await repository.create(todo);
+
+      // Test the case where priority is passed as an object with level property
+      await repository.update(id, { priority: { level: 'high' } as any });
+
+      const updatedTodo = await repository.getById(id);
+      expect(updatedTodo!.priority.level).toBe('high');
+    });
+
+    it('should handle dueDate update', async () => {
+      const todo = new Todo('Test todo');
+      const id = await repository.create(todo);
+
+      const newDueDate = new Date('2024-12-31T23:59:59.999Z');
+      await repository.update(id, { dueDate: newDueDate });
+
+      const updatedTodo = await repository.getById(id);
+      expect(updatedTodo!.dueDate).toEqual(newDueDate);
+    });
+
+    it('should handle dueDate set to null', async () => {
+      const originalDueDate = new Date('2024-12-31T23:59:59.999Z');
+      const todo = new Todo('Test todo', false, new Date(), undefined, 'medium', originalDueDate);
+      const id = await repository.create(todo);
+
+      // Set dueDate to null
+      await repository.update(id, { dueDate: null });
+
+      const updatedTodo = await repository.getById(id);
+      expect(updatedTodo!.dueDate).toBeNull();
+    });
+
     it('should throw error for non-existent todo', async () => {
       await expect(repository.update('507f1f77bcf86cd799439011', { title: 'New title' })).rejects.toThrow(
         'Todo with ID 507f1f77bcf86cd799439011 not found'
