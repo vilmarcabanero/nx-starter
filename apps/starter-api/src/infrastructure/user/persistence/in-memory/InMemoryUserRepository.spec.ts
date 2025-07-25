@@ -9,14 +9,14 @@ describe('InMemoryUserRepository', () => {
   beforeEach(() => {
     repository = new InMemoryUserRepository();
     
-    // Create a test user with proper static method
+    // Create a test user with proper static method and valid bcrypt hash
     testUser = User.create(
       'test-123',
       'John',
       'Doe',
       'john.doe@example.com',
       'john.doe',
-      'hashedpassword123'
+      '$2b$10$N9qo8uLOickgx2ZMRZoMye.VOQVJXL.O0i7VG0Z.r2fNJZeVoK2O6' // valid bcrypt hash
     );
   });
 
@@ -161,7 +161,7 @@ describe('InMemoryUserRepository', () => {
         'Smith',
         'jane.smith@example.com',
         'jane.smith',
-        'hashedpassword456'
+        '$2b$10$N9qo8uLOickgx2ZMRZoMye.VOQVJXL.O0i7VG0Z.r2fNJZeVoK2O6'
       );
 
       await repository.create(testUser);
@@ -190,7 +190,7 @@ describe('InMemoryUserRepository', () => {
         'Smith-Wilson',
         'john.paul@example.com',
         'john.paul',
-        'hashedpassword'
+        '$2b$10$N9qo8uLOickgx2ZMRZoMye.VOQVJXL.O0i7VG0Z.r2fNJZeVoK2O6'
       );
 
       await repository.create(specialUser);
@@ -207,7 +207,7 @@ describe('InMemoryUserRepository', () => {
         'Müller',
         'jose.muller@example.com',
         'jose.muller',
-        'hashedpassword'
+        '$2b$10$N9qo8uLOickgx2ZMRZoMye.VOQVJXL.O0i7VG0Z.r2fNJZeVoK2O6'
       );
 
       await repository.create(unicodeUser);
@@ -224,7 +224,7 @@ describe('InMemoryUserRepository', () => {
         'Doe',
         'john1@example.com',
         'john1',
-        'hashedpassword1'
+        '$2b$10$N9qo8uLOickgx2ZMRZoMye.VOQVJXL.O0i7VG0Z.r2fNJZeVoK2O6'
       );
 
       const user2 = User.create(
@@ -233,7 +233,7 @@ describe('InMemoryUserRepository', () => {
         'Doe',
         'john2@example.com',
         'john2',
-        'hashedpassword2'
+        '$2b$10$N9qo8uLOickgx2ZMRZoMye.VOQVJXL.O0i7VG0Z.r2fNJZeVoK2O6'
       );
 
       await repository.create(user1);
