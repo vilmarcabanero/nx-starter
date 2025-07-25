@@ -379,11 +379,11 @@ body:
         - Start with lowercase letter or number
         - No period at the end
         - Header length limits vary by scope:
-          - `starter-api-e2e`, `starter-pwa-e2e`, `application-core`: max 90 characters
-          - `domain-core`: max 85 characters  
-          - `starter-api`, `starter-pwa`: max 83 characters
-          - `utils-core`: max 80 characters
-          - All other scopes: max 72 characters
+          - `starter-api-e2e`, `starter-pwa-e2e`, `application-core`: max 100 characters
+          - `domain-core`: max 95 characters  
+          - `starter-api`, `starter-pwa`: max 93 characters
+          - `utils-core`: max 90 characters
+          - All other scopes: max 82 characters
         - Be descriptive and specific
         
         **Reference:** See `commitlint.config.ts` and `.husky/commit-msg` for complete rules
