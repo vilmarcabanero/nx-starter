@@ -10,10 +10,12 @@ body:
       label: Component/Library
       description: Select the component or library that needs test coverage improvement
       options:
-        - starter-api
-        - starter-pwa
-        - domain-core
-        - application-core
+        - api
+        - web
+        - domain
+        - application-api
+        - application-shared
+        - application-web
         - utils-core
     validations:
       required: true
@@ -41,14 +43,16 @@ body:
         ### 3. Verify setup by running tests
         ```bash
         # For API components
-        pnpm nx test starter-api
+        pnpm nx test api
         
         # For PWA components  
-        pnpm nx test starter-pwa
+        pnpm nx test web
         
         # For library components
-        pnpm nx test domain-core
-        pnpm nx test application-core
+        pnpm nx test domain
+        pnpm nx test application-api
+        pnpm nx test application-shared
+        pnpm nx test application-web
         pnpm nx test utils-core
         ```
         
@@ -144,8 +148,8 @@ body:
         **Run Tests (Short Commands):**
         - `pnpm api` - Start API server
         - `pnpm web` - Start PWA server
-        - `pnpm domain` - Run domain-core tests
-        - `pnpm application` - Run application-core tests
+        - `pnpm domain` - Run domain tests
+        - `pnpm application` - Run application-shared tests
         - `pnpm utils` - Run utils-core tests
         
         **Coverage Commands (Short):**
@@ -226,7 +230,7 @@ body:
         
         **Format:** `type(scope): subject`
         
-        **Example:** `test(starter-api): add unit tests for todo service`
+        **Example:** `test(api): add unit tests for todo service`
         
         **Available Types:**
         - `test` - Adding missing tests or correcting existing tests
@@ -242,19 +246,19 @@ body:
         
         **Scope Rules:**
         - Use kebab-case (lowercase with hyphens)
-        - Examples: `starter-api`, `starter-pwa`, `domain-core`, `application-core`, `utils-core`
+        - Examples: `api`, `web`, `domain`, application-shared`, `utils-core`
         
         **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
-        - Examples: `starter-api`, `starter-pwa`, `domain-core`, `application-core`, `utils-core`
+        - Examples: `api`, `web`, `domain`, application-shared`, `utils-core`
         
         **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Header length limits vary by scope:
-          - `starter-api-e2e`, `starter-pwa-e2e`, `application-core`: max 100 characters
-          - `domain-core`: max 95 characters  
-          - `starter-api`, `starter-pwa`: max 93 characters
+          - `api-e2e`, `web-e2e`, application-shared`: max 100 characters
+          - `domain`: max 95 characters  
+          - `api`, `web`: max 93 characters
           - `utils-core`: max 90 characters
           - All other scopes: max 82 characters
         - Be descriptive and specific

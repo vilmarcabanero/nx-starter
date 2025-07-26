@@ -44,14 +44,16 @@ body:
         ### 3. Verify setup by running tests
         ```bash
         # For API components
-        pnpm nx test starter-api
+        pnpm nx test api
         
         # For PWA components  
-        pnpm nx test starter-pwa
+        pnpm nx test web
         
         # For library components
-        pnpm nx test domain-core
-        pnpm nx test application-core
+        pnpm nx test domain
+        pnpm nx test application-api
+        pnpm nx test application-shared
+        pnpm nx test application-web
         pnpm nx test utils-core
         ```
         
@@ -254,15 +256,15 @@ body:
         **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
         - Examples: `auth`, `validation`, `security`, `deps`, `api`
-        - Component scopes: `starter-api`, `starter-pwa`
+        - Component scopes: `api`, `web`
         
         **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Header length limits vary by scope:
-          - `starter-api-e2e`, `starter-pwa-e2e`, `application-core`: max 100 characters
-          - `domain-core`: max 95 characters  
-          - `starter-api`, `starter-pwa`: max 93 characters
+          - `api-e2e`, `web-e2e`, application-shared`: max 100 characters
+          - `domain`: max 95 characters  
+          - `api`, `web`: max 93 characters
           - `utils-core`: max 90 characters
           - All other scopes: max 82 characters
         - Be specific about security improvements

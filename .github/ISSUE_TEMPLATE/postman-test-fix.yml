@@ -49,8 +49,10 @@ body:
         pnpm nx test web
         
         # For library components
-        pnpm nx test domain-core
-        pnpm nx test application-core
+        pnpm nx test domain
+        pnpm nx test application-api
+        pnpm nx test application-shared
+        pnpm nx test application-web
         pnpm nx test utils-core
         ```
         
@@ -373,14 +375,14 @@ body:
         
         **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
-        - Examples: `api`, `web`, `domain-core`, `application-core`, `utils-core`
+        - Examples: `api`, `web`, `domain`, application-shared`, `utils-core`
         
         **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Header length limits vary by scope:
-          - `api-e2e`, `web-e2e`, `application-core`: max 100 characters
-          - `domain-core`: max 95 characters  
+          - `api-e2e`, `web-e2e`, application-shared`: max 100 characters
+          - `domain`: max 95 characters  
           - `api`, `web`: max 93 characters
           - `utils-core`: max 90 characters
           - All other scopes: max 82 characters

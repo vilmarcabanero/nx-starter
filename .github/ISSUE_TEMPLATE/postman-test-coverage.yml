@@ -1,6 +1,6 @@
 name: 📮 Postman Test Coverage
 description: Improve Postman collection and API testing coverage
-title: "[starter-api] Update Postman tests to achieve comprehensive API coverage"
+title: "[api] Update Postman tests to achieve comprehensive API coverage"
 labels: ["testing", "postman", "api", "coverage", "enhancement", "copilot"]
 assignees: ["copilot"]
 body:
@@ -42,14 +42,16 @@ body:
         ### 3. Verify setup by running tests
         ```bash
         # For API components
-        pnpm nx test starter-api
+        pnpm nx test api
         
         # For PWA components  
-        pnpm nx test starter-pwa
+        pnpm nx test web
         
         # For library components
-        pnpm nx test domain-core
-        pnpm nx test application-core
+        pnpm nx test domain
+        pnpm nx test application-api
+        pnpm nx test application-shared
+        pnpm nx test application-web
         pnpm nx test utils-core
         ```
         
@@ -217,8 +219,8 @@ body:
         - `pnpm e2e:postman`
         
         **Advanced Newman Options (when running directly):**
-        - `npx newman run apps/starter-api/postman-collection.json.backup -e apps/starter-api/postman-environment.json --reporters cli,html --reporter-html-export apps/starter-api/postman/report.html`
-        - `npx newman run apps/starter-api/postman-collection.json -e apps/starter-api/postman-environment.json --reporters json,cli`
+        - `npx newman run apps/api/postman-collection.json.backup -e apps/api/postman-environment.json --reporters cli,html --reporter-html-export apps/api/postman/report.html`
+        - `npx newman run apps/api/postman-collection.json -e apps/api/postman-environment.json --reporters json,cli`
         
         **Newman Command Options:**
         - `--reporters cli,json,html` - Multiple output formats
@@ -234,9 +236,9 @@ body:
         - Version control collection and environment files
         
         **File Locations:**
-        - Collection: `apps/starter-api/postman-collection.json`
-        - Backup: `apps/starter-api/postman-collection.json.backup`
-        - Environment: `apps/starter-api/postman-environment.json`
+        - Collection: `apps/api/postman-collection.json`
+        - Backup: `apps/api/postman-collection.json.backup`
+        - Environment: `apps/api/postman-environment.json`
       render: markdown
     validations:
       required: false
@@ -382,7 +384,7 @@ body:
         
         **Format:** `type(scope): subject`
         
-        **Example:** `test(starter-api): update postman collection with comprehensive api tests`
+        **Example:** `test(api): update postman collection with comprehensive api tests`
         
         **Available Types:**
         - `test` - Adding missing tests or correcting existing tests
@@ -398,15 +400,15 @@ body:
         
         **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
-        - Examples: `starter-api`, `postman`, `api-tests`
+        - Examples: `api`, `postman`, `api-tests`
         
         **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Header length limits vary by scope:
-          - `starter-api-e2e`, `starter-pwa-e2e`, `application-core`: max 100 characters
-          - `domain-core`: max 95 characters  
-          - `starter-api`, `starter-pwa`: max 93 characters
+          - `api-e2e`, `web-e2e`, application-shared`: max 100 characters
+          - `domain`: max 95 characters  
+          - `api`, `web`: max 93 characters
           - `utils-core`: max 90 characters
           - All other scopes: max 82 characters
         - Be descriptive and specific

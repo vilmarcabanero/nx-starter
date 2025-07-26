@@ -12,8 +12,10 @@ body:
       options:
         - api
         - web
-        - domain-core
-        - application-core
+        - domain
+        - application-api
+        - application-shared
+        - application-web
         - utils-core
     validations:
       required: true
@@ -61,8 +63,10 @@ body:
         pnpm nx test web
         
         # For library components
-        pnpm nx test domain-core
-        pnpm nx test application-core
+        pnpm nx test domain
+        pnpm nx test application-api
+        pnpm nx test application-shared
+        pnpm nx test application-web
         pnpm nx test utils-core
         ```
         
@@ -157,8 +161,8 @@ body:
       description: Relevant commands for debugging (auto-populated based on selection)
       value: |
         **Run Tests (Short Commands):**
-        - `pnpm domain` - Run domain-core tests
-        - `pnpm application` - Run application-core tests  
+        - `pnpm domain` - Run domain tests
+        - `pnpm application` - Run application-shared tests  
         - `pnpm utils` - Run utils-core tests
         
         **Coverage for Analysis (Short):**
@@ -171,8 +175,8 @@ body:
         **Debug Commands by Component:**
         - **api**: `pnpm test:api` 
         - **web**: `pnpm test:web`
-        - **domain-core**: `pnpm domain`
-        - **application-core**: `pnpm application`
+        - **domain**: `pnpm domain`
+        - **application-shared**: `pnpm application`
         - **utils-core**: `pnpm utils`
         
         **Additional Options:**
@@ -302,14 +306,14 @@ body:
         
         **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
-        - Examples: `api`, `web`, `domain-core`, `application-core`, `utils-core`
+        - Examples: `api`, `web`, `domain`, application-shared`, `utils-core`
         
         **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Header length limits vary by scope:
-          - `api-e2e`, `web-e2e`, `application-core`: max 100 characters
-          - `domain-core`: max 95 characters  
+          - `api-e2e`, `web-e2e`, application-shared`: max 100 characters
+          - `domain`: max 95 characters  
           - `api`, `web`: max 93 characters
           - `utils-core`: max 90 characters
           - All other scopes: max 82 characters

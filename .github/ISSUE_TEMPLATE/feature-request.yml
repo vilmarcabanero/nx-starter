@@ -12,8 +12,10 @@ body:
       options:
         - api
         - web
-        - domain-core
-        - application-core
+        - domain
+        - application-api
+        - application-shared
+        - application-web
         - utils-core
         - build system
         - deployment
@@ -51,8 +53,10 @@ body:
         pnpm nx test web
         
         # For library components
-        pnpm nx test domain-core
-        pnpm nx test application-core
+        pnpm nx test domain
+        pnpm nx test application-api
+        pnpm nx test application-shared
+        pnpm nx test application-web
         pnpm nx test utils-core
         ```
         
