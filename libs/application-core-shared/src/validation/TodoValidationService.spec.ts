@@ -6,12 +6,12 @@ import {
   DeleteTodoValidationService,
   ToggleTodoValidationService,
   TodoValidationService,
-  VALIDATION_TOKENS,
   type ICreateTodoValidationService,
   type IUpdateTodoValidationService,
   type IDeleteTodoValidationService,
   type IToggleTodoValidationService,
 } from './TodoValidationService';
+import { TOKENS } from '../di/tokens';
 import { ValidationError, ValidationResult } from './ValidationService';
 import type {
   CreateTodoCommand,
@@ -390,26 +390,32 @@ describe('Type Interfaces', () => {
   });
 });
 
-describe('VALIDATION_TOKENS', () => {
-  it('should export dependency injection tokens', () => {
-    expect(VALIDATION_TOKENS.CreateTodoValidationService).toBeDefined();
-    expect(VALIDATION_TOKENS.UpdateTodoValidationService).toBeDefined();
-    expect(VALIDATION_TOKENS.DeleteTodoValidationService).toBeDefined();
-    expect(VALIDATION_TOKENS.ToggleTodoValidationService).toBeDefined();
-    expect(VALIDATION_TOKENS.TodoValidationService).toBeDefined();
+describe('TOKENS', () => {
+  it('should export dependency injection tokens for validation services', () => {
+    expect(TOKENS.CreateTodoValidationService).toBeDefined();
+    expect(TOKENS.UpdateTodoValidationService).toBeDefined();
+    expect(TOKENS.DeleteTodoValidationService).toBeDefined();
+    expect(TOKENS.ToggleTodoValidationService).toBeDefined();
+    expect(TOKENS.TodoValidationService).toBeDefined();
 
-    // Verify they are symbols
-    expect(typeof VALIDATION_TOKENS.CreateTodoValidationService).toBe('symbol');
-    expect(typeof VALIDATION_TOKENS.UpdateTodoValidationService).toBe('symbol');
-    expect(typeof VALIDATION_TOKENS.DeleteTodoValidationService).toBe('symbol');
-    expect(typeof VALIDATION_TOKENS.ToggleTodoValidationService).toBe('symbol');
-    expect(typeof VALIDATION_TOKENS.TodoValidationService).toBe('symbol');
+    // Verify they are strings (as per the centralized tokens implementation)
+    expect(typeof TOKENS.CreateTodoValidationService).toBe('string');
+    expect(typeof TOKENS.UpdateTodoValidationService).toBe('string');
+    expect(typeof TOKENS.DeleteTodoValidationService).toBe('string');
+    expect(typeof TOKENS.ToggleTodoValidationService).toBe('string');
+    expect(typeof TOKENS.TodoValidationService).toBe('string');
   });
 
-  it('should have unique symbol values', () => {
-    const tokens = Object.values(VALIDATION_TOKENS);
-    const uniqueTokens = new Set(tokens);
+  it('should have unique token values for validation services', () => {
+    const validationTokens = [
+      TOKENS.CreateTodoValidationService,
+      TOKENS.UpdateTodoValidationService,
+      TOKENS.DeleteTodoValidationService,
+      TOKENS.ToggleTodoValidationService,
+      TOKENS.TodoValidationService,
+    ];
+    const uniqueTokens = new Set(validationTokens);
 
-    expect(uniqueTokens.size).toBe(tokens.length);
+    expect(uniqueTokens.size).toBe(validationTokens.length);
   });
 });
