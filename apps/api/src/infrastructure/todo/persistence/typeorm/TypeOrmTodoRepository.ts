@@ -1,8 +1,8 @@
 import { injectable } from 'tsyringe';
 import { Repository, DataSource } from 'typeorm';
-import { Todo } from '@nx-starter/domain-core';
-import type { ITodoRepository } from '@nx-starter/domain-core';
-import type { Specification } from '@nx-starter/domain-core';
+import { Todo } from '@nx-starter/domain';
+import type { ITodoRepository } from '@nx-starter/domain';
+import type { Specification } from '@nx-starter/domain';
 import { TodoEntity } from './TodoEntity';
 import { generateUUID } from '@nx-starter/utils-core';
 

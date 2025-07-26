@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest';
 import { DataSource } from 'typeorm';
 import { TypeOrmTodoRepository } from './TypeOrmTodoRepository';
 import { TodoEntity } from './TodoEntity';
-import { Todo } from '@nx-starter/domain-core';
+import { Todo } from '@nx-starter/domain';
 
 describe('TypeOrmTodoRepository', () => {
   let dataSource: DataSource;

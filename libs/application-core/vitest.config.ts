@@ -6,7 +6,7 @@ export default defineConfig(() => ({
   cacheDir: '../node_modules/.vite/application-core',
   resolve: {
     alias: {
-      '@nx-starter/domain-core': path.resolve(__dirname, '../domain-core/src/index.ts'),
+      '@nx-starter/domain': path.resolve(__dirname, '../domain/src/index.ts'),
       '@nx-starter/utils-core': path.resolve(__dirname, '../utils-core/src/index.ts'),
     },
   },

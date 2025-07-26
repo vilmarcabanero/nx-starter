@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, afterEach, afterAll } from 'vitest';
 import { Sequelize } from 'sequelize';
 import { SequelizeTodoRepository } from './SequelizeTodoRepository';
 import { TodoSequelizeModel, initTodoModel } from './TodoModel';
-import { Todo } from '@nx-starter/domain-core';
+import { Todo } from '@nx-starter/domain';
 
 describe('SequelizeTodoRepository', () => {
   let sequelize: Sequelize;

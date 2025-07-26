@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { container } from 'tsyringe';
 import { configureDI, TOKENS } from './container';
-import type { ITodoRepository } from '@nx-starter/domain-core';
+import type { ITodoRepository } from '@nx-starter/domain';
 
 // Mock the config module
 vi.mock('../../config/config', () => ({
@@ -112,11 +112,11 @@ vi.mock('../todo/persistence/sequelize/SequelizeConnection', () => ({
 }));
 
 // Mock use cases
-vi.mock('@nx-starter/domain-core');
-vi.mock('@nx-starter/domain-core');
-vi.mock('@nx-starter/domain-core');
-vi.mock('@nx-starter/domain-core');
-vi.mock('@nx-starter/domain-core');
+vi.mock('@nx-starter/domain');
+vi.mock('@nx-starter/domain');
+vi.mock('@nx-starter/domain');
+vi.mock('@nx-starter/domain');
+vi.mock('@nx-starter/domain');
 
 describe('DI Container Configuration', () => {
   beforeEach(() => {

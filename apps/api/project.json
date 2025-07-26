@@ -5,7 +5,7 @@
   "projectType": "application",
   "tags": ["type:app"],
   "implicitDependencies": [
-    "domain-core",
+    "domain",
     "application-core",
     "utils-core"
   ],

@@ -1,6 +1,6 @@
 import { injectable, inject } from 'tsyringe';
-import { TodoNotFoundException } from '@nx-starter/domain-core';
-import type { ITodoRepository } from '@nx-starter/domain-core';
+import { TodoNotFoundException } from '@nx-starter/domain';
+import type { ITodoRepository } from '@nx-starter/domain';
 import type { DeleteTodoCommand } from '../../dto/TodoCommands';
 import { TOKENS } from '../../di/tokens';
 

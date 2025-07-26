@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongooseTodoRepository } from './MongooseTodoRepository';
 import { TodoModel } from './TodoSchema';
-import { Todo } from '@nx-starter/domain-core';
+import { Todo } from '@nx-starter/domain';
 
 describe('MongooseTodoRepository', () => {
   let repository: MongooseTodoRepository;

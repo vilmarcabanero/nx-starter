@@ -3,7 +3,7 @@ import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { container, TOKENS } from '../di/container';
-import { Todo } from '@nx-starter/domain-core';
+import { Todo } from '@nx-starter/domain';
 import type { TodoStore } from './TodoStoreInterface';
 import type {
   ITodoCommandService,

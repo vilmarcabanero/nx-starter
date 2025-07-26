@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 import { injectable } from 'tsyringe';
-import { Todo } from '@nx-starter/domain-core';
-import type { ITodoRepository } from '@nx-starter/domain-core';
+import { Todo } from '@nx-starter/domain';
+import type { ITodoRepository } from '@nx-starter/domain';
 import { TodoMapper } from '@nx-starter/application-shared';
 import { generateUUID } from '@nx-starter/utils-core';
 import { getSqliteDatabase } from '../../../database/connections/SqliteConnection';

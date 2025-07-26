@@ -1,4 +1,4 @@
-import type { Todo } from '@nx-starter/domain-core';
+import type { Todo } from '@nx-starter/domain';
 
 export interface CreateTodoData {
   title: string;

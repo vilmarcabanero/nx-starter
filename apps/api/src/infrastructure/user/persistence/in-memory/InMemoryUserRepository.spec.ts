@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { InMemoryUserRepository } from './InMemoryUserRepository';
-import { User } from '@nx-starter/domain-core';
+import { User } from '@nx-starter/domain';
 
 describe('InMemoryUserRepository', () => {
   let repository: InMemoryUserRepository;

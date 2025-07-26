@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { TodoMapper } from './TodoMapper';
-import { Todo, TodoTitle } from '@nx-starter/domain-core';
+import { Todo, TodoTitle } from '@nx-starter/domain';
 import type { TodoDto, CreateTodoDto } from '../dto/TodoDto';
 import { TEST_UUIDS } from '@nx-starter/utils-core';
 

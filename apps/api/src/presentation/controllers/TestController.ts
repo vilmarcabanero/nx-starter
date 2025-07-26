@@ -9,7 +9,7 @@ import {
   DeleteTodoUseCase,
   TOKENS,
 } from '@nx-starter/application-shared';
-import type { ITodoRepository } from '@nx-starter/domain-core';
+import type { ITodoRepository } from '@nx-starter/domain';
 import {
   TodoOperationResponse,
 } from '@nx-starter/application-shared';

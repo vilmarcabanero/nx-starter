@@ -1,5 +1,5 @@
 import { injectable, inject } from 'tsyringe';
-import { User, IUserRepository, UserDomainService } from '@nx-starter/domain-core';
+import { User, IUserRepository, UserDomainService } from '@nx-starter/domain';
 import { generateUUID } from '@nx-starter/utils-core';
 import { RegisterUserCommand } from '../../dto/UserCommands';
 import { IPasswordHashingService } from '../../services/PasswordHashingService';

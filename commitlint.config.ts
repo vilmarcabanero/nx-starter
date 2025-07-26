@@ -81,7 +81,7 @@ const config = {
             'web': 93,
             // Libs
             'application-core': 100,
-            'domain-core': 95,
+            'domain': 95,
             'utils-core': 90,
           };
 

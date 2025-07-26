@@ -28,8 +28,8 @@ import {
   RegisterUserUseCase,
   BcryptPasswordHashingService,
 } from '@nx-starter/application-api';
-import type { ITodoRepository, IUserRepository } from '@nx-starter/domain-core';
-import { UserDomainService } from '@nx-starter/domain-core';
+import type { ITodoRepository, IUserRepository } from '@nx-starter/domain';
+import { UserDomainService } from '@nx-starter/domain';
 import { getTypeOrmDataSource } from '../database/connections/TypeOrmConnection';
 import { connectMongoDB } from '../database/connections/MongooseConnection';
 import { getDatabaseConfig } from '../../config';

@@ -22,7 +22,7 @@ import {
   GetTodoByIdQueryHandler,
   TOKENS,
 } from '@nx-starter/application-shared';
-import type { ITodoRepository } from '@nx-starter/domain-core';
+import type { ITodoRepository } from '@nx-starter/domain';
 import type {
   ITodoCommandService,
   ITodoQueryService,

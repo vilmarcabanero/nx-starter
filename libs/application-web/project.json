@@ -4,7 +4,7 @@
   "sourceRoot": "libs/application-web/src",
   "projectType": "library",
   "tags": ["type:application", "scope:web"],
-  "implicitDependencies": ["domain-core", "utils-core", "application-shared"],
+  "implicitDependencies": ["domain", "utils-core", "application-shared"],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",

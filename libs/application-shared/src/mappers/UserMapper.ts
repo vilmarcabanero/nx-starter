@@ -1,4 +1,4 @@
-import { User } from '@nx-starter/domain-core';
+import { User } from '@nx-starter/domain';
 import { UserDto, RegisterUserResponseDto } from '../dto/UserDto';
 
 /**

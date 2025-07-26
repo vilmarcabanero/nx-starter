@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { SqliteTodoRepository } from './SqliteTodoRepository';
-import { Todo } from '@nx-starter/domain-core';
+import { Todo } from '@nx-starter/domain';
 import { getSqliteDatabase } from '../../../database/connections/SqliteConnection';
 
 describe('SqliteTodoRepository', () => {

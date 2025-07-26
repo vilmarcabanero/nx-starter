@@ -24,7 +24,7 @@
       "@nx-starter/application-web": [
         "libs/application-web/src/index.ts"
       ],
-      "@nx-starter/domain-core": ["libs/domain-core/src/index.ts"],
+      "@nx-starter/domain": ["libs/domain/src/index.ts"],
       "@nx-starter/utils-core": ["libs/utils-core/src/index.ts"]
     }
   },

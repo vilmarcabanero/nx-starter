@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe';
-import { User, IUserRepository } from '@nx-starter/domain-core';
+import { User, IUserRepository } from '@nx-starter/domain';
 import { UserMapper } from '@nx-starter/application-shared';
 import { UserModel, IUserDocument } from './UserSchema';
 

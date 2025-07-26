@@ -1,5 +1,5 @@
 import { injectable, inject } from 'tsyringe';
-import type { Todo } from '@nx-starter/domain-core';
+import type { Todo } from '@nx-starter/domain';
 import type {
   ITodoCommandService,
   CreateTodoData,

@@ -4,7 +4,7 @@
   "sourceRoot": "libs/application-api/src",
   "projectType": "library",
   "tags": ["type:application", "scope:api"],
-  "implicitDependencies": ["domain-core", "utils-core", "application-shared"],
+  "implicitDependencies": ["domain", "utils-core", "application-shared"],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",

@@ -1,6 +1,6 @@
-import { Todo } from '@nx-starter/domain-core';
+import { Todo } from '@nx-starter/domain';
 import type { TodoDto, CreateTodoDto } from '../dto/TodoDto';
-import type { TodoPriorityLevel } from '@nx-starter/domain-core';
+import type { TodoPriorityLevel } from '@nx-starter/domain';
 
 /**
  * Mapper for converting between Todo entities and DTOs

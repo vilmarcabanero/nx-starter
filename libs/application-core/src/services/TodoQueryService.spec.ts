@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TodoQueryService } from './TodoQueryService';
-import { Todo } from '@nx-starter/domain-core';
+import { Todo } from '@nx-starter/domain';
 import {
   GetAllTodosQueryHandler,
   GetFilteredTodosQueryHandler,

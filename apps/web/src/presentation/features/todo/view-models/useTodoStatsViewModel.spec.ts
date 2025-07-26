@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useTodoStatsViewModel } from './useTodoStatsViewModel';
-import { Todo } from '@nx-starter/domain-core';
+import { Todo } from '@nx-starter/domain';
 import { TEST_UUIDS, generateTestUuid } from '../../../../test/test-helpers';
 
 // Mock the store

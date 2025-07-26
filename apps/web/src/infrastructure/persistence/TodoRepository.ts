@@ -4,7 +4,7 @@ import {
   TodoPriorityLevel,
   Specification,
   ITodoRepository,
-} from '@nx-starter/domain-core';
+} from '@nx-starter/domain';
 import { db, type TodoRecord } from './TodoDB';
 import { generateUUID } from '@nx-starter/utils-core';
 

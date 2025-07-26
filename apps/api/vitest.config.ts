@@ -50,9 +50,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@nx-starter/domain-core': path.resolve(
+      '@nx-starter/domain': path.resolve(
         __dirname,
-        '../../libs/domain-core/src/index.ts'
+        '../../libs/domain/src/index.ts'
       ),
       '@nx-starter/application-shared': path.resolve(
         __dirname,
