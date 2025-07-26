@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { SqliteTodoRepository } from './SqliteTodoRepository';
 import { Todo } from '@nx-starter/domain-core';
+import { getSqliteDatabase } from '../../../database/connections/SqliteConnection';
 
 describe('SqliteTodoRepository', () => {
   let repository: SqliteTodoRepository;
@@ -11,7 +12,9 @@ describe('SqliteTodoRepository', () => {
   });
 
   afterEach(() => {
-    repository.close();
+    // Clean up the database by deleting all todos
+    const db = getSqliteDatabase();
+    db.prepare('DELETE FROM todos').run();
   });
 
   describe('create', () => {
