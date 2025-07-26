@@ -299,6 +299,44 @@ Copy these to `.env` and customize for your environment.
 - **Framework**: Playwright
 - **Command**: `npx nx e2e <project-name>-e2e`
 
+## 🚀 CI/CD Pipeline
+
+This project includes a comprehensive CI/CD setup using **GitHub Actions** with **NX affected analysis** for optimal performance and security.
+
+### 🎯 Key Features
+
+- **⚡ Affected-Only Testing** - Only tests and builds what you've changed
+- **🔒 Security-First Approach** - Automated vulnerability scanning and secret detection
+- **🌐 Multi-Environment** - Staging auto-deployment, production with approval
+- **📊 Comprehensive Testing** - Unit, integration, E2E across multiple Node.js versions
+- **🔄 Automated Maintenance** - Dependency updates and security patches
+
+### 📋 Workflows
+
+| Workflow | Purpose | Trigger |
+|----------|---------|---------|
+| **CI Pipeline** | Code quality, testing, building | Every PR + main branch |
+| **Staging Deploy** | Automated staging deployment | Push to main/develop |
+| **Production Deploy** | Secure production deployment | Version tags + manual approval |
+| **Security Scan** | Vulnerability and compliance checking | Daily + main branch |
+| **Dependency Updates** | Automated dependency maintenance | Weekly + manual |
+| **E2E Tests** | Extended end-to-end testing | Push/PR to main |
+
+### 🏃‍♂️ Quick Start
+
+```bash
+# Development workflow
+git checkout -b feature/my-feature
+# ... make changes ...
+pnpm run ci                    # Test locally before pushing
+git commit -m "feat(api): add new feature"
+git push origin feature/my-feature
+```
+
+**📚 Documentation:**
+- [Complete CI/CD Guide](./docs/CI_CD_GUIDE.md) - Full implementation details
+- [Quick Start Guide](./docs/CI_CD_QUICK_START.md) - Developer reference
+
 ## 📚 Learning Resources
 
 ### Nx Documentation
@@ -312,6 +350,12 @@ Copy these to `.env` and customize for your environment.
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/)
 - [Domain-Driven Design](https://domainlanguage.com/ddd/)
+
+### CI/CD & DevOps
+
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [NX Affected Commands](https://nx.dev/packages/nx/documents/affected)
+- [Playwright Testing](https://playwright.dev/)
 
 ## 🤝 Contributing
 
