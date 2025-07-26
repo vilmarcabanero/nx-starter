@@ -6,6 +6,7 @@ test.describe('Todo Application', () => {
 
   test.beforeEach(async ({ page }) => {
     todoPage = new TodoPage(page);
+    await todoPage.cleanup();
     await todoPage.navigate();
   });
 

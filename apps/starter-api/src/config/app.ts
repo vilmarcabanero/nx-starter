@@ -4,9 +4,10 @@ import { useExpressServer, useContainer } from 'routing-controllers';
 import { container } from '../infrastructure/di/container';
 import { TodoController } from '../presentation/controllers/TodoController';
 import { AuthController } from '../presentation/controllers/AuthController';
+import { TestController } from '../presentation/controllers/TestController';
 import { RoutingControllersErrorHandler } from '../shared/middleware/RoutingControllersErrorHandler';
 import { requestLogger } from '../presentation/middleware/errorHandler';
-import { config } from './config';
+import { config, isProduction } from './config';
 
 /**
  * Creates and configures the Express application
@@ -43,10 +44,18 @@ export const createApp = (): express.Application => {
     get: (someClass: any) => container.resolve(someClass),
   });
 
+  // Configure controllers based on environment
+  const controllers: any[] = [TodoController, AuthController];
+  
+  // Only add TestController in non-production environments
+  if (!isProduction()) {
+    controllers.push(TestController);
+  }
+
   // Configure routing-controllers
   useExpressServer(app, {
     routePrefix: '/api',
-    controllers: [TodoController, AuthController],
+    controllers,
     middlewares: [RoutingControllersErrorHandler],
     defaultErrorHandler: false, // We'll use our custom error handler
   });

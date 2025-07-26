@@ -6,6 +6,7 @@ test.describe('Error Handling', () => {
 
   test.beforeEach(async ({ page }) => {
     todoPage = new TodoPage(page);
+    await todoPage.cleanup();
     await todoPage.navigate();
   });
 

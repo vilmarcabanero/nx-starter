@@ -110,4 +110,11 @@ export class InMemoryTodoRepository implements ITodoRepository {
       .filter((todo) => specification.isSatisfiedBy(todo))
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
+
+  /**
+   * Utility method to clear all todos (for testing)
+   */
+  async clear(): Promise<void> {
+    this.todos.clear();
+  }
 }

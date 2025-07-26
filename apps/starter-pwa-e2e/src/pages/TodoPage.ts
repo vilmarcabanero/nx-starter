@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { cleanupTestData } from '../utils/test-setup';
 
 export class TodoPage {
   private page: Page;
@@ -28,6 +29,10 @@ export class TodoPage {
   async navigate() {
     await this.page.goto('/');
     await this.page.waitForLoadState('networkidle');
+  }
+
+  async cleanup() {
+    await cleanupTestData(this.page);
   }
 
   async addTodo(title: string) {

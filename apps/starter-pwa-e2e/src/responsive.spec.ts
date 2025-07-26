@@ -6,6 +6,7 @@ test.describe('Responsive Design', () => {
 
   test.beforeEach(async ({ page }) => {
     todoPage = new TodoPage(page);
+    await todoPage.cleanup();
     await todoPage.navigate();
   });
 
@@ -83,11 +84,13 @@ test.describe('Responsive Design', () => {
       await todoItem.expectTitle('Tablet todo');
     });
 
-    test('should handle multiple todos on tablet', async () => {
+    test('should handle multiple todos on tablet', async ({ page }) => {
       await todoPage.addTodo('First tablet todo');
       await todoPage.addTodo('Second tablet todo');
       await todoPage.addTodo('Third tablet todo');
 
+      // Wait for API operations to complete
+      await page.waitForTimeout(1000);
       await expect(todoPage.getTodoCount()).resolves.toBe(3);
     });
   });
@@ -106,7 +109,7 @@ test.describe('Responsive Design', () => {
       await todoItem.expectTitle('Desktop todo');
     });
 
-    test('should handle complex interactions on desktop', async () => {
+    test('should handle complex interactions on desktop', async ({ page }) => {
       await todoPage.addTodo('Todo 1');
       await todoPage.addTodo('Todo 2');
       await todoPage.addTodo('Todo 3');
@@ -120,6 +123,8 @@ test.describe('Responsive Design', () => {
       await todo2.saveEdit('Edited Todo 2');
       await todo3.delete();
 
+      // Wait for API operations to complete
+      await page.waitForTimeout(1500);
       await todo1.expectCompleted();
       await todo2.expectTitle('Edited Todo 2');
       await expect(todoPage.getTodoCount()).resolves.toBe(2);
@@ -142,6 +147,9 @@ test.describe('Responsive Design', () => {
 
       // Should still be able to add todos
       await todoPage.addTodo('Mobile todo');
+      
+      // Wait for API operations to complete
+      await page.waitForTimeout(1000);
       await expect(todoPage.getTodoCount()).resolves.toBe(2);
 
       // Switch back to desktop
