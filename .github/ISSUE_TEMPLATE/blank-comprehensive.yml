@@ -27,14 +27,16 @@ body:
         ### 3. Verify setup by running tests
         ```bash
         # For API components
-        pnpm nx test starter-api
+        pnpm nx test api
         
         # For PWA components  
-        pnpm nx test starter-pwa
+        pnpm nx test web
         
         # For library components
-        pnpm nx test domain-core
-        pnpm nx test application-core
+        pnpm nx test domain
+        pnpm nx test application-api
+        pnpm nx test application-shared
+        pnpm nx test application-web
         pnpm nx test utils-core
         ```
         
@@ -202,8 +204,8 @@ body:
         - `pnpm test` - Run all tests
         - `pnpm test:watch` - Run tests in watch mode
         - `pnpm test:coverage` - Run tests with coverage
-        - `pnpm domain` - Test domain-core
-        - `pnpm application` - Test application-core
+        - `pnpm domain` - Test domain
+        - `pnpm application` - Test application-shared
         - `pnpm utils` - Test utils-core
         
         **API Testing:**
@@ -244,7 +246,7 @@ body:
         
         **Format:** `type(scope): subject`
         
-        **Example:** `feat(starter-api): implement user authentication system`
+        **Example:** `feat(api): implement user authentication system`
         
         **Available Types:**
         - `feat` - A new feature (most common for comprehensive plans)
@@ -260,26 +262,26 @@ body:
         
         **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
-        - Examples: `starter-api`, `starter-pwa`, `domain-core`, `application-core`, `utils-core`
+        - Examples: `api`, `web`, `domain`, application-shared`, `utils-core`
         - Use `auth`, `api`, `ui`, `database` for feature-specific scopes
         
         **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Header length limits vary by scope:
-          - `starter-api-e2e`, `starter-pwa-e2e`, `application-core`: max 100 characters
-          - `domain-core`: max 95 characters  
-          - `starter-api`, `starter-pwa`: max 93 characters
+          - `api-e2e`, `web-e2e`, application-shared`: max 100 characters
+          - `domain`: max 95 characters  
+          - `api`, `web`: max 93 characters
           - `utils-core`: max 90 characters
           - All other scopes: max 82 characters
         - Be descriptive and specific about what was implemented
         
         **Multi-commit Guidelines:**
         For large implementations, break into logical commits:
-        - `feat(domain-core): add user entity and value objects`
-        - `feat(application-core): implement authentication use cases`
-        - `feat(starter-api): add authentication endpoints`
-        - `test(starter-api): add comprehensive auth tests`
+        - `feat(domain): add user entity and value objects`
+        - `feat(application-shared): implement authentication use cases`
+        - `feat(api): add authentication endpoints`
+        - `test(api): add comprehensive auth tests`
         
         **Reference:** See `commitlint.config.ts` and `.husky/commit-msg` for complete rules
         

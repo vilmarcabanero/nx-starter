@@ -10,8 +10,8 @@ body:
       label: E2E Test Application
       description: Select the E2E test application with failing tests
       options:
-        - starter-api-e2e (API Integration Tests)
-        - starter-pwa-e2e (PWA UI Tests)
+        - api-e2e (API Integration Tests)
+        - web-e2e (PWA UI Tests)
     validations:
       required: true
 
@@ -52,14 +52,16 @@ body:
         ### 3. Verify setup by running tests
         ```bash
         # For API components
-        pnpm nx test starter-api
+        pnpm nx test api
         
         # For PWA components  
-        pnpm nx test starter-pwa
+        pnpm nx test web
         
         # For library components
-        pnpm nx test domain-core
-        pnpm nx test application-core
+        pnpm nx test domain
+        pnpm nx test application-api
+        pnpm nx test application-shared
+        pnpm nx test application-web
         pnpm nx test utils-core
         ```
         
@@ -103,12 +105,12 @@ body:
       description: |
         List specific E2E test files and cases that are failing (optional - coding agent can identify these)
       placeholder: |
-        **API E2E Tests (starter-api-e2e):**
+        **API E2E Tests (api-e2e):**
         - src/api/todos.spec.ts
           - "should create todo via API" test
           - "should handle validation errors" test
         
-        **PWA E2E Tests (starter-pwa-e2e):**
+        **PWA E2E Tests (web-e2e):**
         - src/todo.spec.ts
           - "should persist todos after refresh" test
         - src/responsive.spec.ts
@@ -170,13 +172,13 @@ body:
       description: Relevant commands for debugging E2E failures
       value: |
         **Run E2E Tests (Short Commands):**
-        - `pnpm endapi` - Run API E2E tests (starter-api-e2e)
-        - `pnpm endweb` - Run PWA E2E tests (starter-pwa-e2e)
+        - `pnpm endapi` - Run API E2E tests (api-e2e)
+        - `pnpm endweb` - Run PWA E2E tests (web-e2e)
         
         **Debug Commands:**
         - **API E2E (Vitest):**
           - `pnpm e2e:api` - Run API integration tests
-          - `nx test starter-api-e2e --verbose` - Direct nx command with verbose
+          - `nx test api-e2e --verbose` - Direct nx command with verbose
         
         - **PWA E2E (Playwright):**
           - `pnpm e2e:web` - Run PWA UI tests
@@ -344,7 +346,7 @@ body:
         
         **Format:** `type(scope): subject`
         
-        **Example:** `fix(starter-pwa-e2e): resolve timeout issues in todo tests`
+        **Example:** `fix(web-e2e): resolve timeout issues in todo tests`
         
         **Available Types:**
         - `fix` - A bug fix (for fixing failing E2E tests)
@@ -360,15 +362,15 @@ body:
         
         **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
-        - Examples: `starter-api-e2e`, `starter-pwa-e2e`, `starter-api`, `starter-pwa`
+        - Examples: `api-e2e`, `web-e2e`, `api`, `web`
         
         **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Header length limits vary by scope:
-          - `starter-api-e2e`, `starter-pwa-e2e`, `application-core`: max 100 characters
-          - `domain-core`: max 95 characters  
-          - `starter-api`, `starter-pwa`: max 93 characters
+          - `api-e2e`, `web-e2e`, application-shared`: max 100 characters
+          - `domain`: max 95 characters  
+          - `api`, `web`: max 93 characters
           - `utils-core`: max 90 characters
           - All other scopes: max 82 characters
         - Be descriptive and specific

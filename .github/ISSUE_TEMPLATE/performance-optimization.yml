@@ -10,10 +10,12 @@ body:
       label: Component/Area to Optimize
       description: Select the component that needs performance optimization
       options:
-        - starter-api (Backend API)
-        - starter-pwa (Frontend Web App)
-        - domain-core (Domain Logic)
-        - application-core (Application Services)
+        - api (Backend API)
+        - web (Frontend Web App)
+        - domain (Domain Logic)
+        - application-api
+        - application-shared
+        - application-web (Application Services)
         - utils-core (Utility Functions)
         - database queries
         - build process
@@ -44,14 +46,16 @@ body:
         ### 3. Verify setup by running tests
         ```bash
         # For API components
-        pnpm nx test starter-api
+        pnpm nx test api
         
         # For PWA components  
-        pnpm nx test starter-pwa
+        pnpm nx test web
         
         # For library components
-        pnpm nx test domain-core
-        pnpm nx test application-core
+        pnpm nx test domain
+        pnpm nx test application-api
+        pnpm nx test application-shared
+        pnpm nx test application-web
         pnpm nx test utils-core
         ```
         
@@ -305,7 +309,7 @@ body:
         
         **Format:** `type(scope): subject`
         
-        **Example:** `perf(starter-pwa): optimize bundle size and loading performance`
+        **Example:** `perf(web): optimize bundle size and loading performance`
         
         **Available Types:**
         - `perf` - Performance improvements (primary for optimization tasks)
@@ -320,15 +324,15 @@ body:
         
         **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
-        - Examples: `starter-api`, `starter-pwa`, `database`, `bundle`, `api`
+        - Examples: `api`, `web`, `database`, `bundle`, `api`
         
         **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Header length limits vary by scope:
-          - `starter-api-e2e`, `starter-pwa-e2e`, `application-core`: max 100 characters
-          - `domain-core`: max 95 characters  
-          - `starter-api`, `starter-pwa`: max 93 characters
+          - `api-e2e`, `web-e2e`, application-shared`: max 100 characters
+          - `domain`: max 95 characters  
+          - `api`, `web`: max 93 characters
           - `utils-core`: max 90 characters
           - All other scopes: max 82 characters
         - Be specific about what was optimized
