@@ -170,4 +170,5 @@ Build & Deployment
 ---
 
 Extra but important:
-- Ensure that environment variables and other configuration values are centralized and documented.
+- Ensure that environment variables and other configuration values are centralized and documented. See apps/api/src/config/,
+there is an existing config there for example apps/api/src/config/EnvironmentConfig.ts which contains environment variables. 
