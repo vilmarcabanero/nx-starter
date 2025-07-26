@@ -1,0 +1,28 @@
+{
+  "name": "application-shared",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/application-shared/src",
+  "projectType": "library",
+  "tags": ["type:util", "scope:shared"],
+  "implicitDependencies": ["domain-core", "utils-core"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/application-shared",
+        "main": "libs/application-shared/src/index.ts",
+        "tsConfig": "libs/application-shared/tsconfig.lib.json",
+        "assets": ["libs/application-shared/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/libs/application-shared"
+      }
+    }
+  }
+}

@@ -23,11 +23,11 @@ import {
   ToggleTodoValidationService,
   UserValidationService,
   RegisterUserValidationService,
-} from '@nx-starter/application-core/shared';
+} from '@nx-starter/application-shared';
 import {
   RegisterUserUseCase,
   BcryptPasswordHashingService,
-} from '@nx-starter/application-core/server';
+} from '@nx-starter/application-api';
 import type { ITodoRepository, IUserRepository } from '@nx-starter/domain-core';
 import { UserDomainService } from '@nx-starter/domain-core';
 import { getTypeOrmDataSource } from '../database/connections/TypeOrmConnection';

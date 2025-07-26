@@ -21,12 +21,12 @@ import {
   GetTodoStatsQueryHandler,
   GetTodoByIdQueryHandler,
   TOKENS,
-} from '@nx-starter/application-core/shared';
+} from '@nx-starter/application-shared';
 import type { ITodoRepository } from '@nx-starter/domain-core';
 import type {
   ITodoCommandService,
   ITodoQueryService,
-} from '@nx-starter/application-core/shared';
+} from '@nx-starter/application-shared';
 
 // Initialize configuration before using it
 configProvider.initialize();

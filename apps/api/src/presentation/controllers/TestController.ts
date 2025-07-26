@@ -8,11 +8,11 @@ import {
   GetAllTodosQueryHandler,
   DeleteTodoUseCase,
   TOKENS,
-} from '@nx-starter/application-core/shared';
+} from '@nx-starter/application-shared';
 import type { ITodoRepository } from '@nx-starter/domain-core';
 import {
   TodoOperationResponse,
-} from '@nx-starter/application-core/shared';
+} from '@nx-starter/application-shared';
 import { ApiResponseBuilder } from '../dto/ApiResponse';
 
 /**

@@ -47,8 +47,8 @@ const mockValidationService = {
 };
 
 // Mock the TodoMapper
-vi.mock('@nx-starter/application-core', async () => {
-  const actual = await vi.importActual('@nx-starter/application-core');
+vi.mock('@nx-starter/application-shared', async () => {
+  const actual = await vi.importActual('@nx-starter/application-shared');
   return {
     ...actual,
     TodoMapper: {

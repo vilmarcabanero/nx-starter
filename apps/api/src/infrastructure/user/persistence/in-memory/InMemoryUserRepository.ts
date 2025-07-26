@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe';
 import { User, IUserRepository } from '@nx-starter/domain-core';
-import { UserMapper } from '@nx-starter/application-core/shared';
+import { UserMapper } from '@nx-starter/application-shared';
 
 /**
  * In-memory implementation of IUserRepository

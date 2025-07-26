@@ -10,7 +10,7 @@ import type {
   ITodoQueryService,
   CreateTodoData,
   UpdateTodoData,
-} from '@nx-starter/application-core/shared';
+} from '@nx-starter/application-shared';
 
 export const useTodoStore = create<TodoStore>()(
   subscribeWithSelector(

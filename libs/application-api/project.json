@@ -1,0 +1,29 @@
+{
+  "name": "application-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/application-api/src",
+  "projectType": "library",
+  "tags": ["type:application", "scope:api"],
+  "implicitDependencies": ["domain-core", "utils-core", "application-shared"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/application-api",
+        "main": "libs/application-api/src/index.ts",
+        "tsConfig": "libs/application-api/tsconfig.lib.json",
+        "assets": ["libs/application-api/*.md"],
+        "rootDir": "."
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/libs/application-api"
+      }
+    }
+  }
+}

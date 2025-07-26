@@ -54,13 +54,13 @@ export default defineConfig({
         __dirname,
         '../../libs/domain-core/src/index.ts'
       ),
-      '@nx-starter/application-core/shared': path.resolve(
+      '@nx-starter/application-shared': path.resolve(
         __dirname,
-        '../../libs/application-core-shared/src/index.ts'
+        '../../libs/application-shared/src/index.ts'
       ),
-      '@nx-starter/application-core/server': path.resolve(
+      '@nx-starter/application-api': path.resolve(
         __dirname,
-        '../../libs/application-core-server/src/index.ts'
+        '../../libs/application-api/src/index.ts'
       ),
       '@nx-starter/utils-core': path.resolve(
         __dirname,

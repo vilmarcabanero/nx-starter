@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 import { injectable } from 'tsyringe';
 import { User, IUserRepository } from '@nx-starter/domain-core';
-import { UserMapper } from '@nx-starter/application-core/shared';
+import { UserMapper } from '@nx-starter/application-shared';
 import { getSqliteDatabase } from '../../../database/connections/SqliteConnection';
 
 interface UserRecord {

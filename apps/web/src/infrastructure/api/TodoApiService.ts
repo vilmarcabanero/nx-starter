@@ -8,7 +8,7 @@ import {
   CreateTodoRequestDto,
   UpdateTodoRequestDto,
   TOKENS,
-} from '@nx-starter/application-core/shared';
+} from '@nx-starter/application-shared';
 
 @injectable()
 export class TodoApiService implements ITodoApiService {

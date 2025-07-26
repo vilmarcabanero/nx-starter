@@ -1,4 +1,4 @@
-import type { CreateTodoCommand, UpdateTodoCommand } from '@nx-starter/application-core/shared';
+import type { CreateTodoCommand, UpdateTodoCommand } from '@nx-starter/application-shared';
 
 /**
  * Form-specific types derived from Zod schemas

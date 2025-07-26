@@ -12,8 +12,8 @@ const mockValidationService = {
 };
 
 // Mock the UserMapper
-vi.mock('@nx-starter/application-core', async () => {
-  const actual = await vi.importActual('@nx-starter/application-core');
+vi.mock('@nx-starter/application-shared', async () => {
+  const actual = await vi.importActual('@nx-starter/application-shared');
   return {
     ...actual,
     UserMapper: {

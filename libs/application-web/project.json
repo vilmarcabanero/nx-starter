@@ -1,0 +1,28 @@
+{
+  "name": "application-web",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/application-web/src",
+  "projectType": "library",
+  "tags": ["type:application", "scope:web"],
+  "implicitDependencies": ["domain-core", "utils-core", "application-shared"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/application-web",
+        "main": "libs/application-web/src/index.ts",
+        "tsConfig": "libs/application-web/tsconfig.lib.json",
+        "assets": ["libs/application-web/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/libs/application-web"
+      }
+    }
+  }
+}

@@ -10,8 +10,8 @@ import {
   UserValidationService,
   RegisterUserRequestDto,
   UserMapper,
-} from '@nx-starter/application-core/shared';
-import { RegisterUserUseCase } from '@nx-starter/application-core/server';
+} from '@nx-starter/application-shared';
+import { RegisterUserUseCase } from '@nx-starter/application-api';
 import { ApiResponseBuilder } from '../dto/ApiResponse';
 
 /**

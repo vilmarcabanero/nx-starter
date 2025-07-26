@@ -1,0 +1,13 @@
+{
+  "name": "@nx-starter/application-api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "tsyringe": "^4.10.0",
+    "tslib": "^2.3.0"
+  }
+}
