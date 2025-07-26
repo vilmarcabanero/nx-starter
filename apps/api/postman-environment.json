@@ -15,6 +15,20 @@
       "enabled": true,
       "type": "default",
       "description": "Sample todo ID for testing. Replace with actual ID from create todo response."
+    },
+    {
+      "key": "testUserEmail",
+      "value": "test.user@example.com",
+      "enabled": true,
+      "type": "default",
+      "description": "Test email for user registration scenarios"
+    },
+    {
+      "key": "testUserId",
+      "value": "",
+      "enabled": true,
+      "type": "default",
+      "description": "Test user ID from registration response"
     }
   ],
   "_postman_variable_scope": "environment",

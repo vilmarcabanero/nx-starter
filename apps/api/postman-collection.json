@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Task App API",
-    "description": "Complete API collection for the Task App Express.js server with Clean Architecture. This collection matches the E2E test suite and includes all CRUD operations for todos with comprehensive test scenarios including happy paths and validation errors.",
+    "description": "Complete API collection for the Task App Express.js server with Clean Architecture. This collection includes comprehensive test scenarios for both authentication (user registration) and todos with happy paths, validation errors, and edge cases.",
     "version": "1.0.0",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -17,6 +17,18 @@
       "value": "",
       "type": "string",
       "description": "Dynamic todo ID from create operations"
+    },
+    {
+      "key": "registeredUserId",
+      "value": "",
+      "type": "string",
+      "description": "Dynamic user ID from register operations"
+    },
+    {
+      "key": "testEmail",
+      "value": "",
+      "type": "string",
+      "description": "Dynamic test email for registration tests"
     }
   ],
   "item": [
@@ -54,6 +66,10 @@
                   "    pm.expect(responseJson.endpoints).to.have.property('health', '/api/health');",
                   "    pm.expect(responseJson.endpoints).to.have.property('todos', '/api/todos');",
                   "    pm.expect(responseJson.endpoints).to.have.property('documentation');",
+                  "    // Auth endpoints might be present",
+                  "    if (responseJson.endpoints.auth) {",
+                  "        pm.expect(responseJson.endpoints.auth).to.be.a('string');",
+                  "    }",
                   "});",
                   "",
                   "pm.test('Response time is reasonable', function () {",
@@ -128,6 +144,667 @@
               "path": ["api", "health"]
             },
             "description": "Health check endpoint to verify server is running"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication - User Registration",
+      "description": "POST operations for user registration with comprehensive validation scenarios",
+      "item": [
+        {
+          "name": "Register User - Happy Path",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Created user has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data;",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.expect(user).to.have.property('firstName', 'Test');",
+                  "    pm.expect(user).to.have.property('lastName', 'User');",
+                  "    pm.expect(user).to.have.property('email');",
+                  "    pm.expect(user).to.have.property('username');",
+                  "    pm.expect(user).to.have.property('createdAt');",
+                  "    pm.expect(user.email).to.include('@example.com');",
+                  "});",
+                  "",
+                  "pm.test('User ID is generated and stored as variable', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data;",
+                  "    pm.expect(user.id).to.be.a('string');",
+                  "    pm.expect(user.id).to.have.length.above(0);",
+                  "    pm.collectionVariables.set('registeredUserId', user.id);",
+                  "    pm.collectionVariables.set('testEmail', user.email);",
+                  "});",
+                  "",
+                  "pm.test('Username is generated from email', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data;",
+                  "    pm.expect(user.username).to.be.a('string');",
+                  "    pm.expect(user.username).to.have.length.above(0);",
+                  "});",
+                  "",
+                  "pm.test('CreatedAt timestamp is valid ISO string', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data;",
+                  "    pm.expect(user.createdAt).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}/);",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"email\": \"test.user.{{$randomInt}}@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Register a new user with all required fields and valid data"
+          }
+        },
+        {
+          "name": "Register User - Missing First Name (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details have correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details).to.have.property('message');",
+                  "    pm.expect(responseJson.details).to.have.property('issues');",
+                  "    pm.expect(responseJson.details).to.have.property('fieldErrors');",
+                  "    pm.expect(responseJson.details.issues).to.be.an('array');",
+                  "    pm.expect(responseJson.details.fieldErrors).to.be.an('object');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate firstName is required', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.above(0);",
+                  "    ",
+                  "    const firstNameError = responseJson.details.issues.find(issue => issue.path && issue.path.includes('firstName'));",
+                  "    pm.expect(firstNameError).to.exist;",
+                  "    pm.expect(firstNameError.message).to.include('expected string, received undefined');",
+                  "    pm.expect(firstNameError.code).to.equal('invalid_type');",
+                  "    ",
+                  "    pm.expect(responseJson.details.fieldErrors).to.have.property('firstName');",
+                  "    pm.expect(responseJson.details.fieldErrors.firstName).to.be.an('array');",
+                  "    pm.expect(responseJson.details.fieldErrors.firstName[0]).to.include('expected string, received undefined');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Test validation error when firstName is missing"
+          }
+        },
+        {
+          "name": "Register User - Missing Last Name (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate lastName is required', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.above(0);",
+                  "    ",
+                  "    const lastNameError = responseJson.details.issues.find(issue => issue.path && issue.path.includes('lastName'));",
+                  "    pm.expect(lastNameError).to.exist;",
+                  "    pm.expect(lastNameError.message).to.include('expected string, received undefined');",
+                  "    pm.expect(lastNameError.code).to.equal('invalid_type');",
+                  "    ",
+                  "    pm.expect(responseJson.details.fieldErrors).to.have.property('lastName');",
+                  "    pm.expect(responseJson.details.fieldErrors.lastName).to.be.an('array');",
+                  "    pm.expect(responseJson.details.fieldErrors.lastName[0]).to.include('expected string, received undefined');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Test validation error when lastName is missing"
+          }
+        },
+        {
+          "name": "Register User - Missing Email (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate email is required', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.above(0);",
+                  "    ",
+                  "    const emailError = responseJson.details.issues.find(issue => issue.path && issue.path.includes('email'));",
+                  "    pm.expect(emailError).to.exist;",
+                  "    pm.expect(emailError.message).to.include('expected string, received undefined');",
+                  "    pm.expect(emailError.code).to.equal('invalid_type');",
+                  "    ",
+                  "    pm.expect(responseJson.details.fieldErrors).to.have.property('email');",
+                  "    pm.expect(responseJson.details.fieldErrors.email).to.be.an('array');",
+                  "    pm.expect(responseJson.details.fieldErrors.email[0]).to.include('expected string, received undefined');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"password\": \"SecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Test validation error when email is missing"
+          }
+        },
+        {
+          "name": "Register User - Missing Password (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate password is required', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.above(0);",
+                  "    ",
+                  "    const passwordError = responseJson.details.issues.find(issue => issue.path && issue.path.includes('password'));",
+                  "    pm.expect(passwordError).to.exist;",
+                  "    pm.expect(passwordError.message).to.include('expected string, received undefined');",
+                  "    pm.expect(passwordError.code).to.equal('invalid_type');",
+                  "    ",
+                  "    pm.expect(responseJson.details.fieldErrors).to.have.property('password');",
+                  "    pm.expect(responseJson.details.fieldErrors.password).to.be.an('array');",
+                  "    pm.expect(responseJson.details.fieldErrors.password[0]).to.include('expected string, received undefined');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Test validation error when password is missing"
+          }
+        },
+        {
+          "name": "Register User - Invalid Email Format (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate invalid email format', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.above(0);",
+                  "    ",
+                  "    const emailError = responseJson.details.issues.find(issue => issue.path && issue.path.includes('email'));",
+                  "    pm.expect(emailError).to.exist;",
+                  "    pm.expect(emailError.message).to.equal('Please provide a valid email address');",
+                  "    ",
+                  "    pm.expect(responseJson.details.fieldErrors).to.have.property('email');",
+                  "    pm.expect(responseJson.details.fieldErrors.email).to.be.an('array');",
+                  "    pm.expect(responseJson.details.fieldErrors.email).to.include('Please provide a valid email address');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"invalid-email-format\",\n  \"password\": \"SecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Test validation error when email format is invalid"
+          }
+        },
+        {
+          "name": "Register User - Weak Password (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate weak password', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.above(0);",
+                  "    ",
+                  "    const passwordError = responseJson.details.issues.find(issue => issue.path && issue.path.includes('password'));",
+                  "    pm.expect(passwordError).to.exist;",
+                  "    pm.expect(passwordError.message).to.equal('Password must be at least 8 characters long with at least one uppercase letter, one lowercase letter, and one number');",
+                  "    ",
+                  "    pm.expect(responseJson.details.fieldErrors).to.have.property('password');",
+                  "    pm.expect(responseJson.details.fieldErrors.password).to.be.an('array');",
+                  "    pm.expect(responseJson.details.fieldErrors.password).to.include('Password must be at least 8 characters long with at least one uppercase letter, one lowercase letter, and one number');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"weak\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Test validation error when password is too weak (doesn't meet complexity requirements)"
+          }
+        },
+        {
+          "name": "Register User - Invalid Name Format (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate invalid name format', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.above(0);",
+                  "    ",
+                  "    const nameError = responseJson.details.issues.find(issue => ",
+                  "        (issue.path && issue.path.includes('firstName')) || (issue.path && issue.path.includes('lastName'))",
+                  "    );",
+                  "    pm.expect(nameError).to.exist;",
+                  "    pm.expect(nameError.message).to.equal('Names can only contain letters, spaces, and hyphens');",
+                  "    ",
+                  "    const hasFirstNameError = responseJson.details.fieldErrors.firstName;",
+                  "    const hasLastNameError = responseJson.details.fieldErrors.lastName;",
+                  "    pm.expect(hasFirstNameError || hasLastNameError).to.exist;",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John123\",\n  \"lastName\": \"Doe@#$\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Test validation error when firstName or lastName contains invalid characters (numbers, special characters)"
+          }
+        },
+        {
+          "name": "Register User - Multiple Validation Errors",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details contain multiple validation errors', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.at.least(3);",
+                  "    ",
+                  "    // Check for firstName error",
+                  "    const firstNameError = responseJson.details.issues.find(issue => issue.path && issue.path.includes('firstName'));",
+                  "    pm.expect(firstNameError).to.exist;",
+                  "    ",
+                  "    // Check for email error",
+                  "    const emailError = responseJson.details.issues.find(issue => issue.path && issue.path.includes('email'));",
+                  "    pm.expect(emailError).to.exist;",
+                  "    ",
+                  "    // Check for password error",
+                  "    const passwordError = responseJson.details.issues.find(issue => issue.path && issue.path.includes('password'));",
+                  "    pm.expect(passwordError).to.exist;",
+                  "    ",
+                  "    // Verify fieldErrors structure",
+                  "    pm.expect(responseJson.details.fieldErrors).to.have.property('firstName');",
+                  "    pm.expect(responseJson.details.fieldErrors).to.have.property('email');",
+                  "    pm.expect(responseJson.details.fieldErrors).to.have.property('password');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lastName\": \"Doe\",\n  \"email\": \"invalid-email\",\n  \"password\": \"123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Test multiple validation errors at once (missing firstName, invalid email, weak password)"
           }
         }
       ]
