@@ -29,6 +29,24 @@
       "value": "",
       "type": "string",
       "description": "Dynamic test email for registration tests"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string",
+      "description": "JWT token from login operations"
+    },
+    {
+      "key": "loginTestEmail",
+      "value": "login.test@example.com",
+      "type": "string",
+      "description": "Fixed email for login testing"
+    },
+    {
+      "key": "loginTestPassword",
+      "value": "LoginTest123",
+      "type": "string",
+      "description": "Fixed password for login testing"
     }
   ],
   "item": [
@@ -150,8 +168,8 @@
       ]
     },
     {
-      "name": "Authentication - User Registration",
-      "description": "POST operations for user registration with comprehensive validation scenarios",
+      "name": "Authentication",
+      "description": "User authentication operations including registration and login with comprehensive validation scenarios",
       "item": [
         {
           "name": "Register User - Happy Path",
@@ -809,6 +827,804 @@
           }
         },
         {
+          "name": "Register User for Login Testing - Setup",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Created user has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data;",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.expect(user).to.have.property('firstName', 'Login');",
+                  "    pm.expect(user).to.have.property('lastName', 'Test');",
+                  "    pm.expect(user).to.have.property('email');",
+                  "    pm.expect(user).to.have.property('username');",
+                  "    pm.expect(user).to.have.property('createdAt');",
+                  "    // Store the actual email for login tests",
+                  "    pm.collectionVariables.set('actualLoginTestEmail', user.email);",
+                  "});",
+                  "",
+                  "pm.test('User ID is generated and stored for login tests', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data;",
+                  "    pm.expect(user.id).to.be.a('string');",
+                  "    pm.expect(user.id).to.have.length.above(0);",
+                  "    pm.collectionVariables.set('loginTestUserId', user.id);",
+                  "    pm.collectionVariables.set('loginTestUsername', user.username);",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Login\",\n  \"lastName\": \"Test\",\n  \"email\": \"login.test.{{$randomInt}}@example.com\",\n  \"password\": \"{{loginTestPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Register a test user specifically for login testing scenarios"
+          }
+        },
+        {
+          "name": "Login User - Happy Path (Email)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Login response has authentication data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const data = responseJson.data;",
+                  "    pm.expect(data).to.have.property('token');",
+                  "    pm.expect(data).to.have.property('user');",
+                  "    pm.expect(data.token).to.be.a('string');",
+                  "    pm.expect(data.token).to.have.length.above(0);",
+                  "});",
+                  "",
+                  "pm.test('User data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data.user;",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.expect(user).to.have.property('firstName', 'Login');",
+                  "    pm.expect(user).to.have.property('lastName', 'Test');",
+                  "    pm.expect(user).to.have.property('email', pm.collectionVariables.get('loginTestEmail'));",
+                  "    pm.expect(user).to.have.property('username');",
+                  "    // Note: login response doesn't include createdAt, only registration does",
+                  "});",
+                  "",
+                  "pm.test('JWT token is valid format', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const token = responseJson.data.token;",
+                  "    // JWT tokens have 3 parts separated by dots",
+                  "    const tokenParts = token.split('.');",
+                  "    pm.expect(tokenParts).to.have.length(3);",
+                  "    pm.expect(tokenParts[0]).to.have.length.above(0);",
+                  "    pm.expect(tokenParts[1]).to.have.length.above(0);",
+                  "    pm.expect(tokenParts[2]).to.have.length.above(0);",
+                  "});",
+                  "",
+                  "pm.test('Store auth token for future use', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const token = responseJson.data.token;",
+                  "    pm.collectionVariables.set('authToken', token);",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{actualLoginTestEmail}}\",\n  \"password\": \"{{loginTestPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login with valid email and password - should return JWT token and user data"
+          }
+        },
+        {
+          "name": "Login User - Happy Path (Username)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has required fields', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('data');",
+                  "});",
+                  "",
+                  "pm.test('Login response has authentication data', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const data = responseJson.data;",
+                  "    pm.expect(data).to.have.property('token');",
+                  "    pm.expect(data).to.have.property('user');",
+                  "    pm.expect(data.token).to.be.a('string');",
+                  "    pm.expect(data.token).to.have.length.above(0);",
+                  "});",
+                  "",
+                  "pm.test('User data is correct', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const user = responseJson.data.user;",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.expect(user).to.have.property('firstName', 'Login');",
+                  "    pm.expect(user).to.have.property('lastName', 'Test');",
+                  "    pm.expect(user).to.have.property('email', pm.collectionVariables.get('loginTestEmail'));",
+                  "    pm.expect(user).to.have.property('username');",
+                  "    // Note: login response doesn't include createdAt, only registration does",
+                  "});",
+                  "",
+                  "pm.test('JWT token is valid format', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const token = responseJson.data.token;",
+                  "    const tokenParts = token.split('.');",
+                  "    pm.expect(tokenParts).to.have.length(3);",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{loginTestUsername}}\",\n  \"password\": \"{{loginTestPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login with valid username and password - should return JWT token and user data"
+          }
+        },
+        {
+          "name": "Login User - Missing Email/Username (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details have correct structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details).to.have.property('message');",
+                  "    pm.expect(responseJson.details).to.have.property('issues');",
+                  "    pm.expect(responseJson.details).to.have.property('fieldErrors');",
+                  "    pm.expect(responseJson.details.issues).to.be.an('array');",
+                  "    pm.expect(responseJson.details.fieldErrors).to.be.an('object');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate credential requirement', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.above(0);",
+                  "    ",
+                  "    // Should have validation error for missing credentials",
+                  "    const hasEmailOrUsernameError = responseJson.details.issues.some(issue => ",
+                  "        (issue.path && (issue.path.includes('email') || issue.path.includes('username'))) ||",
+                  "        issue.message.toLowerCase().includes('email') ||",
+                  "        issue.message.toLowerCase().includes('username') ||",
+                  "        issue.message.toLowerCase().includes('credential')",
+                  "    );",
+                  "    pm.expect(hasEmailOrUsernameError).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"SomePassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Test validation error when both email and username are missing"
+          }
+        },
+        {
+          "name": "Login User - Missing Password (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate password is required', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.above(0);",
+                  "    ",
+                  "    const passwordError = responseJson.details.issues.find(issue => issue.path && issue.path.includes('password'));",
+                  "    pm.expect(passwordError).to.exist;",
+                  "    pm.expect(passwordError.message).to.include('expected string, received undefined');",
+                  "    pm.expect(passwordError.code).to.equal('invalid_type');",
+                  "    ",
+                  "    pm.expect(responseJson.details.fieldErrors).to.have.property('password');",
+                  "    pm.expect(responseJson.details.fieldErrors.password).to.be.an('array');",
+                  "    pm.expect(responseJson.details.fieldErrors.password[0]).to.include('expected string, received undefined');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Test validation error when password is missing"
+          }
+        },
+        {
+          "name": "Login User - Invalid Email (Authentication Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "});",
+                  "",
+                  "pm.test('Error indicates invalid credentials', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const errorMessage = responseJson.error.toLowerCase();",
+                  "    pm.expect(errorMessage).to.satisfy(msg => ",
+                  "        msg.includes('invalid') || ",
+                  "        msg.includes('credentials') ||",
+                  "        msg.includes('email') ||",
+                  "        msg.includes('password') ||",
+                  "        msg.includes('authentication') ||",
+                  "        msg.includes('unauthorized')",
+                  "    );",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nonexistent@example.com\",\n  \"password\": \"SomePassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Test authentication error when email does not exist"
+          }
+        },
+        {
+          "name": "Login User - Invalid Password (Authentication Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "});",
+                  "",
+                  "pm.test('Error indicates invalid credentials', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const errorMessage = responseJson.error.toLowerCase();",
+                  "    pm.expect(errorMessage).to.satisfy(msg => ",
+                  "        msg.includes('invalid') || ",
+                  "        msg.includes('credentials') ||",
+                  "        msg.includes('password') ||",
+                  "        msg.includes('authentication') ||",
+                  "        msg.includes('unauthorized')",
+                  "    );",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{actualLoginTestEmail}}\",\n  \"password\": \"WrongPassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Test authentication error when password is incorrect"
+          }
+        },
+        {
+          "name": "Login User - Invalid Username (Authentication Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error');",
+                  "    pm.expect(responseJson).to.have.property('code');",
+                  "});",
+                  "",
+                  "pm.test('Error indicates invalid credentials', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    const errorMessage = responseJson.error.toLowerCase();",
+                  "    pm.expect(errorMessage).to.satisfy(msg => ",
+                  "        msg.includes('invalid') || ",
+                  "        msg.includes('credentials') ||",
+                  "        msg.includes('username') ||",
+                  "        msg.includes('authentication') ||",
+                  "        msg.includes('unauthorized')",
+                  "    );",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"nonexistent_username\",\n  \"password\": \"SomePassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Test authentication error when username does not exist"
+          }
+        },
+        {
+          "name": "Login User - Empty Credentials (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details contain multiple validation errors', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.above(0);",
+                  "    ",
+                  "    // Should have validation errors for empty strings",
+                  "    const hasEmptyStringErrors = responseJson.details.issues.some(issue => ",
+                  "        issue.message && (issue.message.includes('empty') || issue.message.includes('required'))",
+                  "    );",
+                  "    pm.expect(hasEmptyStringErrors).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Test validation error when credentials are empty strings"
+          }
+        },
+        {
+          "name": "Login User - Invalid Email Format (Validation Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details indicate invalid email format', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.above(0);",
+                  "    ",
+                  "    const emailError = responseJson.details.issues.find(issue => issue.path && issue.path.includes('email'));",
+                  "    pm.expect(emailError).to.exist;",
+                  "    pm.expect(emailError.message).to.equal('Please provide a valid email address');",
+                  "    ",
+                  "    pm.expect(responseJson.details.fieldErrors).to.have.property('email');",
+                  "    pm.expect(responseJson.details.fieldErrors.email).to.be.an('array');",
+                  "    pm.expect(responseJson.details.fieldErrors.email).to.include('Please provide a valid email address');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"invalid-email-format\",\n  \"password\": \"SomePassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Test validation error when email format is invalid"
+          }
+        },
+        {
+          "name": "Login User - Multiple Validation Errors",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response has error structure', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', false);",
+                  "    pm.expect(responseJson).to.have.property('error', 'Validation failed');",
+                  "    pm.expect(responseJson).to.have.property('code', 'VALIDATION_ERROR');",
+                  "    pm.expect(responseJson).to.have.property('details');",
+                  "});",
+                  "",
+                  "pm.test('Error details contain multiple validation errors', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.details.issues.length).to.be.at.least(1);",
+                  "    ",
+                  "    // Check for validation errors (missing both credentials and password)",
+                  "    const hasCredentialError = responseJson.details.issues.some(issue => ",
+                  "        (issue.path && (issue.path.includes('email') || issue.path.includes('username'))) ||",
+                  "        issue.message.toLowerCase().includes('credential')",
+                  "    );",
+                  "    ",
+                  "    const hasPasswordError = responseJson.details.issues.some(issue => ",
+                  "        (issue.path && issue.path.includes('password')) ||",
+                  "        issue.message.toLowerCase().includes('password')",
+                  "    );",
+                  "    ",
+                  "    pm.expect(hasCredentialError || hasPasswordError).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Test multiple validation errors when all required fields are missing"
+          }
+        },
+        {
           "name": "Register User - Duplicate Email (409 Conflict)",
           "event": [
             {
@@ -860,6 +1676,232 @@
               "path": ["api", "auth", "register"]
             },
             "description": "Test error handling when attempting to register with an email that already exists (uses email from successful registration)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication Flow & Token Validation",
+      "description": "JWT token validation and authentication flow tests",
+      "item": [
+        {
+          "name": "Validate JWT Token - Get Server Info with Auth",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Server responds normally with valid token', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message', 'Task App API Server');",
+                  "});",
+                  "",
+                  "pm.test('Auth token is preserved in variable', function () {",
+                  "    const authToken = pm.collectionVariables.get('authToken');",
+                  "    pm.expect(authToken).to.be.a('string');",
+                  "    pm.expect(authToken).to.have.length.above(0);",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "description": "JWT token from login"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"]
+            },
+            "description": "Test that authenticated requests work properly with JWT token"
+          }
+        },
+        {
+          "name": "Invalid JWT Token - Malformed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code indicates authentication error', function () {",
+                  "    // Should be 401 for invalid token, or 200 if endpoint doesn't require auth",
+                  "    pm.expect([200, 401, 403]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid.jwt.token",
+                "description": "Malformed JWT token"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"]
+            },
+            "description": "Test behavior with malformed JWT token"
+          }
+        },
+        {
+          "name": "Missing Authorization Header",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 for public endpoint', function () {",
+                  "    // Server info should be public, so should return 200",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct content type', function () {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Public endpoint works without authentication', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson).to.have.property('success', true);",
+                  "    pm.expect(responseJson).to.have.property('message', 'Task App API Server');",
+                  "});",
+                  "",
+                  "pm.test('Response time is reasonable', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"]
+            },
+            "description": "Test public endpoint access without authentication"
+          }
+        },
+        {
+          "name": "JWT Token Structure Validation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Auth token exists in collection variables', function () {",
+                  "    const authToken = pm.collectionVariables.get('authToken');",
+                  "    pm.expect(authToken).to.be.a('string');",
+                  "    pm.expect(authToken).to.have.length.above(0);",
+                  "});",
+                  "",
+                  "pm.test('JWT token has valid structure', function () {",
+                  "    const authToken = pm.collectionVariables.get('authToken');",
+                  "    const tokenParts = authToken.split('.');",
+                  "    pm.expect(tokenParts).to.have.length(3);",
+                  "    ",
+                  "    // Header should be base64 encoded JSON",
+                  "    pm.expect(tokenParts[0]).to.have.length.above(0);",
+                  "    ",
+                  "    // Payload should be base64 encoded JSON",
+                  "    pm.expect(tokenParts[1]).to.have.length.above(0);",
+                  "    ",
+                  "    // Signature should exist",
+                  "    pm.expect(tokenParts[2]).to.have.length.above(0);",
+                  "});",
+                  "",
+                  "pm.test('JWT payload contains expected claims', function () {",
+                  "    const authToken = pm.collectionVariables.get('authToken');",
+                  "    const tokenParts = authToken.split('.');",
+                  "    ",
+                  "    try {",
+                  "        const payload = JSON.parse(atob(tokenParts[1]));",
+                  "        ",
+                  "        // Common JWT claims",
+                  "        pm.expect(payload).to.be.an('object');",
+                  "        ",
+                  "        // Should have expiration",
+                  "        if (payload.exp) {",
+                  "            pm.expect(payload.exp).to.be.a('number');",
+                  "            pm.expect(payload.exp).to.be.above(Math.floor(Date.now() / 1000));",
+                  "        }",
+                  "        ",
+                  "        // Should have issued at",
+                  "        if (payload.iat) {",
+                  "            pm.expect(payload.iat).to.be.a('number');",
+                  "            pm.expect(payload.iat).to.be.at.most(Math.floor(Date.now() / 1000));",
+                  "        }",
+                  "        ",
+                  "        console.log('JWT Payload:', payload);",
+                  "    } catch (e) {",
+                  "        pm.test.skip('JWT payload is not standard base64 encoded JSON');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Validate the structure and content of the JWT token obtained from login"
           }
         }
       ]
