@@ -1,0 +1,409 @@
+Comprehensive Web Application Feature Implementation Checklist
+
+Based on analysis of the existing todo-related architecture and current web implementation, here's a detailed checklist for introducing new web application features:
+
+📋 Web Application Feature Implementation Checklist
+
+🏗️ Architecture & Clean Code Patterns
+
+Presentation Layer (MVVM)
+
+- View Structure: Follows TodoPage pattern exactly
+  - Feature-based folder structure in /presentation/features/[feature-name]/
+  - Pages in pages/ subdirectory with proper React Router integration
+  - Components in components/ subdirectory for feature-specific UI
+  - Proper JSX structure with semantic HTML and accessibility
+  - Uses MainLayout wrapper for consistent page structure
+  - Proper CSS classes using Tailwind utility-first approach
+
+- View Models (Business Logic Hooks): Follows useTodoViewModel pattern
+  - Custom React hooks in view-models/ subdirectory
+  - Single responsibility per view model (form, list, item, stats, etc.)
+  - Uses dependency injection via container resolution
+  - State management through Zustand store integration
+  - No direct DOM manipulation (React principles)
+  - Proper TypeScript interfaces for return types
+
+- Component Structure: Follows TodoForm/TodoList/TodoItem pattern
+  - Functional components with proper TypeScript typing
+  - Uses react-hook-form for form management with Zod validation
+  - Radix UI components for consistent design system
+  - Proper data-testid attributes for testing
+  - Loading states and error handling in UI
+  - Accessibility compliance (ARIA labels, keyboard navigation)
+
+Infrastructure Layer (Dependency Injection & Services)
+
+- DI Container Configuration: Follows container.ts pattern
+  - All services registered in /infrastructure/di/container.ts
+  - Uses TSyringe for dependency injection
+  - Centralized TOKENS from @nx-starter/application-shared
+  - Lazy resolution of services to avoid circular dependencies
+  - Feature flag-based conditional registration
+  - Proper service lifetime management (singleton vs transient)
+
+- State Management: Follows TodoStore pattern
+  - Zustand store with immer middleware for immutability
+  - devtools integration for debugging
+  - subscribeWithSelector for selective re-renders
+  - CQRS pattern with separate command and query services
+  - Computed values as getter functions
+  - Proper error state management
+  - Optimistic updates with rollback capabilities
+
+- API Layer: Follows ApiTodoRepository pattern
+  - Repository pattern implementation in /infrastructure/api/
+  - HTTP client abstraction (AxiosHttpClient)
+  - Proper error handling and response mapping
+  - Type-safe API service interfaces
+  - Request/response DTOs for data contracts
+  - Environment-based API configuration
+
+🛡️ Error Handling & Validation
+
+Form Validation
+
+- Zod Schema Integration: Uses schema validation consistently
+  - Import schemas from @nx-starter/application-shared
+  - react-hook-form with zodResolver integration
+  - Client-side validation with immediate feedback
+  - Error mapping utilities in utils/ErrorMapping.ts
+  - User-friendly error messages
+  - Field-level error display with proper styling
+
+Domain Validation
+
+- Business Rule Validation: Proper error boundary handling
+  - Domain exceptions bubble up from application layer
+  - Error banners for global error display
+  - Specific error handling per feature
+  - Retry mechanisms for transient errors
+  - Offline mode handling when applicable
+
+Error Boundaries
+
+- Component Error Handling: React error boundaries
+  - Feature-level error isolation
+  - Graceful degradation patterns
+  - Error reporting to application layer
+  - User-friendly error recovery options
+
+🔧 Data & Integration Patterns
+
+View Models & Hooks
+
+- Custom Hook Pattern: Follows useTodoFormViewModel pattern
+  - Single responsibility principle per hook
+  - Proper dependency management with useCallback/useMemo
+  - State encapsulation and controlled exposure
+  - Loading and error state management
+  - Async operation handling with proper cleanup
+  - Integration with global store when needed
+
+State Management
+
+- Zustand Store Pattern: Follows TodoStore implementation
+  - Immer integration for immutable updates
+  - Computed properties as getter functions
+  - Action methods for state mutations
+  - CQRS service integration
+  - Proper TypeScript typing for store interface
+  - DevTools integration for debugging
+
+API Integration
+
+- Repository Pattern: Clean separation of concerns
+  - Interface definitions in domain layer
+  - Implementation in infrastructure layer
+  - Multiple implementations (local/remote)
+  - Feature flag-based switching
+  - Proper error handling and retry logic
+  - Response data transformation and validation
+
+⚙️ Dependency Injection & Configuration
+
+DI Container Registration
+
+- Service Registration: Centralized in container.ts
+  - Use TOKENS from @nx-starter/application-shared
+  - Register all required interfaces and implementations
+  - Proper service lifetime management
+  - Feature flag-based conditional registration
+  - Environment-specific service selection
+
+Configuration Management
+
+- Environment Configuration: Follows ConfigProvider pattern
+  - Type-safe configuration with validation
+  - Environment variable management
+  - Feature flag integration
+  - API endpoint configuration
+  - Build-time and runtime configuration separation
+
+Feature Integration
+
+- Router Configuration: Added to app.tsx Routes
+  - React Router v7 integration
+  - Proper route path definition
+  - Lazy loading for performance optimization
+  - Route guards for authentication when needed
+  - Breadcrumb and navigation integration
+
+🎨 UI/UX & Design Patterns
+
+Design System Integration
+
+- Component Library: Radix UI + Tailwind CSS
+  - Consistent component usage (Button, Input, Card, etc.)
+  - Proper styling with Tailwind utility classes
+  - Theme integration and CSS variable usage
+  - Responsive design patterns
+  - Accessibility compliance (WCAG guidelines)
+  - Dark/light mode support where applicable
+
+Layout Patterns
+
+- Layout Structure: MainLayout pattern
+  - Consistent page structure across features
+  - Navigation integration
+  - Header/footer/sidebar patterns
+  - Responsive layout behavior
+  - Proper semantic HTML structure
+
+Loading States & Feedback
+
+- User Feedback: Comprehensive loading and status indication
+  - Skeleton loading patterns
+  - Button loading states with spinners
+  - Progress indicators for long operations
+  - Success/error toast notifications
+  - Optimistic UI updates with rollback
+
+🧪 Testing & Quality
+
+Unit Testing
+
+- Component Testing: React Testing Library approach
+  - Test component rendering and behavior
+  - User interaction testing (fireEvent, userEvent)
+  - Mock external dependencies properly
+  - Test view model hooks in isolation
+  - Snapshot testing for UI consistency
+  - Accessibility testing integration
+
+Integration Testing
+
+- Feature Integration: End-to-end feature testing
+  - Complete user workflows
+  - API integration testing with mocks
+  - State management testing
+  - Error scenario testing
+  - Cross-component communication testing
+
+Test Organization
+
+- Test Structure: Follows existing patterns
+  - .spec.tsx files co-located with components
+  - .spec.ts files for hooks and utilities
+  - Test setup in /test/ directory
+  - Mock implementations in /test/mocks/
+  - Shared test utilities and helpers
+
+Code Quality
+
+- TypeScript Usage: Strict typing throughout
+  - Proper interface definitions
+  - Generic type usage where appropriate
+  - No 'any' types (use 'unknown' instead)
+  - Comprehensive type coverage
+  - Import/export type organization
+
+📝 File Organization & Structure
+
+Feature Structure
+
+- Feature Directory Layout:
+  ```
+  presentation/features/[feature-name]/
+  ├── components/           # Feature-specific components
+  ├── pages/               # Route-level page components
+  ├── view-models/         # Business logic hooks
+  │   └── interfaces/      # TypeScript interfaces
+  ├── types/               # Feature-specific types
+  ├── utils/               # Feature-specific utilities
+  └── index.ts            # Feature exports
+  ```
+
+Infrastructure Organization
+
+- Infrastructure Layer Structure:
+  ```
+  infrastructure/
+  ├── api/                # API service implementations
+  ├── config/             # Configuration management
+  ├── di/                 # Dependency injection
+  ├── http/               # HTTP client abstractions
+  ├── persistence/        # Local storage/cache
+  ├── state/              # Global state management
+  └── store/              # Legacy store (if needed)
+  ```
+
+Shared Libraries Integration
+
+- Library Usage: Proper dependency management
+  - @nx-starter/domain for entities and interfaces
+  - @nx-starter/application-shared for CQRS and DTOs
+  - @nx-starter/application-web for web-specific logic
+  - @nx-starter/utils-core for shared utilities
+  - Import only what's needed (tree shaking)
+  - Proper re-export patterns in index files
+
+🔍 Development Guidelines
+
+Performance Considerations
+
+- React Performance: Optimization strategies
+  - Proper component memoization (React.memo, useMemo, useCallback)
+  - Lazy loading for route components
+  - Virtualization for large lists
+  - Image optimization and lazy loading
+  - Bundle splitting and code splitting
+  - State selector optimization in Zustand
+
+Accessibility
+
+- A11y Compliance: Comprehensive accessibility
+  - Semantic HTML usage
+  - ARIA labels and roles
+  - Keyboard navigation support
+  - Screen reader compatibility
+  - Color contrast compliance
+  - Focus management and indication
+
+Security
+
+- Client-Side Security: Proper security measures
+  - Input sanitization and validation
+  - XSS prevention strategies
+  - Secure API communication
+  - Authentication token handling
+  - Environment variable security
+  - Content Security Policy compliance
+
+📦 Build & Deployment
+
+Build Configuration
+
+- Vite Configuration: Optimized build setup
+  - Proper bundle optimization
+  - Environment variable handling
+  - Asset optimization (images, fonts)
+  - Code splitting configuration
+  - Source map generation for debugging
+  - Progressive Web App setup (if enabled)
+
+Environment Management
+
+- Multi-Environment Support: Production-ready configuration
+  - Development/staging/production environments
+  - Feature flag management
+  - API endpoint configuration
+  - Build-time vs runtime configuration
+  - Environment variable validation
+  - Deployment-specific optimizations
+
+---
+🔍 Code Review Questions
+
+1. Does the new feature follow the exact same MVVM patterns as Todo implementation?
+2. Are all view models properly separated from UI components?
+3. Is state management using Zustand with proper CQRS integration?
+4. Are all forms using react-hook-form with Zod validation?
+5. Is the DI configuration using centralized TOKENS from application-shared?
+6. Are error handling and loading states comprehensive and user-friendly?
+7. Does the component structure follow the established design system?
+8. Are all TypeScript interfaces properly defined and used?
+9. Is the feature properly integrated with routing and navigation?
+10. Are tests comprehensive and following established patterns?
+
+---
+📋 Pre-Implementation Checklist
+
+Setup & Planning
+- [ ] Feature requirements clearly defined
+- [ ] Design mockups/wireframes available
+- [ ] API contracts defined (if new endpoints needed)
+- [ ] Database schema changes planned (if applicable)
+- [ ] State management needs identified
+- [ ] Third-party integrations identified
+
+Domain & Application Layer
+- [ ] Domain entities updated in @nx-starter/domain
+- [ ] Use cases created in @nx-starter/application-shared
+- [ ] DTOs and commands defined
+- [ ] Validation schemas created with Zod
+- [ ] Repository interfaces defined
+- [ ] CQRS services updated
+
+Infrastructure Setup
+- [ ] DI container registrations planned
+- [ ] API services implemented (if needed)
+- [ ] Repository implementations created
+- [ ] Configuration updates planned
+- [ ] Error handling strategies defined
+
+Presentation Layer Planning
+- [ ] Component hierarchy designed
+- [ ] View model responsibilities defined
+- [ ] Routing strategy planned
+- [ ] Form validation requirements identified
+- [ ] Loading and error states designed
+- [ ] Accessibility requirements identified
+
+---
+💡 Implementation Best Practices
+
+View Model Development
+- Create focused, single-responsibility view models
+- Use proper TypeScript interfaces for return types
+- Implement proper loading and error states
+- Integrate with global store through dependency injection
+- Handle async operations with proper cleanup
+- Provide computed properties for derived state
+
+Component Development
+- Follow functional component patterns with hooks
+- Use proper form validation with react-hook-form + Zod
+- Implement comprehensive loading and error states
+- Follow design system patterns consistently
+- Ensure accessibility compliance
+- Add proper test attributes (data-testid)
+
+State Management
+- Use Zustand store with immer for immutability
+- Implement CQRS pattern with separate command/query services
+- Provide computed values as getter functions
+- Handle optimistic updates with rollback capabilities
+- Implement proper error state management
+- Use proper TypeScript typing throughout
+
+Error Handling
+- Implement comprehensive form validation
+- Provide user-friendly error messages
+- Handle network errors gracefully
+- Implement retry mechanisms for transient errors
+- Use error boundaries for component isolation
+- Log errors appropriately for debugging
+
+---
+Extra but important:
+- Ensure that all configuration values are centralized in ConfigProvider
+- Follow existing naming conventions and folder structure exactly
+- Implement proper loading states for all async operations  
+- Use proper TypeScript interfaces throughout the implementation
+- Ensure all components are properly tested with React Testing Library
+- Follow responsive design patterns for mobile compatibility
+- Implement proper error boundaries and fallback UI
+- Use proper semantic HTML and accessibility attributes
+- Follow established patterns for API integration and error handling
+- Ensure proper integration with existing shared libraries and domain layer
