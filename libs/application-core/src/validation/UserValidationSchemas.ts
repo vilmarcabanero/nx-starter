@@ -13,7 +13,7 @@ export const USER_VALIDATION_ERRORS = {
   REG_MISSING_PASSWORD: 'Password is required',
   REG_INVALID_EMAIL: 'Please provide a valid email address',
   REG_WEAK_PASSWORD: 'Password must be at least 8 characters long with at least one uppercase letter, one lowercase letter, and one number',
-  REG_EMAIL_EXISTS: 'Email address already registered',
+  REG_EMAIL_EXISTS: 'This email address is already registered',
   REG_INVALID_NAME: 'Names can only contain letters, spaces, and hyphens'
 } as const;
 

@@ -50,7 +50,7 @@ export class UserNotFoundException extends DomainException {
 
 export class UserEmailAlreadyExistsException extends DomainException {
   constructor(email: string) {
-    super(`Email address already registered`, 'REG_EMAIL_EXISTS', 409);
+    super(`This email address is already registered`, 'REG_EMAIL_EXISTS', 409);
   }
 }
 

@@ -33,7 +33,7 @@ THE SYSTEM SHALL return HTTP 400 with error code REG_INVALID_EMAIL and message "
 
 Business Rule Validation:
 WHEN registration request contains email that already exists 
-THE SYSTEM SHALL return HTTP 409 with error code REG_EMAIL_EXISTS and message "Email address already registered"
+THE SYSTEM SHALL return HTTP 409 with error code REG_EMAIL_EXISTS and message "This email address is already registered"
 
 WHEN password doesn't meet security requirements (minimum 8 characters, at least one uppercase, one lowercase, one number) 
 THE SYSTEM SHALL return HTTP 400 with error code REG_WEAK_PASSWORD and detailed requirement messages
