@@ -10,7 +10,7 @@ import {
   UpdateTodoRequestDto,
   TodoDto,
   TOKENS,
-} from '@nx-starter/application-core';
+} from '@nx-starter/application-core/shared';
 import { ITodoApiService } from './ITodoApiService';
 
 /**

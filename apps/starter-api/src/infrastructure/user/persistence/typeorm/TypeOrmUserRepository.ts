@@ -1,7 +1,7 @@
 import { injectable } from 'tsyringe';
 import { DataSource, Repository } from 'typeorm';
 import { User, IUserRepository } from '@nx-starter/domain-core';
-import { UserMapper } from '@nx-starter/application-core';
+import { UserMapper } from '@nx-starter/application-core/shared';
 import { UserEntity } from './UserEntity';
 
 /**

@@ -16,6 +16,15 @@
     "baseUrl": ".",
     "paths": {
       "@nx-starter/application-core": ["libs/application-core/src/index.ts"],
+      "@nx-starter/application-core/server": [
+        "libs/application-core-server/src/index.ts"
+      ],
+      "@nx-starter/application-core/shared": [
+        "libs/application-core-shared/src/index.ts"
+      ],
+      "@nx-starter/application-core/web": [
+        "libs/application-core-web/src/index.ts"
+      ],
       "@nx-starter/domain-core": ["libs/domain-core/src/index.ts"],
       "@nx-starter/utils-core": ["libs/utils-core/src/index.ts"]
     }

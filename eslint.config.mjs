@@ -1,4 +1,4 @@
-import nx from '@nx/eslint-plugin';
+import nx from '@nx/eslint-plugin'
 
 export default [
   ...nx.configs['flat/base'],
@@ -59,4 +59,4 @@ export default [
     // Override or add rules here
     rules: {},
   },
-];
+]

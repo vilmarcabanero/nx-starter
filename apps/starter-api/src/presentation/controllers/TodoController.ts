@@ -24,7 +24,7 @@ import {
   TOKENS,
   TodoValidationService,
   TodoIdSchema,
-} from '@nx-starter/application-core';
+} from '@nx-starter/application-core/shared';
 import {
   TodoListResponse,
   TodoResponse,
@@ -32,7 +32,7 @@ import {
   TodoOperationResponse,
   CreateTodoRequestDto,
   UpdateTodoRequestDto,
-} from '@nx-starter/application-core';
+} from '@nx-starter/application-core/shared';
 import { ApiResponseBuilder } from '../dto/ApiResponse';
 
 /**

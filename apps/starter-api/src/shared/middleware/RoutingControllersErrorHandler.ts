@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Middleware, ExpressErrorMiddlewareInterface } from 'routing-controllers';
 import { DomainException } from '@nx-starter/domain-core';
 import { ZodError } from 'zod';
-import { ValidationError } from '@nx-starter/application-core';
+import { ValidationError } from '@nx-starter/application-core/shared';
 
 /**
  * Custom error handler for routing-controllers

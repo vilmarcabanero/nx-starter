@@ -2,7 +2,7 @@ import type { Todo } from '@nx-starter/domain-core';
 import type {
   CreateTodoData,
   UpdateTodoData,
-} from '@nx-starter/application-core';
+} from '@nx-starter/application-core/shared';
 
 export type TodoStoreStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
 

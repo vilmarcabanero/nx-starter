@@ -2,7 +2,7 @@ import {
   ApiSuccessResponse,
   ApiSuccessMessageResponse,
   ApiErrorResponse,
-} from '@nx-starter/application-core';
+} from '@nx-starter/application-core/shared';
 
 // Response Builder Class - Factory for creating consistent API responses
 export class ApiResponseBuilder {

@@ -3,7 +3,7 @@ import {
   TodoResponse,
   CreateTodoRequestDto,
   UpdateTodoRequestDto,
-} from '@nx-starter/application-core';
+} from '@nx-starter/application-core/shared';
 
 export interface ITodoApiService {
   getAllTodos(): Promise<TodoListResponse>;

@@ -6,12 +6,12 @@ import {
   HttpCode,
 } from 'routing-controllers';
 import {
-  RegisterUserUseCase,
   TOKENS,
   UserValidationService,
   RegisterUserRequestDto,
   UserMapper,
-} from '@nx-starter/application-core';
+} from '@nx-starter/application-core/shared';
+import { RegisterUserUseCase } from '@nx-starter/application-core/server';
 import { ApiResponseBuilder } from '../dto/ApiResponse';
 
 /**

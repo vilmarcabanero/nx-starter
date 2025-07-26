@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 import { DomainException } from '@nx-starter/domain-core';
-import { ValidationError } from '@nx-starter/application-core';
+import { ValidationError } from '@nx-starter/application-core/shared';
 import { RoutingControllersErrorHandler } from './RoutingControllersErrorHandler';
 
 describe('RoutingControllersErrorHandler', () => {

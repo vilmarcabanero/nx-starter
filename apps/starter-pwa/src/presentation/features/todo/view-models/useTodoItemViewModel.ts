@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useTodoStore } from '../../../../infrastructure/state/TodoStore';
 import { Todo } from '@nx-starter/domain-core';
-import { UpdateTodoCommandSchema } from '@nx-starter/application-core';
+import { UpdateTodoCommandSchema } from '@nx-starter/application-core/shared';
 import type { TodoItemViewModel } from './interfaces/TodoViewModels';
 import { getFieldError } from '../utils/ErrorMapping';
 
