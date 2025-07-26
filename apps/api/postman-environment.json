@@ -29,6 +29,41 @@
       "enabled": true,
       "type": "default",
       "description": "Test user ID from registration response"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "enabled": true,
+      "type": "default",
+      "description": "JWT authentication token from login response"
+    },
+    {
+      "key": "loginTestEmail",
+      "value": "login.test@example.com",
+      "enabled": true,
+      "type": "default",
+      "description": "Fixed email for login testing scenarios"
+    },
+    {
+      "key": "loginTestPassword",
+      "value": "LoginTest123",
+      "enabled": true,
+      "type": "default",
+      "description": "Fixed password for login testing scenarios"
+    },
+    {
+      "key": "loginTestUserId",
+      "value": "",
+      "enabled": true,
+      "type": "default",
+      "description": "User ID from login test user registration"
+    },
+    {
+      "key": "loginTestUsername",
+      "value": "",
+      "enabled": true,
+      "type": "default",
+      "description": "Username generated for login test user"
     }
   ],
   "_postman_variable_scope": "environment",
