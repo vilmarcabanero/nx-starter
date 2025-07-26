@@ -80,7 +80,7 @@ coverage
 # Test results
 test-results
 playwright-report
-apps/api/postman/report.html
+report.html
 
 # Cache and temporary files
 /.sass-cache
