@@ -21,10 +21,10 @@ This workspace follows clean architecture principles with clear separation of co
 
 ### Applications
 
-- **starter-api** - Express.js REST API backend
-- **starter-pwa** - React Progressive Web App frontend
-- **starter-api-e2e** - End-to-end tests for API
-- **starter-pwa-e2e** - End-to-end tests for PWA
+- **api** - Express.js REST API backend
+- **web** - React Progressive Web App frontend
+- **api-e2e** - End-to-end tests for API
+- **web-e2e** - End-to-end tests for PWA
 
 ### Libraries
 
@@ -36,7 +36,7 @@ This workspace follows clean architecture principles with clear separation of co
 ┌─────────────────────────────────────────────────────────────┐
 │                    Applications                             │
 ├─────────────────────────────────────────────────────────────┤
-│    starter-api          │         starter-pwa              │
+│    api                  │         web                      │
 │   (Express API)         │      (React PWA)                 │
 └─────────────────────────┴─────────────────────────────────────┘
                             │
@@ -100,13 +100,13 @@ pnpm nx run-many --target=test --all
 
 ```bash
 # Start API development server
-pnpm nx serve starter-api
+pnpm nx serve api
 
 # Start PWA development server
-pnpm nx serve starter-pwa
+pnpm nx serve web
 
 # Run both in parallel
-pnpm nx run-many --target=serve --projects=starter-api,starter-pwa --parallel
+pnpm nx run-many --target=serve --projects=api,web --parallel
 ```
 
 ## 📋 Common Nx Commands
@@ -153,13 +153,13 @@ pnpm nx run-many --target=lint --all
 
 ```bash
 # Serve API (development)
-pnpm nx serve starter-api
+pnpm nx serve api
 
 # Serve PWA (development)
-pnpm nx serve starter-pwa
+pnpm nx serve web
 
 # Serve with specific configuration
-pnpm nx serve starter-api --configuration=production
+pnpm nx serve api --configuration=production
 ```
 
 ### Testing
@@ -169,8 +169,8 @@ pnpm nx serve starter-api --configuration=production
 pnpm nx test <project-name>
 
 # Run e2e tests
-pnpm nx e2e starter-api-e2e
-pnpm nx e2e starter-pwa-e2e
+pnpm nx e2e api-e2e
+pnpm nx e2e web-e2e
 
 # Run tests with coverage
 pnpm nx test <project-name> --coverage
@@ -210,7 +210,7 @@ pnpm nx affected --target=test
 
 ## 🛠️ Technology Stack
 
-### Frontend (starter-pwa)
+### Frontend (web)
 
 - **React 19** - UI library
 - **TypeScript** - Type safety
@@ -221,7 +221,7 @@ pnpm nx affected --target=test
 - **Zustand** - State management
 - **Vitest** - Testing framework
 
-### Backend (starter-api)
+### Backend (api)
 
 - **Node.js** - Runtime environment
 - **Express.js** - Web framework
@@ -247,10 +247,10 @@ pnpm nx affected --target=test
 ```
 nx-starter/
 ├── apps/
-│   ├── starter-api/          # Express API application
-│   ├── starter-api-e2e/      # API end-to-end tests
-│   ├── starter-pwa/          # React PWA application
-│   └── starter-pwa-e2e/      # PWA end-to-end tests
+│   ├── api/                  # Express API application
+│   ├── api-e2e/              # API end-to-end tests
+│   ├── web/                  # React PWA application
+│   └── web-e2e/              # PWA end-to-end tests
 ├── libs/
 │   ├── application-core/     # Application services & use cases
 │   ├── domain-core/          # Domain entities & business logic
@@ -267,8 +267,8 @@ nx-starter/
 
 Each application has its own `.env.example` file:
 
-- `apps/starter-api/.env.example` - API configuration
-- `apps/starter-pwa/.env.example` - PWA configuration
+- `apps/api/.env.example` - API configuration
+- `apps/web/.env.example` - PWA configuration
 
 Copy these to `.env` and customize for your environment.
 
@@ -294,8 +294,8 @@ Copy these to `.env` and customize for your environment.
 
 ### E2E Tests
 
-- **API E2E**: `apps/starter-api-e2e/`
-- **PWA E2E**: `apps/starter-pwa-e2e/`
+- **API E2E**: `apps/api-e2e/`
+- **PWA E2E**: `apps/web-e2e/`
 - **Framework**: Playwright
 - **Command**: `npx nx e2e <project-name>-e2e`
 
@@ -350,8 +350,8 @@ This project enforces conventional commit messages. All commits must follow this
 - `revert` - Reverts a previous commit
 
 **Scopes (optional):**
-- `starter-api` - API application changes
-- `starter-pwa` - PWA application changes
+- `api` - API application changes
+- `web` - PWA application changes
 - `domain-core` - Domain library changes
 - `application-core` - Application library changes
 - `utils-core` - Utils library changes
@@ -359,18 +359,18 @@ This project enforces conventional commit messages. All commits must follow this
 **Examples:**
 ```bash
 # Valid commits (lowercase first letter, proper nouns/acronyms allowed, no period)
-feat(starter-api): add OAuth integration with GitHub API
-fix(starter-pwa): resolve JWT token validation issue
+feat(api): add OAuth integration with GitHub API
+fix(web): resolve JWT token validation issue
 docs: update API documentation for v2
-style(starter-api): format code with Prettier
+style(api): format code with Prettier
 refactor(domain-core): improve Todo entity structure
 test(application-core): add unit tests for TodoService
-perf(starter-api): optimize database queries for PostgreSQL
+perf(api): optimize database queries for PostgreSQL
 chore: update dependencies to latest versions
 
 # Invalid commits (will be rejected)
-feat(starter-api): Add OAuth integration  # ❌ First letter capitalized
-fix(starter-pwa): resolve login issue.     # ❌ Ends with period
+feat(api): Add OAuth integration  # ❌ First letter capitalized
+fix(web): resolve login issue.     # ❌ Ends with period
 docs: Update API documentation            # ❌ First letter capitalized
 FEAT(api): add new feature               # ❌ Type not lowercase
 feat: add feature                        # ❌ Missing scope (optional but recommended)
@@ -380,9 +380,9 @@ feat: add feature                        # ❌ Missing scope (optional but recom
 - **First letter**: Must be lowercase or a number (allows proper nouns/acronyms after)
 - **No periods**: Subject must not end with a period (.)
 - **Length**: Header length varies by scope:
-  - `starter-api-e2e`, `starter-pwa-e2e`, `application-core`: max 90 characters
+  - `api-e2e`, `web-e2e`, `application-core`: max 90 characters
   - `domain-core`: max 85 characters
-  - `starter-api`, `starter-pwa`: max 83 characters
+  - `api`, `web`: max 83 characters
   - `utils-core`: max 80 characters
   - All other scopes: max 72 characters
 - **Type**: Must be one of the allowed types in lowercase

@@ -10,8 +10,8 @@ body:
       label: Application/Library
       description: Select the application or library with failing tests
       options:
-        - starter-api
-        - starter-pwa
+        - api
+        - web
         - domain-core
         - application-core
         - utils-core
@@ -55,10 +55,10 @@ body:
         ### 3. Verify setup by running tests
         ```bash
         # For API components
-        pnpm nx test starter-api
+        pnpm nx test api
         
         # For PWA components  
-        pnpm nx test starter-pwa
+        pnpm nx test web
         
         # For library components
         pnpm nx test domain-core
@@ -169,8 +169,8 @@ body:
         - `pnpm covutils` - Utils coverage
         
         **Debug Commands by Component:**
-        - **starter-api**: `pnpm test:api` 
-        - **starter-pwa**: `pnpm test:web`
+        - **api**: `pnpm test:api` 
+        - **web**: `pnpm test:web`
         - **domain-core**: `pnpm domain`
         - **application-core**: `pnpm application`
         - **utils-core**: `pnpm utils`
@@ -286,7 +286,7 @@ body:
         
         **Format:** `type(scope): subject`
         
-        **Example:** `fix(starter-api): resolve failing unit tests in todo service`
+        **Example:** `fix(api): resolve failing unit tests in todo service`
         
         **Available Types:**
         - `fix` - A bug fix (for fixing failing tests)
@@ -302,15 +302,15 @@ body:
         
         **Scope Rules (REQUIRED):**
         - Use kebab-case (lowercase with hyphens)
-        - Examples: `starter-api`, `starter-pwa`, `domain-core`, `application-core`, `utils-core`
+        - Examples: `api`, `web`, `domain-core`, `application-core`, `utils-core`
         
         **Subject Rules (REQUIRED):**
         - Start with lowercase letter or number
         - No period at the end
         - Header length limits vary by scope:
-          - `starter-api-e2e`, `starter-pwa-e2e`, `application-core`: max 100 characters
+          - `api-e2e`, `web-e2e`, `application-core`: max 100 characters
           - `domain-core`: max 95 characters  
-          - `starter-api`, `starter-pwa`: max 93 characters
+          - `api`, `web`: max 93 characters
           - `utils-core`: max 90 characters
           - All other scopes: max 82 characters
         - Be descriptive and specific

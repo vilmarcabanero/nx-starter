@@ -10,8 +10,8 @@ body:
       label: Component/Area
       description: Which component or area would this feature affect?
       options:
-        - starter-api
-        - starter-pwa
+        - api
+        - web
         - domain-core
         - application-core
         - utils-core
@@ -45,10 +45,10 @@ body:
         ### 3. Verify setup by running tests
         ```bash
         # For API components
-        pnpm nx test starter-api
+        pnpm nx test api
         
         # For PWA components  
-        pnpm nx test starter-pwa
+        pnpm nx test web
         
         # For library components
         pnpm nx test domain-core

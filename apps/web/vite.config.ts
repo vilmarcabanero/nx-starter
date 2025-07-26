@@ -8,7 +8,7 @@ export default defineConfig(async () => {
   const tailwindcss = await import('@tailwindcss/vite');
   return {
     root: __dirname,
-    cacheDir: '../../node_modules/.vite/starter-pwa',
+    cacheDir: '../../node_modules/.vite/web',
     server: {
       port: 3000,
       host: 'localhost',
@@ -33,7 +33,7 @@ export default defineConfig(async () => {
     //  plugins: [ nxViteTsPaths() ],
     // },
     build: {
-      outDir: '../../dist/apps/starter-pwa',
+      outDir: '../../dist/apps/web',
       emptyOutDir: true,
       reportCompressedSize: true,
       commonjsOptions: {
@@ -48,7 +48,7 @@ export default defineConfig(async () => {
       include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
       reporters: ['default'],
       coverage: {
-        reportsDirectory: '../../coverage/starter-pwa',
+        reportsDirectory: '../../coverage/web',
         provider: 'v8' as const,
       },
     },

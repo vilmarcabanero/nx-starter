@@ -22,7 +22,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      reportsDirectory: '../../coverage/starter-api-e2e',
+      reportsDirectory: '../../coverage/api-e2e',
       exclude: [
         '**/*config*.{js,ts}',
         '**/dist/**',

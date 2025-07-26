@@ -1,17 +1,17 @@
 {
-  "name": "starter-api-e2e",
+  "name": "api-e2e",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "implicitDependencies": ["starter-api"],
+  "implicitDependencies": ["api"],
   "targets": {
     "e2e": {
       "executor": "@nx/vite:test",
       "outputs": ["{workspaceRoot}/coverage/{e2eProjectRoot}"],
       "options": {
-        "config": "apps/starter-api-e2e/vitest.config.ts",
+        "config": "apps/api-e2e/vitest.config.ts",
         "passWithNoTests": true
       },
-      "dependsOn": ["starter-api:build", "starter-api:serve"]
+      "dependsOn": ["api:build", "api:serve"]
     }
   }
 }

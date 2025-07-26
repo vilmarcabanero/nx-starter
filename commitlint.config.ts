@@ -41,7 +41,7 @@ const config = {
           if (!scope) return [true];
 
           // Check if scope follows kebab-case with numbers allowed
-          // Valid: api, user-api, starter-api-e2e, api-v2, test-123
+          // Valid: api, user-api, api-e2e, api-v2, test-123
           // Invalid: API, userApi, starter_api, api-, -api, api--test
           if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(scope)) {
             return [
@@ -75,10 +75,10 @@ const config = {
           // Define scope-specific length limits
           const scopeLimits: Record<string, number> = {
             // Apps
-            'starter-api-e2e': 100,
-            'starter-api': 93,
-            'starter-pwa-e2e': 100,
-            'starter-pwa': 93,
+            'api-e2e': 100,
+            'api': 93,
+            'web-e2e': 100,
+            'web': 93,
             // Libs
             'application-core': 100,
             'domain-core': 95,

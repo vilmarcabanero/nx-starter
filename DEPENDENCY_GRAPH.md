@@ -32,5 +32,5 @@ After running `npm run deps:graph`, you can:
 ## Project Structure
 
 Current projects in the workspace:
-- **Apps**: `starter-api`, `starter-pwa`, `starter-api-e2e`, `starter-pwa-e2e`
+- **Apps**: `api`, `web`, `api-e2e`, `web-e2e`
 - **Libs**: `application-core`, `domain-core`, `utils-core`

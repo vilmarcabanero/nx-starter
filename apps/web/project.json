@@ -1,7 +1,7 @@
 {
-  "name": "starter-pwa",
+  "name": "web",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/starter-pwa/src",
+  "sourceRoot": "apps/web/src",
   "projectType": "application",
   "tags": ["type:app"],
   "implicitDependencies": [
@@ -9,6 +9,6 @@
     "application-core",
     "utils-core"
   ],
-  "// targets": "to see all targets run: nx show project starter-pwa --web",
+  "// targets": "to see all targets run: nx show project web --web",
   "targets": {}
 }
