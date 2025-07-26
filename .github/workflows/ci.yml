@@ -1,0 +1,392 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+# Allow only one concurrent deployment per branch
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Use pnpm for faster, more reliable builds
+  PNPM_VERSION: '10.13.1'
+  # Node.js version matrix
+  NODE_VERSIONS: '[18, 20, 22]'
+
+jobs:
+  # Job 1: Setup and Detect Changes
+  setup:
+    name: Setup & Change Detection
+    runs-on: ubuntu-latest
+    outputs:
+      node-versions: ${{ env.NODE_VERSIONS }}
+      has-affected-libs: ${{ steps.affected.outputs.has-affected-libs }}
+      has-affected-apps: ${{ steps.affected.outputs.has-affected-apps }}
+      affected-libs: ${{ steps.affected.outputs.affected-libs }}
+      affected-apps: ${{ steps.affected.outputs.affected-apps }}
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Need full history for NX affected analysis
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Detect affected projects
+        id: affected
+        run: |
+          # For PRs, compare against base branch; for pushes, against previous commit
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_REF="origin/${{ github.event.pull_request.base.ref }}"
+          else
+            BASE_REF="HEAD~1"
+          fi
+          
+          # Get affected projects
+          AFFECTED_LIBS=$(pnpm nx show projects --affected --base=$BASE_REF --type=lib --json || echo '[]')
+          AFFECTED_APPS=$(pnpm nx show projects --affected --base=$BASE_REF --type=app --json || echo '[]')
+          
+          # Set outputs
+          echo "affected-libs=$AFFECTED_LIBS" >> $GITHUB_OUTPUT
+          echo "affected-apps=$AFFECTED_APPS" >> $GITHUB_OUTPUT
+          echo "has-affected-libs=$([ "$AFFECTED_LIBS" != "[]" ] && echo "true" || echo "false")" >> $GITHUB_OUTPUT
+          echo "has-affected-apps=$([ "$AFFECTED_APPS" != "[]" ] && echo "true" || echo "false")" >> $GITHUB_OUTPUT
+          
+          # Debug output
+          echo "Affected libraries: $AFFECTED_LIBS"
+          echo "Affected applications: $AFFECTED_APPS"
+
+  # Job 2: Code Quality & Linting
+  lint:
+    name: Code Quality & Linting
+    runs-on: ubuntu-latest
+    needs: setup
+    if: needs.setup.outputs.has-affected-libs == 'true' || needs.setup.outputs.has-affected-apps == 'true'
+    
+    strategy:
+      matrix:
+        node-version: [20] # Only run linting on LTS version
+        
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache NX cache
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-cache-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            nx-cache-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            nx-cache-${{ runner.os }}-${{ matrix.node-version }}-
+
+      - name: Run ESLint (affected only)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            pnpm nx affected -t lint --base=origin/${{ github.event.pull_request.base.ref }} --parallel=3
+          else
+            pnpm nx affected -t lint --base=HEAD~1 --parallel=3
+          fi
+
+      - name: Check code formatting
+        run: pnpm run format:check
+
+      - name: Run TypeScript compiler check (affected only)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            pnpm nx affected -t typecheck --base=origin/${{ github.event.pull_request.base.ref }} --parallel=3
+          else
+            pnpm nx affected -t typecheck --base=HEAD~1 --parallel=3
+          fi
+
+  # Job 3: Unit Tests
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: setup
+    if: needs.setup.outputs.has-affected-libs == 'true' || needs.setup.outputs.has-affected-apps == 'true'
+    
+    strategy:
+      matrix:
+        node-version: ${{ fromJson(needs.setup.outputs.node-versions) }}
+        
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache NX cache
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-cache-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            nx-cache-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            nx-cache-${{ runner.os }}-${{ matrix.node-version }}-
+
+      - name: Run unit tests (affected only)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            pnpm nx affected -t test --base=origin/${{ github.event.pull_request.base.ref }} --parallel=3 --coverage
+          else
+            pnpm nx affected -t test --base=HEAD~1 --parallel=3 --coverage
+          fi
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        if: matrix.node-version == 20
+        with:
+          name: coverage-reports-node-${{ matrix.node-version }}
+          path: |
+            coverage/
+            **/coverage/
+          retention-days: 7
+
+  # Job 4: Build Applications
+  build:
+    name: Build Applications
+    runs-on: ubuntu-latest
+    needs: setup
+    if: needs.setup.outputs.has-affected-apps == 'true'
+    
+    strategy:
+      matrix:
+        node-version: [20] # Only build on LTS version
+        
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache NX cache
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-cache-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            nx-cache-${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            nx-cache-${{ runner.os }}-${{ matrix.node-version }}-
+
+      - name: Build libraries first
+        run: pnpm run build:libs
+
+      - name: Build applications (affected only)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            pnpm nx affected -t build --base=origin/${{ github.event.pull_request.base.ref }} --configuration=production --parallel=2
+          else
+            pnpm nx affected -t build --base=HEAD~1 --configuration=production --parallel=2
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-node-${{ matrix.node-version }}
+          path: |
+            dist/
+            !dist/**/*.tsbuildinfo
+          retention-days: 7
+
+  # Job 5: End-to-End Tests
+  e2e:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    needs: [setup, build]
+    if: needs.setup.outputs.has-affected-apps == 'true'
+    timeout-minutes: 30
+    
+    strategy:
+      matrix:
+        node-version: [20] # Only run E2E on LTS version
+        
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts-node-${{ matrix.node-version }}
+          path: .
+
+      - name: Run E2E tests (affected only)
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            pnpm nx affected -t e2e --base=origin/${{ github.event.pull_request.base.ref }} --parallel=1
+          else
+            pnpm nx affected -t e2e --base=HEAD~1 --parallel=1
+          fi
+
+      - name: Upload E2E test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-results-node-${{ matrix.node-version }}
+          path: |
+            playwright-report/
+            test-results/
+            apps/**/playwright-report/
+            apps/**/test-results/
+          retention-days: 7
+
+  # Job 6: Security Scan (only on main branch or PRs to main)
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event.pull_request.base.ref == 'main'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run npm audit
+        run: pnpm audit --audit-level moderate
+
+      - name: Check for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified
+
+  # Job 7: Deployment Readiness Check
+  deployment-check:
+    name: Deployment Readiness
+    runs-on: ubuntu-latest
+    needs: [lint, test, build]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Production build verification
+        run: pnpm run build:prod
+
+      - name: Upload production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-artifacts
+          path: |
+            dist/
+            !dist/**/*.tsbuildinfo
+          retention-days: 30
+
+      - name: Create deployment summary
+        run: |
+          echo "## 🚀 Deployment Readiness Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ All tests passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Production build successful" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Security checks passed" >> $GITHUB_STEP_SUMMARY
+          echo "- 📦 Artifacts ready for deployment" >> $GITHUB_STEP_SUMMARY

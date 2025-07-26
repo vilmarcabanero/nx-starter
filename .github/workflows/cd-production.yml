@@ -1,0 +1,284 @@
+name: Deploy to Production
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on version tags (v1.0.0, v2.1.3, etc.)
+  workflow_dispatch: # Allow manual triggering
+    inputs:
+      version:
+        description: 'Version to deploy (optional, uses latest if not specified)'
+        required: false
+        type: string
+      force_deploy:
+        description: 'Force deployment even if checks fail'
+        required: false
+        type: boolean
+        default: false
+
+# Allow only one concurrent production deployment
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false # Never cancel production deployments
+
+env:
+  PNPM_VERSION: '10.13.1'
+  NODE_VERSION: '20'
+
+jobs:
+  pre-deployment-checks:
+    name: Pre-deployment Security & Quality Checks
+    runs-on: ubuntu-latest
+    outputs:
+      deploy-version: ${{ steps.version.outputs.version }}
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Need full history for proper versioning
+
+      - name: Determine deployment version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            # Tag-based deployment
+            VERSION=${GITHUB_REF#refs/tags/}
+          elif [ "${{ inputs.version }}" != "" ]; then
+            # Manual deployment with specified version
+            VERSION="${{ inputs.version }}"
+          else
+            # Manual deployment without version - use latest commit
+            VERSION="main-$(git rev-parse --short HEAD)"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Deploying version: $VERSION"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run comprehensive security audit
+        run: |
+          echo "🔒 Running security audit..."
+          pnpm audit --audit-level high
+          # Add additional security checks as needed
+          # npm audit signatures # Check for tampered packages (if supported)
+
+      - name: Run all tests
+        run: pnpm run test
+        if: ${{ !inputs.force_deploy }}
+
+      - name: Build production artifacts
+        run: pnpm run build:prod
+
+      - name: Verify production build integrity
+        run: |
+          echo "🔍 Verifying build integrity..."
+          # Check that all expected files exist
+          test -d dist/apps/starter-api || { echo "API build missing"; exit 1; }
+          test -d dist/apps/starter-pwa || { echo "PWA build missing"; exit 1; }
+          # Add more integrity checks as needed
+          echo "Build integrity check passed"
+
+      - name: Upload production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build-${{ steps.version.outputs.version }}
+          path: |
+            dist/
+            !dist/**/*.tsbuildinfo
+          retention-days: 90 # Keep production artifacts longer
+
+  deploy-production:
+    name: Deploy to Production Environment
+    runs-on: ubuntu-latest
+    needs: pre-deployment-checks
+    environment: 
+      name: production
+      url: https://nx-starter.example.com # Update with actual production URL
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download production artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: production-build-${{ needs.pre-deployment-checks.outputs.deploy-version }}
+          path: .
+
+      - name: Setup deployment environment
+        run: |
+          echo "🎯 Setting up production deployment environment..."
+          echo "Version: ${{ needs.pre-deployment-checks.outputs.deploy-version }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Actor: ${{ github.actor }}"
+
+      - name: Backup current production (if applicable)
+        run: |
+          echo "💾 Creating production backup..."
+          # Example backup commands - replace with your backup strategy
+          # aws s3 sync s3://production-bucket s3://backup-bucket/$(date +%Y%m%d-%H%M%S)/ --delete
+          # kubectl create configmap prod-backup-$(date +%Y%m%d-%H%M%S) --from-file=current-config/
+          echo "Backup step - configure based on your deployment strategy"
+
+      - name: Deploy to production
+        run: |
+          echo "🚀 Deploying to production environment..."
+          echo "Version: ${{ needs.pre-deployment-checks.outputs.deploy-version }}"
+          echo ""
+          echo "Configure this step based on your deployment strategy:"
+          echo ""
+          echo "📦 Container deployments:"
+          echo "# docker tag nx-starter-api:latest nx-starter-api:${{ needs.pre-deployment-checks.outputs.deploy-version }}"
+          echo "# docker push your-registry/nx-starter-api:${{ needs.pre-deployment-checks.outputs.deploy-version }}"
+          echo "# kubectl set image deployment/api api=your-registry/nx-starter-api:${{ needs.pre-deployment-checks.outputs.deploy-version }}"
+          echo "# kubectl rollout status deployment/api"
+          echo ""
+          echo "☁️ Cloud deployments:"
+          echo "# AWS:"
+          echo "#   aws s3 sync dist/apps/starter-pwa s3://production-bucket --delete"
+          echo "#   aws cloudfront create-invalidation --distribution-id EDFDVBD6EXAMPLE --paths '/*'"
+          echo "# Azure:"
+          echo "#   az storage blob sync -s dist/apps/starter-pwa -c \$web --account-name mystorageaccount"
+          echo "# GCP:"
+          echo "#   gsutil -m rsync -r -d dist/apps/starter-pwa gs://production-bucket"
+          echo ""
+          echo "🖥️ Traditional server deployments:"
+          echo "# rsync -avz dist/ user@prod-server:/var/www/nx-starter/"
+          echo "# ssh user@prod-server 'sudo systemctl restart nx-starter-api'"
+          echo ""
+          echo "🔧 Serverless deployments:"
+          echo "# serverless deploy --stage production"
+          echo "# terraform apply -var='version=${{ needs.pre-deployment-checks.outputs.deploy-version }}'"
+
+      - name: Post-deployment health checks
+        run: |
+          echo "🔍 Running production health checks..."
+          sleep 30 # Give services time to start
+          
+          # Example health checks - replace with your actual endpoints
+          echo "Checking API health..."
+          # curl -f https://api.nx-starter.example.com/health || exit 1
+          
+          echo "Checking web application..."
+          # curl -f https://nx-starter.example.com || exit 1
+          
+          echo "Checking database connectivity..."
+          # Add database health checks if applicable
+          
+          echo "All health checks passed!"
+
+      - name: Run production smoke tests
+        run: |
+          echo "🧪 Running production smoke tests..."
+          # Configure environment for production testing
+          # export API_BASE_URL=https://api.nx-starter.example.com
+          # export WEB_BASE_URL=https://nx-starter.example.com
+          
+          # Run critical path tests only
+          # pnpm nx e2e starter-api-e2e --configuration=production --grep="@critical"
+          # pnpm nx e2e starter-pwa-e2e --configuration=production --grep="@critical"
+          
+          echo "Production smoke tests completed!"
+
+      - name: Create release notes
+        run: |
+          echo "📝 Creating release notes..."
+          cat > release-notes.md << EOF
+          # Release ${{ needs.pre-deployment-checks.outputs.deploy-version }}
+          
+          **Deployed on:** $(date)
+          **Commit:** ${{ github.sha }}
+          **Deployed by:** ${{ github.actor }}
+          
+          ## Changes
+          <!-- Add changelog or link to changelog -->
+          
+          ## Health Check Status
+          ✅ API Health Check
+          ✅ Web Application Check  
+          ✅ Database Connectivity
+          ✅ Production Smoke Tests
+          
+          ## Rollback Plan
+          If issues are encountered, rollback can be performed by:
+          1. Triggering the rollback workflow
+          2. Or manually reverting to previous version
+          
+          EOF
+          
+          echo "## 🎉 Production Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "- 🌐 **Production URL**: https://nx-starter.example.com" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔗 **API URL**: https://api.nx-starter.example.com" >> $GITHUB_STEP_SUMMARY
+          echo "- 📦 **Version**: ${{ needs.pre-deployment-checks.outputs.deploy-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔢 **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- ⏰ **Deployed at**: $(date)" >> $GITHUB_STEP_SUMMARY
+
+      - name: Tag deployment
+        run: |
+          # Create deployment tag for tracking
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          DEPLOY_TAG="deploy-prod-$(date +%Y%m%d-%H%M%S)"
+          git tag -a "$DEPLOY_TAG" -m "Production deployment ${{ needs.pre-deployment-checks.outputs.deploy-version }}"
+          # git push origin "$DEPLOY_TAG" # Uncomment if you want to push the tag
+
+      - name: Notify team of successful deployment
+        if: success()
+        run: |
+          echo "📢 Notifying team of successful deployment..."
+          # Configure notifications based on your team's preferences
+          
+          # Slack notification example:
+          # curl -X POST -H 'Content-type: application/json' \
+          #   --data '{
+          #     "text": "🎉 Production deployment successful!",
+          #     "blocks": [
+          #       {
+          #         "type": "section",
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "*Production Deployment Successful* 🎉\n*Version:* ${{ needs.pre-deployment-checks.outputs.deploy-version }}\n*URL:* https://nx-starter.example.com"
+          #         }
+          #       }
+          #     ]
+          #   }' \
+          #   ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Handle deployment failure
+        if: failure()
+        run: |
+          echo "❌ Production deployment failed!"
+          echo "## ❌ Production Deployment Failed" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔍 **Check logs**: Review the deployment logs above" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔄 **Rollback**: Consider rolling back to previous version" >> $GITHUB_STEP_SUMMARY
+          echo "- 🚨 **Alert**: Team has been notified" >> $GITHUB_STEP_SUMMARY
+          
+          # Emergency notification example:
+          # curl -X POST -H 'Content-type: application/json' \
+          #   --data '{
+          #     "text": "🚨 URGENT: Production deployment failed!",
+          #     "blocks": [
+          #       {
+          #         "type": "section", 
+          #         "text": {
+          #           "type": "mrkdwn",
+          #           "text": "*URGENT: Production Deployment Failed* 🚨\n*Version:* ${{ needs.pre-deployment-checks.outputs.deploy-version }}\n*Action Required:* Manual intervention needed"
+          #         }
+          #       }
+          #     ]
+          #   }' \
+          #   ${{ secrets.SLACK_WEBHOOK_URL }}

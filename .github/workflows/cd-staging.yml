@@ -1,0 +1,137 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [main, develop]
+  workflow_dispatch: # Allow manual triggering
+
+# Allow only one concurrent staging deployment
+concurrency:
+  group: staging-deployment
+  cancel-in-progress: false # Don't cancel running deployments
+
+env:
+  PNPM_VERSION: '10.13.1'
+  NODE_VERSION: '20'
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging Environment
+    runs-on: ubuntu-latest
+    environment: 
+      name: staging
+      url: https://staging.nx-starter.example.com # Update with actual staging URL
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache NX cache
+        uses: actions/cache@v4
+        with:
+          path: .nx/cache
+          key: nx-cache-staging-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            nx-cache-staging-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+
+      - name: Run tests before deployment
+        run: pnpm run test
+
+      - name: Build for staging
+        run: pnpm run build:prod
+        env:
+          NODE_ENV: staging
+
+      - name: Build Docker images (if applicable)
+        run: |
+          # Example Docker build commands - uncomment and modify as needed
+          # docker build -t nx-starter-api:staging -f apps/starter-api/Dockerfile .
+          # docker build -t nx-starter-pwa:staging -f apps/starter-pwa/Dockerfile .
+          echo "Docker build step - configure based on your deployment strategy"
+
+      - name: Deploy to staging server
+        run: |
+          # Example deployment commands - replace with your actual deployment strategy
+          echo "🚀 Deploying to staging environment..."
+          echo "This is where you would:"
+          echo "  - Deploy to your cloud provider (AWS, GCP, Azure, etc.)"
+          echo "  - Update container registry"
+          echo "  - Deploy to Kubernetes/Docker Swarm"
+          echo "  - Update serverless functions"
+          echo "  - Copy files to staging server"
+          echo ""
+          echo "Example commands (uncomment and modify):"
+          echo "# AWS S3 + CloudFront deployment:"
+          echo "# aws s3 sync dist/apps/starter-pwa s3://staging-bucket --delete"
+          echo "# aws cloudfront create-invalidation --distribution-id EDFDVBD6EXAMPLE --paths '/*'"
+          echo ""
+          echo "# Docker deployment:"
+          echo "# docker push your-registry/nx-starter-api:staging"
+          echo "# kubectl set image deployment/api api=your-registry/nx-starter-api:staging"
+          echo ""
+          echo "# Traditional server deployment:"
+          echo "# rsync -avz dist/ user@staging-server:/var/www/nx-starter/"
+          echo "# ssh user@staging-server 'sudo systemctl restart nx-starter-api'"
+
+      - name: Run staging health checks
+        run: |
+          echo "🔍 Running health checks on staging environment..."
+          # Example health check commands - replace with actual health checks
+          # curl -f https://staging-api.nx-starter.example.com/health || exit 1
+          # curl -f https://staging.nx-starter.example.com || exit 1
+          echo "Health checks would go here"
+
+      - name: Run smoke tests against staging
+        run: |
+          echo "🧪 Running smoke tests against staging..."
+          # Example smoke test commands
+          # export API_BASE_URL=https://staging-api.nx-starter.example.com
+          # export WEB_BASE_URL=https://staging.nx-starter.example.com
+          # pnpm nx e2e starter-api-e2e --configuration=staging
+          # pnpm nx e2e starter-pwa-e2e --configuration=staging
+          echo "Smoke tests would go here"
+
+      - name: Update deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "## ✅ Staging Deployment Successful" >> $GITHUB_STEP_SUMMARY
+            echo "- 🌐 **Staging URL**: https://staging.nx-starter.example.com" >> $GITHUB_STEP_SUMMARY
+            echo "- 🔗 **API URL**: https://staging-api.nx-starter.example.com" >> $GITHUB_STEP_SUMMARY
+            echo "- 📦 **Build**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+            echo "- ⏰ **Deployed at**: $(date)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## ❌ Staging Deployment Failed" >> $GITHUB_STEP_SUMMARY
+            echo "Check the job logs for details." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Notify team (optional)
+        if: always()
+        run: |
+          # Example notification commands - uncomment and configure as needed
+          echo "Notification step - configure based on your team's preferences"
+          # Slack notification:
+          # curl -X POST -H 'Content-type: application/json' \
+          #   --data '{"text":"Staging deployment status: ${{ job.status }}"}' \
+          #   ${{ secrets.SLACK_WEBHOOK_URL }}
+          
+          # Discord notification:
+          # curl -H "Content-Type: application/json" \
+          #   -d '{"content": "Staging deployment status: ${{ job.status }}"}' \
+          #   ${{ secrets.DISCORD_WEBHOOK_URL }}
+          
+          # Email notification could be handled by GitHub Actions or external service
