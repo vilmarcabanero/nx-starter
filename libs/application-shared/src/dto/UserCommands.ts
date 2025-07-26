@@ -9,3 +9,8 @@ export interface RegisterUserCommand {
   email: string;
   password: string;
 }
+
+export interface LoginUserCommand {
+  identifier: string; // Can be email or username
+  password: string;
+}

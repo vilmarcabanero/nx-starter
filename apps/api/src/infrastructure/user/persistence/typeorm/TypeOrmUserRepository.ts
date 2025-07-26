@@ -35,6 +35,16 @@ export class TypeOrmUserRepository implements IUserRepository {
     return userEntity ? this.mapToUserDomain(userEntity) : undefined;
   }
 
+  async getByEmailOrUsername(identifier: string): Promise<User | undefined> {
+    const userEntity = await this.repository.findOne({
+      where: [
+        { email: identifier.toLowerCase() },
+        { username: identifier.toLowerCase() }
+      ]
+    });
+    return userEntity ? this.mapToUserDomain(userEntity) : undefined;
+  }
+
   async create(user: User): Promise<string> {
     const userEntity = this.repository.create({
       id: user.id,

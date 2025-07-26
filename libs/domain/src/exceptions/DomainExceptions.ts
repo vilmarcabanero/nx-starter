@@ -83,3 +83,30 @@ export class MissingRequiredFieldException extends DomainException {
     super(`${field} is required`, errorCode);
   }
 }
+
+/**
+ * Authentication-specific domain exceptions
+ */
+export class AuthInvalidCredentialsException extends DomainException {
+  constructor() {
+    super('Invalid email/username or password', 'AUTH_INVALID_CREDENTIALS', 401);
+  }
+}
+
+export class AuthMissingIdentifierException extends DomainException {
+  constructor() {
+    super('Email or username is required', 'AUTH_MISSING_IDENTIFIER', 400);
+  }
+}
+
+export class AuthMissingPasswordException extends DomainException {
+  constructor() {
+    super('Password is required', 'AUTH_MISSING_PASSWORD', 400);
+  }
+}
+
+export class AuthInvalidEmailException extends DomainException {
+  constructor() {
+    super('Please provide a valid email address', 'AUTH_INVALID_EMAIL', 400);
+  }
+}

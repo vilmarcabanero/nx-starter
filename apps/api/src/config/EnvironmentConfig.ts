@@ -106,7 +106,7 @@ export function getEnvironmentConfig(): AppConfig {
   };
 
   // Helper function to validate required string values
-  const parseString = (envVar: string, value: string | undefined, defaultValue: string, required: boolean = false): string => {
+  const parseString = (envVar: string, value: string | undefined, defaultValue: string, required = false): string => {
     if (value === undefined || value.trim() === '') {
       if (required) {
         throw new ConfigParsingError(`Required environment variable is missing or empty`, envVar, value);

@@ -32,6 +32,19 @@ export class InMemoryUserRepository implements IUserRepository {
     return undefined;
   }
 
+  async getByEmailOrUsername(identifier: string): Promise<User | undefined> {
+    // Try to find by email first (if identifier contains @)
+    if (identifier.includes('@')) {
+      const userByEmail = await this.getByEmail(identifier);
+      if (userByEmail) {
+        return userByEmail;
+      }
+    }
+    
+    // Try to find by username
+    return await this.getByUsername(identifier);
+  }
+
   async create(user: User): Promise<string> {
     this.users.set(user.id, user);
     return user.id;

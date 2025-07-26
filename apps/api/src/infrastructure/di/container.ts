@@ -23,16 +23,20 @@ import {
   ToggleTodoValidationService,
   UserValidationService,
   RegisterUserValidationService,
+  LoginUserValidationService,
 } from '@nx-starter/application-shared';
 import {
   RegisterUserUseCase,
+  LoginUserUseCase,
   BcryptPasswordHashingService,
+  JwtService,
+  JwtConfig,
 } from '@nx-starter/application-api';
 import type { ITodoRepository, IUserRepository } from '@nx-starter/domain';
 import { UserDomainService } from '@nx-starter/domain';
 import { getTypeOrmDataSource } from '../database/connections/TypeOrmConnection';
 import { connectMongoDB } from '../database/connections/MongooseConnection';
-import { getDatabaseConfig } from '../../config';
+import { getDatabaseConfig, getSecurityConfig } from '../../config';
 
 // Register dependencies following Clean Architecture layers
 export const configureDI = async () => {
@@ -54,6 +58,20 @@ export const configureDI = async () => {
     TOKENS.PasswordHashingService,
     BcryptPasswordHashingService
   );
+  
+  // Register JWT service with configuration
+  const securityConfig = getSecurityConfig();
+  const jwtConfig: JwtConfig = {
+    secret: securityConfig.jwt.secret,
+    expiresIn: securityConfig.jwt.expiresIn,
+    issuer: securityConfig.jwt.issuer,
+    audience: securityConfig.jwt.audience,
+  };
+  
+  container.registerInstance(
+    TOKENS.JwtService,
+    new JwtService(jwtConfig)
+  );
 
   // Application Layer - Use Cases (Commands)
   container.registerSingleton(TOKENS.CreateTodoUseCase, CreateTodoUseCase);
@@ -61,6 +79,7 @@ export const configureDI = async () => {
   container.registerSingleton(TOKENS.DeleteTodoUseCase, DeleteTodoUseCase);
   container.registerSingleton(TOKENS.ToggleTodoUseCase, ToggleTodoUseCase);
   container.registerSingleton(TOKENS.RegisterUserUseCase, RegisterUserUseCase);
+  container.registerSingleton(TOKENS.LoginUserUseCase, LoginUserUseCase);
 
   // Application Layer - Use Cases (Queries)
   container.registerSingleton(
@@ -108,6 +127,10 @@ export const configureDI = async () => {
   container.registerSingleton(
     TOKENS.RegisterUserValidationService,
     RegisterUserValidationService
+  );
+  container.registerSingleton(
+    TOKENS.LoginUserValidationService,
+    LoginUserValidationService
   );
   container.registerSingleton(
     TOKENS.UserValidationService,

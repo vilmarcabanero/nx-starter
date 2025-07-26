@@ -6,7 +6,8 @@
   "tags": ["type:app"],
   "implicitDependencies": [
     "domain",
-    "application-core",
+    "application-shared",
+    "application-web",
     "utils-core"
   ],
   "// targets": "to see all targets run: nx show project web --web",

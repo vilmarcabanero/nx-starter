@@ -10,6 +10,7 @@ export const TOKENS = {
 
   // Infrastructure Layer - Services
   PasswordHashingService: 'IPasswordHashingService',
+  JwtService: 'IJwtService',
 
   // Application Layer - CQRS Services (Interface-based for cleaner injection)
   TodoCommandService: 'ITodoCommandService',
@@ -21,6 +22,7 @@ export const TOKENS = {
   DeleteTodoUseCase: 'DeleteTodoUseCase',
   ToggleTodoUseCase: 'ToggleTodoUseCase',
   RegisterUserUseCase: 'RegisterUserUseCase',
+  LoginUserUseCase: 'LoginUserUseCase',
 
   // Application Layer - Use Cases (Queries)
   GetAllTodosQueryHandler: 'GetAllTodosQueryHandler',
@@ -41,6 +43,7 @@ export const TOKENS = {
   ToggleTodoValidationService: 'ToggleTodoValidationService',
   TodoValidationService: 'TodoValidationService',
   RegisterUserValidationService: 'RegisterUserValidationService',
+  LoginUserValidationService: 'LoginUserValidationService',
   UserValidationService: 'UserValidationService',
 } as const;
 

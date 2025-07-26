@@ -6,7 +6,8 @@
   "tags": ["type:app"],
   "implicitDependencies": [
     "domain",
-    "application-core",
+    "application-shared",
+    "application-api",
     "utils-core"
   ],
   "targets": {

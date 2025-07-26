@@ -45,6 +45,16 @@ export class SqliteUserRepository implements IUserRepository {
     return row ? this.mapToUserEntity(row) : undefined;
   }
 
+  async getByEmailOrUsername(identifier: string): Promise<User | undefined> {
+    const stmt = this.db.prepare(`
+      SELECT * FROM users 
+      WHERE LOWER(email) = LOWER(?) OR LOWER(username) = LOWER(?)
+      LIMIT 1
+    `);
+    const row = stmt.get(identifier, identifier) as UserRecord | undefined;
+    return row ? this.mapToUserEntity(row) : undefined;
+  }
+
   async create(user: User): Promise<string> {
     const stmt = this.db.prepare(`
       INSERT INTO users (id, firstName, lastName, email, username, hashedPassword, createdAt)

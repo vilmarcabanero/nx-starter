@@ -1,7 +1,7 @@
 import { injectable, inject } from 'tsyringe';
 import { ValidationService, IValidationService } from './ValidationService';
-import { RegisterUserCommandSchema } from './UserValidationSchemas';
-import { RegisterUserCommand } from '../dto/UserCommands';
+import { RegisterUserCommandSchema, LoginUserCommandSchema } from './UserValidationSchemas';
+import { RegisterUserCommand, LoginUserCommand } from '../dto/UserCommands';
 import { TOKENS } from '../di/tokens';
 
 /**
@@ -13,6 +13,15 @@ export class RegisterUserValidationService extends ValidationService<unknown, Re
   protected schema = RegisterUserCommandSchema;
 }
 
+/**
+ * Validation service for LoginUserCommand
+ * Encapsulates validation logic for user login
+ */
+@injectable()
+export class LoginUserValidationService extends ValidationService<unknown, LoginUserCommand> {
+  protected schema = LoginUserCommandSchema;
+}
+
 
 /**
  * Composite validation service that provides all User validation operations
@@ -22,7 +31,9 @@ export class RegisterUserValidationService extends ValidationService<unknown, Re
 export class UserValidationService {
   constructor(
     @inject(TOKENS.RegisterUserValidationService)
-    private registerValidator: RegisterUserValidationService
+    private registerValidator: RegisterUserValidationService,
+    @inject(TOKENS.LoginUserValidationService)
+    private loginValidator: LoginUserValidationService
   ) {}
 
   /**
@@ -33,13 +44,25 @@ export class UserValidationService {
   }
 
   /**
+   * Validates data for logging in a user
+   */
+  validateLoginCommand(data: unknown): LoginUserCommand {
+    return this.loginValidator.validate(data);
+  }
+
+  /**
    * Safe validation methods that don't throw exceptions
    */
   safeValidateRegisterCommand(data: unknown) {
     return this.registerValidator.safeParse(data);
   }
+
+  safeValidateLoginCommand(data: unknown) {
+    return this.loginValidator.safeParse(data);
+  }
 }
 
 // Export interfaces for dependency injection
 export type IRegisterUserValidationService = IValidationService<unknown, RegisterUserCommand>;
+export type ILoginUserValidationService = IValidationService<unknown, LoginUserCommand>;
 

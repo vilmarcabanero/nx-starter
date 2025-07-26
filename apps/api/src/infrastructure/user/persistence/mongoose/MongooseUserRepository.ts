@@ -25,6 +25,16 @@ export class MongooseUserRepository implements IUserRepository {
     return userDoc ? this.mapToUserDomain(userDoc) : undefined;
   }
 
+  async getByEmailOrUsername(identifier: string): Promise<User | undefined> {
+    const userDoc = await UserModel.findOne({
+      $or: [
+        { email: identifier.toLowerCase() },
+        { username: identifier.toLowerCase() }
+      ]
+    }).exec();
+    return userDoc ? this.mapToUserDomain(userDoc) : undefined;
+  }
+
   async create(user: User): Promise<string> {
     const userDoc = new UserModel({
       _id: user.id,
