@@ -13,7 +13,8 @@
         "outputPath": "dist/libs/application-core-server",
         "main": "libs/application-core-server/src/index.ts",
         "tsConfig": "libs/application-core-server/tsconfig.lib.json",
-        "assets": ["libs/application-core-server/*.md"]
+        "assets": ["libs/application-core-server/*.md"],
+        "rootDir": "."
       }
     },
     "test": {
