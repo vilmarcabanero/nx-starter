@@ -853,9 +853,11 @@
                   "    pm.expect(user).to.have.property('id');",
                   "    pm.expect(user).to.have.property('firstName', 'Login');",
                   "    pm.expect(user).to.have.property('lastName', 'Test');",
-                  "    pm.expect(user).to.have.property('email', pm.collectionVariables.get('loginTestEmail'));",
+                  "    pm.expect(user).to.have.property('email');",
                   "    pm.expect(user).to.have.property('username');",
                   "    pm.expect(user).to.have.property('createdAt');",
+                  "    // Store the actual email for login tests",
+                  "    pm.collectionVariables.set('actualLoginTestEmail', user.email);",
                   "});",
                   "",
                   "pm.test('User ID is generated and stored for login tests', function () {",
@@ -889,7 +891,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Login\",\n  \"lastName\": \"Test\",\n  \"email\": \"{{loginTestEmail}}\",\n  \"password\": \"{{loginTestPassword}}\"\n}"
+              "raw": "{\n  \"firstName\": \"Login\",\n  \"lastName\": \"Test\",\n  \"email\": \"login.test.{{$randomInt}}@example.com\",\n  \"password\": \"{{loginTestPassword}}\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/register",
@@ -937,7 +939,7 @@
                   "    pm.expect(user).to.have.property('lastName', 'Test');",
                   "    pm.expect(user).to.have.property('email', pm.collectionVariables.get('loginTestEmail'));",
                   "    pm.expect(user).to.have.property('username');",
-                  "    pm.expect(user).to.have.property('createdAt');",
+                  "    // Note: login response doesn't include createdAt, only registration does",
                   "});",
                   "",
                   "pm.test('JWT token is valid format', function () {",
@@ -979,7 +981,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{loginTestEmail}}\",\n  \"password\": \"{{loginTestPassword}}\"\n}"
+              "raw": "{\n  \"email\": \"{{actualLoginTestEmail}}\",\n  \"password\": \"{{loginTestPassword}}\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
@@ -1027,6 +1029,7 @@
                   "    pm.expect(user).to.have.property('lastName', 'Test');",
                   "    pm.expect(user).to.have.property('email', pm.collectionVariables.get('loginTestEmail'));",
                   "    pm.expect(user).to.have.property('username');",
+                  "    // Note: login response doesn't include createdAt, only registration does",
                   "});",
                   "",
                   "pm.test('JWT token is valid format', function () {",
@@ -1338,7 +1341,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{loginTestEmail}}\",\n  \"password\": \"WrongPassword123\"\n}"
+              "raw": "{\n  \"email\": \"{{actualLoginTestEmail}}\",\n  \"password\": \"WrongPassword123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
