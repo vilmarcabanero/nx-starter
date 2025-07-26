@@ -1,0 +1,43 @@
+Login Form Display:
+WHEN a user navigates to the login page 
+THE SYSTEM SHALL display a login form with email/username field, password field, "Remember Me" checkbox, and "Log In" button
+
+WHEN the login page loads 
+THE SYSTEM SHALL set focus on the email/username input field for immediate user interaction
+
+WHEN the login form is displayed 
+THE SYSTEM SHALL include "Forgot Password?" link and "Create Account" registration link
+
+---
+
+Form Validation and User Feedback:
+WHEN a user types in the email/username field 
+THE SYSTEM SHALL validate email format in real-time and show format error if invalid email is entered
+
+When all fields are still empty
+THE SYSTEM SHALL disable the submit button
+
+WHEN a user submits the login form with valid format 
+THE SYSTEM SHALL disable the submit button and replace the "Log In" text with a circular progress to prevent double submission
+
+---
+
+When a user pressed return key
+THE SYSTEM SHALL proceed with authentication
+
+When a user clicks "Log In" button
+THE SYSTEM SHALL proceed with authentication
+
+---
+
+Authentication Response Handling:
+WHEN authentication succeeds 
+THE SYSTEM SHALL redirect to the home page
+
+WHEN authentication fails due to invalid credentials 
+THE SYSTEM SHALL display "Invalid email/username or password" message above the form in red color
+
+---
+
+WHEN user returns to login page with valid stored token 
+THE SYSTEM SHALL automatically redirect to home page without requiring re-authentication
