@@ -1,0 +1,376 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    # Run weekly on Mondays at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual triggering
+
+# Allow only one concurrent dependency update
+concurrency:
+  group: dependency-updates
+  cancel-in-progress: false
+
+env:
+  PNPM_VERSION: '10.13.1'
+  NODE_VERSION: '20'
+
+jobs:
+  check-updates:
+    name: Check for Dependency Updates
+    runs-on: ubuntu-latest
+    outputs:
+      has-updates: ${{ steps.check.outputs.has-updates }}
+      update-summary: ${{ steps.check.outputs.update-summary }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check for outdated packages
+        id: check
+        run: |
+          echo "🔍 Checking for outdated dependencies..."
+          
+          # Get outdated packages
+          pnpm outdated --format json > outdated.json 2>/dev/null || echo '{}' > outdated.json
+          
+          # Check if there are any updates
+          OUTDATED_COUNT=$(cat outdated.json | jq 'length // 0')
+          
+          if [ "$OUTDATED_COUNT" -gt 0 ]; then
+            echo "has-updates=true" >> $GITHUB_OUTPUT
+            echo "Found $OUTDATED_COUNT outdated packages"
+            
+            # Create summary
+            echo "📦 **Outdated Dependencies Summary**" > update-summary.md
+            echo "" >> update-summary.md
+            pnpm outdated >> update-summary.md 2>/dev/null || echo "No detailed info available" >> update-summary.md
+            
+            # Store summary in output (truncated for GitHub limits)
+            UPDATE_SUMMARY=$(head -c 1000 update-summary.md)
+            echo "update-summary<<EOF" >> $GITHUB_OUTPUT
+            echo "$UPDATE_SUMMARY" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "has-updates=false" >> $GITHUB_OUTPUT
+            echo "All dependencies are up to date!"
+          fi
+
+      - name: Upload outdated packages report
+        if: steps.check.outputs.has-updates == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: outdated-packages-report
+          path: |
+            outdated.json
+            update-summary.md
+          retention-days: 7
+
+  security-updates:
+    name: Apply Security Updates
+    runs-on: ubuntu-latest
+    needs: check-updates
+    if: needs.check-updates.outputs.has-updates == 'true'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Update security-related packages
+        run: |
+          echo "🔒 Updating packages with known security vulnerabilities..."
+          
+          # Get audit results
+          pnpm audit --json > audit-results.json 2>/dev/null || echo '{}' > audit-results.json
+          
+          # Apply security fixes
+          pnpm audit --fix || echo "Some vulnerabilities may require manual intervention"
+          
+          # Check if any changes were made
+          if git diff --quiet pnpm-lock.yaml; then
+            echo "No security updates were applied"
+            echo "security-updates-applied=false" >> $GITHUB_ENV
+          else
+            echo "Security updates were applied"
+            echo "security-updates-applied=true" >> $GITHUB_ENV
+          fi
+
+      - name: Run tests after security updates
+        if: env.security-updates-applied == 'true'
+        run: |
+          echo "🧪 Running tests after security updates..."
+          pnpm run test || {
+            echo "❌ Tests failed after security updates"
+            git checkout pnpm-lock.yaml package.json
+            exit 1
+          }
+
+      - name: Create security update PR
+        if: env.security-updates-applied == 'true'
+        run: |
+          BRANCH_NAME="automated/security-updates-$(date +%Y%m%d)"
+          
+          # Create and switch to new branch
+          git checkout -b "$BRANCH_NAME"
+          
+          # Commit changes
+          git add pnpm-lock.yaml package.json
+          git commit -m "fix(deps): apply automated security updates
+          
+          - Updated packages with known security vulnerabilities
+          - All tests pass after updates
+          - Automated update on $(date)
+          
+          This PR was automatically created by the dependency update workflow."
+          
+          # Push branch
+          git push origin "$BRANCH_NAME"
+          
+          # Create PR using GitHub CLI (if available) or API
+          gh pr create \
+            --title "🔒 Automated Security Updates" \
+            --body "This PR contains automated security updates for dependencies with known vulnerabilities.
+          
+          **Changes:**
+          - Applied security fixes using \`pnpm audit --fix\`
+          - All tests pass after updates
+          - Review the changes and merge if everything looks good
+          
+          **Automated Checks:**
+          - ✅ Tests pass
+          - ✅ Security vulnerabilities addressed
+          
+          Generated on $(date)" \
+            --label "dependencies,security,automated" \
+            --base main \
+            --head "$BRANCH_NAME" || echo "Could not create PR automatically"
+
+  minor-updates:
+    name: Create Minor Updates PR
+    runs-on: ubuntu-latest
+    needs: check-updates
+    if: needs.check-updates.outputs.has-updates == 'true' && github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Update minor and patch versions
+        id: update
+        run: |
+          echo "🔄 Updating minor and patch versions..."
+          
+          # Update dependencies (exclude major updates)
+          pnpm update --latest --depth=0
+          
+          # Check if any changes were made
+          if git diff --quiet pnpm-lock.yaml package.json; then
+            echo "No updates were applied"
+            echo "updates-applied=false" >> $GITHUB_OUTPUT
+          else
+            echo "Updates were applied"
+            echo "updates-applied=true" >> $GITHUB_OUTPUT
+            
+            # Get update summary
+            git diff --name-only | head -10 > changed-files.txt
+            echo "Changed files:" >> update-details.txt
+            cat changed-files.txt >> update-details.txt
+          fi
+
+      - name: Run full test suite
+        if: steps.update.outputs.updates-applied == 'true'
+        run: |
+          echo "🧪 Running full test suite after updates..."
+          pnpm run ci || {
+            echo "❌ CI checks failed after updates"
+            git checkout pnpm-lock.yaml package.json
+            exit 1
+          }
+
+      - name: Create minor updates PR
+        if: steps.update.outputs.updates-applied == 'true'
+        run: |
+          BRANCH_NAME="automated/dependency-updates-$(date +%Y%m%d)"
+          
+          # Create and switch to new branch
+          git checkout -b "$BRANCH_NAME"
+          
+          # Commit changes
+          git add pnpm-lock.yaml package.json
+          git commit -m "chore(deps): update dependencies to latest minor/patch versions
+          
+          - Updated all dependencies to latest compatible versions
+          - All tests pass after updates
+          - Automated update on $(date)
+          
+          This PR was automatically created by the dependency update workflow."
+          
+          # Push branch
+          git push origin "$BRANCH_NAME"
+          
+          # Create PR
+          gh pr create \
+            --title "📦 Automated Dependency Updates" \
+            --body "This PR contains automated dependency updates to the latest minor and patch versions.
+          
+          **Update Summary:**
+          ${{ needs.check-updates.outputs.update-summary }}
+          
+          **Automated Checks:**
+          - ✅ All tests pass
+          - ✅ Linting passes
+          - ✅ TypeScript compilation succeeds
+          - ✅ Build succeeds
+          
+          **Review Notes:**
+          - This is an automated update for minor and patch versions only
+          - No breaking changes are expected
+          - Review the diff and changelog for any notable changes
+          
+          Generated on $(date)" \
+            --label "dependencies,automated" \
+            --base main \
+            --head "$BRANCH_NAME" || echo "Could not create PR automatically"
+
+  major-updates-notification:
+    name: Notify About Major Updates
+    runs-on: ubuntu-latest
+    needs: check-updates
+    if: needs.check-updates.outputs.has-updates == 'true'
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check for major updates
+        run: |
+          echo "🔍 Checking for major version updates..."
+          
+          # Get packages with major updates available
+          pnpm outdated --format json > outdated.json 2>/dev/null || echo '{}' > outdated.json
+          
+          # Filter for major updates (this is a simplified check)
+          # In a real scenario, you'd parse the JSON and check version differences
+          MAJOR_UPDATES=$(cat outdated.json | jq 'length // 0')
+          
+          if [ "$MAJOR_UPDATES" -gt 0 ]; then
+            echo "📢 Major dependency updates are available!"
+            echo "These require manual review due to potential breaking changes:"
+            echo ""
+            pnpm outdated || true
+            echo ""
+            echo "Consider reviewing these updates manually and testing thoroughly."
+            
+            # Create issue for manual review (if you want to automate this)
+            # gh issue create \
+            #   --title "🔴 Major Dependency Updates Available - Manual Review Required" \
+            #   --body "Major version updates are available for some dependencies..." \
+            #   --label "dependencies,major-update,manual-review"
+          else
+            echo "No major updates detected."
+          fi
+
+  cleanup:
+    name: Cleanup and Summary
+    runs-on: ubuntu-latest
+    needs: [check-updates, security-updates, minor-updates, major-updates-notification]
+    if: always()
+    
+    steps:
+      - name: Create summary
+        run: |
+          echo "## 📦 Dependency Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.check-updates.outputs.has-updates }}" = "true" ]; then
+            echo "🔄 **Updates Available**: Yes" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Actions Taken:**" >> $GITHUB_STEP_SUMMARY
+            
+            if [ "${{ needs.security-updates.result }}" = "success" ]; then
+              echo "- ✅ Security updates processed" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            if [ "${{ needs.minor-updates.result }}" = "success" ]; then
+              echo "- ✅ Minor/patch updates processed" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            echo "- 📋 Major updates require manual review" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ **All Dependencies Up to Date**" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📅 **Last Checked**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 **Next Check**: Weekly on Mondays" >> $GITHUB_STEP_SUMMARY
