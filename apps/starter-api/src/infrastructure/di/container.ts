@@ -32,7 +32,7 @@ import type { ITodoRepository, IUserRepository } from '@nx-starter/domain-core';
 import { UserDomainService } from '@nx-starter/domain-core';
 import { getTypeOrmDataSource } from '../database/connections/TypeOrmConnection';
 import { connectMongoDB } from '../database/connections/MongooseConnection';
-import { config } from '../../config/config';
+import { getDatabaseConfig } from '../../config';
 
 // Register dependencies following Clean Architecture layers
 export const configureDI = async () => {
@@ -119,8 +119,9 @@ export const configureDI = async () => {
 };
 
 async function getTodoRepositoryImplementation(): Promise<ITodoRepository> {
-  const dbType = config.database.type;
-  const ormType = config.database.orm || 'native';
+  const dbConfig = getDatabaseConfig();
+  const dbType = dbConfig.type;
+  const ormType = dbConfig.orm || 'native';
 
   console.log(`📦 Using ${ormType} ORM with ${dbType} database`);
 
@@ -164,8 +165,9 @@ async function getTodoRepositoryImplementation(): Promise<ITodoRepository> {
 }
 
 async function getUserRepositoryImplementation(): Promise<IUserRepository> {
-  const dbType = config.database.type;
-  const ormType = config.database.orm || 'native';
+  const dbConfig = getDatabaseConfig();
+  const dbType = dbConfig.type;
+  const ormType = dbConfig.orm || 'native';
 
   console.log(`📦 Using ${ormType} ORM with ${dbType} database for User repository`);
 

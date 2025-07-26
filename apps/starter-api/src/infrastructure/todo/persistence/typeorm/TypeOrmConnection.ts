@@ -1,44 +1,47 @@
 import { DataSource } from 'typeorm';
 import { TodoEntity } from './TodoEntity';
-import { config } from '../../../../config/config';
+import { getDatabaseConfig, getServerConfig } from '../../../../config';
 
 /**
  * TypeORM DataSource configuration
  * Supports multiple database types
  */
 export const createTypeOrmDataSource = (): DataSource => {
+  const dbConfig = getDatabaseConfig();
+  const serverConfig = getServerConfig();
+  
   // Base configuration
   const baseConfig = {
     entities: [TodoEntity],
-    synchronize: config.nodeEnv === 'development',
-    logging: config.nodeEnv === 'development',
+    synchronize: serverConfig.environment === 'development',
+    logging: serverConfig.environment === 'development',
   };
 
   // Database-specific configuration
-  const dbType = config.database.type || 'sqlite';
+  const dbType = dbConfig.type || 'sqlite';
 
   switch (dbType) {
     case 'postgresql':
       return new DataSource({
         type: 'postgres',
-        url: config.database.url,
-        host: config.database.host || 'localhost',
-        port: config.database.port || 5432,
-        username: config.database.username,
-        password: config.database.password,
-        database: config.database.database || 'task_app',
+        url: dbConfig.url,
+        host: dbConfig.host || 'localhost',
+        port: dbConfig.port || 5432,
+        username: dbConfig.username,
+        password: dbConfig.password,
+        database: dbConfig.database || 'task_app',
         ...baseConfig,
       });
 
     case 'mysql':
       return new DataSource({
         type: 'mysql',
-        url: config.database.url,
-        host: config.database.host || 'localhost',
-        port: config.database.port || 3306,
-        username: config.database.username,
-        password: config.database.password,
-        database: config.database.database || 'task_app',
+        url: dbConfig.url,
+        host: dbConfig.host || 'localhost',
+        port: dbConfig.port || 3306,
+        username: dbConfig.username,
+        password: dbConfig.password,
+        database: dbConfig.database || 'task_app',
         ...baseConfig,
       });
 
@@ -46,7 +49,7 @@ export const createTypeOrmDataSource = (): DataSource => {
     default:
       return new DataSource({
         type: 'sqlite',
-        database: config.database.url || './data/todos.db',
+        database: dbConfig.url || './data/todos.db',
         ...baseConfig,
       });
   }

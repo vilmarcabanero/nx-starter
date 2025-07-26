@@ -1,5 +1,5 @@
 import Database from 'better-sqlite3';
-import { config } from '../../../config/config';
+import { getDatabaseConfig } from '../../../config';
 
 /**
  * Shared SQLite database connection management
@@ -21,7 +21,8 @@ class SqliteConnectionManager {
   public getDatabase(): Database.Database {
     if (!this.db) {
       // Use database URL from config or default to memory for development
-      const dbPath = config.database.url || ':memory:';
+      const dbConfig = getDatabaseConfig();
+      const dbPath = dbConfig.url || ':memory:';
       this.db = new Database(dbPath);
       console.log(`📦 Shared SQLite database connected: ${dbPath === ':memory:' ? 'in-memory' : dbPath}`);
       

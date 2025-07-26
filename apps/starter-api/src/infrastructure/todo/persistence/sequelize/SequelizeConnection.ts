@@ -1,19 +1,21 @@
 import { Sequelize } from 'sequelize';
 import { initTodoModel } from './TodoModel';
-import { config } from '../../../../config/config';
+import { getDatabaseConfig, getServerConfig } from '../../../../config';
 
 /**
  * Sequelize connection management
  * Supports multiple SQL databases
  */
 export const createSequelizeInstance = (): Sequelize => {
-  const dbType = config.database.type || 'sqlite';
+  const dbConfig = getDatabaseConfig();
+  const serverConfig = getServerConfig();
+  const dbType = dbConfig.type || 'sqlite';
   let sequelize: Sequelize;
 
-  if (config.database.url) {
+  if (dbConfig.url) {
     // Use connection URL if provided
-    sequelize = new Sequelize(config.database.url, {
-      logging: config.nodeEnv === 'development' ? console.log : false,
+    sequelize = new Sequelize(dbConfig.url, {
+      logging: serverConfig.environment === 'development' ? console.log : false,
       dialectOptions:
         dbType === 'sqlite'
           ? {
@@ -23,7 +25,7 @@ export const createSequelizeInstance = (): Sequelize => {
           ? {
               // PostgreSQL specific options
               ssl:
-                config.nodeEnv === 'production'
+                serverConfig.environment === 'production'
                   ? {
                       require: true,
                       rejectUnauthorized: false,
@@ -35,7 +37,7 @@ export const createSequelizeInstance = (): Sequelize => {
           : {
               // MySQL specific options
               ssl:
-                config.nodeEnv === 'production'
+                serverConfig.environment === 'production'
                   ? {
                       require: true,
                       rejectUnauthorized: false,
@@ -57,20 +59,20 @@ export const createSequelizeInstance = (): Sequelize => {
       sequelize = new Sequelize({
         dialect: 'sqlite',
         storage: './data/todos.db',
-        logging: config.nodeEnv === 'development' ? console.log : false,
+        logging: serverConfig.environment === 'development' ? console.log : false,
       });
     } else {
       const dialectOptions: any = {};
 
       if (dialect === 'postgres') {
         dialectOptions.prependSearchPath = false;
-        if (config.nodeEnv === 'production') {
+        if (serverConfig.environment === 'production') {
           dialectOptions.ssl = {
             require: true,
             rejectUnauthorized: false,
           };
         }
-      } else if (config.nodeEnv === 'production') {
+      } else if (serverConfig.environment === 'production') {
         dialectOptions.ssl = {
           require: true,
           rejectUnauthorized: false,
@@ -79,12 +81,12 @@ export const createSequelizeInstance = (): Sequelize => {
 
       sequelize = new Sequelize({
         dialect: dialect as any,
-        host: config.database.host || 'localhost',
-        port: config.database.port || (dialect === 'mysql' ? 3306 : 5432),
-        username: config.database.username!,
-        password: config.database.password!,
-        database: config.database.database || 'task_app',
-        logging: config.nodeEnv === 'development' ? console.log : false,
+        host: dbConfig.host || 'localhost',
+        port: dbConfig.port || (dialect === 'mysql' ? 3306 : 5432),
+        username: dbConfig.username!,
+        password: dbConfig.password!,
+        database: dbConfig.database || 'task_app',
+        logging: serverConfig.environment === 'development' ? console.log : false,
         dialectOptions,
       });
     }
@@ -104,6 +106,7 @@ export const getSequelizeInstance = async (): Promise<Sequelize> => {
     sequelize = createSequelizeInstance();
 
     try {
+      const serverConfig = getServerConfig();
       await sequelize.authenticate();
       console.log('📦 Sequelize connection established successfully');
 
@@ -133,7 +136,7 @@ export const getSequelizeInstance = async (): Promise<Sequelize> => {
       }
 
       // Sync models (create tables if they don't exist)
-      if (config.nodeEnv === 'development') {
+      if (serverConfig.environment === 'development') {
         await sequelize.sync({ alter: true });
         console.log('📦 Sequelize models synchronized');
       }

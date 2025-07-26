@@ -7,34 +7,49 @@ import { AuthController } from '../presentation/controllers/AuthController';
 import { TestController } from '../presentation/controllers/TestController';
 import { RoutingControllersErrorHandler } from '../shared/middleware/RoutingControllersErrorHandler';
 import { requestLogger } from '../presentation/middleware/errorHandler';
-import { config, isProduction } from './config';
+import { 
+  getSecurityConfig, 
+  getApplicationConfig, 
+  getApiConfig,
+  getDatabaseConfig,
+  getServerConfig,
+  isProduction 
+} from './';
 
 /**
  * Creates and configures the Express application
  */
 export const createApp = (): express.Application => {
   const app = express();
+  
+  // Get configuration sections
+  const securityConfig = getSecurityConfig();
+  const appConfig = getApplicationConfig();
+  const apiConfig = getApiConfig();
+  const dbConfig = getDatabaseConfig();
 
   // CORS configuration
   app.use(
     cors({
-      origin: config.corsOrigin,
-      credentials: true,
+      origin: securityConfig.cors.origin,
+      credentials: securityConfig.cors.credentials,
+      methods: securityConfig.cors.methods,
+      allowedHeaders: securityConfig.cors.allowedHeaders,
     })
   );
 
   // Body parsing
-  app.use(express.json({ limit: '10mb' }));
-  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+  app.use(express.json({ limit: securityConfig.requestSizeLimit }));
+  app.use(express.urlencoded({ extended: true, limit: securityConfig.requestSizeLimit }));
 
   // Request logging
   app.use(requestLogger);
 
   // Health check endpoint (before routing-controllers)
-  app.get('/api/health', (req, res) => {
+  app.get(`${apiConfig.prefix}${apiConfig.endpoints.health}`, (req, res) => {
     res.json({
       success: true,
-      message: 'Server is running',
+      message: appConfig.healthCheckMessage,
       timestamp: new Date().toISOString(),
     });
   });
@@ -54,7 +69,7 @@ export const createApp = (): express.Application => {
 
   // Configure routing-controllers
   useExpressServer(app, {
-    routePrefix: '/api',
+    routePrefix: apiConfig.prefix,
     controllers,
     middlewares: [RoutingControllersErrorHandler],
     defaultErrorHandler: false, // We'll use our custom error handler
@@ -64,22 +79,27 @@ export const createApp = (): express.Application => {
   app.get('/', (req, res) => {
     res.json({
       success: true,
-      message: 'Task App API Server',
-      version: '1.0.0',
-      environment: config.nodeEnv,
-      database: config.database.type,
+      message: appConfig.name,
+      version: appConfig.version,
+      description: appConfig.description,
+      author: appConfig.author,
+      license: appConfig.license,
+      homepage: appConfig.homepage,
+      repository: appConfig.repository,
+      environment: getServerConfig().environment,
+      database: dbConfig.type,
       endpoints: {
-        health: '/api/health',
-        todos: '/api/todos',
-        auth: '/api/auth',
-        register: '/api/auth/register',
-        documentation: 'See README.md for API documentation',
+        health: `${apiConfig.prefix}${apiConfig.endpoints.health}`,
+        todos: `${apiConfig.prefix}${apiConfig.endpoints.todos}`,
+        auth: `${apiConfig.prefix}${apiConfig.endpoints.auth.base}`,
+        register: `${apiConfig.prefix}${apiConfig.endpoints.auth.register}`,
+        documentation: `${apiConfig.prefix}${apiConfig.endpoints.documentation}`,
       },
     });
   });
 
   // 404 handler for API routes not handled by routing-controllers  
-  app.use('/api', (req, res, next) => {
+  app.use(apiConfig.prefix, (req, res, next) => {
     // Only handle 404 if no response was sent yet
     if (!res.headersSent) {
       res.status(404).json({

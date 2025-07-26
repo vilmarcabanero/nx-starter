@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { config } from '../../../config/config';
+import { getDatabaseConfig } from '../../../config';
 
 /**
  * Shared Mongoose connection management
@@ -7,16 +7,17 @@ import { config } from '../../../config/config';
  */
 export const connectMongoDB = async (): Promise<void> => {
   try {
+    const dbConfig = getDatabaseConfig();
     let mongoUrl: string;
     
-    if (config.database.url) {
+    if (dbConfig.url) {
       // Use URL if provided
-      mongoUrl = config.database.url;
+      mongoUrl = dbConfig.url;
     } else {
       // Build URL from individual config properties
-      const host = config.database.host || 'localhost';
-      const port = config.database.port || 27017;
-      const database = config.database.database || 'task_app';
+      const host = dbConfig.host || 'localhost';
+      const port = dbConfig.port || 27017;
+      const database = dbConfig.database || 'task_app';
       mongoUrl = `mongodb://${host}:${port}/${database}`;
     }
 
