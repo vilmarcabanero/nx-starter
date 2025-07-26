@@ -1,0 +1,173 @@
+Comprehensive API Endpoint Implementation Checklist
+
+📋 API Endpoint Implementation Checklist
+
+🏗️ Architecture & Clean Code Patterns
+
+Controller Layer (Presentation)
+
+- Controller Structure: Follows TodoController pattern exactly
+  - Uses @Controller('/resource') with proper route prefix
+  - Decorated with @injectable() for DI
+  - Clean constructor with only necessary injections using TOKENS.*
+  - No try/catch blocks (error handling via middleware)
+  - Uses ApiResponseBuilder.success() for consistent responses
+  - Proper HTTP method decorators (@Post, @Get, @Put, @Delete, @Patch)
+  - Correct HTTP status codes with @HttpCode() where needed
+
+Use Cases (Application Layer)
+
+- CQRS Pattern: Separate commands and queries
+  - Command use cases for mutations (Create, Update, Delete)
+  - Query handlers for data retrieval (Get, List, Search)
+- Use Case Structure: Follows CreateTodoUseCase pattern
+  - Single responsibility per use case
+  - Decorated with @injectable()
+  - Constructor injection using TOKENS.*
+  - No error handling (let domain exceptions bubble up)
+  - Domain entity creation and validation
+  - Repository persistence calls
+
+Validation Layer
+
+- Validation Service Pattern: Follows TodoValidationService pattern
+  - Individual validation services extending ValidationService<unknown, CommandType>
+  - Facade pattern composite service (e.g., UserValidationService)
+  - Proper DI registration in container
+  - Uses centralized TOKENS.* (not separate token objects)
+
+Domain Layer
+
+- Domain Entities: Proper domain modeling
+  - Value objects for domain concepts
+  - Entity validation methods
+  - Business invariant enforcement
+- Domain Services: For cross-entity business logic
+  - Manual instantiation in use cases (not DI)
+  - Domain exception usage for business rule violations
+
+🛡️ Error Handling & Validation
+
+Validation Errors
+
+- Field Validation: Uses ValidationError with detailed Zod info
+  - Missing/invalid fields return structured validation details
+  - Consistent with TodoController validation responses
+- Business Rule Violations: Uses domain exceptions
+  - Email uniqueness, business constraints use DomainException
+  - Proper HTTP status codes (409 for conflicts, 400 for validation)
+
+Domain Exceptions
+
+- DomainExceptions.ts Usage: Added feature-specific exceptions
+  - Extends base DomainException class
+  - Proper error codes and HTTP status codes
+  - Consistent naming convention (e.g., User*Exception)
+
+Centralized Error Handling
+
+- Middleware Handling: All errors handled by RoutingControllersErrorHandler
+  - No manual error handling in controllers
+  - Domain exceptions properly caught and formatted
+  - ValidationError details preserved
+
+🔧 Data & Integration Patterns
+
+DTOs & Commands
+
+- Request/Response DTOs: Proper data contracts
+  - Request DTOs for input validation
+  - Response DTOs for API responses
+  - Command DTOs for CQRS pattern
+- Validation Schemas: Zod schemas with proper validation
+  - Type inference from schemas
+  - Consistent error messages
+  - Proper field validation rules
+
+Mappers
+
+- Entity-DTO Mapping: Follows TodoMapper pattern
+  - Static mapper class methods
+  - toDto() and toDtoArray() methods
+  - Proper response DTO mapping methods
+
+Repository Pattern
+
+- Repository Interface: Clean domain interface
+  - Abstract interface in domain layer
+  - Implementation in infrastructure layer
+- Multiple Implementations: Support for different databases
+  - In-memory for testing
+  - SQLite, TypeORM, Mongoose implementations
+  - Consistent interface adherence
+
+⚙️ Dependency Injection & Configuration
+
+DI Container Registration
+
+- Centralized TOKENS: All tokens in TOKENS object
+  - Use cases registered as singletons
+  - Validation services registered
+  - Repository implementations registered
+  - Infrastructure services registered
+
+Application Configuration
+
+- Controller Registration: Added to app.ts controllers array
+- Route Documentation: Added endpoint info to root response
+- Database Support: Repository implementations for all supported DBs
+
+🧪 Testing & Quality
+
+Code Quality
+
+- DRY Principle: No duplicate code across features
+  - Reuses existing patterns and utilities
+  - Consistent validation approach
+  - Shared infrastructure components
+
+Architecture Consistency
+
+- Clean Architecture Layers: Proper layer separation
+  - Presentation → Application → Domain → Infrastructure
+  - No layer violations or circular dependencies
+  - Proper dependency direction (inward)
+
+Feature Comparison
+
+- Compare with Todo Implementation: Architecture alignment
+  - Same patterns for similar operations
+  - Consistent error handling approach
+  - Matching validation strategies
+  - Equivalent repository patterns
+
+📝 Documentation & Maintenance
+
+Code Documentation
+
+- JSDoc Comments: Proper class and method documentation
+- Type Safety: Full TypeScript coverage
+- Naming Conventions: Consistent with existing codebase
+
+Build & Deployment
+
+- Compilation: Code builds without errors
+- Linting: Passes code quality checks
+- Import Organization: Clean import statements
+
+---
+🔍 Code Review Questions
+
+1. Does the new feature follow the exact same patterns as TodoController?
+2. Is error handling completely delegated to middleware?
+3. Are all validation errors properly structured with Zod details?
+4. Are business rule violations using appropriate domain exceptions?
+5. Is the DI configuration using centralized TOKENS?
+6. Does the implementation support all configured database types?
+7. Are there any DRY principle violations compared to todo implementation?
+8. Is the Clean Architecture layer separation maintained?
+
+---
+
+Extra but important:
+- Ensure that environment variables and other configuration values are centralized and documented.
