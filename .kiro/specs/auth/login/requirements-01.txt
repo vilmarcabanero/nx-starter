@@ -30,14 +30,39 @@ THE SYSTEM SHALL proceed with authentication
 
 ---
 
+Remember Me Functionality:
+WHEN a user checks the "Remember Me" checkbox and submits valid login credentials
+THE SYSTEM SHALL store the identifier (username/email) in local storage
+
+WHEN a user checks the "Remember Me" checkbox
+THE SYSTEM SHALL store the checkbox state in local storage to persist across sessions
+
+WHEN the login page loads and "Remember Me" was previously checked
+THE SYSTEM SHALL pre-populate the identifier field from local storage and check the "Remember Me" checkbox
+
+---
+
 Authentication Response Handling:
 WHEN authentication succeeds 
-THE SYSTEM SHALL redirect to the home page
+THE SYSTEM SHALL store the auth token in local storage and redirect to the home page
 
 WHEN authentication fails due to invalid credentials 
 THE SYSTEM SHALL display "Invalid email/username or password" message above the form in red color
 
 ---
 
+Initial Load Authentication:
+WHEN the application loads and no auth token exists in local storage
+THE SYSTEM SHALL redirect the user to the login page
+
+WHEN the application loads and a valid auth token exists in local storage
+THE SYSTEM SHALL maintain the user's logged-in state
+
+WHEN a logged-in user attempts to access the login page
+THE SYSTEM SHALL redirect them away from the login page to prevent access
+
+---
+
+Token-Based Authentication:
 WHEN user returns to login page with valid stored token 
 THE SYSTEM SHALL automatically redirect to home page without requiring re-authentication
