@@ -261,6 +261,7 @@
     @apply bg-background text-foreground;
   }
   html {
-    scrollbar-gutter: stable both-edges;
+    /* Only apply this style on scrollable sections like scrollable table */
+    /* scrollbar-gutter: stable both-edges; */
   }
 }
