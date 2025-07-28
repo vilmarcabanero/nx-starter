@@ -114,9 +114,17 @@ export const LoginForm: React.FC = () => {
                     // Then call our custom handler
                     handleInputChange();
                   }}
-                  className="border-0 bg-transparent h-full focus:bg-[#e6f4f1] focus:ring-0 focus:border-0 text-[#333] placeholder-[#888] text-[15px] px-[15px] outline-none"
+                  className="bg-transparent h-full focus:bg-[#e6f4f1] text-[#333] placeholder-[#888] text-[15px] px-[15px]"
                   data-testid="login-identifier-input"
-                  style={{ width: '100%', boxSizing: 'border-box' }}
+                  style={{ 
+                    width: '100%', 
+                    boxSizing: 'border-box',
+                    border: 'none',
+                    outline: 'none',
+                    boxShadow: 'none',
+                    borderTopLeftRadius: '0',
+                    borderBottomLeftRadius: '0',
+                  }}
                 />
               </div>
               {errors.identifier && (
@@ -150,9 +158,17 @@ export const LoginForm: React.FC = () => {
                     // Then call our custom handler
                     handleInputChange();
                   }}
-                  className="border-0 bg-transparent h-full focus:bg-[#e6f4f1] focus:ring-0 focus:border-0 text-[#333] placeholder-[#888] text-[15px] px-[15px] outline-none"
+                  className="bg-transparent h-full focus:bg-[#e6f4f1] text-[#333] placeholder-[#888] text-[15px] px-[15px]"
                   data-testid="login-password-input"
-                  style={{ width: '100%', boxSizing: 'border-box' }}
+                  style={{ 
+                    width: '100%', 
+                    boxSizing: 'border-box',
+                    border: 'none',
+                    outline: 'none',
+                    boxShadow: 'none',
+                    borderTopLeftRadius: '0',
+                    borderBottomLeftRadius: '0',
+                  }}
                 />
               </div>
               {errors.password && (
