@@ -188,13 +188,12 @@ export const LoginForm: React.FC = () => {
             <Button
               type="submit"
               disabled={isFormEmpty || viewModel.isSubmitting}
-              className="w-full bg-[#4db6ac] hover:bg-[#3ba69c] active:bg-[#b2dfdb] active:text-[#004d40] text-white font-bold border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+              className="w-full bg-[#4db6ac] hover:bg-[#3ba69c] active:bg-[#b2dfdb] active:text-[#004d40] text-white font-bold border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 mt-4"
               data-testid="login-submit-button"
               style={{ 
                 height: '50px',
                 borderRadius: '10px',
-                fontSize: '16px',
-                marginTop: '10px'
+                fontSize: '16px'
               }}
             >
               <LogIn className="h-5 w-5 mr-2" />
