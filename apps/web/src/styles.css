@@ -264,4 +264,22 @@
     /* Only apply this style on scrollable sections like scrollable table */
     /* scrollbar-gutter: stable both-edges; */
   }
+  
+  /* Ensure interactive elements have pointer cursor */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="tab"]:not([aria-disabled="true"]),
+  [role="checkbox"]:not([aria-disabled="true"]),
+  [role="radio"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  [type="checkbox"]:not(:disabled),
+  [type="radio"]:not(:disabled),
+  label:not([aria-disabled="true"]),
+  a[href],
+  summary,
+  [tabindex]:not([tabindex="-1"]):not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
 }
