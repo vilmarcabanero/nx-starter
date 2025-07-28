@@ -76,18 +76,17 @@ export const LoginForm: React.FC = () => {
 
   return (
     <div className="w-full max-w-[400px] mx-auto">
-      <Card className="bg-white shadow-xl border-0" style={{ borderRadius: '20px', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.15)' }}>
+      <Card className="bg-white shadow-xl border-0 rounded-[20px] shadow-[0_8px_20px_rgba(0,0,0,0.15)]">
         <CardContent className="p-8 pt-8">
-          <h1 className="text-[28px] font-normal text-center mb-6 text-[#0b4f6c]" style={{ fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }}>
+          <h1 className="text-[28px] font-normal text-center mb-6 text-[#0b4f6c] font-[system-ui,Segoe_UI,Tahoma,Geneva,Verdana,sans-serif]">
             Login
           </h1>
           
           {/* Error message */}
           {viewModel.error && (
             <div 
-              className="text-red-600 text-sm mb-4 text-center"
+              className="text-red-600 text-sm mb-4 text-center text-[crimson]"
               data-testid="login-error"
-              style={{ color: 'crimson' }}
             >
               {viewModel.error}
             </div>
@@ -97,8 +96,7 @@ export const LoginForm: React.FC = () => {
             {/* Username/Email Field */}
             <div className="relative mb-3">
               <div 
-                className="flex items-center bg-[#f5f7fa] border border-[#ccc] rounded-[10px] overflow-hidden mt-[15px]"
-                style={{ height: '50px' }}
+                className="flex items-center bg-[#f5f7fa] border border-[#ccc] rounded-[10px] overflow-hidden mt-[15px] h-[50px]"
               >
                 <div className="pl-3 pr-2">
                   <User className="h-5 w-5 text-[#4db6ac]" />
@@ -114,24 +112,15 @@ export const LoginForm: React.FC = () => {
                     // Then call our custom handler
                     handleInputChange();
                   }}
-                  className="bg-transparent h-full focus:bg-[#e6f4f1] text-[#333] placeholder-[#888] text-[15px] px-[15px]"
+                  className="bg-transparent h-full focus:bg-[#e6f4f1] text-[#333] placeholder-[#888] text-[15px] px-[15px] w-full box-border border-none outline-none shadow-none rounded-tl-none rounded-bl-none"
                   data-testid="login-identifier-input"
-                  style={{ 
-                    width: '100%', 
-                    boxSizing: 'border-box',
-                    border: 'none',
-                    outline: 'none',
-                    boxShadow: 'none',
-                    borderTopLeftRadius: '0',
-                    borderBottomLeftRadius: '0',
-                  }}
+                  style={{ boxShadow: 'none' }}
                 />
               </div>
               {errors.identifier && (
                 <p
-                  className="text-sm text-red-600 mt-1 px-3"
+                  className="text-sm text-red-600 mt-1 px-3 text-[crimson]"
                   data-testid="login-identifier-error"
-                  style={{ color: 'crimson' }}
                 >
                   {errors.identifier.message}
                 </p>
@@ -141,8 +130,7 @@ export const LoginForm: React.FC = () => {
             {/* Password Field */}
             <div className="relative mb-3">
               <div 
-                className="flex items-center bg-[#f5f7fa] border border-[#ccc] rounded-[10px] overflow-hidden mt-[15px]"
-                style={{ height: '50px' }}
+                className="flex items-center bg-[#f5f7fa] border border-[#ccc] rounded-[10px] overflow-hidden mt-[15px] h-[50px]"
               >
                 <div className="pl-3 pr-2">
                   <Lock className="h-5 w-5 text-[#4db6ac]" />
@@ -158,24 +146,15 @@ export const LoginForm: React.FC = () => {
                     // Then call our custom handler
                     handleInputChange();
                   }}
-                  className="bg-transparent h-full focus:bg-[#e6f4f1] text-[#333] placeholder-[#888] text-[15px] px-[15px]"
+                  className="bg-transparent h-full focus:bg-[#e6f4f1] text-[#333] placeholder-[#888] text-[15px] px-[15px] w-full box-border border-none outline-none shadow-none rounded-tl-none rounded-bl-none"
                   data-testid="login-password-input"
-                  style={{ 
-                    width: '100%', 
-                    boxSizing: 'border-box',
-                    border: 'none',
-                    outline: 'none',
-                    boxShadow: 'none',
-                    borderTopLeftRadius: '0',
-                    borderBottomLeftRadius: '0',
-                  }}
+                  style={{ boxShadow: 'none' }}
                 />
               </div>
               {errors.password && (
                 <p
-                  className="text-sm text-red-600 mt-1 px-3"
+                  className="text-sm text-red-600 mt-1 px-3 text-[crimson]"
                   data-testid="login-password-error"
-                  style={{ color: 'crimson' }}
                 >
                   {errors.password.message}
                 </p>
@@ -204,13 +183,8 @@ export const LoginForm: React.FC = () => {
             <Button
               type="submit"
               disabled={isFormEmpty || viewModel.isSubmitting}
-              className="w-full bg-[#4db6ac] hover:bg-[#3ba69c] active:bg-[#b2dfdb] active:text-[#004d40] text-white font-bold border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 mt-4"
+              className="w-full bg-[#4db6ac] hover:bg-[#3ba69c] active:bg-[#b2dfdb] active:text-[#004d40] text-white font-bold border-0 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 mt-4 h-[50px] rounded-[10px] text-[16px]"
               data-testid="login-submit-button"
-              style={{ 
-                height: '50px',
-                borderRadius: '10px',
-                fontSize: '16px'
-              }}
             >
               <LogIn className="h-5 w-5 mr-2" />
               {viewModel.isSubmitting ? (
