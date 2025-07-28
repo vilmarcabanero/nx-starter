@@ -95,9 +95,9 @@ export const LoginForm: React.FC = () => {
 
           <form onSubmit={onSubmit} onKeyDown={handleKeyDown}>
             {/* Username/Email Field */}
-            <div className="relative">
+            <div className="relative mb-3">
               <div 
-                className="flex items-center bg-[#f5f7fa] border border-[#ccc] rounded-[10px] overflow-hidden my-[15px]"
+                className="flex items-center bg-[#f5f7fa] border border-[#ccc] rounded-[10px] overflow-hidden mt-[15px]"
                 style={{ height: '50px' }}
               >
                 <div className="pl-3 pr-2">
@@ -121,8 +121,9 @@ export const LoginForm: React.FC = () => {
               </div>
               {errors.identifier && (
                 <p
-                  className="text-sm text-red-600 mt-1"
+                  className="text-sm text-red-600 mt-1 px-3"
                   data-testid="login-identifier-error"
+                  style={{ color: 'crimson' }}
                 >
                   {errors.identifier.message}
                 </p>
@@ -130,9 +131,9 @@ export const LoginForm: React.FC = () => {
             </div>
 
             {/* Password Field */}
-            <div className="relative">
+            <div className="relative mb-3">
               <div 
-                className="flex items-center bg-[#f5f7fa] border border-[#ccc] rounded-[10px] overflow-hidden my-[15px]"
+                className="flex items-center bg-[#f5f7fa] border border-[#ccc] rounded-[10px] overflow-hidden mt-[15px]"
                 style={{ height: '50px' }}
               >
                 <div className="pl-3 pr-2">
@@ -156,8 +157,9 @@ export const LoginForm: React.FC = () => {
               </div>
               {errors.password && (
                 <p
-                  className="text-sm text-red-600 mt-1"
+                  className="text-sm text-red-600 mt-1 px-3"
                   data-testid="login-password-error"
+                  style={{ color: 'crimson' }}
                 >
                   {errors.password.message}
                 </p>
@@ -165,7 +167,7 @@ export const LoginForm: React.FC = () => {
             </div>
 
             {/* Remember Me Checkbox */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 mt-4">
               <Checkbox
                 checked={watch('rememberMe')}
                 onCheckedChange={(checked) => setValue('rememberMe', !!checked)}
