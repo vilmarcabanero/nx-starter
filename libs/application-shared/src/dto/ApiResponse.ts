@@ -1,4 +1,5 @@
 import { TodoDto, TodoStatsDto } from './TodoDto';
+import { LoginUserResponseDto, RegisterUserResponseDto } from './UserDto';
 
 /**
  * API Response Interfaces
@@ -25,11 +26,36 @@ export interface ApiSuccessMessageResponse {
   message: string;
 }
 
-// Error response wrapper
+// Error response wrapper - matches backend structure
 export interface ApiErrorResponse {
   success: false;
   error: string;
+  code?: string;
   message?: string;
+}
+
+// Specific error codes for authentication
+export type AuthErrorCode = 
+  | 'AUTH_INVALID_CREDENTIALS'
+  | 'AUTH_TOKEN_EXPIRED'
+  | 'AUTH_TOKEN_INVALID'
+  | 'AUTH_USER_NOT_FOUND'
+  | 'AUTH_ACCOUNT_LOCKED'
+  | 'AUTH_RATE_LIMITED';
+
+// Authentication error response
+export interface AuthErrorResponse extends ApiErrorResponse {
+  code: AuthErrorCode;
+}
+
+// HTTP Error interface for handling axios/fetch errors
+export interface HttpErrorResponse {
+  response?: {
+    status: number;
+    data?: ApiErrorResponse;
+  };
+  message: string;
+  code?: string;
 }
 
 // Specific response types for Todo endpoints
@@ -38,10 +64,20 @@ export type TodoListResponse = ApiSuccessResponse<TodoDto[]>;
 export type TodoStatsResponse = ApiSuccessResponse<TodoStatsDto>;
 export type TodoOperationResponse = ApiSuccessMessageResponse;
 
+// Specific response types for Auth endpoints
+export type LoginResponse = ApiSuccessResponse<LoginUserResponseDto>;
+export type RegisterResponse = ApiSuccessResponse<RegisterUserResponseDto>;
+
 // Union type for all possible responses
 export type TodoApiResponse = 
   | TodoResponse 
   | TodoListResponse 
   | TodoStatsResponse 
   | TodoOperationResponse 
+  | ApiErrorResponse;
+
+export type AuthApiResponse =
+  | LoginResponse
+  | RegisterResponse
+  | AuthErrorResponse
   | ApiErrorResponse;

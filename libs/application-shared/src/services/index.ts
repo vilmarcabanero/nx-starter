@@ -6,3 +6,4 @@
 // Export all shared services
 export * from './TodoCommandService';
 export * from './TodoQueryService';
+export * from './AuthService';

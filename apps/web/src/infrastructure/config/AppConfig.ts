@@ -19,6 +19,7 @@ export interface ApiConfiguration {
       register: string;
       logout: string;
       refresh: string;
+      validate: string;
       me: string;
     };
   };

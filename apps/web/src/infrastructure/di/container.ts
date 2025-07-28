@@ -6,6 +6,10 @@ import { IHttpClient } from '../http/IHttpClient';
 import { AxiosHttpClient } from '../http/AxiosHttpClient';
 import { ITodoApiService } from '../api/ITodoApiService';
 import { TodoApiService } from '../api/TodoApiService';
+import { IAuthApiService } from '../api/IAuthApiService';
+import { AuthApiService } from '../api/AuthApiService';
+import { MockAuthApiService } from '../api/MockAuthApiService';
+import { AuthCommandService } from '../api/AuthCommandService';
 import { getFeatureFlags, configProvider } from '../config';
 import {
   TodoCommandService,
@@ -26,13 +30,14 @@ import type { ITodoRepository } from '@nx-starter/domain';
 import type {
   ITodoCommandService,
   ITodoQueryService,
+  IAuthCommandService,
 } from '@nx-starter/application-shared';
 
 // Initialize configuration before using it
 configProvider.initialize();
 
 // Get feature flags from centralized configuration
-const { useApiBackend } = getFeatureFlags(); 
+const { useApiBackend, enableAuth } = getFeatureFlags(); 
 
 // Register dependencies following Clean Architecture layers
 export const configureDI = () => {
@@ -43,6 +48,15 @@ export const configureDI = () => {
   
   // Infrastructure Layer - API Services (always register for potential future use)
   container.registerSingleton<ITodoApiService>(TOKENS.TodoApiService, TodoApiService);
+  
+  // Auth API Service - use mock in development if auth is not enabled
+  if (enableAuth && useApiBackend) {
+    console.log('🔐 Using real AuthApiService for authentication');
+    container.registerSingleton<IAuthApiService>(TOKENS.AuthApiService, AuthApiService);
+  } else {
+    console.log('🧪 Using MockAuthApiService for development');
+    container.registerSingleton<IAuthApiService>(TOKENS.AuthApiService, MockAuthApiService);
+  }
 
   // Infrastructure Layer - Repository (conditionally based on environment)
   if (useApiBackend) {
@@ -99,6 +113,10 @@ export const configureDI = () => {
   container.registerSingleton<ITodoQueryService>(
     TOKENS.TodoQueryService,
     TodoQueryService
+  );
+  container.registerSingleton<IAuthCommandService>(
+    TOKENS.AuthCommandService,
+    AuthCommandService
   );
 };
 

@@ -3,6 +3,7 @@ export const TOKENS = {
   // Infrastructure Layer - HTTP and API Services
   HttpClient: 'IHttpClient',
   TodoApiService: 'ITodoApiService',
+  AuthApiService: 'IAuthApiService',
   
   // Infrastructure Layer - Repositories
   TodoRepository: 'ITodoRepository',
@@ -15,6 +16,8 @@ export const TOKENS = {
   // Application Layer - CQRS Services (Interface-based for cleaner injection)
   TodoCommandService: 'ITodoCommandService',
   TodoQueryService: 'ITodoQueryService',
+  AuthCommandService: 'IAuthCommandService',
+  AuthQueryService: 'IAuthQueryService',
 
   // Application Layer - Use Cases (Commands)
   CreateTodoUseCase: 'CreateTodoUseCase',

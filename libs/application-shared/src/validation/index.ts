@@ -19,6 +19,20 @@ export {
   TodoValidationSchemas,
 } from './TodoValidationSchemas';
 
+// Re-export user validation schemas for convenience
+export {
+  RegisterUserCommandSchema,
+  LoginUserCommandSchema,
+  LoginFormSchema,
+  FirstNameSchema,
+  LastNameSchema,
+  EmailSchema,
+  PasswordSchema,
+  NameSchema,
+  UserValidationSchemas,
+  USER_VALIDATION_ERRORS,
+} from './UserValidationSchemas';
+
 // Note: All validation service tokens are now in centralized TOKENS object from '../di/tokens'
 
 // Export user validation schemas and services

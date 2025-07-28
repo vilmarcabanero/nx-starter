@@ -3,7 +3,7 @@ import { useTodoStore } from '../../../../infrastructure/state/TodoStore';
 import { Todo } from '@nx-starter/domain';
 import { UpdateTodoCommandSchema } from '@nx-starter/application-shared';
 import type { TodoItemViewModel } from './interfaces/TodoViewModels';
-import { getFieldError } from '../utils/ErrorMapping';
+import { getFieldError } from '../../../../infrastructure/utils/ErrorMapping';
 
 /**
  * View Model for individual Todo Item component

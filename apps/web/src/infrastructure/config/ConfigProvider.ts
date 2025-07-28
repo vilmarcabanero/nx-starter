@@ -40,7 +40,7 @@ class ConfigurationProvider {
       const overrides = environmentOverrides[environment];
       
       // Deep merge configuration with overrides
-      this._config = this.deepMerge(baseConfig, overrides || {});
+      this._config = this.deepMerge(baseConfig, (overrides || {}) as Partial<AppConfig>);
       
       // Validate configuration
       this.validateConfiguration(this._config);
@@ -125,7 +125,7 @@ class ConfigurationProvider {
     
     for (const key in source) {
       if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-        result[key] = this.deepMerge(result[key] || {}, source[key]);
+        result[key] = this.deepMerge(result[key] || {} as any, source[key] as any);
       } else if (source[key] !== undefined) {
         result[key] = source[key] as any;
       }

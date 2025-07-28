@@ -65,41 +65,36 @@ export const RegisterUserCommandSchema = z.object({
   password: PasswordSchema,
 });
 
-// Login user command validation schema
+// Login user command validation schema (matches DTO interface)
 export const LoginUserCommandSchema = z.object({
-  email: z.string().optional(),
-  username: z.string().optional(),
+  identifier: z
+    .string()
+    .min(1, USER_VALIDATION_ERRORS.AUTH_MISSING_IDENTIFIER)
+    .refine((value) => {
+      // If it looks like an email (contains @), validate email format
+      if (value.includes('@')) {
+        return z.string().email().safeParse(value).success;
+      }
+      // Otherwise, it's a username - just check it's not empty (already checked by min(1))
+      return true;
+    }, {
+      message: USER_VALIDATION_ERRORS.AUTH_INVALID_EMAIL,
+    }),
   password: z
     .string()
     .min(1, USER_VALIDATION_ERRORS.AUTH_MISSING_PASSWORD),
-}).refine((data) => {
-  // Either email or username must be provided
-  return data.email || data.username;
-}, {
-  message: USER_VALIDATION_ERRORS.AUTH_MISSING_IDENTIFIER,
-  path: ['identifier'] // This will show the error on the identifier field
-}).refine((data) => {
-  // If email is provided, validate email format
-  if (data.email) {
-    return z.string().email().safeParse(data.email).success;
-  }
-  return true;
-}, {
-  message: USER_VALIDATION_ERRORS.AUTH_INVALID_EMAIL,
-  path: ['email']
-}).transform((data) => {
-  // Transform to LoginUserCommand format
-  const identifier = data.email || data.username!;
-  return {
-    identifier,
-    password: data.password
-  };
+});
+
+// Frontend form schema extends the command schema with UI-specific fields
+export const LoginFormSchema = LoginUserCommandSchema.extend({
+  rememberMe: z.boolean().optional(),
 });
 
 // Export all schemas for easy access
 export const UserValidationSchemas = {
   RegisterUserCommand: RegisterUserCommandSchema,
   LoginUserCommand: LoginUserCommandSchema,
+  LoginForm: LoginFormSchema,
   FirstName: FirstNameSchema,
   LastName: LastNameSchema,
   Email: EmailSchema,
